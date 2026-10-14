@@ -1,0 +1,16 @@
+---
+import Inline from '../Inline.astro';
+import Paras from '../Paras.astro';
+import Art from '../Art.astro';
+const { block: b, palette } = Astro.props;
+---
+<h3 class="spot-name display">{b.name}</h3>
+<p class="spot-what"><Inline text={b.what} /></p>
+{(b.art || b.size !== 'third') && <Art src={b.art} alt={b.artAlt} seed={b.id} palette={palette} ink={b.ink} />}
+<Paras items={b.body} />
+{b.facts.length > 0 && (
+  <dl class="facts">
+    {b.facts.map((f) => <div><dt>{f.k}</dt><dd><Inline text={f.v} /></dd></div>)}
+  </dl>
+)}
+{b.tryIt && <p class="try"><span>Try it</span><code>{b.tryIt}</code></p>}

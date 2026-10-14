@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import Masthead from '../../components/Masthead.astro';
+import Lane from '../../components/Lane.astro';
+import Inline from '../../components/Inline.astro';
+import Paras from '../../components/Paras.astro';
+import WeekStrip from '../../components/WeekStrip.astro';
+import Colophon from '../../components/Colophon.astro';
+import { BASE, formatDate, issues, weeks } from '../../kit/data';
+import { plain } from '../../kit/inline';
+export function getStaticPaths() {
+  return weeks.map((week) => ({ params: { id: week.id }, props: { week } }));
+}
+const { week } = Astro.props;
+const kept = new Set(issues.map((i) => i.date));
+const range = `${formatDate(week.from, { day: 'numeric', month: 'long' })} to ${formatDate(week.to, { day: 'numeric', month: 'long' })}`;
+---
+<Base title={`Radar week ${week.id.split('-W')[1]}: ${week.title}`} description={plain(week.dek)} theme={week.theme} path={`week/${week.id}/`}>
+  <Masthead date={week.to} number={Number(week.id.split('-W')[1])} sub={`The week of ${range}`} />
+  <section class="day">
+    <div>
+      <h1 class="day-title display">{week.title}</h1>
+      <p class="day-dek"><Inline text={week.dek} /></p>
+    </div>
+    <div>
+      <p class="short-head">The week in one minute</p>
+      <ul class="short">{week.tldr.map((t) => <li><Lane lane="both" label={false} /><span><Inline text={t} /></span></li>)}</ul>
+    </div>
+  </section>
+  {week.numbers.length > 0 && (
+    <section class="block b-full" data-ink="b" style="margin-top:40px">
+      <h2 class="b-title display">The week in numbers</h2>
+      <div class="stats">{week.numbers.map((n) => <p><span class="n display">{n.value}</span><span class="l">{n.label}</span></p>)}</div>
+    </section>
+  )}
+  <main class="threads">
+    {week.threads.map((th, i) => (
+      <article class="block" data-ink={i % 2 ? 'b' : 'a'} data-imp={i < 2 ? 2 : 3}>
+        <div class="b-top"><Lane lane={th.lane} /></div>
+        <h2 class="b-title display"><Inline text={th.title} /></h2>
+        <p class="thread-days">
+          {th.days.map((d) => kept.has(d)
+            ? <a href={`${BASE}${d}/`}>{formatDate(d, { weekday: 'short', day: 'numeric' })}</a>
+            : <span>{formatDate(d, { weekday: 'short', day: 'numeric' })}</span>)}
+        </p>
+        <Paras items={th.summary} />
+        <p class="srcs"><span>Sources</span>{th.sources.map((s) => <a href={s.url} rel="noopener" target="_blank">{s.label}</a>)}</p>
+      </article>
+    ))}
+  </main>
+  {week.watch.length > 0 && (
+    <section class="ticker">
+      <h2 class="display">Worth watching next week</h2>
+      <ul class="watch">{week.watch.map((w) => <li><Inline text={w} /></li>)}</ul>
+    </section>
+  )}
+  <WeekStrip />
+  <Colophon theme={week.theme} />
+</Base>

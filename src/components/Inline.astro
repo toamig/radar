@@ -1,0 +1,11 @@
+---
+import { inline } from '../kit/inline';
+interface Props { text: string }
+const tokens = inline(Astro.props.text);
+---
+{tokens.map((tok) =>
+  tok.t === 'b' ? <strong>{tok.v}</strong>
+  : tok.t === 'code' ? <code>{tok.v}</code>
+  : tok.t === 'a' ? <a href={tok.href} rel="noopener" target="_blank">{tok.v}</a>
+  : tok.v
+)}

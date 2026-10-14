@@ -1,0 +1,9 @@
+---
+import IssueView from '../components/IssueView.astro';
+import { issues } from '../kit/data';
+export function getStaticPaths() {
+  return issues.map((issue) => ({ params: { date: issue.date }, props: { issue } }));
+}
+const { issue } = Astro.props;
+---
+<IssueView issue={issue} path={`${issue.date}/`} />

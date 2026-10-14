@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { SAFE_THEME } from '../kit/catalog.mjs';
+import { BASE } from '../kit/data';
+---
+<Base title="Radar: page not found" description="This page is not on Radar." theme={SAFE_THEME}>
+  <section style="padding:18vh 0">
+    <h1 class="day-title display">Off the radar</h1>
+    <p class="day-dek">Radar keeps one week of issues, so older days are gone on purpose. <a href={BASE}>Read today's issue</a>.</p>
+  </section>
+</Base>

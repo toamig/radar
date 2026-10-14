@@ -1,0 +1,25 @@
+---
+import { BASE, formatDate, issues, weeks } from '../kit/data';
+import { resolveTheme } from '../kit/catalog.mjs';
+interface Props { current?: string }
+const { current } = Astro.props;
+const week = weeks[0];
+---
+<section class="week" aria-labelledby="week-h">
+  <h2 id="week-h" class="display">This week on Radar</h2>
+  <ul class="days">
+    {issues.map((i) => {
+      const t = resolveTheme(i.theme);
+      return (
+        <li>
+          <a href={`${BASE}${i.date}/`} aria-current={i.date === current ? 'page' : undefined}>
+            <span class="swatch" aria-hidden="true"><i style={`background:${t.day.inkA}`}></i><i style={`background:${t.day.inkB}`}></i></span>
+            <span class="d">{formatDate(i.date, { weekday: 'short', day: 'numeric', month: 'short' })}</span>
+            <span class="t">{i.title}</span>
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+  {week && <a class="weeklink" href={`${BASE}week/${week.id}/`}>Read the weekly summary: {week.title}</a>}
+</section>

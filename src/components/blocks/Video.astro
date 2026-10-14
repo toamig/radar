@@ -1,0 +1,9 @@
+---
+import Paras from '../Paras.astro';
+const { block: b } = Astro.props;
+---
+<div class="vid" data-id={b.youtubeId} data-title={b.title}>
+  <img src={`https://i.ytimg.com/vi/${b.youtubeId}/hqdefault.jpg`} alt="" loading="lazy" />
+  <button type="button" aria-label={`Play video: ${b.title}`}><span></span></button>
+</div>
+<Paras items={b.body} />

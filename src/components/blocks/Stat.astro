@@ -1,0 +1,8 @@
+---
+import Paras from '../Paras.astro';
+const { block: b } = Astro.props;
+---
+<div class="stats">
+  {b.stats.map((s) => <p><span class="n display">{s.value}</span><span class="l">{s.label}</span></p>)}
+</div>
+<Paras items={b.body} />

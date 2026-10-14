@@ -1,0 +1,13 @@
+---
+import Inline from '../Inline.astro';
+const { block: b } = Astro.props;
+---
+{b.intro && <p class="b-lead"><Inline text={b.intro} /></p>}
+<ul class="items">
+  {b.items.map((it) => (
+    <li>
+      <h4>{it.url ? <a href={it.url} rel="noopener" target="_blank"><Inline text={it.title} /></a> : <Inline text={it.title} />}</h4>
+      <p><Inline text={it.text} /></p>
+    </li>
+  ))}
+</ul>

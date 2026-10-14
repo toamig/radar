@@ -1,0 +1,13 @@
+---
+import GenArt from './GenArt.astro';
+import { asset } from '../kit/data';
+import type { Palette } from '../kit/palette';
+interface Props { src?: string; alt?: string; seed: string; palette: Palette; ink?: 'a' | 'b'; class?: string; kind?: string }
+const { src, alt, seed, palette, ink = 'a', kind } = Astro.props;
+const [a, b] = ink === 'a' ? [palette.a, palette.b] : [palette.b, palette.a];
+---
+<figure class={Astro.props.class ?? 'art'}>
+  {src
+    ? <img src={asset(src)} alt={alt ?? ''} loading="lazy" decoding="async" />
+    : <GenArt seed={seed} a={a} b={b} plate={palette.plate} kind={kind} />}
+</figure>

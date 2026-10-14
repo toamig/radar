@@ -1,0 +1,43 @@
+name: Sweep
+
+# The free first pass, half an hour before the morning run: read every source,
+# write inbox/<date>.json, and (when the ANTHROPIC_API_KEY secret is set) let
+# Claude Haiku 5.5 score the candidates. The morning routine starts from this file.
+on:
+  schedule:
+    # 04:37 UTC: 05:37 in Lisbon in summer time, 04:37 in winter.
+    - cron: '37 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lisbon date
+        run: echo "TODAY=$(TZ=Europe/Lisbon date +%F)" >> "$GITHUB_ENV"
+      - run: node scripts/sweep.mjs --date "$TODAY"
+      - run: node scripts/triage.mjs --date "$TODAY"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Commit the inbox
+        run: |
+          git config user.name "radar-sweep"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inbox
+          git diff --cached --quiet || git commit -m "inbox: candidates for $TODAY"
+          git push

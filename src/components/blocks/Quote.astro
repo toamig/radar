@@ -1,0 +1,9 @@
+---
+import Inline from '../Inline.astro';
+const { block: b } = Astro.props;
+---
+<figure class="quote">
+  <blockquote><p>{b.quote}</p></blockquote>
+  <figcaption><b>{b.speaker}</b>{b.role && <>, {b.role}</>}</figcaption>
+</figure>
+<p class="ctx"><Inline text={b.context} /></p>

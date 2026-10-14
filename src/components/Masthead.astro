@@ -1,0 +1,13 @@
+---
+import { BASE, formatDate } from '../kit/data';
+interface Props { date: string; number: number; minutes?: number; sub?: string }
+const { date, number, minutes, sub } = Astro.props;
+---
+<header class="mast">
+  <p class="mast-word display overprint register" data-text="Radar"><a href={BASE}>Radar</a></p>
+  <div class="mast-meta">
+    <span class="mast-no">No. {number}</span>
+    <span class="mast-date">{formatDate(date)}</span>
+    <span class="mast-sub">{sub ?? `Game dev and AI engineering, ${minutes} minute read`}</span>
+  </div>
+</header>

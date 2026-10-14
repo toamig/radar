@@ -1,0 +1,8 @@
+---
+import Inline from '../Inline.astro';
+import Paras from '../Paras.astro';
+const { block: b } = Astro.props;
+---
+<p class="b-lead"><Inline text={b.intro} /></p>
+<div class="codebox" data-lang={b.lang}><pre><code>{b.code}</code></pre></div>
+<Paras items={b.explain} />

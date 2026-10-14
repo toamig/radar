@@ -1,0 +1,8 @@
+---
+import Inline from '../Inline.astro';
+const { block: b } = Astro.props;
+---
+<p class="b-lead"><Inline text={b.intro} /></p>
+<ol class="tl">
+  {b.events.map((e) => <li><time>{e.when}</time><p><Inline text={e.text} /></p></li>)}
+</ol>

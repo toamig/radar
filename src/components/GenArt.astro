@@ -1,0 +1,82 @@
+---
+// Generated print art for any block without hand-made art. Seeded from the
+// block id, so a story keeps its picture across rebuilds, and drawn in the
+// day's two inks with multiply so overlaps mix like a two-drum riso print.
+interface Props { seed: string; a: string; b: string; plate: string; kind?: string }
+const { seed, a, b, plate } = Astro.props;
+
+let h = 2166136261;
+for (const ch of seed) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+const rand = () => {
+  h ^= h << 13; h ^= h >>> 17; h ^= h << 5;
+  return ((h >>> 0) % 10000) / 10000;
+};
+const kinds = ['orbits', 'signal', 'sweep', 'stack', 'scatter'];
+const kind = Astro.props.kind ?? kinds[Math.floor(rand() * kinds.length)];
+const id = `g${(h >>> 0).toString(36)}`;
+const W = 400, H = 300;
+const r = (lo: number, hi: number) => lo + rand() * (hi - lo);
+
+type Shape = { el: string; attrs: Record<string, string | number>; fill: string };
+const shapes: Shape[] = [];
+const ha = `url(#${id}a)`, hb = `url(#${id}b)`;
+const fills = [a, b, ha, hb];
+const pickFill = () => fills[Math.floor(rand() * fills.length)];
+
+if (kind === 'orbits') {
+  for (let i = 0; i < 3; i++) shapes.push({ el: 'circle', attrs: { cx: r(90, 310), cy: r(70, 230), r: r(60, 130) }, fill: [a, hb, b][i] });
+} else if (kind === 'signal') {
+  const n = 9 + Math.floor(rand() * 6);
+  const bw = W / n;
+  for (let i = 0; i < n; i++) {
+    const bh = r(30, 250);
+    shapes.push({ el: 'rect', attrs: { x: i * bw + 2, y: H - bh, width: bw - 6, height: bh }, fill: i % 3 === 0 ? b : ha });
+  }
+  shapes.push({ el: 'circle', attrs: { cx: r(80, 320), cy: r(60, 140), r: r(40, 70) }, fill: b });
+} else if (kind === 'sweep') {
+  const cx = r(120, 280), cy = r(150, 260);
+  for (let i = 5; i > 0; i--) shapes.push({ el: 'circle', attrs: { cx, cy, r: i * 42 }, fill: i % 2 ? ha : 'none' });
+  const ang = r(0, Math.PI * 2);
+  const x2 = cx + Math.cos(ang) * 260, y2 = cy + Math.sin(ang) * 260;
+  const x3 = cx + Math.cos(ang + 0.55) * 260, y3 = cy + Math.sin(ang + 0.55) * 260;
+  shapes.push({ el: 'path', attrs: { d: `M${cx} ${cy}L${x2} ${y2}L${x3} ${y3}Z` }, fill: b });
+} else if (kind === 'stack') {
+  let y = r(10, 40);
+  while (y < H) {
+    const hh = r(18, 60);
+    shapes.push({ el: 'rect', attrs: { x: r(-40, 120), y, width: r(160, 380), height: hh }, fill: pickFill() });
+    y += hh + r(4, 22);
+  }
+} else {
+  for (let i = 0; i < 26; i++) {
+    const s = r(10, 60);
+    shapes.push(rand() > 0.5
+      ? { el: 'circle', attrs: { cx: r(0, W), cy: r(0, H), r: s / 2 }, fill: pickFill() }
+      : { el: 'rect', attrs: { x: r(0, W), y: r(0, H), width: s, height: s, transform: `rotate(${r(0, 90)})` }, fill: pickFill() });
+  }
+}
+const off = r(3, 7);
+---
+<svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true">
+  <defs>
+    <pattern id={`${id}a`} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform={`rotate(${Math.round(r(0, 45))})`}>
+      <circle cx="3.5" cy="3.5" r="2.1" fill={a} />
+    </pattern>
+    <pattern id={`${id}b`} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(15)">
+      <circle cx="3" cy="3" r="1.8" fill={b} />
+    </pattern>
+  </defs>
+  <rect width={W} height={H} fill={plate} />
+  <g style="mix-blend-mode:multiply">
+    {shapes.map((s) => {
+      const El = s.el as any;
+      return <El {...s.attrs} fill={s.fill} stroke={s.fill === 'none' ? a : 'none'} stroke-width={s.fill === 'none' ? 3 : 0} style="mix-blend-mode:multiply" />;
+    })}
+  </g>
+  <g transform={`translate(${off} ${-off / 2})`} style="mix-blend-mode:multiply" opacity=".9">
+    {shapes.slice(0, 1).map((s) => {
+      const El = s.el as any;
+      return <El {...s.attrs} fill="none" stroke={b} stroke-width="3" />;
+    })}
+  </g>
+</svg>

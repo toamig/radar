@@ -1,0 +1,16 @@
+---
+import Inline from '../Inline.astro';
+const { block: b } = Astro.props;
+const max = Math.max(...b.series.map((s) => Math.abs(s.value)));
+const fmt = (v: number) => (Number.isInteger(v) ? v.toLocaleString('en-US') : v.toLocaleString('en-US', { maximumFractionDigits: 2 }));
+---
+<p class="b-lead"><Inline text={b.intro} /></p>
+<div class="chart" role="img" aria-label={`${b.title}: ${b.series.map((s) => `${s.label} ${fmt(s.value)} ${b.unit}`).join(', ')}`}>
+  {b.series.map((s, i) => (
+    <div class:list={['bar', { hl: s.highlight }]} style={`--w:${Math.max(2, (Math.abs(s.value) / max) * 64)}%;--i:${i}`} aria-hidden="true">
+      <span class="bar-label">{s.label}</span>
+      <span class="bar-track"><span class="bar-fill"></span><span class="bar-val">{fmt(s.value)} {b.unit}</span></span>
+    </div>
+  ))}
+</div>
+{b.note && <p class="chart-note"><Inline text={b.note} /></p>}

@@ -1,0 +1,18 @@
+---
+import Lane from './Lane.astro';
+import Inline from './Inline.astro';
+const { items } = Astro.props;
+---
+{items.length > 0 && (
+  <section class="ticker" aria-labelledby="also">
+    <h2 id="also" class="display">Also moving</h2>
+    <ul>
+      {items.map((it) => (
+        <li>
+          <Lane lane={it.lane} label={false} />
+          <span><a href={it.url} rel="noopener" target="_blank"><Inline text={it.text} /></a><span class="src">{it.source}</span></span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

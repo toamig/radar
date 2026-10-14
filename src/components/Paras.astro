@@ -1,0 +1,7 @@
+---
+import Inline from './Inline.astro';
+interface Props { items: string[]; class?: string }
+---
+<div class={Astro.props.class ?? 'b-body'}>
+  {Astro.props.items.map((p) => <p><Inline text={p} /></p>)}
+</div>

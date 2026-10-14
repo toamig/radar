@@ -1,0 +1,10 @@
+---
+// A one-off piece built for one story. It runs in a sandboxed frame without
+// allow-same-origin, so its script gets an opaque origin: it cannot read this
+// page, the rest of toamig.com, cookies or storage.
+import Paras from '../Paras.astro';
+import { asset } from '../../kit/data';
+const { block: b } = Astro.props;
+---
+<Paras items={b.body} />
+<iframe class="bespoke-frame" src={asset(b.src)} title={b.title} height={b.height} loading="lazy" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>

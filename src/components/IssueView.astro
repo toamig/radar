@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import Masthead from './Masthead.astro';
+import Lane from './Lane.astro';
+import Inline from './Inline.astro';
+import Block from './Block.astro';
+import Ticker from './Ticker.astro';
+import WeekStrip from './WeekStrip.astro';
+import Colophon from './Colophon.astro';
+import { readingMinutes, type IssueData } from '../kit/data';
+import { palette } from '../kit/palette';
+import { plain } from '../kit/inline';
+interface Props { issue: IssueData; path: string }
+const { issue, path } = Astro.props;
+const pal = palette(issue.theme);
+---
+<Base title={`Radar No. ${issue.number}: ${issue.title}`} description={plain(issue.dek)} theme={issue.theme} path={path}>
+  <Masthead date={issue.date} number={issue.number} minutes={readingMinutes(issue)} />
+  <section class="day" aria-labelledby="day-title">
+    <div>
+      <h1 id="day-title" class="day-title display">{issue.title}</h1>
+      <p class="day-dek"><Inline text={issue.dek} /></p>
+    </div>
+    <div>
+      <p class="short-head">The short version</p>
+      <ul class="short">
+        {issue.tldr.map((t) => <li><Lane lane={t.lane} label={false} /><span><Inline text={t.text} /></span></li>)}
+      </ul>
+    </div>
+  </section>
+  <main class="grid">
+    {issue.blocks.map((b) => <Block block={b} date={issue.date} palette={pal} />)}
+  </main>
+  <Ticker items={issue.ticker} />
+  <WeekStrip current={issue.date} />
+  <Colophon theme={issue.theme} note={issue.note} />
+</Base>

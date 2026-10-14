@@ -1,0 +1,53 @@
+---
+// One block of an issue: the shared frame (ink bar, lane, title, why it
+// matters, sources, tune links) around the format-specific body.
+import Inline from './Inline.astro';
+import Lane from './Lane.astro';
+import Hero from './blocks/Hero.astro';
+import Spotlight from './blocks/Spotlight.astro';
+import Steps from './blocks/Steps.astro';
+import Compare from './blocks/Compare.astro';
+import Stat from './blocks/Stat.astro';
+import Chart from './blocks/Chart.astro';
+import Timeline from './blocks/Timeline.astro';
+import Quote from './blocks/Quote.astro';
+import Code from './blocks/Code.astro';
+import Concept from './blocks/Concept.astro';
+import Video from './blocks/Video.astro';
+import List from './blocks/List.astro';
+import Bespoke from './blocks/Bespoke.astro';
+import type { BlockData } from '../kit/data';
+import type { Palette } from '../kit/palette';
+import { tuneUrl } from '../kit/site';
+
+interface Props { block: BlockData; date: string; palette: Palette }
+const { block, date, palette } = Astro.props;
+const b = block as any;
+const plate = false;
+const Body = {
+  hero: Hero, spotlight: Spotlight, steps: Steps, compare: Compare, stat: Stat, chart: Chart,
+  timeline: Timeline, quote: Quote, code: Code, concept: Concept, video: Video, list: List, bespoke: Bespoke,
+}[block.format];
+const ownTitle = block.format === 'hero' || block.format === 'spotlight';
+---
+<article
+  id={block.id}
+  class:list={['block', `b-${block.size}`, `f-${block.format}`, { plate, hero: block.format === 'hero' }]}
+  data-ink={block.ink}
+  data-imp={block.importance}
+  data-texture={block.texture}
+  data-variant={b.variant}
+>
+  <div class="b-top"><Lane lane={block.lane} /></div>
+  {!ownTitle && <h3 class="b-title display"><Inline text={block.title} /></h3>}
+  <Body block={b} date={date} palette={palette} />
+  <p class="why"><b>Why it matters</b><Inline text={block.why} /></p>
+  <p class="srcs">
+    <span>Sources</span>
+    {block.sources.map((s) => <a href={s.url} rel="noopener" target="_blank">{s.label}</a>)}
+  </p>
+  <p class="tune">
+    <a href={tuneUrl('more', date, block)} target="_blank" rel="noopener">More like this</a>
+    <a href={tuneUrl('less', date, block)} target="_blank" rel="noopener">Less like this</a>
+  </p>
+</article>

@@ -1,0 +1,24 @@
+---
+import Inline from '../Inline.astro';
+const { block: b } = Astro.props;
+---
+<p class="b-lead"><Inline text={b.intro} /></p>
+<table class="cmp">
+  <thead>
+    <tr>
+      <td></td>
+      <th scope="col"><span style="background:var(--ink-alt)"></span>{b.left}</th>
+      <th scope="col"><span style="background:var(--ink)"></span>{b.right}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {b.rows.map((r) => (
+      <tr>
+        <th scope="row">{r.aspect}</th>
+        <td data-label={b.left}><Inline text={r.left} /></td>
+        <td data-label={b.right}><Inline text={r.right} /></td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+{b.verdict && <p class="verdict"><Inline text={b.verdict} /></p>}

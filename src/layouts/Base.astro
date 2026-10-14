@@ -1,0 +1,85 @@
+---
+import '@fontsource-variable/literata/opsz.css';
+import '@fontsource-variable/literata/opsz-italic.css';
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource-variable/big-shoulders-display';
+import '@fontsource-variable/anybody/wdth.css';
+import '@fontsource-variable/bricolage-grotesque';
+import '../styles/radar.css';
+import { resolveTheme } from '../kit/catalog.mjs';
+import { BASE } from '../kit/data';
+
+interface Props {
+  title: string;
+  description: string;
+  theme: Record<string, unknown>;
+  path?: string;
+}
+const { title, description, theme, path = '' } = Astro.props;
+const t = resolveTheme(theme);
+const vars = (s: typeof t.day) => `
+  --paper:${s.paper};--text:${s.text};--muted:${s.muted};--rule:${s.rule};
+  --ink-a:${s.inkA};--ink-b:${s.inkB};--display-a:${s.displayA};--display-b:${s.displayB};
+  --tint-a:${s.tintA};--tint-b:${s.tintB};`;
+const typeVars = `--display-font:${t.type.display};--display-weight:${t.type.displayWeight};
+  --display-stretch:${t.type.displayStretch};--display-tracking:${t.type.tracking};
+  --display-case:${t.type.caseUpper ? 'uppercase' : 'none'};--plate:${t.plate};`;
+// Values come from the catalog tables, never from issue text.
+const css = `:root{${vars(t.day)}${typeVars}}
+@media (prefers-color-scheme: dark){:root:not([data-theme='light']){${vars(t.night)}}}
+:root[data-theme='dark']{${vars(t.night)}}`;
+const canonical = new URL(`${BASE}${path}`, Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content={t.day.paper} />
+    <link rel="icon" href={`${BASE}favicon.svg`} type="image/svg+xml" />
+    <style set:html={css}></style>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      try {
+        var q = new URLSearchParams(location.search);
+        if (q.has('tune')) localStorage.setItem('radar-tune', q.get('tune') === '0' ? '0' : '1');
+        if (localStorage.getItem('radar-tune') === '1') document.documentElement.classList.add('tuning');
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div class="page">
+      <slot />
+    </div>
+    <script>
+      // Charts draw their bars when they scroll into view.
+      const charts = document.querySelectorAll('.chart');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        }, { threshold: 0.3 });
+        charts.forEach((c) => io.observe(c));
+      } else charts.forEach((c) => c.classList.add('in'));
+
+      // Videos load only when asked, from the no-cookie domain.
+      document.querySelectorAll<HTMLButtonElement>('.vid button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const box = btn.parentElement!;
+          const f = document.createElement('iframe');
+          f.src = `https://www.youtube-nocookie.com/embed/${box.dataset.id}?autoplay=1`;
+          f.allow = 'autoplay; encrypted-media; picture-in-picture';
+          f.allowFullscreen = true;
+          f.title = box.dataset.title ?? 'Video';
+          box.replaceChildren(f);
+        });
+      });
+    </script>
+  </body>
+</html>
