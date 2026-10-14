@@ -815,5 +815,102 @@
         "fit": "contain"
       }
     }
+  ],
+  "sparks": [
+    {
+      "id": "spark-arc-raiders",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "ARC Raiders: Frozen Trail",
+      "where": "Steam",
+      "signal": "Up 43 places to #9 in Steam's most played this week, after averaging about 21k players in September (Steam charts, SteamDB via IXBT Games)",
+      "hook": "One big themed update after six quiet months: a vertical map, \"Dynamic Loot Zones\" whose value changes every raid, a boardable frigate and a buildable outpost.",
+      "borrow": "Rerolling loot value per zone each session pushes players off memorized routes, a cheap way to keep a fixed map fresh. One large drop wins back lapsed players better than a steady trickle.",
+      "url": "https://store.steampowered.com/app/1808500/ARC_Raiders/",
+      "image": {
+        "src": "img/2026-10-14/spark-arc-raiders.webp",
+        "alt": "A raider crouching behind a wrecked car while a giant red-eyed machine walker towers over the road",
+        "credit": "Embark Studios on Steam",
+        "creditUrl": "https://store.steampowered.com/app/1808500/ARC_Raiders/",
+        "treatment": "duotone",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "spark-left-left-left",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Left! Left! LEFT!",
+      "where": "Steam and TikTok",
+      "signal": "+133k wishlists in one week, #2 on GameDiscoverCo's trending unreleased Steam games for October 5 to 12",
+      "hook": "Two-player co-op rally where the driver gets no map and the navigator holds a physical tablet they can drop mid-corner. The challenge is the shouting.",
+      "borrow": "Split information from control: when one player sees and the other acts, the voice chat becomes the content and the clips sell the game. Making the UI a physical object you can fumble is cheap comedy.",
+      "url": "https://store.steampowered.com/app/5362020/Left_Left_LEFT/",
+      "image": {
+        "src": "img/2026-10-14/spark-left-left-left.webp",
+        "alt": "First-person view from a low-poly rally car on a forest road, the navigator's orange tablet showing the route",
+        "credit": "Left! Left! LEFT! on Steam",
+        "creditUrl": "https://store.steampowered.com/app/5362020/Left_Left_LEFT/",
+        "treatment": "natural",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "spark-scam-with-friends",
+      "lane": "both",
+      "kind": "game",
+      "title": "Scam With Your Friends",
+      "where": "Steam",
+      "signal": "#1 trending unreleased game on Steam for September 28 to October 5 and still #3 a week later with +120k wishlists (GameDiscoverCo); Early Access listed for October 15",
+      "hook": "A co-op \"scam call center\" sim where you talk out loud to LLM-driven victims whose trust meter rises and falls with what you say.",
+      "borrow": "Give LLM characters one visible number to move: it turns open chat into a readable mechanic with wins and losses. Persona prompts in JSON make a modding surface worth copying in any AI NPC tool.",
+      "url": "https://store.steampowered.com/app/4954910/Scam_With_Your_Friends/",
+      "image": {
+        "src": "img/2026-10-14/spark-scam-with-friends.webp",
+        "alt": "A fake desktop with a phone window showing a grandmother caller at 65% trusting, a form, a +$250 popup and a co-op player on webcam",
+        "credit": "JakeHub and Metater on Steam",
+        "creditUrl": "https://store.steampowered.com/app/4954910/Scam_With_Your_Friends/",
+        "treatment": "natural",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "spark-ps2-web-recomp",
+      "lane": "both",
+      "kind": "technique",
+      "title": "PS2 games recompiled to run in a browser",
+      "where": "Hacker News and GitHub",
+      "signal": "310 points and 158 comments on Show HN; 854 stars on GitHub in about two days",
+      "hook": "Game code is translated ahead of time to C++ and compiled to WebAssembly on a reimplemented PS2 layer drawn with WebGPU. The README reports God of War II at 60fps in Chrome.",
+      "borrow": "WebGPU plus WASM can now run heavy 3D in a browser tab at full speed, which raises the ceiling for web games. The method (translate ahead of time, then instrumented runs to catch what analysis missed) is a good pattern for AI-assisted porting.",
+      "url": "https://github.com/snuri00/ps2-web-recomp",
+      "image": {
+        "src": "img/2026-10-14/spark-ps2-web-recomp.webp",
+        "alt": "The Gran Turismo 4 title screen running inside a web browser",
+        "credit": "ps2-web-recomp README",
+        "creditUrl": "https://github.com/snuri00/ps2-web-recomp",
+        "treatment": "natural",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "spark-dressmaker",
+      "lane": "gamedev",
+      "kind": "devlog",
+      "title": "How Dressmaker went from a clip to 500k sales",
+      "where": "TikTok, itch.io, Steam",
+      "signal": "An estimated 500k+ Steam units in about two weeks; prototype clips passed 600k views before release (GameDiscoverCo deep dive)",
+      "hook": "Sewing minigames built on real sewing technique, not reskinned fashion menus. Viewers kept asking what the game was called.",
+      "borrow": "Post the core verb as a short clip before you have a store page; \"what is this called?\" comments are validation. Then ship a free itch.io prototype as a second test. A real craft, simplified, feels fresher than an abstract minigame.",
+      "url": "https://newsletter.gamediscover.co/p/how-dressmaker-became-ready-to-wear",
+      "image": {
+        "src": "img/2026-10-14/spark-dressmaker.webp",
+        "alt": "A hand-painted Victorian boutique where a customer in a magenta coat approves her dress beside a sleeping cat",
+        "credit": "Free Lives on Steam",
+        "creditUrl": "https://store.steampowered.com/app/4019220/Dressmaker/",
+        "treatment": "natural",
+        "fit": "cover"
+      }
+    }
   ]
 }

@@ -427,6 +427,15 @@
       "url": "https://www.reddit.com/r/Unity3D/top/.rss?t=day",
       "lane": "gamedev",
       "weight": 1
+    },
+    {
+      "name": "GameDiscoverCo",
+      "kind": "rss",
+      "url": "https://newsletter.gamediscover.co/feed",
+      "lane": "gamedev",
+      "weight": 3,
+      "section": "trend",
+      "windowHours": 168
     }
   ]
 }

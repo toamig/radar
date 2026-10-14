@@ -208,7 +208,7 @@ export const Spark = z.object({
   /** Where it is happening: Steam, itch.io, YouTube, X, Reddit, TikTok, Hacker News... */
   where: text(40),
   /** The evidence it is rising, with a number when there is one. */
-  signal: text(140),
+  signal: text(200),
   /** The idea in one line: what makes it catch. */
   hook: text(240),
   /** What the reader could take from it for their own work. */

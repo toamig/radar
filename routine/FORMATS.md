@@ -118,6 +118,8 @@ downloads one, re-encodes it to `public/img/<date>/<slug>.webp` and writes a pre
 | `borrow` | What the reader could take from it for their own games, plugins or tools |
 | `image` | Strongly preferred: the game's screenshot or the video still |
 
+Three or six sparks fill the rows on wide screens; four or five leave a gap.
+
 ## The lab
 
 `lab` items: `{ id, lane, kind, title, headline, authors, where, date, problem, idea, result, useIt, maturity, links, image }`.

@@ -42,4 +42,4 @@
 .spark-signal::before { content: ''; flex: none; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid var(--ink); transform: translateY(-1px); }
 .spark-hook { margin: 0 0 10px; font-size: .97rem; line-height: 1.5; }
 .spark-borrow { margin-top: auto !important; padding-top: 10px; border-top: 1px solid var(--rule); font-size: .93rem; line-height: 1.5; }
-.spark-borrow b { font-weight: 700; }
+.spark-borrow b { font-weight: 700; margin-right: .35em; }
