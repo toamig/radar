@@ -18,6 +18,8 @@ disagree, the schema wins and this file is wrong.
 | `tldr` | 3 to 5 `{ text, lane }` lines: the whole issue in thirty seconds. |
 | `blocks` | 4 to 14 blocks. The first is always the hero. 9 to 12 is the sweet spot. |
 | `ticker` | Up to 14 one-line briefs `{ text, lane, url, source }` for "Also moving". |
+| `sparks` | 3 to 6 rising games, concepts and techniques (see Sparks). Shown after the grid. |
+| `lab` | 1 to 3 research results (see The lab). Shown after Sparks. |
 | `note` | Optional colophon line about how the day was put together. |
 
 ## Inline text
@@ -40,6 +42,7 @@ one phrase a skimming reader must not miss.
 | `title` | At most 120 characters. Sentence case; the poster and condensed type sets uppercase it visually. |
 | `why` | Why it matters to the reader, 1 or 2 sentences. Specific. This is the most-read line in every block. |
 | `sources` | 1 to 5 `{ label, url }`, https only, primary source first. |
+| `image` | Optional real picture (see Pictures). Hero, spotlight and concept use it in their visual slot; every other format shows it under the title. |
 
 ### Rows
 
@@ -66,7 +69,72 @@ Choose by what the reader needs to learn, not by what is easiest to write.
 | `concept` | An idea to understand: a technique, a term, an architecture. | `plain` (the idea in one sentence), `body` 1-3, `points` up to 5, `art` optional | `half`, `wide` |
 | `video` | An official or genuinely useful video. | `youtubeId` (11 characters), `body` 1-2 | `half`, `wide` |
 | `list` | Several related small items: release notes, a roundup. | `intro`, `items` 2-6 `{ title, text, url }` | `wide`, `full` |
+| `diagram` | How something works: a pipeline, an architecture, a loop, a system and its parts. Prefer it to prose and to drawn art whenever the story has structure. | `layout` (`flow` steps left to right, `layers` a stack top to bottom, `hub` one center and its parts, `cycle` a loop), `intro`, `nodes` 2-8 `{ label, note, key }` (mark the one that matters with `key`), `links` labels for the arrows in order (flow, cycle), `caption` | `half`, `wide`, `full` |
 | `bespoke` | An interactive piece built for one story when interaction teaches more than prose. At most one a day. | `src`, `height` (240-900), `body` 1-2 | `full`, `wide` |
+
+## Pictures
+
+Every issue should feel illustrated by the stories themselves. In order of preference:
+
+1. **A real image** (`image` on the block): the thing itself. A product or editor
+   screenshot, a game's official screenshot, a paper's figure, a chart from the source,
+   a photo from the event, a video still.
+2. **A diagram** (`diagram` format) when the story is about how something works.
+3. **Drawn SVG art** (`art`) for an idea no photo shows.
+4. Generated print art is the fallback, never the plan. The hero must have 1, 2 or 3.
+
+Getting images: `node scripts/fetch-image.mjs --list <article-url>` lists the page's
+share image and the images inside the article; `node scripts/fetch-image.mjs <image-or-page-url> <date> <slug>`
+downloads one, re-encodes it to `public/img/<date>/<slug>.webp` and writes a preview to
+`.cache/preview/<slug>.png`. **Look at every preview before using it.**
+
+- Reject: logos and brand cards, generic stock photos, author headshots, thumbnails with
+  clickbait text burned in ("X DUMPS Y"), images too small or blurry to read.
+- Good sources: the article's own figures, vendor blog and press images, official game
+  screenshots from Steam (`https://store.steampowered.com/api/appdetails?appids=<id>&filters=screenshots`,
+  use a `path_full` URL), itch.io page screenshots, arXiv figures (`https://arxiv.org/html/<id>`
+  pages link them), project pages, YouTube stills (`https://i.ytimg.com/vi/<id>/maxresdefault.jpg`).
+- `image` fields: `src`, `alt` (what the picture shows, for someone who cannot see it),
+  `credit` (publisher, studio or authors, plus the licence when it is a paper), `creditUrl`
+  (the page it came from), `treatment`, `fit`.
+- `treatment: "duotone"` prints photos and key art in the day's inks: use it for photos of
+  people, places, products and game key art. Keep `"natural"` for screenshots, charts, paper
+  figures and anything with text or data in it.
+- `fit: "contain"` for charts and figures that must show whole; `"cover"` for photos and
+  screenshots that can crop.
+- Credit every image and link to where it came from. Use the image to illustrate the story
+  it came from, never decoratively elsewhere.
+
+## Sparks
+
+`sparks` items: `{ id, lane, kind, title, where, signal, hook, borrow, url, image }`.
+
+| Field | What it is |
+|---|---|
+| `kind` | `game`, `concept`, `devlog`, `technique`, `tool` or `experiment` |
+| `where` | Where it is happening: Steam, itch.io, YouTube, X, TikTok, Reddit, Hacker News |
+| `signal` | The evidence it is rising, with a number: "up 43 places to #9 in Steam's most played", "2.1M views in four days", "top of r/IndieDev this week". Name the source. |
+| `hook` | What makes it catch, in one line: the mechanic, the twist, the presentation |
+| `borrow` | What the reader could take from it for their own games, plugins or tools |
+| `image` | Strongly preferred: the game's screenshot or the video still |
+
+## The lab
+
+`lab` items: `{ id, lane, kind, title, headline, authors, where, date, problem, idea, result, useIt, maturity, links, image }`.
+
+| Field | What it is |
+|---|---|
+| `kind` | `paper`, `preprint`, `thesis`, `report` or `talk` |
+| `title` | The real title, as published |
+| `headline` | The finding in everyday words, the line a developer would repeat |
+| `authors` | First three authors, "et al.", and the institutions in parentheses |
+| `where` | Venue or "arXiv preprint", "PhD thesis, University of X", "NVIDIA Research" |
+| `problem`, `idea`, `result`, `useIt` | Plain words. `result` has the numbers and what they beat. `useIt` is concrete: what to try, build or watch for. |
+| `maturity` | `idea`, `prototype`, `code` (code released) or `shipping` (in a product) |
+| `links` | Paper first, then code and project page |
+| `image` | The paper's teaser or main figure, `natural`, `contain` |
+
+Read the paper itself (the arXiv abstract and HTML full text, or the PDF), not a summary of it.
 
 ## Theme
 

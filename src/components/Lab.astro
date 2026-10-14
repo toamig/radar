@@ -1,0 +1,49 @@
+---
+// The lab: research results worth knowing, explained as problem, idea,
+// result and what to do with it, with how close each one is to real use.
+import Inline from './Inline.astro';
+import Lane from './Lane.astro';
+import Media from './Media.astro';
+import { formatDate } from '../kit/data';
+const { papers } = Astro.props;
+const STAGES = [
+  { id: 'idea', label: 'Idea' },
+  { id: 'prototype', label: 'Prototype' },
+  { id: 'code', label: 'Code released' },
+  { id: 'shipping', label: 'Shipping' },
+];
+const KIND = { paper: 'Paper', preprint: 'Preprint', thesis: 'Thesis', report: 'Lab report', talk: 'Talk' };
+---
+{papers.length > 0 && (
+  <section class="lab" aria-labelledby="lab-h">
+    <header class="lab-head">
+      <h2 id="lab-h" class="display">The lab</h2>
+      <p>Research from the front line, in plain words: what it solves, how, and what you could do with it.</p>
+    </header>
+    <div class:list={['lab-grid', `n-${papers.length}`]}>
+      {papers.map((p, i) => {
+        const level = STAGES.findIndex((s) => s.id === p.maturity);
+        return (
+          <article id={p.id} class:list={['paper', { lead: i === 0 && papers.length !== 2 }]} data-ink={i % 2 ? 'b' : 'a'}>
+            <p class="paper-meta"><Lane lane={p.lane} label={false} /><span class="kind">{KIND[p.kind]}</span><span class="where">{p.where}</span><time datetime={p.date}>{formatDate(p.date, { day: 'numeric', month: 'short', year: 'numeric' })}</time></p>
+            <h3 class="paper-headline display"><Inline text={p.headline} /></h3>
+            <p class="paper-title"><cite>{p.title}</cite><span>{p.authors}</span></p>
+            <div class:list={["paper-body", { "has-fig": !!p.image }]}>
+              {p.image && <Media image={p.image} ink={i % 2 ? 'b' : 'a'} class="paper-fig" />}
+              <dl class="paper-qa">
+                <div><dt>The problem</dt><dd><Inline text={p.problem} /></dd></div>
+                <div><dt>The idea</dt><dd><Inline text={p.idea} /></dd></div>
+                <div><dt>The result</dt><dd><Inline text={p.result} /></dd></div>
+                <div class="use"><dt>Use it</dt><dd><Inline text={p.useIt} /></dd></div>
+              </dl>
+            </div>
+            <ol class="maturity" aria-label={`Maturity: ${STAGES[level].label}`}>
+              {STAGES.map((s, k) => <li class:list={{ on: k <= level, here: k === level }}>{s.label}</li>)}
+            </ol>
+            <p class="srcs"><span>Read</span>{p.links.map((l) => <a href={l.url} rel="noopener" target="_blank">{l.label}</a>)}</p>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+)}

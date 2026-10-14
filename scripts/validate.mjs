@@ -50,6 +50,12 @@ function checkFile(rel, kind) {
   if (!existsSync(p)) return err(`${kind} ${rel} is referenced but missing`);
   const size = statSync(p).size;
   const src = readFileSync(p, 'utf8');
+  if (kind === 'image') {
+    if (size > 450_000) err(`image ${rel} is ${size} bytes; re-run scripts/fetch-image.mjs, which keeps images under 400 KB`);
+    const head = readFileSync(p).subarray(0, 12);
+    if (head.toString('latin1', 0, 4) !== 'RIFF' || head.toString('latin1', 8, 12) !== 'WEBP') err(`image ${rel} is not a WebP made by scripts/fetch-image.mjs`);
+    return;
+  }
   if (kind === 'art') {
     if (size > 80_000) err(`art ${rel} is ${size} bytes; keep SVG art under 80 KB`);
     if (!/^\s*(<\?xml[^>]*>\s*)?<svg[\s>]/i.test(src)) err(`art ${rel} must be a single <svg> document`);
@@ -95,7 +101,16 @@ for (const f of list(issueDir, '.json')) {
   for (const b of issue.blocks) {
     if (b.art) checkFile(b.art, 'art');
     if (b.src) checkFile(b.src, 'bespoke');
+    if (b.image) checkFile(b.image.src, 'image');
   }
+  for (const paper of issue.lab) if (paper.image) checkFile(paper.image.src, 'image');
+  for (const spark of issue.sparks) if (spark.image) checkFile(spark.image.src, 'image');
+  if (issue.sparks.length < 3) warn(`${issue.date}: ${issue.sparks.length} sparks; aim for 3 to 6 rising games, concepts or techniques`);
+  if (issue.lab.length === 0) warn(`${issue.date}: no lab entry today; the lab should carry 1 to 3 research results`);
+  const pictured = issue.blocks.filter((b) => b.image || b.art || b.format === 'diagram').length;
+  if (pictured < 3) warn(`${issue.date}: only ${pictured} blocks have a real image, drawn art or a diagram; aim for at least 4`);
+  const hero = issue.blocks[0];
+  if (hero && !hero.image && !hero.art) warn(`${issue.date}: the hero has no real image or drawn art, so it falls back to generated shapes`);
   checkRows(issue);
   const heroes = issue.blocks.filter((b) => b.format === 'hero').length;
   if (heroes > 1) err(`${issue.date}: only one hero per issue`);
@@ -141,12 +156,17 @@ for (const f of list(weekDir, '.json')) {
 }
 
 // ------------------------------------------------------------ orphans
-for (const folder of ['art', 'bespoke']) {
+for (const folder of ['art', 'bespoke', 'img']) {
   const dir = join(root, 'public', folder);
   if (!existsSync(dir)) continue;
   for (const day of readdirSync(dir)) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) continue;
-    const used = new Set(issues.find((i) => i.date === day)?.blocks.flatMap((b) => [b.art, b.src]).filter(Boolean) ?? []);
+    const issue = issues.find((i) => i.date === day);
+    const used = new Set([
+      ...(issue?.blocks.flatMap((b) => [b.art, b.src, b.image?.src]) ?? []),
+      ...(issue?.lab.map((p) => p.image?.src) ?? []),
+      ...(issue?.sparks.map((sp) => sp.image?.src) ?? []),
+    ].filter(Boolean));
     for (const f of readdirSync(join(dir, day))) if (!used.has(`${folder}/${day}/${f}`)) warn(`public/${folder}/${day}/${f} is not used by any block`);
   }
 }

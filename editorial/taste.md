@@ -26,6 +26,32 @@ step and the morning run both read it.
    adopting, MCP and agent tooling, evals, pricing and limits, security of agents,
    practitioners writing from real experience.
 
+## The lab: research
+
+The reader wants to be on the front line of the technology that matters, not just its
+press coverage. The lab carries 1 to 3 research results a day: papers, theses, lab
+reports and conference talks in game technology (rendering, animation, physics,
+procedural generation, game AI, tools) and in AI engineering (coding agents, agent
+reliability, evaluation, tool use, program synthesis).
+
+- Practical over impressive: it should change what someone could build or how they
+  work, now or within a year.
+- Credible: a known lab or venue, a clear method, numbers against a baseline. Released
+  code or a project page is a strong plus.
+- Explained for a developer, not a reviewer: the problem, the idea, the result, and what
+  to do with it.
+- Avoid incremental benchmark bumps, surveys, and anything whose only claim is "state of
+  the art" without a use.
+
+## Sparks: trends and ideas
+
+The reader wants to know what is catching on, to follow trends and feed their own
+creativity: games climbing on Steam or blowing up on itch.io, a mechanic or art style
+going viral on X, YouTube, TikTok or Reddit, a devlog everyone is sharing, an AI-made
+game or experiment people are talking about, a technique spreading among developers.
+3 to 6 sparks a day, each with the evidence it is rising and the idea worth borrowing.
+Skip pure hype and marketing with nothing to learn from.
+
 ## What earns a place
 
 - It changes how this reader works this week: a release, a setting, a technique,

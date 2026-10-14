@@ -6,12 +6,12 @@ const { block: b, palette } = Astro.props;
 const title = b.title;
 ---
 <div class="hero-wrap">
-  {b.variant !== 'split' && <Art class="hero-art" src={b.art} alt={b.artAlt} seed={b.id} palette={palette} ink={b.ink} />}
+  {b.variant !== 'split' && <Art class="hero-art" src={b.art} alt={b.artAlt} image={b.image} seed={b.id} palette={palette} ink={b.ink} eager />}
   <div class="hero-head">
     <h2 class="hero-title display overprint register" data-text={title}>{title}</h2>
     <p class="hero-take"><Inline text={b.takeaway} /></p>
   </div>
-  {b.variant === 'split' && <Art class="hero-art" src={b.art} alt={b.artAlt} seed={b.id} palette={palette} ink={b.ink} />}
+  {b.variant === 'split' && <Art class="hero-art" src={b.art} alt={b.artAlt} image={b.image} seed={b.id} palette={palette} ink={b.ink} eager />}
   <div class="hero-text">
     <Paras items={b.body} class="b-body hero-cols" />
     {b.stat && <p class="hero-stat"><span class="n display">{b.stat.value}</span><span class="l">{b.stat.label}</span></p>}

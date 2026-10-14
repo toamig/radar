@@ -6,7 +6,9 @@ import '@fontsource-variable/big-shoulders-display';
 import '@fontsource-variable/anybody/wdth.css';
 import '@fontsource-variable/bricolage-grotesque';
 import '../styles/radar.css';
-import { resolveTheme } from '../kit/catalog.mjs';
+import '../styles/kit-extras.css';
+import '../styles/sparks.css';
+import { resolveTheme, mix } from '../kit/catalog.mjs';
 import { BASE } from '../kit/data';
 
 interface Props {
@@ -28,6 +30,15 @@ const typeVars = `--display-font:${t.type.display};--display-weight:${t.type.dis
 const css = `:root{${vars(t.day)}${typeVars}}
 @media (prefers-color-scheme: dark){:root:not([data-theme='light']){${vars(t.night)}}}
 :root[data-theme='dark']{${vars(t.night)}}`;
+// Gradient maps that print photos in the day's inks: shadows in a deepened
+// ink, midtones in the other ink, highlights in the paper.
+const ramp = (hex: string) => [1, 3, 5].map((s) => parseInt(hex.slice(s, s + 2), 16) / 255);
+const duo = (dark: string, midInk: string) => {
+  const stops = [ramp(mix(dark, '#000000', 0.45)), ramp(midInk), ramp(t.plate)];
+  return [0, 1, 2].map((c) => stops.map((s) => s[c].toFixed(3)).join(' '));
+};
+const duoA = duo(t.day.inkA, t.day.inkB);
+const duoB = duo(t.day.inkB, t.day.inkA);
 const canonical = new URL(`${BASE}${path}`, Astro.site).href;
 ---
 <!doctype html>
@@ -55,6 +66,18 @@ const canonical = new URL(`${BASE}${path}`, Astro.site).href;
     </script>
   </head>
   <body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      {[['duo-a', duoA], ['duo-b', duoB]].map(([id, [r, g, bl]]) => (
+        <filter id={id as string} color-interpolation-filters="sRGB">
+          <feColorMatrix type="matrix" values="0.299 0.587 0.114 0 0  0.299 0.587 0.114 0 0  0.299 0.587 0.114 0 0  0 0 0 1 0" />
+          <feComponentTransfer>
+            <feFuncR type="table" tableValues={r} />
+            <feFuncG type="table" tableValues={g} />
+            <feFuncB type="table" tableValues={bl} />
+          </feComponentTransfer>
+        </filter>
+      ))}
+    </svg>
     <div class="page">
       <slot />
     </div>

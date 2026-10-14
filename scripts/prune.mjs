@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Retention: keep the newest 7 daily issues (with their art, bespoke pages and
-// inbox files) and the newest 4 weekly summaries. Everything older is deleted.
+// Retention: keep the newest 7 daily issues (with their art, images, bespoke pages
+// and inbox files) and the newest 4 weekly summaries. Everything older is deleted.
 import { readdirSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -22,7 +22,7 @@ const keep = new Set(dates.slice(0, KEEP_DAYS));
 const cutoff = [...keep].sort()[0] ?? '9999';
 
 for (const d of dates) if (!keep.has(d)) rm(join(issueDir, `${d}.json`));
-for (const folder of ['public/art', 'public/bespoke']) {
+for (const folder of ['public/art', 'public/bespoke', 'public/img']) {
   const dir = join(root, folder);
   for (const d of names(dir, /^\d{4}-\d{2}-\d{2}$/)) if (!keep.has(d)) rm(join(dir, d));
 }

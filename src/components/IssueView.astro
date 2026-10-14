@@ -5,6 +5,8 @@ import Lane from './Lane.astro';
 import Inline from './Inline.astro';
 import Block from './Block.astro';
 import Ticker from './Ticker.astro';
+import Lab from './Lab.astro';
+import Sparks from './Sparks.astro';
 import WeekStrip from './WeekStrip.astro';
 import Colophon from './Colophon.astro';
 import { readingMinutes, type IssueData } from '../kit/data';
@@ -31,6 +33,8 @@ const pal = palette(issue.theme);
   <main class="grid">
     {issue.blocks.map((b) => <Block block={b} date={issue.date} palette={pal} />)}
   </main>
+  <Sparks sparks={issue.sparks} />
+  <Lab papers={issue.lab} />
   <Ticker items={issue.ticker} />
   <WeekStrip current={issue.date} />
   <Colophon theme={issue.theme} note={issue.note} />

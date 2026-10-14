@@ -1,5 +1,5 @@
 {
-  "$comment": "Feeds the morning sweep reads. lane: gamedev | ai | mixed (mixed lets triage decide). weight 1-3 is how much a story from here counts before triage. kind: rss (RSS or Atom), hn (Hacker News via Algolia), github (a repo's releases). Add, remove or reweight freely; the run reports any source that fails.",
+  "$comment": "Feeds the morning sweep reads. section: news (main grid and ticker, default) | research (The lab) | trend (Sparks). lane: gamedev | ai | mixed (mixed lets triage decide). weight 1-3 is how much an item from here counts before triage. kind: rss (RSS or Atom), hn (Hacker News via Algolia; optional tags and query), github (a repo's releases), hfpapers (Hugging Face daily papers), openalex (recent theses for each query), steam (rising and most-wishlisted games). match: optional regex an item's title or summary must contain. windowHours overrides the global window for one source. Add, remove or reweight freely; the run reports any source that fails.",
   "windowHours": 48,
   "sources": [
     {
@@ -246,6 +246,187 @@
       "minPoints": 120,
       "lane": "mixed",
       "weight": 2
+    },
+    {
+      "name": "arXiv graphics",
+      "kind": "rss",
+      "url": "https://rss.arxiv.org/rss/cs.GR",
+      "lane": "gamedev",
+      "weight": 2,
+      "section": "research"
+    },
+    {
+      "name": "arXiv software engineering",
+      "kind": "rss",
+      "url": "https://rss.arxiv.org/rss/cs.SE",
+      "lane": "ai",
+      "weight": 2,
+      "section": "research",
+      "match": "agent|LLM|language model|code generation|program repair|coding"
+    },
+    {
+      "name": "arXiv AI",
+      "kind": "rss",
+      "url": "https://rss.arxiv.org/rss/cs.AI",
+      "lane": "mixed",
+      "weight": 1,
+      "section": "research",
+      "match": "game|gaming|player|level design|procedural|NPC|character|animation|motion|render|shader|ray trac|path trac|gaussian splat|nerf|physics|simulation|3D|mesh|texture|terrain|world model|interactive|coding agent|software engineering agent|tool use|MCP"
+    },
+    {
+      "name": "arXiv human-computer interaction",
+      "kind": "rss",
+      "url": "https://rss.arxiv.org/rss/cs.HC",
+      "lane": "mixed",
+      "weight": 1,
+      "section": "research",
+      "match": "game|player|designer|creative tool|developer|programming"
+    },
+    {
+      "name": "Hugging Face daily papers",
+      "kind": "hfpapers",
+      "lane": "mixed",
+      "weight": 2,
+      "section": "research",
+      "match": "game|gaming|player|level design|procedural|NPC|character|animation|motion|render|shader|ray trac|path trac|gaussian splat|nerf|physics|simulation|3D|mesh|texture|terrain|world model|interactive|agent|coding|code generation|software engineer|program|repository|SWE|tool use|tool call|MCP|LLM|language model|reasoning|eval|benchmark|prompt|context|retrieval"
+    },
+    {
+      "name": "Theses (OpenAlex)",
+      "kind": "openalex",
+      "lane": "mixed",
+      "weight": 1,
+      "section": "research",
+      "days": 45,
+      "queries": [
+        "video game",
+        "procedural content generation",
+        "real-time rendering",
+        "game artificial intelligence",
+        "large language model agents",
+        "automated program repair"
+      ]
+    },
+    {
+      "name": "Google DeepMind",
+      "kind": "rss",
+      "url": "https://deepmind.google/blog/rss.xml",
+      "lane": "ai",
+      "weight": 2,
+      "section": "research",
+      "windowHours": 168
+    },
+    {
+      "name": "NVIDIA Research",
+      "kind": "rss",
+      "url": "https://research.nvidia.com/rss.xml",
+      "lane": "gamedev",
+      "weight": 2,
+      "section": "research",
+      "windowHours": 168
+    },
+    {
+      "name": "Microsoft Research",
+      "kind": "rss",
+      "url": "https://www.microsoft.com/en-us/research/feed/",
+      "lane": "mixed",
+      "weight": 1,
+      "section": "research",
+      "windowHours": 168,
+      "match": "game|gaming|player|level design|procedural|NPC|character|animation|motion|render|shader|ray trac|path trac|gaussian splat|nerf|physics|simulation|3D|mesh|texture|terrain|world model|interactive|agent|coding|code generation|software engineer|program|repository|SWE|tool use|tool call|MCP|LLM|language model|reasoning|eval|benchmark|prompt|context|retrieval"
+    },
+    {
+      "name": "Berkeley AI Research",
+      "kind": "rss",
+      "url": "https://bair.berkeley.edu/blog/feed.xml",
+      "lane": "ai",
+      "weight": 1,
+      "section": "research",
+      "windowHours": 336
+    },
+    {
+      "name": "Steam (rising and wishlisted)",
+      "kind": "steam",
+      "lane": "gamedev",
+      "weight": 2,
+      "section": "trend",
+      "minClimb": 15
+    },
+    {
+      "name": "itch.io featured",
+      "kind": "rss",
+      "url": "https://itch.io/feed/featured.xml",
+      "lane": "gamedev",
+      "weight": 2,
+      "section": "trend",
+      "windowHours": 96
+    },
+    {
+      "name": "itch.io new and popular",
+      "kind": "rss",
+      "url": "https://itch.io/games/new-and-popular.xml",
+      "lane": "gamedev",
+      "weight": 2,
+      "section": "trend",
+      "windowHours": 168
+    },
+    {
+      "name": "Show HN games",
+      "kind": "hn",
+      "tags": "show_hn",
+      "query": "game",
+      "minPoints": 40,
+      "lane": "gamedev",
+      "weight": 2,
+      "section": "trend",
+      "match": "\\bgames?\\b|\\bplay(able|er)?\\b"
+    },
+    {
+      "name": "r/aigamedev",
+      "kind": "rss",
+      "url": "https://www.reddit.com/r/aigamedev/top/.rss?t=day",
+      "lane": "both",
+      "weight": 2,
+      "section": "trend"
+    },
+    {
+      "name": "r/IndieDev",
+      "kind": "rss",
+      "url": "https://www.reddit.com/r/IndieDev/top/.rss?t=day",
+      "lane": "gamedev",
+      "weight": 1,
+      "section": "trend"
+    },
+    {
+      "name": "r/indiegames",
+      "kind": "rss",
+      "url": "https://www.reddit.com/r/indiegames/top/.rss?t=day",
+      "lane": "gamedev",
+      "weight": 1,
+      "section": "trend"
+    },
+    {
+      "name": "r/proceduralgeneration",
+      "kind": "rss",
+      "url": "https://www.reddit.com/r/proceduralgeneration/top/.rss?t=week",
+      "lane": "gamedev",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 168
+    },
+    {
+      "name": "r/vibecoding",
+      "kind": "rss",
+      "url": "https://www.reddit.com/r/vibecoding/top/.rss?t=day",
+      "lane": "ai",
+      "weight": 1,
+      "section": "trend"
+    },
+    {
+      "name": "r/Unity3D",
+      "kind": "rss",
+      "url": "https://www.reddit.com/r/Unity3D/top/.rss?t=day",
+      "lane": "gamedev",
+      "weight": 1
     }
   ]
 }

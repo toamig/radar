@@ -1,0 +1,28 @@
+---
+// Sparks: what is rising right now, why it is catching, and the idea to borrow.
+import Inline from './Inline.astro';
+import Lane from './Lane.astro';
+import Media from './Media.astro';
+const { sparks } = Astro.props;
+const KIND = { game: 'Game', concept: 'Concept', devlog: 'Devlog', technique: 'Technique', tool: 'Tool', experiment: 'Experiment' };
+---
+{sparks.length > 0 && (
+  <section class="sparks" aria-labelledby="sparks-h">
+    <header class="sparks-head">
+      <h2 id="sparks-h" class="display overprint" data-text="Sparks">Sparks</h2>
+      <p>What is catching on right now, and the idea worth borrowing from each.</p>
+    </header>
+    <ul class="spark-list">
+      {sparks.map((s, i) => (
+        <li id={s.id} class="spark" data-ink={i % 2 ? 'b' : 'a'}>
+          {s.image && <Media image={s.image} ink={i % 2 ? 'b' : 'a'} class="spark-img" />}
+          <p class="spark-meta"><Lane lane={s.lane} label={false} /><span class="kind">{KIND[s.kind]}</span><span>{s.where}</span></p>
+          <h3 class="spark-title display"><a href={s.url} rel="noopener" target="_blank">{s.title}</a></h3>
+          <p class="spark-signal"><Inline text={s.signal} /></p>
+          <p class="spark-hook"><Inline text={s.hook} /></p>
+          <p class="spark-borrow"><b>Borrow this</b> <Inline text={s.borrow} /></p>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

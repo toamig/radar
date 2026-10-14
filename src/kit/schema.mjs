@@ -14,6 +14,22 @@ const slug = z.string().regex(/^[a-z0-9][a-z0-9-]{1,60}$/, 'lowercase slug');
 // Local art and bespoke pieces live under public/, keyed by issue date.
 const artPath = z.string().regex(/^art\/\d{4}-\d{2}-\d{2}\/[a-z0-9-]+\.svg$/, 'art/<date>/<slug>.svg');
 const bespokePath = z.string().regex(/^bespoke\/\d{4}-\d{2}-\d{2}\/[a-z0-9-]+\.html$/, 'bespoke/<date>/<slug>.html');
+const imagePath = z.string().regex(/^img\/\d{4}-\d{2}-\d{2}\/[a-z0-9-]+\.webp$/, 'img/<date>/<slug>.webp (made by scripts/fetch-image.mjs)');
+
+/**
+ * A real picture: a publisher's or vendor's own image, a paper figure, a video
+ * still or a screenshot, downloaded and re-encoded by scripts/fetch-image.mjs.
+ * Always credited. "duotone" prints photos in the day's inks; "natural" keeps
+ * screenshots, figures and diagrams readable.
+ */
+export const Image = z.object({
+  src: imagePath,
+  alt: text(240),
+  credit: text(80),
+  creditUrl: url,
+  treatment: z.enum(['duotone', 'natural']).default('natural'),
+  fit: z.enum(['cover', 'contain']).default('cover'),
+});
 
 export const Theme = z.object({
   paper: ids(PAPERS),
@@ -40,6 +56,8 @@ const base = {
   /** Why this matters to the reader, in one or two sentences. */
   why: text(320),
   sources: z.array(Source).min(1).max(5),
+  /** Optional real picture for the block; hero, spotlight and concept use it in place of art. */
+  image: Image.optional(),
 };
 
 const Para = text(700);
@@ -152,6 +170,19 @@ export const List = z.object({
   items: z.array(z.object({ title: text(90), text: text(300), url: url.optional() })).min(2).max(6),
 });
 
+/** A clean schematic of how something works, drawn by the kit. */
+export const Diagram = z.object({
+  ...base,
+  format: z.literal('diagram'),
+  /** flow: steps left to right; layers: a stack, top to bottom; hub: one center and its parts; cycle: a loop. */
+  layout: z.enum(['flow', 'layers', 'hub', 'cycle']),
+  intro: text(400),
+  nodes: z.array(z.object({ label: text(40), note: text(120).optional(), key: z.boolean().default(false) })).min(2).max(8),
+  /** Labels on the connections, in order (flow and cycle only). */
+  links: z.array(text(40)).max(8).default([]),
+  caption: text(300).optional(),
+});
+
 export const Bespoke = z.object({
   ...base,
   format: z.literal('bespoke'),
@@ -162,8 +193,49 @@ export const Bespoke = z.object({
 });
 
 export const Block = z.discriminatedUnion('format', [
-  Hero, Spotlight, Steps, Compare, Stat, Chart, Timeline, Quote, Code, Concept, Video, List, Bespoke,
+  Hero, Spotlight, Steps, Compare, Stat, Chart, Timeline, Quote, Code, Concept, Video, List, Diagram, Bespoke,
 ]);
+
+/**
+ * Sparks: what is rising (games, concepts, devlogs, techniques, experiments)
+ * and the idea worth borrowing from it. For creativity and trend awareness.
+ */
+export const Spark = z.object({
+  id: slug,
+  lane: Lane,
+  kind: z.enum(['game', 'concept', 'devlog', 'technique', 'tool', 'experiment']),
+  title: text(80),
+  /** Where it is happening: Steam, itch.io, YouTube, X, Reddit, TikTok, Hacker News... */
+  where: text(40),
+  /** The evidence it is rising, with a number when there is one. */
+  signal: text(140),
+  /** The idea in one line: what makes it catch. */
+  hook: text(240),
+  /** What the reader could take from it for their own work. */
+  borrow: text(260),
+  url,
+  image: Image.optional(),
+});
+
+/** A research result for The lab: papers, theses, preprints, lab reports. */
+export const Paper = z.object({
+  id: slug,
+  lane: Lane,
+  kind: z.enum(['paper', 'preprint', 'thesis', 'report', 'talk']),
+  title: text(200),
+  /** The finding in everyday words, shown big. */
+  headline: text(140),
+  authors: text(160),
+  where: text(120),
+  date,
+  problem: text(400),
+  idea: text(600),
+  result: text(400),
+  useIt: text(400),
+  maturity: z.enum(['idea', 'prototype', 'code', 'shipping']),
+  links: z.array(Source).min(1).max(4),
+  image: Image.optional(),
+});
 
 export const TickerItem = z.object({
   text: text(200),
@@ -183,6 +255,10 @@ export const Issue = z
     tldr: z.array(z.object({ text: text(220), lane: Lane })).min(3).max(5),
     blocks: z.array(Block).min(4).max(14),
     ticker: z.array(TickerItem).max(14).default([]),
+    /** The lab: 1 to 3 research results worth knowing. */
+    lab: z.array(Paper).max(3).default([]),
+    /** Sparks: 3 to 6 rising games, concepts and techniques. */
+    sparks: z.array(Spark).max(6).default([]),
     /** One line on how today was put together, shown in the colophon. */
     note: text(300).optional(),
   })
@@ -194,12 +270,27 @@ export const Issue = z
     issue.blocks.forEach((b, i) => {
       if (seen.has(b.id)) ctx.addIssue({ code: 'custom', message: `duplicate block id ${b.id}`, path: ['blocks', i, 'id'] });
       seen.add(b.id);
-      for (const key of ['art', 'src']) {
-        const p = /** @type {any} */ (b)[key];
+      for (const key of ['art', 'src', 'image']) {
+        const v = /** @type {any} */ (b)[key];
+        const p = typeof v === 'object' && v ? v.src : v;
         if (p && !p.includes(`/${issue.date}/`)) {
           ctx.addIssue({ code: 'custom', message: `${key} must live under the issue's own date folder`, path: ['blocks', i, key] });
         }
       }
+    });
+    issue.sparks.forEach((spark, i) => {
+      if (spark.image && !spark.image.src.includes(`/${issue.date}/`)) {
+        ctx.addIssue({ code: 'custom', message: "image must live under the issue's own date folder", path: ['sparks', i, 'image'] });
+      }
+      if (seen.has(spark.id)) ctx.addIssue({ code: 'custom', message: `duplicate id ${spark.id}`, path: ['sparks', i, 'id'] });
+      seen.add(spark.id);
+    });
+    issue.lab.forEach((paper, i) => {
+      if (paper.image && !paper.image.src.includes(`/${issue.date}/`)) {
+        ctx.addIssue({ code: 'custom', message: "image must live under the issue's own date folder", path: ['lab', i, 'image'] });
+      }
+      if (seen.has(paper.id)) ctx.addIssue({ code: 'custom', message: `duplicate id ${paper.id}`, path: ['lab', i, 'id'] });
+      seen.add(paper.id);
     });
   });
 
@@ -225,4 +316,6 @@ export const Week = z.object({
     .max(7),
   numbers: z.array(z.object({ value: text(14), label: text(90), date })).max(6).default([]),
   watch: z.array(text(220)).max(5).default([]),
+  /** Sunday's longer read: one research result explained in more depth. */
+  deepRead: Paper.extend({ more: z.array(text(700)).min(1).max(4) }).optional(),
 });

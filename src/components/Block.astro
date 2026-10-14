@@ -16,6 +16,8 @@ import Concept from './blocks/Concept.astro';
 import Video from './blocks/Video.astro';
 import List from './blocks/List.astro';
 import Bespoke from './blocks/Bespoke.astro';
+import Diagram from './blocks/Diagram.astro';
+import Media from './Media.astro';
 import type { BlockData } from '../kit/data';
 import type { Palette } from '../kit/palette';
 import { tuneUrl } from '../kit/site';
@@ -26,9 +28,11 @@ const b = block as any;
 const plate = false;
 const Body = {
   hero: Hero, spotlight: Spotlight, steps: Steps, compare: Compare, stat: Stat, chart: Chart,
-  timeline: Timeline, quote: Quote, code: Code, concept: Concept, video: Video, list: List, bespoke: Bespoke,
+  timeline: Timeline, quote: Quote, code: Code, concept: Concept, video: Video, list: List, diagram: Diagram, bespoke: Bespoke,
 }[block.format];
 const ownTitle = block.format === 'hero' || block.format === 'spotlight';
+// Hero, spotlight and concept place their picture themselves; every other format shows it under the title.
+const ownMedia = ['hero', 'spotlight', 'concept'].includes(block.format);
 ---
 <article
   id={block.id}
@@ -40,6 +44,7 @@ const ownTitle = block.format === 'hero' || block.format === 'spotlight';
 >
   <div class="b-top"><Lane lane={block.lane} /></div>
   {!ownTitle && <h3 class="b-title display"><Inline text={block.title} /></h3>}
+  {block.image && !ownMedia && <Media image={block.image} ink={block.ink} />}
   <Body block={b} date={date} palette={palette} />
   <p class="why"><b>Why it matters</b><Inline text={block.why} /></p>
   <p class="srcs">

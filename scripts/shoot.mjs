@@ -46,8 +46,14 @@ try {
     await page.setViewport({ width: v.width, height: v.height, deviceScaleFactor: 1, isMobile: !!v.mobile, hasTouch: !!v.mobile });
     await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: v.dark ? 'dark' : 'light' }, { name: 'prefers-reduced-motion', value: 'reduce' }]);
     await page.goto(url, { waitUntil: 'networkidle0' });
-    // Show charts in their drawn state.
-    await page.evaluate(() => document.querySelectorAll('.chart').forEach((c) => c.classList.add('in')));
+    // Show charts in their drawn state, and load lazy images: a full-page
+    // capture never scrolls, so they would otherwise stay blank.
+    await page.evaluate(async () => {
+      document.querySelectorAll('.chart').forEach((c) => c.classList.add('in'));
+      const imgs = [...document.images];
+      imgs.forEach((img) => { img.loading = 'eager'; });
+      await Promise.all(imgs.map((img) => (img.complete ? null : new Promise((r) => { img.onload = img.onerror = r; setTimeout(r, 8000); }))));
+    });
     const height = await page.evaluate(() => document.documentElement.scrollHeight);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
     if (overflow) console.log(`warn  ${v.name}: page scrolls sideways`);

@@ -5,6 +5,6 @@ import Art from '../Art.astro';
 const { block: b, palette } = Astro.props;
 ---
 <p class="plain"><Inline text={b.plain} /></p>
-{b.art && <Art src={b.art} alt={b.artAlt} seed={b.id} palette={palette} ink={b.ink} />}
+{(b.image || b.art) && <Art src={b.art} alt={b.artAlt} image={b.image} seed={b.id} palette={palette} ink={b.ink} />}
 <Paras items={b.body} />
 {b.points.length > 0 && <ul class="points">{b.points.map((p) => <li><Inline text={p} /></li>)}</ul>}

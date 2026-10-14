@@ -1,0 +1,45 @@
+/* Sparks: rising games, concepts and techniques. Imported after kit-extras.css. */
+
+.sparks {
+  margin: 8px 0 56px;
+  padding: 26px clamp(16px, 3vw, 36px) 34px;
+  background: var(--tint-b);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.sparks::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto auto;
+  width: min(48%, 520px);
+  aspect-ratio: 1;
+  z-index: -1;
+  background-image: radial-gradient(var(--ink-a) 1.7px, transparent 2px);
+  background-size: 10px 10px;
+  -webkit-mask-image: radial-gradient(circle at 100% 0, #000 0, transparent 68%);
+  mask-image: radial-gradient(circle at 100% 0, #000 0, transparent 68%);
+  opacity: .6;
+}
+.sparks-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; margin-bottom: 22px; }
+.sparks-head h2 { margin: 0; font-size: var(--step-4); }
+.sparks-head p { margin: 0; max-width: 46ch; font-size: .97rem; }
+.spark-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 22px; }
+.spark { background: var(--paper); padding: 0 0 18px; display: flex; flex-direction: column; min-width: 0; }
+.spark[data-ink='a'] { --ink: var(--ink-a); --display: var(--display-a); }
+.spark[data-ink='b'] { --ink: var(--ink-b); --display: var(--display-b); }
+.spark > *:not(.spark-img) { margin-left: 16px; margin-right: 16px; }
+.spark-img { margin: 0 0 14px; }
+.spark-img .media-frame { aspect-ratio: 16 / 9; }
+.spark-img figcaption { padding: 0 16px; }
+.spark:not(:has(.spark-img)) { border-top: 8px solid var(--ink); padding-top: 14px; }
+.spark-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0 0 8px; font-size: var(--step--1); font-weight: 600; color: var(--muted); }
+.spark-meta .kind { background: var(--ink); color: #000; padding: 1px 8px; }
+.spark-title { margin: 0 0 10px; font-size: 1.7rem; line-height: .98; }
+.spark-title a { text-decoration: none; }
+.spark-title a:hover { text-decoration: underline; text-decoration-color: var(--ink); }
+.spark-signal { display: flex; gap: 8px; align-items: baseline; margin: 0 0 10px; font-weight: 700; font-size: .9rem; line-height: 1.35; }
+.spark-signal::before { content: ''; flex: none; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid var(--ink); transform: translateY(-1px); }
+.spark-hook { margin: 0 0 10px; font-size: .97rem; line-height: 1.5; }
+.spark-borrow { margin-top: auto !important; padding-top: 10px; border-top: 1px solid var(--rule); font-size: .93rem; line-height: 1.5; }
+.spark-borrow b { font-weight: 700; }
