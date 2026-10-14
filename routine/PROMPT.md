@@ -61,6 +61,13 @@ ls data/issues/
 
 ## 3. Research in depth
 
+First check the network: `WebFetch` any article from the inbox. If it fails with a DNS or
+host error (`ENOTFOUND`, `host_not_allowed`), the routine's environment is on restricted
+network access. Carry on with `WebSearch` and the inbox (feed summaries are real text from
+the publishers), keep every claim to what those confirm, brief the desks the same way, and
+say so in the issue `note` and in your final report so a person can switch the environment
+to full network access.
+
 The inbox is a net, not the research. Fan out with the Agent tool: start these four
 desks in parallel, each with a self-contained brief that includes today's date, the
 reader profile summary, the relevant shortlisted candidates, and the ground rules above.
