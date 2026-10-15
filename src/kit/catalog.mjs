@@ -141,6 +141,9 @@ export function resolveTheme(theme) {
   };
 }
 
+/** Black or white, whichever reads better on an ink. */
+export const onInk = (hex) => (contrast(hex, '#000000') >= contrast(hex, '#FFFFFF') ? '#000000' : '#FFFFFF');
+
 /** Check every theme combination the catalog allows. Used by validate. */
 export function auditCatalog() {
   const problems = [];

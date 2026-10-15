@@ -1,0 +1,79 @@
+/* Section nav: a sticky bar under the masthead on wide screens, a bottom tab
+   bar within thumb reach on phones. */
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+.jump { scroll-margin-top: 76px; }
+
+.secnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 2px solid var(--text);
+  margin-top: 4px;
+}
+.secnav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px 28px; }
+.secnav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 2px 12px;
+  text-decoration: none;
+  font-weight: 650;
+  font-size: .95rem;
+  border-bottom: 4px solid transparent;
+  margin-bottom: -2px;
+  transition: border-color .15s ease;
+}
+.secnav svg { width: 15px; height: 15px; flex: none; }
+.secnav svg path { fill: none; stroke: var(--text); stroke-width: 1.6; stroke-linejoin: round; }
+.secnav li:nth-child(2) svg path { fill: var(--text); stroke: none; }
+.secnav-count {
+  font-size: .72rem;
+  font-weight: 700;
+  min-width: 1.6em;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: var(--tint-a);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.secnav a:hover { border-bottom-color: var(--rule); }
+.secnav a[aria-current] { border-bottom-color: var(--ink-a); }
+.secnav a[aria-current] .secnav-count { background: var(--ink-a); color: var(--on-a); }
+.secnav.stuck { box-shadow: 0 1px 0 var(--text); }
+
+@media (max-width: 700px) {
+  .jump { scroll-margin-top: 12px; }
+  body { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+  .secnav {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border-bottom: 0;
+    border-top: 2px solid var(--text);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .secnav ul { gap: 0; }
+  .secnav li { flex: 1 1 0; min-width: 0; }
+  .secnav a {
+    flex-direction: column;
+    gap: 3px;
+    padding: 9px 4px 8px;
+    font-size: .74rem;
+    border-bottom: 0;
+    border-top: 4px solid transparent;
+    margin: -2px 0 0;
+    position: relative;
+    text-align: center;
+  }
+  .secnav a[aria-current] { border-top-color: var(--ink-a); }
+  .secnav svg { width: 19px; height: 19px; }
+  .secnav-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .secnav-count { position: absolute; top: 5px; left: calc(50% + 8px); font-size: .62rem; padding: 0 5px; }
+}

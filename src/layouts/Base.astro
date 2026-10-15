@@ -8,7 +8,8 @@ import '@fontsource-variable/bricolage-grotesque';
 import '../styles/radar.css';
 import '../styles/kit-extras.css';
 import '../styles/sparks.css';
-import { resolveTheme, mix } from '../kit/catalog.mjs';
+import '../styles/nav.css';
+import { resolveTheme, mix, onInk } from '../kit/catalog.mjs';
 import { BASE } from '../kit/data';
 
 interface Props {
@@ -22,7 +23,7 @@ const t = resolveTheme(theme);
 const vars = (s: typeof t.day) => `
   --paper:${s.paper};--text:${s.text};--muted:${s.muted};--rule:${s.rule};
   --ink-a:${s.inkA};--ink-b:${s.inkB};--display-a:${s.displayA};--display-b:${s.displayB};
-  --tint-a:${s.tintA};--tint-b:${s.tintB};`;
+  --tint-a:${s.tintA};--tint-b:${s.tintB};--on-a:${onInk(s.inkA)};--on-b:${onInk(s.inkB)};`;
 const typeVars = `--display-font:${t.type.display};--display-weight:${t.type.displayWeight};
   --display-stretch:${t.type.displayStretch};--display-tracking:${t.type.tracking};
   --display-case:${t.type.caseUpper ? 'uppercase' : 'none'};--plate:${t.plate};`;

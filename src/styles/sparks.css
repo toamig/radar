@@ -26,15 +26,15 @@
 .sparks-head p { margin: 0; max-width: 46ch; font-size: .97rem; }
 .spark-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 22px; }
 .spark { background: var(--paper); padding: 0 0 18px; display: flex; flex-direction: column; min-width: 0; }
-.spark[data-ink='a'] { --ink: var(--ink-a); --display: var(--display-a); }
-.spark[data-ink='b'] { --ink: var(--ink-b); --display: var(--display-b); }
+.spark[data-ink='a'] { --on: var(--on-a); --ink: var(--ink-a); --display: var(--display-a); }
+.spark[data-ink='b'] { --on: var(--on-b); --ink: var(--ink-b); --display: var(--display-b); }
 .spark > *:not(.spark-img) { margin-left: 16px; margin-right: 16px; }
 .spark-img { margin: 0 0 14px; }
 .spark-img .media-frame { aspect-ratio: 16 / 9; }
 .spark-img figcaption { padding: 0 16px; }
 .spark:not(:has(.spark-img)) { border-top: 8px solid var(--ink); padding-top: 14px; }
 .spark-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0 0 8px; font-size: var(--step--1); font-weight: 600; color: var(--muted); }
-.spark-meta .kind { background: var(--ink); color: #000; padding: 1px 8px; }
+.spark-meta .kind { background: var(--ink); color: var(--on); padding: 1px 8px; }
 .spark-title { margin: 0 0 10px; font-size: 1.7rem; line-height: .98; }
 .spark-title a { text-decoration: none; }
 .spark-title a:hover { text-decoration: underline; text-decoration-color: var(--ink); }

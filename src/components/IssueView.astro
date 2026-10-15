@@ -7,6 +7,8 @@ import Block from './Block.astro';
 import Ticker from './Ticker.astro';
 import Lab from './Lab.astro';
 import Sparks from './Sparks.astro';
+import SectionNav from './SectionNav.astro';
+import { issues } from '../kit/data';
 import WeekStrip from './WeekStrip.astro';
 import Colophon from './Colophon.astro';
 import { readingMinutes, type IssueData } from '../kit/data';
@@ -30,7 +32,8 @@ const pal = palette(issue.theme);
       </ul>
     </div>
   </section>
-  <main class="grid">
+  <SectionNav stories={issue.blocks.length} sparks={issue.sparks.length} lab={issue.lab.length} days={issues.length} />
+  <main id="stories" class="grid jump" aria-label="Stories">
     {issue.blocks.map((b) => <Block block={b} date={issue.date} palette={pal} />)}
   </main>
   <Sparks sparks={issue.sparks} />

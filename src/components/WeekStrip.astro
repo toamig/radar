@@ -5,7 +5,7 @@ interface Props { current?: string }
 const { current } = Astro.props;
 const week = weeks[0];
 ---
-<section class="week" aria-labelledby="week-h">
+<section id="week" class="week jump" aria-labelledby="week-h">
   <h2 id="week-h" class="display">This week on Radar</h2>
   <ul class="days">
     {issues.map((i) => {

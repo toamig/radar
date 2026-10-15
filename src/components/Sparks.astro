@@ -7,7 +7,7 @@ const { sparks } = Astro.props;
 const KIND = { game: 'Game', concept: 'Concept', devlog: 'Devlog', technique: 'Technique', tool: 'Tool', experiment: 'Experiment' };
 ---
 {sparks.length > 0 && (
-  <section class="sparks" aria-labelledby="sparks-h">
+  <section id="sparks" class="sparks jump" aria-labelledby="sparks-h">
     <header class="sparks-head">
       <h2 id="sparks-h" class="display overprint" data-text="Sparks">Sparks</h2>
       <p>What is catching on right now, and the idea worth borrowing from each.</p>
