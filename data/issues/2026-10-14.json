@@ -52,7 +52,7 @@
         "value": "3x",
         "label": "the efficiency Sweeney expects nearly all Epic work to reach within a year"
       },
-      "why": "If Epic builds Unreal for agent-driven workflows, plugin buyers will soon expect plugins that agents can drive: clean C++ APIs, good metadata, MCP-friendly editor tooling. That is a design target worth adopting now.",
+      "why": "If Epic builds Unreal for agent-driven workflows, the tools, plugins and assets around it will be judged on how well agents can drive them: clean C++ APIs, good metadata, MCP-friendly editor tooling.",
       "sources": [
         {
           "label": "Game Developer",
@@ -73,7 +73,8 @@
         "credit": "Wccftech",
         "creditUrl": "https://wccftech.com/epic-games-ai-acceleration-tim-sweeney-better-games-not-fewer-people/",
         "fit": "cover"
-      }
+      },
+      "forYou": "Design every plugin for agents as well as people: Blueprint-friendly APIs, descriptive UPROPERTY metadata and documentation an agent can read. An MCP-drivable editor tool for your combat or inventory plugins could become a Fab selling point."
     },
     {
       "id": "anthropic-scion",
@@ -111,7 +112,8 @@
           "label": "Hacker News thread",
           "url": "https://news.ycombinator.com/item?id=50073633"
         }
-      ]
+      ],
+      "forYou": "Your multi-repo setup (the Brain vault, the plugins, the sites) already runs on agent commits. Adopt the cheap half now: fail-closed checks and post-merge testing instead of a human reviewing every agent diff."
     },
     {
       "id": "haiku-5-5",
@@ -135,7 +137,7 @@
       "body": [
         "Haiku 5.5 has a 1M context, 128k output and the first effort setting on a Haiku. Claude Code 2.1.293 made it the default Haiku. The same day, Sonnet 5.5 cache reads were halved, and Max and Team plans started getting monthly API credits."
       ],
-      "why": "Cheap, capable small models change how you split agent work: triage, compaction and fan-out reading can all move to Haiku, and the new monthly credits on Max cover small automations like this site's triage step.",
+      "why": "Cheap, capable small models change how agent work gets split: triage, compaction and fan-out reading can move to Haiku while the big model keeps the judgment calls.",
       "sources": [
         {
           "label": "Anthropic",
@@ -145,7 +147,8 @@
           "label": "Simon Willison",
           "url": "https://simonwillison.net/2026/Oct/7/claude-haiku-5-5/"
         }
-      ]
+      ],
+      "forYou": "Move Polyglyph's cheap passes (string triage, glossary checks) and your Claude Code research subagents to Haiku 5.5. Radar's own triage now runs on it for about two cents a night."
     },
     {
       "id": "gemini-4-argon",
@@ -206,7 +209,8 @@
           "label": "VentureBeat",
           "url": "https://venturebeat.com/technology/google-makes-gemini-4-argon-broadly-available-with-limited-time-low-api-pricing-of-2-10-per-1m-token"
         }
-      ]
+      ],
+      "forYou": "Polyglyph already routes jobs across providers: add Argon as a route and run a week of real translation jobs against it before the price doubles on December 1."
     },
     {
       "id": "unity-7-coreclr",
@@ -241,7 +245,8 @@
           "label": "GameFromScratch",
           "url": "https://gamefromscratch.com/unity-7-alpha-released/"
         }
-      ]
+      ],
+      "forYou": "If Polyglyph's Unity client or any cross-engine tool touches Unity scripting, test it against the 7.0 alpha early. Nothing to do on the Unreal side."
     },
     {
       "id": "rimworld-waylith",
@@ -282,7 +287,8 @@
         "credit": "Ludeon Studios on Steam",
         "creditUrl": "https://store.steampowered.com/app/294100/RimWorld/",
         "fit": "cover"
-      }
+      },
+      "forYou": "A data point for your web games: a lean, purpose-built runtime beat a general engine by 2 to 4 times, which supports keeping your own three.js engine rather than moving to a big one."
     },
     {
       "id": "harvard-agents-study",
@@ -320,7 +326,8 @@
           "label": "AI Weekly",
           "url": "https://aiweekly.co/alerts/harvard-study-ai-coding-agents-lift-code-30-shipped-output-flat"
         }
-      ]
+      ],
+      "forYou": "You are the review bottleneck across all your repos. Turn your repeated review comments into hooks and validators, as Radar's own validate step does, so agent output arrives pre-checked."
     },
     {
       "id": "unintended-agent-actions",
@@ -350,7 +357,7 @@
           "text": "Monitor what the agent does, not only what it reports at the end."
         }
       ],
-      "why": "The failure mode is persistence, not malice: an agent told to get an answer will route around a restriction. Any automated research loop, including this one, should be written with these four rules in it.",
+      "why": "The failure mode is persistence, not malice: an agent told to get an answer will route around a restriction. Any agent with web access should be briefed with these four rules.",
       "sources": [
         {
           "label": "Anthropic",
@@ -360,7 +367,8 @@
           "label": "Wikimedia Foundation",
           "url": "https://wikimediafoundation.org/news/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/"
         }
-      ]
+      ],
+      "forYou": "Radar's morning run follows these rules already: read-only, no form submissions, web content as data. Apply the same four rules to any other routine you schedule."
     },
     {
       "id": "huntley-agency",
@@ -385,7 +393,8 @@
           "label": "Simon Willison",
           "url": "https://simonwillison.net/2026/Oct/13/geoffrey-huntley/"
         }
-      ]
+      ],
+      "forYou": "Your UE C++ pre-commit hooks already fix and block. Add the missing half: when a hook blocks, inject the exact fix into the agent's prompt so it corrects itself instead of looping."
     },
     {
       "id": "claude-code-292-300",
@@ -433,7 +442,8 @@
           "label": "Advisor docs",
           "url": "https://code.claude.com/docs/en/advisor"
         }
-      ]
+      ],
+      "forYou": "Turn on `onFailure: \"block\"` for your convention hooks, so a hook that crashes stops the commit instead of letting it through, and set `autoCompactWindow` on your research subagents."
     },
     {
       "id": "playgama-agent-publishing",
@@ -486,7 +496,8 @@
           "label": "GitHub",
           "url": "https://github.com/Playgama/developer-cabinet-mcp"
         }
-      ]
+      ],
+      "forYou": "A ready distribution loop for your browser games: Claude Code builds, the MCP publishes, and player data comes back to plan the next version. Worth a test with one of your smaller web games."
     },
     {
       "id": "q3-games-funding",
@@ -523,13 +534,14 @@
         }
       ],
       "note": "Meshy and Tripo both generate 3D assets. M&A added $2.4bn across 45 deals.",
-      "why": "Investors are funding AI asset generation and tooling, which is the market a tools and plugin seller competes in.",
+      "why": "Investors are betting on AI asset generation and tooling rather than studios, which tells you where the next wave of game dev tools, and competitors, will come from.",
       "sources": [
         {
           "label": "PocketGamer.biz",
           "url": "https://www.pocketgamer.biz/gaming-manda-reached-24bn-across-45-deals-in-q3-2026/"
         }
-      ]
+      ],
+      "forYou": "Meshy and Tripo are where AI 3D assets are heading. Plugins that clean up and integrate generated assets in Unreal sit on the right side of that money."
     },
     {
       "id": "google-playground-unity-spark",
@@ -577,7 +589,8 @@
         "credit": "Google",
         "creditUrl": "https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/",
         "fit": "cover"
-      }
+      },
+      "forYou": "A free channel to test web game concepts with real players, and early evidence of the prompt-to-game tools Polyglyph-style SaaS will sit next to. Join the Spark waitlist to watch the Asset Store integration."
     },
     {
       "id": "mobile-live-service-shutdowns",
@@ -621,7 +634,8 @@
           "label": "Game Developer",
           "url": "https://www.gamedeveloper.com/mobile/ubisoft-to-sunset-rainbow-six-mobile-just-seven-months-after-launch"
         }
-      ]
+      ],
+      "forYou": "Before any mobile launch (ObraJusta or a game), prove retention with a small cohort first; even Supercell cut a game after 18 months."
     }
   ],
   "ticker": [
@@ -742,7 +756,8 @@
         "credit": "Majercik et al., CC BY 4.0",
         "creditUrl": "https://arxiv.org/abs/2609.36225",
         "fit": "contain"
-      }
+      },
+      "forYou": "A solvability checker is a plausible UE editor plugin: run your movement code headless in parallel and flag unreachable areas in ElementalBlades levels."
     },
     {
       "id": "lab-mcp-metadata",
@@ -770,7 +785,8 @@
         "credit": "Li, Qiao and Gao, CC BY 4.0",
         "creditUrl": "https://arxiv.org/abs/2610.14334",
         "fit": "contain"
-      }
+      },
+      "forYou": "Apply it to the MCP servers you build and to Polyglyph's tool definitions: flatten parameters and name them in your users' words."
     },
     {
       "id": "lab-s4r",
@@ -806,7 +822,8 @@
         "credit": "Dou et al., CC BY 4.0",
         "creditUrl": "https://arxiv.org/abs/2609.20524",
         "fit": "contain"
-      }
+      },
+      "forYou": "Port the shrink-and-regrow pass into an Unreal editor action for scattered props, as a standalone Fab tool or a feature in your world tools."
     }
   ],
   "sparks": [
@@ -826,7 +843,8 @@
         "credit": "Embark Studios on Steam",
         "creditUrl": "https://store.steampowered.com/app/1808500/ARC_Raiders/",
         "fit": "cover"
-      }
+      },
+      "forYou": "Rerolled loot zones are a cheap trick for ElementalBlades' replayable areas, and a loot-table component in your inventory plugin could ship it as a feature."
     },
     {
       "id": "spark-left-left-left",
@@ -844,7 +862,8 @@
         "credit": "Left! Left! LEFT! on Steam",
         "creditUrl": "https://store.steampowered.com/app/5362020/Left_Left_LEFT/",
         "fit": "cover"
-      }
+      },
+      "forYou": "Split information and control is a strong co-op hook for a small web game: one player sees the map, the other plays."
     },
     {
       "id": "spark-scam-with-friends",
@@ -862,7 +881,8 @@
         "credit": "JakeHub and Metater on Steam",
         "creditUrl": "https://store.steampowered.com/app/4954910/Scam_With_Your_Friends/",
         "fit": "cover"
-      }
+      },
+      "forYou": "One visible meter driven by an LLM is the pattern for AI NPCs in your games, and a persona-in-JSON format is a natural feature for an AI dialogue plugin."
     },
     {
       "id": "spark-ps2-web-recomp",
@@ -880,7 +900,8 @@
         "credit": "ps2-web-recomp README",
         "creditUrl": "https://github.com/snuri00/ps2-web-recomp",
         "fit": "contain"
-      }
+      },
+      "forYou": "Your web games can aim higher: WebGPU plus WASM is fast enough for console-grade 3D in a tab."
     },
     {
       "id": "spark-dressmaker",
@@ -898,7 +919,8 @@
         "credit": "Free Lives on Steam",
         "creditUrl": "https://store.steampowered.com/app/4019220/Dressmaker/",
         "fit": "cover"
-      }
+      },
+      "forYou": "Clip your next web game's core verb for TikTok before building the store page, and use itch.io as the second test, the same way."
     }
   ]
 }

@@ -47,6 +47,7 @@ const ownMedia = ['hero', 'spotlight', 'concept'].includes(block.format);
   {block.image && !ownMedia && <Media image={block.image} ink={block.ink} />}
   <Body block={b} date={date} palette={palette} />
   <p class="why"><b>Why it matters</b><Inline text={block.why} /></p>
+  {block.forYou && <p class="for-you"><b>For you</b><Inline text={block.forYou} /></p>}
   <p class="srcs">
     <span>Sources</span>
     {block.sources.map((s) => <a href={s.url} rel="noopener" target="_blank">{s.label}</a>)}

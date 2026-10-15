@@ -116,6 +116,8 @@ that format needs). Ask desks to drop anything they cannot confirm.
 - Choose 3 to 6 sparks and 1 to 3 lab entries. They are not filler: pick a lab entry
   only if it passes the bar in `taste.md`, and a spark only if its signal is real.
 - Write the title (the day in a phrase), the dek and 3 to 5 TL;DR lines.
+- Keep public text public and put the owner's angle in `forYou` (see "Public and private"
+  in `FORMATS.md`). Every story the owner would act on gets a `forYou`.
 
 ## 5. Direct the art
 

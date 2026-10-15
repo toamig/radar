@@ -361,6 +361,7 @@ p, li { text-wrap: pretty; }
 .codebox { margin: 16px 0; background: var(--text); color: var(--paper); padding: 16px 18px; overflow-x: auto; position: relative; }
 .codebox::before { content: attr(data-lang); position: absolute; top: 0; right: 0; background: var(--ink); color: var(--on); font: 700 .72rem/1 var(--mono-font); padding: 5px 8px; }
 .codebox pre { margin: 0; font: .86rem/1.6 var(--mono-font); white-space: pre; }
+.codebox code { background: none; padding: 0; border-radius: 0; font-size: inherit; color: inherit; }
 
 /* ------------------------------------------------------------ concept */
 
@@ -435,12 +436,15 @@ p, li { text-wrap: pretty; }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) { color-scheme: dark; }
+  /* The art plate stays light in dark mode, so the poster title must not cut into it. */
+  :root:not([data-theme='light']) .hero[data-variant='poster'] .hero-title { margin-top: .25em; }
   :root:not([data-theme='light']) body::before { mix-blend-mode: screen; opacity: .05; }
   :root:not([data-theme='light']) .overprint::after,
   :root:not([data-theme='light']) .swatch i { mix-blend-mode: screen; }
   :root:not([data-theme='light']) .codebox { background: #000; color: #eee; }
 }
 :root[data-theme='dark'] { color-scheme: dark; }
+:root[data-theme='dark'] .hero[data-variant='poster'] .hero-title { margin-top: .25em; }
 :root[data-theme='dark'] body::before { mix-blend-mode: screen; opacity: .05; }
 :root[data-theme='dark'] .overprint::after, :root[data-theme='dark'] .swatch i { mix-blend-mode: screen; }
 :root[data-theme='dark'] .codebox { background: #000; color: #eee; }

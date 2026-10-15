@@ -21,6 +21,7 @@ const KIND = { game: 'Game', concept: 'Concept', devlog: 'Devlog', technique: 'T
           <p class="spark-signal"><Inline text={s.signal} /></p>
           <p class="spark-hook"><Inline text={s.hook} /></p>
           <p class="spark-borrow"><b>Borrow this</b> <Inline text={s.borrow} /></p>
+          {s.forYou && <p class="for-you"><b>For you</b><Inline text={s.forYou} /></p>}
         </li>
       ))}
     </ul>

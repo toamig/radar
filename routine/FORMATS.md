@@ -40,7 +40,8 @@ one phrase a skimming reader must not miss.
 | `ink` | `a` or `b`: which of the day's two inks leads the block. Alternate them. |
 | `texture` | `flat` (open on the paper), `halftone` (tinted plate with a halftone corner, for features you want to lift), `overprint` (title printed in the block's ink). Use `halftone` on 2 or 3 blocks a day at most. |
 | `title` | At most 120 characters. Sentence case; the poster and condensed type sets uppercase it visually. |
-| `why` | Why it matters to the reader, 1 or 2 sentences. Specific. This is the most-read line in every block. |
+| `why` | Why it matters to any developer, 1 or 2 sentences. Specific, but public: never about the owner or their projects (see Public and private). This is the most-read line in every block. |
+| `forYou` | Private, shown only in the owner's tune mode: what this means for their plugins, games, SaaS and workflow, and what to do about it. 1 or 2 sentences. Add it whenever there is a real angle. |
 | `sources` | 1 to 5 `{ label, url }`, https only, primary source first. |
 | `image` | Optional real picture (see Pictures). Hero, spotlight and concept use it in their visual slot; every other format shows it under the title. |
 
@@ -71,6 +72,19 @@ Choose by what the reader needs to learn, not by what is easiest to write.
 | `list` | Several related small items: release notes, a roundup. | `intro`, `items` 2-6 `{ title, text, url }` | `wide`, `full` |
 | `diagram` | How something works: a pipeline, an architecture, a loop, a system and its parts. Prefer it to prose and to drawn art whenever the story has structure. | `layout` (`flow` steps left to right, `layers` a stack top to bottom, `hub` one center and its parts, `cycle` a loop), `intro`, `nodes` 2-8 `{ label, note, key }` (mark the one that matters with `key`), `links` labels for the arrows in order (flow, cycle), `caption` | `half`, `wide`, `full` |
 | `bespoke` | An interactive piece built for one story when interaction teaches more than prose. At most one a day. | `src`, `height` (240-900), `body` 1-2 | `full`, `wide` |
+
+## Public and private
+
+The page is public. Everything a visitor sees is written for any developer: `title`,
+`dek`, `tldr`, `why`, `takeaway`, bodies, a spark's `hook` and `borrow`, a lab
+entry's `useIt`. Never address "the reader" as one person, and never name or describe the
+owner's own work there: their plugins or Fab listings, games (ElementalBlades), SaaS
+(Polyglyph, Vylora, ObraJusta), Imperion Games, their Claude Code setup or this routine.
+Generic second person ("if you ship on Steam") is fine.
+
+The owner's angle goes in `forYou` on blocks, sparks and lab entries. It renders only in
+tune mode, which only the owner turns on. `taste.md` has the profile to write it from.
+`npm run validate` fails an issue whose public text names the owner's projects.
 
 ## Pictures
 

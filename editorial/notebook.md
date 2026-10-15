@@ -9,5 +9,6 @@ what to avoid next time. Facts about stories never go here.
 
 ## Kit requests
 
-- Code blocks: the global `code` rule (tint background) also applies inside `.codebox pre code`, so code renders as paper-colored text on a light tint, nearly unreadable. Reset `background` and `padding` for `.codebox code`. Today's code story ran as a spotlight instead.
-- Poster hero in dark mode: the art plate stays the light paper color while the title turns light, so where the title cuts into the art it is light on light. Give the plate the night paper, or keep the title off the plate in dark mode.
+Done 2026-10-15: code blocks no longer inherit the inline code tint; the poster hero title
+no longer overlaps the light art plate in dark mode.
+

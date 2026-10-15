@@ -72,6 +72,12 @@ Skip pure hype and marketing with nothing to learn from.
 - Crypto, NFTs, politics, celebrity CEOs, unless a decision directly changes the work.
 - Anything older than three days, unless it was missed and still matters.
 
+## Public and private
+
+The page is public, so its text is written for any developer and never names this
+reader's projects. The profile above shapes what gets picked and fills the private
+`forYou` lines, which only the owner sees in tune mode.
+
 ## Tone
 
 Developer to developer. Plain words, short sentences, concrete nouns. Explain what it

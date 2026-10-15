@@ -58,7 +58,7 @@
         "value": "83%",
         "label": "of functions rebuilt byte for byte from the shipped binary"
       },
-      "why": "Two lessons for one reader. For your agents: a strict pass or fail check lets cheaper models do expert work. For your products: anything you ship as a binary, Fab plugins and demos included, can be reconstructed, so keep secrets and authority on the server.",
+      "why": "Two lessons in one result. For agent work: a strict pass or fail check lets cheaper models do expert work. For anyone shipping software: a binary can now be reconstructed, so secrets and authority belong on the server.",
       "sources": [
         {
           "label": "momo5502",
@@ -76,7 +76,8 @@
           "label": "Xbox Wire",
           "url": "https://news.xbox.com/en-us/2026/10/13/introducing-xbox-labs/"
         }
-      ]
+      ],
+      "forYou": "Your Fab plugins and demos ship as binaries, so assume they can be read: keep license checks and anything sensitive out of client code. And give your Claude Code loops the same kind of tamper-proof verifier."
     },
     {
       "id": "unity-2fa-lockout",
@@ -106,7 +107,7 @@
           "text": "Unity's info post points to account recovery; staff say the two-week support wait \"should be accelerated\"."
         }
       ],
-      "why": "A missed security email can freeze your editor, your purchased assets and a release. Check your 2FA and recovery codes on Unity, Epic, Fab and Steam today, and keep one account per vendor that is not your daily login.",
+      "why": "A missed security email can freeze an editor, purchased assets and a release. A minute checking 2FA and recovery codes on every engine and store account is cheap insurance.",
       "sources": [
         {
           "label": "Unity Discussions",
@@ -116,7 +117,8 @@
           "label": "User thread",
           "url": "https://discussions.unity.com/t/what-the-is-wrong-with-2fa-my-account-got-suspended-for-some-2fa/1739170"
         }
-      ]
+      ],
+      "forYou": "Check 2FA and recovery codes today on Unity, Epic, Fab and Steam, and keep one account per vendor that is not your daily login."
     },
     {
       "id": "epic-launcher-vibe-coded",
@@ -147,7 +149,7 @@
         "creditUrl": "https://www.siliconera.com/new-epic-games-launcher-vibe-coded-because-programming-is-hard/",
         "fit": "cover"
       },
-      "why": "It is where your Fab library and engine installs live, and a public case of a large AI-built rewrite shipped with measured claims. Expect rough edges in the preview.",
+      "why": "A public case of a large AI-built rewrite shipped with measured claims, from a company that just moved its teams to AI-first production. Expect rough edges in the preview.",
       "sources": [
         {
           "label": "Gaming.net",
@@ -157,7 +159,8 @@
           "label": "Siliconera",
           "url": "https://www.siliconera.com/new-epic-games-launcher-vibe-coded-because-programming-is-hard/"
         }
-      ]
+      ],
+      "forYou": "It is where your Fab library and engine installs live, so expect launcher quirks around plugin installs during the preview."
     },
     {
       "id": "game-as-harness",
@@ -200,13 +203,14 @@
         "profile"
       ],
       "caption": "The text profile feeds the next turn. 168 points on Hacker News; the post shows no code, the loop is the lesson.",
-      "why": "This maps onto UE5 C++ plugins directly: a seeded RNG, a command log and a gameplay module with tests that run without the editor give Claude Code a pass or fail signal instead of your eyes.",
+      "why": "Games are hard for agents to test because the outcome is visual. A seeded RNG, a command log and gameplay code that runs headless turn that into a pass or fail signal an agent can work against.",
       "sources": [
         {
           "label": "Kyle Kukshtel",
           "url": "https://kylekukshtel.com/ai-harness-engineering-game-development-claude-code"
         }
-      ]
+      ],
+      "forYou": "This maps directly onto your UE5 C++ plugins: a gameplay module with tests that run without the editor gives Claude Code a pass or fail signal instead of your eyes."
     },
     {
       "id": "claude-api-otel",
@@ -246,7 +250,7 @@
         }
       ],
       "tryIt": "ANTHROPIC_OPEN_TELEMETRY_TRACES_CONTENT_MODE=content",
-      "why": "Your Node and Supabase products can send token, latency and tool spans to the observability tool you already use, in a few lines, and Managed Agents sessions become traceable end to end.",
+      "why": "Agent apps can now send token, latency and tool spans to an existing observability stack in a few lines, and Managed Agents sessions become traceable end to end.",
       "sources": [
         {
           "label": "Claude docs: SDK tracing",
@@ -260,7 +264,8 @@
           "label": "OpenTelemetry overview",
           "url": "https://platform.claude.com/docs/en/manage-claude/opentelemetry"
         }
-      ]
+      ],
+      "forYou": "Wire it into your Node and Supabase products, Polyglyph first: per-job token and latency traces will show where translation runs spend money."
     },
     {
       "id": "xbox-labs-webgpu",
@@ -280,7 +285,7 @@
       "body": [
         "Xbox Labs is a small team that will build in the open and share its tools, starting from experiments like browser ports over WebAssembly and WebGPU."
       ],
-      "why": "A platform holder now treats the browser as a real target, which backs your three.js work. There is no developer program or timeline yet.",
+      "why": "A platform holder now treats the browser as a real game target. There is no developer program or timeline yet.",
       "sources": [
         {
           "label": "Xbox Wire",
@@ -290,7 +295,8 @@
           "label": "Shacknews",
           "url": "https://www.shacknews.com/article/150991/xbox-labs-mods-coding"
         }
-      ]
+      ],
+      "forYou": "It backs your three.js and browser game work as a lane worth staying in."
     },
     {
       "id": "lscbench-secure-code",
@@ -331,7 +337,7 @@
         }
       ],
       "note": "Functional pass rates were 73.6 to 91.3%. One added sentence asking for secure code raised the secure share by 15 to 21 points for three of four models re-run.",
-      "why": "Add an explicit security line to CLAUDE.md in your SaaS repos and still review data exposure and outbound URL fetches by hand: the paper finds those stay weak even with the reminder.",
+      "why": "Even the best coding agent ships code that is both working and secure only a quarter of the time. An explicit security instruction helps, but data exposure and outbound URL fetches stay weak and still need a human look.",
       "sources": [
         {
           "label": "arXiv",
@@ -341,7 +347,8 @@
           "label": "Code",
           "url": "https://github.com/alibaba/last-secure-code-benchmark"
         }
-      ]
+      ],
+      "forYou": "Add an explicit security line to CLAUDE.md in your SaaS repos and keep reviewing data exposure and URL fetches by hand."
     },
     {
       "id": "npm-slugfest",
@@ -371,7 +378,7 @@
           "text": "Alert on publish events you did not trigger, especially where agents pull latest versions."
         }
       ],
-      "why": "If you publish Node packages, this is a ten-minute audit. Bindings are now tied to the immutable repo ID, and unvalidated ones expire after 48 hours.",
+      "why": "Anyone publishing Node packages has a ten-minute audit to do: bindings are now tied to the immutable repo ID, and unvalidated ones expire after 48 hours.",
       "sources": [
         {
           "label": "The Hacker News",
@@ -381,7 +388,8 @@
           "label": "CSO Online",
           "url": "https://www.csoonline.com/article/4234229/over-1500-npm-packages-exposed-by-trusted-publishing-validation-flaw.html"
         }
-      ]
+      ],
+      "forYou": "Run the audit on any npm packages you publish before the 48-hour window closes."
     },
     {
       "id": "sbox-human-curation",
@@ -396,7 +404,7 @@
       "speaker": "Garry Newman",
       "role": "Facepunch Studios",
       "context": "s&box goes free-to-play by the end of 2026, and its Play Fund moves from automatic enrollment to approval, discouraging clickers, idlers and slop.",
-      "why": "A UGC store flooded with low-effort games chose human gatekeeping. Expect more marketplaces, Fab included, to reward curation and quality signals over volume.",
+      "why": "A UGC store flooded with low-effort games chose human gatekeeping. Expect more marketplaces to reward curation and quality signals over volume.",
       "sources": [
         {
           "label": "GamingOnLinux",
@@ -406,7 +414,8 @@
           "label": "GamesIndustry.biz",
           "url": "https://www.gamesindustry.biz/sbox-plans-to-go-free-to-play-and-embrace-human-curation-saying-netflix-for-games-doesnt-work"
         }
-      ]
+      ],
+      "forYou": "If Fab follows, polish and documentation become ranking signals for your plugins. Treat the store page as part of the product."
     },
     {
       "id": "check-your-setup",
@@ -445,7 +454,7 @@
           "url": "https://github.blog/changelog/2026-10-13-github-app-improvements-for-least-privilege-and-management"
         }
       ],
-      "why": "Each one can break or change an automation you already run, so they are worth a minute before your agents hit them.",
+      "why": "Each one can break or change an automation that is already running, so they are worth a minute before agents hit them.",
       "sources": [
         {
           "label": "Claude Code releases",
@@ -459,7 +468,8 @@
           "label": "Codex changelog",
           "url": "https://learn.chatgpt.com/docs/changelog"
         }
-      ]
+      ],
+      "forYou": "Check them against your Claude Code setup and the Radar routine first."
     },
     {
       "id": "self-replicating-models",
@@ -486,7 +496,7 @@
         "creditUrl": "https://www.anthropic.com/research/self-replicating-ai",
         "fit": "contain"
       },
-      "why": "If you ship on-device models or leave test devices on a network, the threat has moved from prompt injection to what is exposed. The defenses are boring and cheap.",
+      "why": "For anyone shipping on-device models or leaving test devices on a network, the threat has moved from prompt injection to what is exposed. The defenses are boring and cheap.",
       "sources": [
         {
           "label": "Anthropic",
@@ -533,7 +543,7 @@
         "creditUrl": "https://developer.android.com/blog/posts/google-play-discovery-engagement-growth",
         "fit": "contain"
       },
-      "why": "For your Flutter and mobile games, Game Stats is now the ticket into Play's discovery surfaces. Wire it in before launch, not after.",
+      "why": "Game Stats is now the ticket into Google Play's discovery surfaces for games. Wiring it in before launch is much easier than after.",
       "sources": [
         {
           "label": "Android Developers Blog",
@@ -543,7 +553,8 @@
           "label": "GamesIndustry.biz",
           "url": "https://www.gamesindustry.biz/google-play-adds-game-finder-sprints-and-sidekick-playbacks-in-discovery-push"
         }
-      ]
+      ],
+      "forYou": "Wire it into your Flutter and mobile games before launch, not after."
     }
   ],
   "ticker": [
@@ -635,7 +646,7 @@
       "where": "Steam",
       "signal": "Up 105 places to #44 in Steam's most played, peak 41,161 players, after the DLC and a free update on Oct 8 and a 67% sale (Steam charts, Steam store)",
       "hook": "One beat: a paid DLC with two survivors and three stages, free new skills for six original survivors, and the base game at $8.24.",
-      "borrow": "Ship paid content, a free update for owners and a discount on the core together, so new and lapsed players arrive at once. The same works for a plugin's major version.",
+      "borrow": "Ship paid content, a free update for owners and a discount on the core together, so new and lapsed players arrive at once.",
       "url": "https://store.steampowered.com/app/632360/",
       "image": {
         "src": "img/2026-10-15/spark-ror2.webp",
@@ -643,7 +654,8 @@
         "credit": "Hopoo Games and Gearbox on Steam",
         "creditUrl": "https://store.steampowered.com/app/632360/",
         "fit": "cover"
-      }
+      },
+      "forYou": "The same bundle works for a plugin's major version on Fab: paid upgrade, free fixes for owners, a discount on the base."
     },
     {
       "id": "spark-dear-passengers",
@@ -671,7 +683,7 @@
       "where": "itch.io",
       "signal": "Featured on itch.io and in new and popular, rated 4.9 out of 5 from 51 ratings about a week after release (itch.io)",
       "hook": "A falling-block puzzle where you spin the whole board and juggle several pieces at once.",
-      "borrow": "Take a solved genre and rotate its frame of reference. A browser build on itch.io feeding a Steam page is a cheap funnel for a three.js prototype.",
+      "borrow": "Take a solved genre and rotate its frame of reference. A browser build on itch.io feeding a Steam page is a cheap funnel for a prototype.",
       "url": "https://sharkwithlasers.itch.io/rotetra",
       "image": {
         "src": "img/2026-10-15/spark-rotetra.webp",
@@ -679,7 +691,8 @@
         "credit": "Michael Kamm on Steam",
         "creditUrl": "https://store.steampowered.com/app/4306820/",
         "fit": "cover"
-      }
+      },
+      "forYou": "A good funnel for your three.js prototypes: itch.io browser build first, Steam page second."
     },
     {
       "id": "spark-probably-stolen",
@@ -707,7 +720,7 @@
       "where": "GameDiscoverCo",
       "signal": "August Steam debuts compared on today's players against peak and sales; Combolands keeps over half its peak while ReStory holds about 15% but sold over 600,000 (GameDiscoverCo estimates)",
       "hook": "Retention as a share of peak shows which game styles stick, and it does not track revenue.",
-      "borrow": "Track the share of peak players at six to eight weeks for your ARPG, alongside units, rather than judging launch by peak alone.",
+      "borrow": "Track the share of peak players at six to eight weeks, alongside units, rather than judging a launch by its peak alone.",
       "url": "https://newsletter.gamediscover.co/p/steam-games-with-ccu-staying-power",
       "image": {
         "src": "img/2026-10-15/spark-ccu-staying.webp",
@@ -715,7 +728,8 @@
         "credit": "GameDiscoverCo",
         "creditUrl": "https://newsletter.gamediscover.co/p/steam-games-with-ccu-staying-power",
         "fit": "contain"
-      }
+      },
+      "forYou": "Use that six-to-eight-week ratio as the launch metric for ElementalBlades."
     },
     {
       "id": "spark-epaper-gameboy",
@@ -749,7 +763,7 @@
       "problem": "Skills come from teams, personal folders, plugins and copied collections, and the model chooses one by name and description alone. A similar skill can replace yours and drop its key rules, such as never touching git, while completion-only evals see nothing wrong.",
       "idea": "Rebuild the skills Claude Code would load in 20,947 public repos, find similar pairs, and run 312 confirmed pairs across Haiku 4.5, Sonnet 4.6 and Opus 5: 6,368 runs scored on the functions only the installed skill provides.",
       "result": "About 1 in 4 installed skills has a same-job twin. A twin cuts use of the installed skill by 19.9 points with no drop in task completion, and costs 9.4 points of its core functions (22.1 on Haiku, none on Opus). Replies name the skill used in 0.9% of runs. A hook blocking the twin's first read makes the model switch 96% of the time.",
-      "useIt": "List your personal, plugin and project skills and merge overlapping ones. Give skills distinct names and descriptions. Add a PreToolUse hook that redirects reads of known duplicate SKILL.md files, and test the rules only your skill enforces.",
+      "useIt": "List personal, plugin and project skills and merge overlapping ones; give skills distinct names and descriptions; add a hook that redirects reads of known duplicates; test the rules only one skill enforces.",
       "maturity": "code",
       "links": [
         {
@@ -767,7 +781,8 @@
         "credit": "Yan et al., arXiv",
         "creditUrl": "https://arxiv.org/abs/2610.11647",
         "fit": "contain"
-      }
+      },
+      "forYou": "Audit your global, plugin and Brain vault skills for overlaps; you have enough of them now for this to bite."
     },
     {
       "id": "lab-cuacd",
@@ -781,7 +796,7 @@
       "problem": "Physics and collision need meshes split into convex parts. Search-based methods take tens of seconds per mesh, which pushes collision generation into overnight bakes.",
       "idea": "Design the algorithm around the GPU warp: fuse the search, cutting and hull steps into kernels that stay on the GPU, with a device-side allocator so nothing round-trips to the CPU.",
       "result": "Mean per mesh against CoACD at the same concavity target: 0.23 s vs 18.03 s on the V-HACD set, 0.16 s vs 12.82 s on PartNet-Mobility and 0.25 s vs 25.93 s on an Objaverse subset, with equal or better concavity and fewer parts (for example 33.6 vs 40.5).",
-      "useIt": "Batch-generate collision for your plugin sample meshes and ARPG props on an NVIDIA GPU, then import the convex pieces as custom collision in Unreal instead of waiting on slow decompositions.",
+      "useIt": "Batch-generate collision for meshes on an NVIDIA GPU, then import the convex pieces as custom collision in Unreal or another engine instead of waiting on slow decompositions.",
       "maturity": "code",
       "links": [
         {
@@ -799,7 +814,8 @@
         "credit": "Shi et al., arXiv",
         "creditUrl": "https://arxiv.org/abs/2609.28731",
         "fit": "contain"
-      }
+      },
+      "forYou": "Run it over your plugin sample meshes and ElementalBlades props."
     },
     {
       "id": "lab-agent-cost",
@@ -813,7 +829,7 @@
       "problem": "Coding agents are expensive, and the recurring wasteful habits behind the bill had not been measured.",
       "idea": "Study 1,200 SWE-bench Verified trajectories from Claude Code and Mini-SWE-Agent, name three habits (re-reading code already seen, writing near-duplicate scripts, rerunning unchanged tests), then compare three fixes over 10,000 trajectories.",
       "result": "The habits appear in 79 to 98% of tasks and account for up to 22.75% of cost. A code-graph MCP raised cost in 4 of 8 settings. Agent-written skills saved at most 22.32%. Developer-written rules cut cost by 7.88 to 41.73% with pass rates within about 2.5 points.",
-      "useIt": "Add a short section to CLAUDE.md: state a hypothesis before searching, reuse context you already have, keep and revise one script, capture test output and rerun only when code changes, break loops. Compare cost on a few real tasks with and without it.",
+      "useIt": "Add a short section to an agent's instructions: state a hypothesis before searching, reuse context already gathered, keep and revise one script, rerun tests only when code changes, break loops. Compare cost on real tasks with and without it.",
       "maturity": "code",
       "links": [
         {
@@ -827,7 +843,8 @@
         "credit": "Hu et al., arXiv",
         "creditUrl": "https://arxiv.org/abs/2609.30725",
         "fit": "contain"
-      }
+      },
+      "forYou": "Add it to your global CLAUDE.md and compare a week of usage on the Radar routine before and after."
     }
   ]
 }

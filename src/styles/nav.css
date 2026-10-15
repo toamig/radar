@@ -97,3 +97,17 @@
 @media (max-width: 700px) {
   .tuning .tune-flag { bottom: calc(76px + env(safe-area-inset-bottom)); }
 }
+
+/* The owner's private angle on each story: only in tune mode. */
+.for-you { display: none; }
+.tuning .for-you {
+  display: block;
+  margin: 12px 0 0;
+  padding: 10px 14px 10px 16px;
+  border: 2px dashed var(--text);
+  font-size: .95rem;
+  line-height: 1.5;
+  max-width: var(--measure);
+}
+.tuning .for-you b { margin-right: .4em; padding: 1px 7px; background: var(--text); color: var(--paper); font-size: .78rem; }
+.tuning .spark .for-you { margin: 10px 16px 0; }

@@ -68,6 +68,19 @@ function checkFile(rel, kind) {
   }
 }
 
+// The page is public: the owner's own projects and "the reader" belong in forYou only.
+const PERSONAL = /\b(this reader|one reader|the reader's|ElementalBlades|Polyglyph|Vylora|ObraJusta|Imperion|your (Fab|plugins?|SaaS|ARPG|three\.js|Flutter|Node and Supabase|Supabase|UE5 C\+\+ plugins|CLAUDE\.md)|this site's|this routine|plugin seller)\b/i;
+function* publicText(node, path = '') {
+  if (typeof node === 'string') { yield [path, node]; return; }
+  if (Array.isArray(node)) { for (let i = 0; i < node.length; i++) yield* publicText(node[i], `${path}.${i}`); return; }
+  if (node && typeof node === 'object') {
+    for (const [k, v] of Object.entries(node)) {
+      if (['forYou', 'url', 'creditUrl', 'src', 'theme', 'note'].includes(k)) continue;
+      yield* publicText(v, path ? `${path}.${k}` : k);
+    }
+  }
+}
+
 const WIDTH = { full: 6, wide: 4, half: 3, third: 2 };
 function checkRows(issue) {
   let row = 0;
@@ -95,6 +108,10 @@ for (const f of list(issueDir, '.json')) {
   if (!res.success) {
     for (const i of res.error.issues) err(`issues/${f}: ${i.path.join('.') || '(root)'}: ${i.message}`);
     continue;
+  }
+  for (const [path, value] of publicText(raw)) {
+    const hit = value.match(PERSONAL);
+    if (hit) err(`issues/${f}: ${path} is public but mentions "${hit[0]}"; move that angle to forYou`);
   }
   const issue = res.data;
   if (`${issue.date}.json` !== f) err(`issues/${f}: file name must be the issue date (${issue.date}.json)`);

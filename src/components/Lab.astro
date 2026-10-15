@@ -37,6 +37,7 @@ const KIND = { paper: 'Paper', preprint: 'Preprint', thesis: 'Thesis', report: '
                 <div class="use"><dt>Use it</dt><dd><Inline text={p.useIt} /></dd></div>
               </dl>
             </div>
+            {p.forYou && <p class="for-you"><b>For you</b><Inline text={p.forYou} /></p>}
             <ol class="maturity" aria-label={`Maturity: ${STAGES[level].label}`}>
               {STAGES.map((s, k) => <li class:list={{ on: k <= level, here: k === level }}>{s.label}</li>)}
             </ol>

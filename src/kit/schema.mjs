@@ -51,8 +51,13 @@ const base = {
   ink: z.enum(['a', 'b']).default('a'),
   texture: z.enum(['flat', 'halftone', 'overprint']).default('flat'),
   title: text(120),
-  /** Why this matters to the reader, in one or two sentences. */
+  /** Why this matters to any developer, in one or two sentences. Public: never about the owner's own work. */
   why: text(320),
+  /**
+   * The owner's private angle: what this means for their plugins, games, SaaS and
+   * workflow, and what to do about it. Shown only in tune mode.
+   */
+  forYou: text(400).optional(),
   sources: z.array(Source).min(1).max(5),
   /** Optional real picture for the block; hero, spotlight and concept use it in place of art. */
   image: Image.optional(),
@@ -211,6 +216,8 @@ export const Spark = z.object({
   hook: text(240),
   /** What the reader could take from it for their own work. */
   borrow: text(260),
+  /** Private angle for the owner, shown only in tune mode. */
+  forYou: text(400).optional(),
   url,
   image: Image.optional(),
 });
@@ -231,6 +238,8 @@ export const Paper = z.object({
   result: text(400),
   useIt: text(400),
   maturity: z.enum(['idea', 'prototype', 'code', 'shipping']),
+  /** Private angle for the owner, shown only in tune mode. */
+  forYou: text(400).optional(),
   links: z.array(Source).min(1).max(4),
   image: Image.optional(),
 });
