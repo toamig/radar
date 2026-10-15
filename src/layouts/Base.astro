@@ -26,7 +26,8 @@ const vars = (s: typeof t.day) => `
   --tint-a:${s.tintA};--tint-b:${s.tintB};--on-a:${onInk(s.inkA)};--on-b:${onInk(s.inkB)};`;
 const typeVars = `--display-font:${t.type.display};--display-weight:${t.type.displayWeight};
   --display-stretch:${t.type.displayStretch};--display-tracking:${t.type.tracking};
-  --display-case:${t.type.caseUpper ? 'uppercase' : 'none'};--plate:${t.plate};`;
+  --display-case:${t.type.caseUpper ? 'uppercase' : 'none'};--plate:${t.plate};
+  --display-scale:${t.type.scale};`;
 // Values come from the catalog tables, never from issue text.
 const css = `:root{${vars(t.day)}${typeVars}}
 @media (prefers-color-scheme: dark){:root:not([data-theme='light']){${vars(t.night)}}}

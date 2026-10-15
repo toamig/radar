@@ -50,22 +50,22 @@ export const TYPE_SETS = {
   poster: {
     name: 'Big Shoulders',
     display: "'Big Shoulders Display Variable', 'Arial Narrow', sans-serif",
-    displayWeight: 800, displayStretch: '100%', tracking: '-0.01em', caseUpper: true, scale: 1.18,
+    displayWeight: 800, displayStretch: '100%', tracking: '-0.01em', caseUpper: true, scale: 1,
   },
   wide: {
     name: 'Anybody Expanded',
     display: "'Anybody Variable', 'Arial Black', sans-serif",
-    displayWeight: 760, displayStretch: '135%', tracking: '-0.03em', caseUpper: false, scale: 0.86,
+    displayWeight: 760, displayStretch: '135%', tracking: '-0.03em', caseUpper: false, scale: 0.72,
   },
   grotesk: {
     name: 'Bricolage Grotesque',
     display: "'Bricolage Grotesque Variable', 'Helvetica Neue', sans-serif",
-    displayWeight: 700, displayStretch: '100%', tracking: '-0.035em', caseUpper: false, scale: 1,
+    displayWeight: 700, displayStretch: '100%', tracking: '-0.035em', caseUpper: false, scale: 0.9,
   },
   condensed: {
     name: 'Anybody Condensed',
     display: "'Anybody Variable', 'Arial Narrow', sans-serif",
-    displayWeight: 820, displayStretch: '62%', tracking: '-0.01em', caseUpper: true, scale: 1.12,
+    displayWeight: 820, displayStretch: '62%', tracking: '-0.01em', caseUpper: true, scale: 1,
   },
 };
 
