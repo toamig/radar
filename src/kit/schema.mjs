@@ -19,15 +19,13 @@ const imagePath = z.string().regex(/^img\/\d{4}-\d{2}-\d{2}\/[a-z0-9-]+\.webp$/,
 /**
  * A real picture: a publisher's or vendor's own image, a paper figure, a video
  * still or a screenshot, downloaded and re-encoded by scripts/fetch-image.mjs.
- * Always credited. "duotone" prints photos in the day's inks; "natural" keeps
- * screenshots, figures and diagrams readable.
+ * Always credited, and always shown in its own colors.
  */
 export const Image = z.object({
   src: imagePath,
   alt: text(240),
   credit: text(80),
   creditUrl: url,
-  treatment: z.enum(['duotone', 'natural']).default('natural'),
   fit: z.enum(['cover', 'contain']).default('cover'),
 });
 

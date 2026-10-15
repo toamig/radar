@@ -7,8 +7,6 @@
 .media-frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .media.fit-contain .media-frame { aspect-ratio: auto; }
 .media.fit-contain .media-frame img { height: auto; object-fit: contain; }
-.media.t-duotone[data-ink='a'] img { filter: url(#duo-a) contrast(1.05); }
-.media.t-duotone[data-ink='b'] img { filter: url(#duo-b) contrast(1.05); }
 .media figcaption { margin-top: 6px; font-size: .78rem; color: var(--muted); }
 .media figcaption a { color: inherit; }
 .hero-art.media { margin: 0; background: none; aspect-ratio: auto; overflow: visible; }

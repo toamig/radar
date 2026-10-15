@@ -96,10 +96,8 @@ downloads one, re-encodes it to `public/img/<date>/<slug>.webp` and writes a pre
   pages link them), project pages, YouTube stills (`https://i.ytimg.com/vi/<id>/maxresdefault.jpg`).
 - `image` fields: `src`, `alt` (what the picture shows, for someone who cannot see it),
   `credit` (publisher, studio or authors, plus the licence when it is a paper), `creditUrl`
-  (the page it came from), `treatment`, `fit`.
-- `treatment: "duotone"` prints photos and key art in the day's inks: use it for photos of
-  people, places, products and game key art. Keep `"natural"` for screenshots, charts, paper
-  figures and anything with text or data in it.
+  (the page it came from), `fit`.
+- Images always show in their own colors. Never tint, filter or recolor them.
 - `fit: "contain"` for charts and figures that must show whole; `"cover"` for photos and
   screenshots that can crop.
 - Credit every image and link to where it came from. Use the image to illustrate the story

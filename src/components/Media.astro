@@ -1,16 +1,15 @@
 ---
-// A real picture with its credit line. Duotone prints it in the day's inks
-// through the SVG filters declared in Base.astro; natural leaves it as is.
+// A real picture with its credit line.
 import { asset } from '../kit/data';
 interface Props {
-  image: { src: string; alt: string; credit: string; creditUrl: string; treatment: 'duotone' | 'natural'; fit: 'cover' | 'contain' };
+  image: { src: string; alt: string; credit: string; creditUrl: string; fit: 'cover' | 'contain' };
   ink?: 'a' | 'b';
   class?: string;
   eager?: boolean;
 }
 const { image, ink = 'a', eager = false } = Astro.props;
 ---
-<figure class:list={['media', Astro.props.class, `t-${image.treatment}`, `fit-${image.fit}`]} data-ink={ink}>
+<figure class:list={['media', Astro.props.class, `fit-${image.fit}`]} data-ink={ink}>
   <div class="media-frame">
     <img src={asset(image.src)} alt={image.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
   </div>

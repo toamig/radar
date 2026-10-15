@@ -72,7 +72,6 @@
         "alt": "Tim Sweeney speaking in front of a glowing Unreal Engine 6 logo",
         "credit": "Wccftech",
         "creditUrl": "https://wccftech.com/epic-games-ai-acceleration-tim-sweeney-better-games-not-fewer-people/",
-        "treatment": "duotone",
         "fit": "cover"
       }
     },
@@ -100,7 +99,6 @@
         "alt": "Bar chart of changes merged per day in Anthropic's monorepo from January to September 2026, rising from under 2,000 to a peak of 30,401 on September 9, with Antique change requests replacing pull requests from June",
         "credit": "Anthropic Engineering",
         "creditUrl": "https://www.anthropic.com/engineering/redesigning-source-control",
-        "treatment": "natural",
         "fit": "contain"
       },
       "why": "Two lessons travel to any team running agents: human review shifts toward saying no, and global merge queues stop paying off when an agent can fix a conflict in seconds. The Harvard study below shows the same bottleneck from the outside.",
@@ -283,7 +281,6 @@
         "alt": "A busy RimWorld colony seen from above, with a colonist health panel open, fires burning and the jungle around the walls",
         "credit": "Ludeon Studios on Steam",
         "creditUrl": "https://store.steampowered.com/app/294100/RimWorld/",
-        "treatment": "natural",
         "fit": "cover"
       }
     },
@@ -579,7 +576,6 @@
         "alt": "A person on a sofa with a laptop under a prompt box reading \"Describe a game to start building\" and the Playground wordmark",
         "credit": "Google",
         "creditUrl": "https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/",
-        "treatment": "duotone",
         "fit": "cover"
       }
     },
@@ -745,7 +741,6 @@
         "alt": "An obstacle course with labeled start and goal regions, moving and spinning obstacles, a movable block, and found player trajectories drawn as lines",
         "credit": "Majercik et al., CC BY 4.0",
         "creditUrl": "https://arxiv.org/abs/2609.36225",
-        "treatment": "natural",
         "fit": "contain"
       }
     },
@@ -774,7 +769,6 @@
         "alt": "Three-panel figure: same-named send_email tools with different parameter sets, the one-field-changed comparison design, and selection collapsing when to is renamed recipient_id",
         "credit": "Li, Qiao and Gao, CC BY 4.0",
         "creditUrl": "https://arxiv.org/abs/2610.14334",
-        "treatment": "natural",
         "fit": "contain"
       }
     },
@@ -811,7 +805,6 @@
         "alt": "A thousand small objects spelling SIGGRAPH ASIA, going from overlapping to separated, beside a cluttered scene turned into a simulation-ready one",
         "credit": "Dou et al., CC BY 4.0",
         "creditUrl": "https://arxiv.org/abs/2609.20524",
-        "treatment": "natural",
         "fit": "contain"
       }
     }
@@ -832,7 +825,6 @@
         "alt": "A raider crouching behind a wrecked car while a giant red-eyed machine walker towers over the road",
         "credit": "Embark Studios on Steam",
         "creditUrl": "https://store.steampowered.com/app/1808500/ARC_Raiders/",
-        "treatment": "duotone",
         "fit": "cover"
       }
     },
@@ -851,7 +843,6 @@
         "alt": "First-person view from a low-poly rally car on a forest road, the navigator's orange tablet showing the route",
         "credit": "Left! Left! LEFT! on Steam",
         "creditUrl": "https://store.steampowered.com/app/5362020/Left_Left_LEFT/",
-        "treatment": "natural",
         "fit": "cover"
       }
     },
@@ -870,7 +861,6 @@
         "alt": "A fake desktop with a phone window showing a grandmother caller at 65% trusting, a form, a +$250 popup and a co-op player on webcam",
         "credit": "JakeHub and Metater on Steam",
         "creditUrl": "https://store.steampowered.com/app/4954910/Scam_With_Your_Friends/",
-        "treatment": "natural",
         "fit": "cover"
       }
     },
@@ -889,7 +879,6 @@
         "alt": "The Gran Turismo 4 title screen running inside a web browser",
         "credit": "ps2-web-recomp README",
         "creditUrl": "https://github.com/snuri00/ps2-web-recomp",
-        "treatment": "natural",
         "fit": "contain"
       }
     },
@@ -908,7 +897,6 @@
         "alt": "A hand-painted Victorian boutique where a customer in a magenta coat approves her dress beside a sleeping cat",
         "credit": "Free Lives on Steam",
         "creditUrl": "https://store.steampowered.com/app/4019220/Dressmaker/",
-        "treatment": "natural",
         "fit": "cover"
       }
     }
