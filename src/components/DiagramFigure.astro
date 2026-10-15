@@ -1,0 +1,78 @@
+---
+// Clean schematics drawn by the kit, so a "how it works" story gets a real
+// diagram instead of decoration. Four layouts:
+//   flow    steps left to right (top to bottom on narrow blocks), links label the arrows
+//   layers  a stack from top to bottom, like an architecture diagram
+//   hub     one central part and the parts around it
+//   cycle   a loop that comes back to the start
+import Inline from './Inline.astro';
+interface Props { id: string; title: string; layout: 'flow' | 'layers' | 'hub' | 'cycle'; nodes: any[]; links?: string[]; caption?: string; class?: string }
+const b = Astro.props;
+const nodes = b.nodes as { label: string; note?: string; key: boolean }[];
+const links = (b.links ?? []) as string[];
+const hubIndex = Math.max(0, nodes.findIndex((n) => n.key));
+const spokes = nodes.filter((_, i) => i !== hubIndex);
+const left = spokes.filter((_, i) => i % 2 === 0);
+const right = spokes.filter((_, i) => i % 2 === 1);
+// Cycle geometry in a 100x100 box.
+const R = 36;
+const pos = nodes.map((_, i) => {
+  const a = -Math.PI / 2 + (i * 2 * Math.PI) / nodes.length;
+  return { x: 50 + R * Math.cos(a), y: 50 + R * Math.sin(a), a };
+});
+const arc = (i: number) => {
+  const n = nodes.length;
+  const gap = Math.min(0.42, Math.PI / n - 0.12);
+  const a0 = pos[i].a + gap, a1 = pos[(i + 1) % n].a - gap;
+  const p0 = { x: 50 + R * Math.cos(a0), y: 50 + R * Math.sin(a0) };
+  const p1 = { x: 50 + R * Math.cos(a1), y: 50 + R * Math.sin(a1) };
+  return `M${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A${R} ${R} 0 0 1 ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
+};
+const mid = (i: number) => {
+  const a = (pos[i].a + pos[(i + 1) % nodes.length].a + (i === nodes.length - 1 ? 2 * Math.PI : 0)) / 2;
+  return { x: 50 + (R - 11) * Math.cos(a), y: 50 + (R - 11) * Math.sin(a) };
+};
+---
+<figure class:list={['dia-fig', Astro.props.class]}>
+<div class:list={['dia', `dia-${b.layout}`]} role="img" aria-label={`${b.title}: ${nodes.map((n) => n.label).join(', ')}`}>
+  {b.layout === 'flow' && (
+    <ol class="dia-flow" aria-hidden="true">
+      {nodes.map((n, i) => (
+        <>
+          <li class:list={['dia-node', { key: n.key }]}><b>{n.label}</b>{n.note && <span>{n.note}</span>}</li>
+          {i < nodes.length - 1 && <li class="dia-link"><span>{links[i] ?? ''}</span></li>}
+        </>
+      ))}
+    </ol>
+  )}
+  {b.layout === 'layers' && (
+    <ol class="dia-layers" aria-hidden="true">
+      {nodes.map((n) => <li class:list={['dia-node', { key: n.key }]}><b>{n.label}</b>{n.note && <span>{n.note}</span>}</li>)}
+    </ol>
+  )}
+  {b.layout === 'hub' && (
+    <div class="dia-hub" aria-hidden="true">
+      <ul class="dia-side dia-left">{left.map((n) => <li class="dia-node"><b>{n.label}</b>{n.note && <span>{n.note}</span>}</li>)}</ul>
+      <div class="dia-node dia-center key"><b>{nodes[hubIndex].label}</b>{nodes[hubIndex].note && <span>{nodes[hubIndex].note}</span>}</div>
+      <ul class="dia-side dia-right">{right.map((n) => <li class="dia-node"><b>{n.label}</b>{n.note && <span>{n.note}</span>}</li>)}</ul>
+    </div>
+  )}
+  {b.layout === 'cycle' && (
+    <div class="dia-cycle" aria-hidden="true">
+      <svg viewBox="0 0 100 100">
+        <defs>
+          <marker id={`arrow-${b.id}`} viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+            <path d="M0 0L10 5L0 10z" class="dia-arrowhead" />
+          </marker>
+        </defs>
+        {nodes.map((_, i) => <path d={arc(i)} class="dia-arc" marker-end={`url(#arrow-${b.id})`} />)}
+        {links.slice(0, nodes.length).map((l, i) => l && <text x={mid(i).x} y={mid(i).y} class="dia-arc-label" text-anchor="middle" dominant-baseline="middle">{l}</text>)}
+      </svg>
+      {nodes.map((n, i) => (
+        <div class:list={['dia-node', { key: n.key }]} style={`left:${pos[i].x}%;top:${pos[i].y}%`}><b>{n.label}</b>{n.note && <span>{n.note}</span>}</div>
+      ))}
+    </div>
+  )}
+</div>
+{b.caption && <figcaption class="chart-note"><Inline text={b.caption} /></figcaption>}
+</figure>

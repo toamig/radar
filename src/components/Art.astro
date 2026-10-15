@@ -1,19 +1,12 @@
 ---
-// The visual slot of a block: a real image when there is one, then drawn SVG
-// art, and generated print art only as the last resort.
-import GenArt from './GenArt.astro';
+// The visual slot of a block: a real image, or a labelled schematic drawn as SVG.
+// There is no decorative fallback: a block with nothing worth showing shows nothing.
 import Media from './Media.astro';
 import { asset } from '../kit/data';
-import type { Palette } from '../kit/palette';
-interface Props { src?: string; alt?: string; image?: any; seed: string; palette: Palette; ink?: 'a' | 'b'; class?: string; kind?: string; eager?: boolean }
-const { src, alt, image, seed, palette, ink = 'a', kind, eager } = Astro.props;
-const [a, b] = ink === 'a' ? [palette.a, palette.b] : [palette.b, palette.a];
+interface Props { src?: string; alt?: string; image?: any; ink?: 'a' | 'b'; class?: string; eager?: boolean; [k: string]: any }
+const { src, alt, image, ink = 'a', eager } = Astro.props;
 const cls = Astro.props.class ?? 'art';
 ---
 {image
   ? <Media image={image} ink={ink} class={cls} eager={eager} />
-  : <figure class={cls}>
-      {src
-        ? <img src={asset(src)} alt={alt ?? ''} loading="lazy" decoding="async" />
-        : <GenArt seed={seed} a={a} b={b} plate={palette.plate} kind={kind} />}
-    </figure>}
+  : src && <figure class={cls}><img src={asset(src)} alt={alt ?? ''} loading="lazy" decoding="async" /></figure>}

@@ -147,3 +147,12 @@
   .lab-grid { grid-template-columns: 1fr; }
   .paper.lead .paper-body.has-fig { grid-template-columns: 1fr; }
 }
+
+/* Hero visuals: a kit diagram in place of an image, or no visual at all. */
+.dia-fig { margin: 0; }
+.hero-dia { align-self: center; }
+.hero-dia .dia { margin: 0; }
+.hero-dia .dia-node b { font-size: 1.25rem; }
+.hero[data-variant='split'] .hero-wrap.hero-visual-none { grid-template-columns: 1fr; }
+.hero-wrap.hero-visual-none .hero-take { max-width: 52ch; }
+.hero-dia-wide { grid-column: 1 / -1; margin: 6px 0 4px; }

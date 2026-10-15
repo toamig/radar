@@ -61,6 +61,9 @@ function checkFile(rel, kind) {
     if (!/^\s*(<\?xml[^>]*>\s*)?<svg[\s>]/i.test(src)) err(`art ${rel} must be a single <svg> document`);
     if (!/viewBox=/.test(src)) warn(`art ${rel} has no viewBox, so it may not scale`);
     for (const [re, what] of SVG_BANNED) if (re.test(src)) err(`art ${rel}: ${what} is not allowed`);
+    // Drawn art must explain something: a labelled schematic, not decoration.
+    const labels = (src.match(/<text/g) ?? []).length;
+    if (labels < 3) err(`art ${rel} has ${labels} text labels; drawn art must be a labelled schematic (3 or more labels). Use a real image, a kit diagram or chart, or no visual instead of decoration`);
   } else {
     if (size > 200_000) err(`bespoke ${rel} is ${size} bytes; keep it under 200 KB`);
     if (!CSP.test(src)) err(`bespoke ${rel}: must start its <head> with the exact CSP meta tag from routine/FORMATS.md`);
@@ -124,10 +127,10 @@ for (const f of list(issueDir, '.json')) {
   for (const spark of issue.sparks) if (spark.image) checkFile(spark.image.src, 'image');
   if (issue.sparks.length < 3) warn(`${issue.date}: ${issue.sparks.length} sparks; aim for 3 to 6 rising games, concepts or techniques`);
   if (issue.lab.length === 0) warn(`${issue.date}: no lab entry today; the lab should carry 1 to 3 research results`);
-  const pictured = issue.blocks.filter((b) => b.image || b.art || b.format === 'diagram').length;
-  if (pictured < 3) warn(`${issue.date}: only ${pictured} blocks have a real image, drawn art or a diagram; aim for at least 4`);
+  const pictured = issue.blocks.filter((b) => b.image || b.art || b.diagram || ['diagram', 'chart'].includes(b.format)).length;
+  if (pictured < 3) warn(`${issue.date}: only ${pictured} blocks have a real image, diagram or chart; aim for at least 4`);
   const hero = issue.blocks[0];
-  if (hero && !hero.image && !hero.art) warn(`${issue.date}: the hero has no real image or drawn art, so it falls back to generated shapes`);
+  if (hero && !hero.image && !hero.art && !hero.diagram) warn(`${issue.date}: the hero has no real image, diagram or labelled schematic; that is fine only if nothing real fits`);
   checkRows(issue);
   const heroes = issue.blocks.filter((b) => b.format === 'hero').length;
   if (heroes > 1) err(`${issue.date}: only one hero per issue`);

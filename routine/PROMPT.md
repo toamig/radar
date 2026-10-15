@@ -132,11 +132,12 @@ that format needs). Ask desks to drop anything they cannot confirm.
 - Compose rows that fill the 6 columns, and vary the rhythm from yesterday (if
   yesterday opened with two halves after the hero, open differently today).
 - Choose the hero variant; do not repeat yesterday's.
-- Picture every story you can, following "Pictures" in `FORMATS.md`: a real image first
-  (the product, the game, the figure, the chart from the source), a `diagram` when the story
-  is about how something works, drawn SVG art for an idea no photo shows. Aim for a real
-  image or diagram on at least half the blocks, every spark you can, and every lab entry
-  that has a figure. The hero must have a real image or drawn art.
+- Picture the stories that can be pictured, following "Pictures" in `FORMATS.md`: a real
+  image first (the product, the game, the figure, the chart from the source), a kit
+  `diagram` when the story is a process or a system, a chart when it is numbers. Never
+  draw decorative or symbolic art: if nothing real or explanatory fits, the block has no
+  visual. Give the hero a real image, or a `diagram` when the story is how something
+  works; a text-only hero is better than an invented picture.
 - Get images with `scripts/fetch-image.mjs` (use `--list` to see the images inside an
   article) and open every preview in `.cache/preview/` before using it. Reject logos, brand
   cards, stock photos and clickbait thumbnails; find a better one or use a diagram.

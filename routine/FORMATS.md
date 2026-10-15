@@ -58,7 +58,7 @@ Choose by what the reader needs to learn, not by what is easiest to write.
 
 | Format | Use it when | Extra fields | Good sizes |
 |---|---|---|---|
-| `hero` | The day's lead. Exactly one, first. | `variant` (`split` text beside art, `poster` wide art band with the title cutting into it, `stack` title over a 3:1 art band), `takeaway` (the point in two sentences), `body` 1-4 paragraphs, `art`/`artAlt` optional, `stat` `{ value, label }` optional | `full` |
+| `hero` | The day's lead. Exactly one, first. | `variant` (`split` text beside art, `poster` wide art band with the title cutting into it, `stack` title over a 3:1 art band), `takeaway` (the point in two sentences), `body` 1-4 paragraphs, then one visual at most: `image` (preferred), `diagram` `{ layout, nodes (2-6), links, caption }` drawn by the kit after the headline, or a labelled `art` schematic; `stat` `{ value, label }` optional. With no visual the hero is text only. | `full` |
 | `spotlight` | A product, tool, model or release to know by name. | `name` (big), `what` (one line), `body` 1-3, `facts` up to 5 `{ k, v }`, `tryIt` (a command, URL or setting), `art` optional | `half`, `wide` |
 | `steps` | A process, workflow or how-to. Only real sequences. | `intro`, `steps` 2-7 `{ title, text }` | `half`, `wide`, `full` |
 | `compare` | Two things side by side: before and after, A vs B. | `intro`, `left`, `right` (column names), `rows` 2-8 `{ aspect, left, right }`, `verdict` | `full`, `wide` |
@@ -88,14 +88,21 @@ tune mode, which only the owner turns on. `taste.md` has the profile to write it
 
 ## Pictures
 
-Every issue should feel illustrated by the stories themselves. In order of preference:
+A visual must help the reader understand the story. Decoration does not: abstract
+shapes, symbolic art and mood images were tried and rejected because they add nothing.
+In order of preference:
 
 1. **A real image** (`image` on the block): the thing itself. A product or editor
    screenshot, a game's official screenshot, a paper's figure, a chart from the source,
    a photo from the event, a video still.
-2. **A diagram** (`diagram` format) when the story is about how something works.
-3. **Drawn SVG art** (`art`) for an idea no photo shows.
-4. Generated print art is the fallback, never the plan. The hero must have 1, 2 or 3.
+2. **A kit diagram or chart**: the `diagram` format (or `diagram` on the hero) when the
+   story is a process, a pipeline, an architecture or a loop; `chart`, `stat`,
+   `compare` or `timeline` when it is numbers or dates. These read best of all.
+3. **A labelled schematic** drawn as SVG (`art`), only when the mechanism does not fit the
+   kit's diagram layouts. It must label its parts: validate rejects drawn art with fewer
+   than three text labels.
+4. **Nothing.** A block with no real image and no structure to draw has no visual, and
+   that is fine. Never invent a picture to fill space.
 
 Getting images: `node scripts/fetch-image.mjs --list <article-url>` lists the page's
 share image and the images inside the article; `node scripts/fetch-image.mjs <image-or-page-url> <date> <slug>`
@@ -167,11 +174,11 @@ from yesterday; pair one darker ink (`medium-blue`, `blue`, `teal`, `purple`, `g
 `bright-red`) with one bright ink so headlines keep a color; let the day's tone
 suggest the mood (a heavy news day can be loud, a quiet one softer).
 
-## Art
+## Labelled schematics (art)
 
-Blocks without `art` get generated print art seeded from their id, so art is
-optional. Draw your own SVG when a picture explains the story better than shapes:
-a diagram of how something works, a chart-like illustration, a symbolic image.
+Only for a mechanism the kit's diagram layouts cannot show: a memory layout, a render
+pass, a network topology, a game loop with timing. It is a technical drawing with its
+parts labelled, never a symbolic or decorative picture.
 
 - File: `public/art/<date>/<slug>.svg`, referenced as `art/<date>/<slug>.svg`.
 - One `<svg>` with a `viewBox`. 4:3 for heroes (`split`), 21:8 for `poster`, 3:1 for
@@ -179,8 +186,9 @@ a diagram of how something works, a chart-like illustration, a symbolic image.
 - Use only the day's two ink hex values, the text ink and the paper hex (from the
   catalog), with `style="mix-blend-mode:multiply"` on overlapping shapes for the
   riso overprint look. Halftone fills via `<pattern>` work well.
-- Text inside art: avoid it, or keep it to a few large words. Fonts are not loaded
-  inside SVG files.
+- Label the parts with `<text>` (three labels at least; validate checks). Use a generic
+  font stack such as `font-family="Georgia, serif"` with a size of 14 or more: web fonts
+  are not loaded inside SVG files.
 - Not allowed (validate rejects them): scripts, event handlers, `foreignObject`,
   external `href`s, `url()` to anything but `#ids`, embedded media. Under 80 KB.
 - Always set `artAlt` describing what the picture shows.

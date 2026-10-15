@@ -74,6 +74,15 @@ export const Hero = z.object({
   body: z.array(Para).min(1).max(4),
   art: artPath.optional(),
   artAlt: text(200).optional(),
+  /** A kit diagram as the hero's visual, when no real image shows the story. */
+  diagram: z
+    .object({
+      layout: z.enum(['flow', 'layers', 'hub', 'cycle']),
+      nodes: z.array(z.object({ label: text(40), note: text(120).optional(), key: z.boolean().default(false) })).min(2).max(6),
+      links: z.array(text(40)).max(6).default([]),
+      caption: text(300).optional(),
+    })
+    .optional(),
   stat: z.object({ value: text(16), label: text(80) }).optional(),
 });
 
