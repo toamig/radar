@@ -41,14 +41,19 @@ export const latest = issues[0];
 function blockWords(b: BlockData): number {
   const parts: string[] = [b.title, b.why];
   const any = b as Record<string, any>;
-  for (const key of ['takeaway', 'what', 'intro', 'plain', 'context', 'quote', 'verdict', 'note']) {
+  for (const key of ['takeaway', 'gist', 'background', 'what', 'intro', 'plain', 'context', 'quote', 'verdict', 'note']) {
     if (typeof any[key] === 'string') parts.push(any[key]);
   }
-  for (const key of ['body', 'explain', 'points']) if (Array.isArray(any[key])) parts.push(...any[key]);
+  for (const key of ['body', 'explain', 'points', 'deep']) if (Array.isArray(any[key])) parts.push(...any[key]);
   for (const key of ['steps', 'items', 'events', 'rows']) {
     if (Array.isArray(any[key])) for (const it of any[key]) parts.push(...Object.values(it).filter((v) => typeof v === 'string') as string[]);
   }
   return parts.map(plain).join(' ').split(/\s+/).length;
+}
+
+/** Minutes to read one block, for its label. */
+export function blockMinutes(b: BlockData): number {
+  return Math.max(1, Math.round(blockWords(b) / 230));
 }
 
 export function readingMinutes(issue: IssueData): number {

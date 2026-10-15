@@ -9,6 +9,7 @@ import '../styles/radar.css';
 import '../styles/kit-extras.css';
 import '../styles/sparks.css';
 import '../styles/nav.css';
+import '../styles/readability.css';
 import { resolveTheme, onInk } from '../kit/catalog.mjs';
 import { BASE } from '../kit/data';
 
@@ -74,6 +75,7 @@ const ogImageUrl = ogImage ? new URL(`${BASE}${ogImage}`, Astro.site).href : und
         var q = new URLSearchParams(location.search);
         if (q.has('tune')) localStorage.setItem('radar-tune', q.get('tune') === '0' ? '0' : '1');
         if (localStorage.getItem('radar-tune') === '1') document.documentElement.classList.add('tuning');
+        if (localStorage.getItem('radar-key') !== '1') document.documentElement.classList.add('new-reader');
       } catch (e) {}
     </script>
   </head>
@@ -83,6 +85,7 @@ const ogImageUrl = ogImage ? new URL(`${BASE}${ogImage}`, Astro.site).href : und
     </div>
     <a class="tune-flag" href="?tune=0">Tune mode is on in this browser. <u>Turn it off</u></a>
     <script>
+      import '../kit/terms-client';
       // Charts draw their bars when they scroll into view.
       const charts = document.querySelectorAll('.chart');
       if ('IntersectionObserver' in window) {

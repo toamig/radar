@@ -80,6 +80,10 @@ reader's projects. The profile above shapes what gets picked and fills the priva
 
 ## Tone
 
+Write for a curious reader who loves games and AI but is not an expert in every corner
+of them. The owner reads Radar to learn, not only to keep up. Lead with the plain point,
+define the jargon, and keep the depth one click away.
+
 Developer to developer. Plain words, short sentences, concrete nouns. Explain what it
 is, what changed, and what to do about it. No hype words: powerful, seamless, robust,
 game-changing, revolutionary, unlock, supercharge.

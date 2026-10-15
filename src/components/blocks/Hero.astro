@@ -11,7 +11,8 @@ const visual = b.image || b.art ? 'art' : b.diagram ? 'diagram' : 'none';
   {visual === 'art' && b.variant !== 'split' && <Art class="hero-art" src={b.art} alt={b.artAlt} image={b.image} ink={b.ink} eager />}
   <div class="hero-head">
     <h2 class="hero-title display overprint register" data-text={title}>{title}</h2>
-    <p class="hero-take"><Inline text={b.takeaway} /></p>
+    <p class="hero-take"><Inline text={b.gist ?? b.takeaway} /></p>
+    {b.background && <p class="context"><b>Context</b><Inline text={b.background} /></p>}
   </div>
   {visual === 'diagram' && <DiagramFigure class:list={['hero-dia', { 'hero-dia-wide': b.variant !== 'split' }]} id={b.id} title={b.title} {...b.diagram} />}
   {visual === 'art' && b.variant === 'split' && <Art class="hero-art" src={b.art} alt={b.artAlt} image={b.image} ink={b.ink} eager />}

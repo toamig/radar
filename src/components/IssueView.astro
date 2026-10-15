@@ -7,6 +7,8 @@ import Block from './Block.astro';
 import Ticker from './Ticker.astro';
 import Lab from './Lab.astro';
 import Sparks from './Sparks.astro';
+import Learn from './Learn.astro';
+import ReaderKey from './ReaderKey.astro';
 import SectionNav from './SectionNav.astro';
 import { issues } from '../kit/data';
 import WeekStrip from './WeekStrip.astro';
@@ -17,6 +19,12 @@ import { plain } from '../kit/inline';
 interface Props { issue: IssueData; path: string }
 const { issue, path } = Astro.props;
 const pal = palette(issue.theme);
+const [hero, ...rest] = issue.blocks;
+const byId = new Map(issue.blocks.map((b) => [b.id, b]));
+// Themed groups when the issue has them; one ungrouped grid otherwise.
+const groups = issue.groups.length
+  ? issue.groups.map((g) => ({ ...g, blocks: g.ids.map((id) => byId.get(id)!).filter(Boolean) }))
+  : [{ title: '', note: undefined, blocks: rest }];
 ---
 <Base title={`Radar No. ${issue.number}: ${issue.title}`} shareTitle={`${issue.title} | Radar No. ${issue.number}`} description={plain(issue.dek)} theme={issue.theme} path={path} ogImage={`og/${issue.date}.jpg`} ogImageAlt={`Radar No. ${issue.number}: ${issue.title}`}>
   <Masthead date={issue.date} number={issue.number} minutes={readingMinutes(issue)} />
@@ -32,10 +40,23 @@ const pal = palette(issue.theme);
       </ul>
     </div>
   </section>
-  <SectionNav stories={issue.blocks.length} sparks={issue.sparks.length} lab={issue.lab.length} days={issues.length} />
-  <main id="stories" class="grid jump" aria-label="Stories">
-    {issue.blocks.map((b) => <Block block={b} date={issue.date} palette={pal} />)}
+  <ReaderKey />
+  <SectionNav stories={issue.blocks.length} learn={issue.learn ? 1 : 0} sparks={issue.sparks.length} lab={issue.lab.length} days={issues.length} />
+  <main id="stories" class="stories jump" aria-label="Stories">
+    <div class="grid grid-hero"><Block block={hero} date={issue.date} palette={pal} /></div>
+    {groups.map((g) => (
+      <section class="group" aria-label={g.title || undefined}>
+        {g.title && (
+          <header class="group-head">
+            <h2 class="display">{g.title}</h2>
+            {g.note && <p><Inline text={g.note} /></p>}
+          </header>
+        )}
+        <div class="grid">{g.blocks.map((b) => <Block block={b} date={issue.date} palette={pal} />)}</div>
+      </section>
+    ))}
   </main>
+  {issue.learn && <Learn learn={issue.learn} blocks={issue.blocks} />}
   <Sparks sparks={issue.sparks} />
   <Lab papers={issue.lab} />
   <Ticker items={issue.ticker} />

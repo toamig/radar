@@ -16,7 +16,9 @@ disagree, the schema wins and this file is wrong.
 | `dek` | One or two sentences under the title, at most 260 characters. |
 | `theme` | Inks, paper, text ink and type set for the day (see Theme). |
 | `tldr` | 3 to 5 `{ text, lane }` lines: the whole issue in thirty seconds. |
-| `blocks` | 4 to 14 blocks. The first is always the hero. 9 to 12 is the sweet spot. |
+| `blocks` | 4 to 14 blocks. The first is always the hero. 9 to 12 is the sweet spot. Order them by group. |
+| `groups` | 2 to 4 themed groups `{ title, note, ids }` that split the grid under headings, such as "Agents at work" or "Lock it down". Every block except the hero is in exactly one group. Titles name the theme in plain words (40 characters at most). |
+| `learn` | Learn one thing: one concept from today's stories explained from zero (see Learn one thing). |
 | `ticker` | Up to 14 one-line briefs `{ text, lane, url, source }` for "Also moving". |
 | `sparks` | 3 to 6 rising games, concepts and techniques (see Sparks). Shown after the grid. |
 | `lab` | 1 to 3 research results (see The lab). Shown after Sparks. |
@@ -32,7 +34,7 @@ one phrase a skimming reader must not miss.
 
 | Field | Notes |
 |---|---|
-| `id` | Lowercase slug, unique in the issue. Also seeds the generated art. |
+| `id` | Lowercase slug, unique in the issue. |
 | `format` | One of the formats below. |
 | `lane` | `gamedev`, `ai` or `both`. Shown as a glyph: a plus for game dev, a spark for AI. |
 | `importance` | 1 headline (hero only), 2 feature, 3 standard, 4 minor. 1 and 2 get bigger titles and a full-width ink bar. |
@@ -40,6 +42,12 @@ one phrase a skimming reader must not miss.
 | `ink` | `a` or `b`: which of the day's two inks leads the block. Alternate them. |
 | `texture` | `flat` (open on the paper), `halftone` (tinted plate with a halftone corner, for features you want to lift), `overprint` (title printed in the block's ink). Use `halftone` on 2 or 3 blocks a day at most. |
 | `title` | At most 120 characters. Sentence case; the poster and condensed type sets uppercase it visually. |
+| `kind` | What the item is: `news` (something happened), `release` (something shipped you can use), `lesson` (how someone solved a problem, or an idea worth learning), `action` (something readers should do, shown as "Do this"), `trend` (a direction things are moving). |
+| `level` | `everyone` (default): a curious non-specialist can follow it. `practitioner`: it needs hands-on background, so the body starts folded and only the title, gist and why show. |
+| `gist` | The story in plain words, one sentence, 240 characters at most. No jargon, no product codes: what happened and why anyone would care. It is read before anything else. |
+| `background` | Optional, one sentence of context a newcomer needs when the story builds on earlier news or names something obscure ("s&box is the game-making platform from Facepunch, the studio behind Garry's Mod and Rust."). |
+| `terms` | Up to 6 `{ term, def }`: the technical words in this block, each defined in one plain sentence. The page dots the first use of each and shows the definition on hover or tap. The term must appear in the block's text. |
+| `deep` | Up to 4 paragraphs of technical detail (settings, version numbers, code names), folded behind "Technical details". Move specifics here so the body stays readable. |
 | `why` | Why it matters to any developer, 1 or 2 sentences. Specific, but public: never about the owner or their projects (see Public and private). This is the most-read line in every block. |
 | `forYou` | Private, shown only in the owner's tune mode: what this means for their plugins, games, SaaS and workflow, and what to do about it. 1 or 2 sentences. Add it whenever there is a real angle. |
 | `sources` | 1 to 5 `{ label, url }`, https only, primary source first. |
@@ -72,6 +80,46 @@ Choose by what the reader needs to learn, not by what is easiest to write.
 | `list` | Several related small items: release notes, a roundup. | `intro`, `items` 2-6 `{ title, text, url }` | `wide`, `full` |
 | `diagram` | How something works: a pipeline, an architecture, a loop, a system and its parts. Prefer it to prose and to drawn art whenever the story has structure. | `layout` (`flow` steps left to right, `layers` a stack top to bottom, `hub` one center and its parts, `cycle` a loop), `intro`, `nodes` 2-8 `{ label, note, key }` (mark the one that matters with `key`), `links` labels for the arrows in order (flow, cycle), `caption` | `half`, `wide`, `full` |
 | `bespoke` | An interactive piece built for one story when interaction teaches more than prose. At most one a day. | `src`, `height` (240-900), `body` 1-2 | `full`, `wide` |
+
+## Writing for curious readers
+
+Radar is read by people who love games and AI but are not specialists in every corner,
+including its owner. Every story has to work at two depths:
+
+- **The surface** (title, gist, the format's visual, why it matters) makes sense to a
+  curious non-specialist. No unexplained acronyms, product codes or version numbers.
+- **The depth** (body details, `deep`, practitioner items) carries the specifics for
+  those who want them.
+
+How to get there:
+
+1. Write the `gist` first, as if telling a smart friend outside the field.
+2. Define every term a non-specialist would trip on in `terms`: acronyms (MCP, CI, SDK),
+   jargon (compaction, open-weight, headless), and named tools (IDA, Ghidra). Plain
+   definitions, one sentence each, without new jargon inside them.
+3. Keep the visible body to the story; move settings, flags, version numbers and code to
+   `deep`.
+4. Mark items that only make sense with hands-on background as `level: "practitioner"`
+   (config change lists, package registry fixes, API flags).
+5. Group the day into 2 to 4 themes, and choose one concept for Learn one thing.
+
+## Learn one thing
+
+`learn`: `{ question, answer, analogy, body, diagram or image, terms, seenIn, sources }`.
+
+| Field | What it is |
+|---|---|
+| `question` | The question a newcomer would ask, 90 characters at most: "What is MCP?", "What does it mean to decompile a game?" |
+| `answer` | The answer in one or two plain sentences. |
+| `analogy` | Optional everyday comparison that makes it click (a recipe, a power plug, a postal system). |
+| `body` | 1 to 3 short paragraphs: how it works, why it matters now, where it shows up. |
+| `diagram` | Strongly preferred: a kit diagram of the concept (`layout`, `nodes`, `links`, `caption`). Or `image` for a real figure. |
+| `terms` | Definitions for words used here, as on blocks. |
+| `seenIn` | Ids of today's blocks where the concept appears; shown as links back to them. |
+| `sources` | 1 to 4 good places to go further: official docs, a clear explainer, the source story. |
+
+Pick the concept the day's stories lean on most, which a non-specialist would not know.
+Do not repeat a concept from the last 7 issues.
 
 ## Public and private
 

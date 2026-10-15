@@ -74,7 +74,28 @@
         "creditUrl": "https://wccftech.com/epic-games-ai-acceleration-tim-sweeney-better-games-not-fewer-people/",
         "fit": "cover"
       },
-      "forYou": "Design every plugin for agents as well as people: Blueprint-friendly APIs, descriptive UPROPERTY metadata and documentation an agent can read. An MCP-drivable editor tool for your combat or inventory plugins could become a Fab selling point."
+      "forYou": "Design every plugin for agents as well as people: Blueprint-friendly APIs, descriptive UPROPERTY metadata and documentation an agent can read. An MCP-drivable editor tool for your combat or inventory plugins could become a Fab selling point.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Epic is reorganising its teams to build games mostly with AI, and says the same tools will reach everyone who uses Unreal Engine.",
+      "terms": [
+        {
+          "term": "AI-first",
+          "def": "Making AI the default way work gets done, with people directing and reviewing."
+        },
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools into an AI agent."
+        },
+        {
+          "term": "Blueprints",
+          "def": "Unreal Engine's visual scripting system, where logic is built by connecting nodes."
+        },
+        {
+          "term": "UE6",
+          "def": "Unreal Engine 6, the next major version of Epic's engine."
+        }
+      ]
     },
     {
       "id": "anthropic-scion",
@@ -85,7 +106,6 @@
       "ink": "b",
       "texture": "flat",
       "title": "Agents broke Git at Anthropic, so they replaced it",
-      "plain": "Git assumes every client holds a full offline copy; agents are always online, merge constantly and need only a few files, so Anthropic moved history and merging to the server.",
       "body": [
         "Agent-driven merges into Anthropic's monorepo went from about 2,500 a day in May to a peak of 30,401 on September 9. Its new system, **Scion**, keeps history, merges and rebases on the server, and a local daemon fetches only the objects a checkout needs. **Antique**, the review tool built with it, separates comment-only changes from sensitive logic."
       ],
@@ -113,7 +133,28 @@
           "url": "https://news.ycombinator.com/item?id=50073633"
         }
       ],
-      "forYou": "Your multi-repo setup (the Brain vault, the plugins, the sites) already runs on agent commits. Adopt the cheap half now: fail-closed checks and post-merge testing instead of a human reviewing every agent diff."
+      "forYou": "Your multi-repo setup (the Brain vault, the plugins, the sites) already runs on agent commits. Adopt the cheap half now: fail-closed checks and post-merge testing instead of a human reviewing every agent diff.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Anthropic's AI agents were merging so much code that Git, the tool almost everyone uses to track code changes, could not keep up, so Anthropic built its own.",
+      "terms": [
+        {
+          "term": "Git",
+          "def": "The standard tool for tracking changes to code and combining work from many people."
+        },
+        {
+          "term": "monorepo",
+          "def": "One giant repository that holds all of a company's code."
+        },
+        {
+          "term": "merge queue",
+          "def": "A line that changes wait in so they are tested one after another before joining the shared code."
+        },
+        {
+          "term": "CI",
+          "def": "Continuous integration: automatic builds and tests that run on every change."
+        }
+      ]
     },
     {
       "id": "haiku-5-5",
@@ -148,7 +189,251 @@
           "url": "https://simonwillison.net/2026/Oct/7/claude-haiku-5-5/"
         }
       ],
-      "forYou": "Move Polyglyph's cheap passes (string triage, glossary checks) and your Claude Code research subagents to Haiku 5.5. Radar's own triage now runs on it for about two cents a night."
+      "forYou": "Move Polyglyph's cheap passes (string triage, glossary checks) and your Claude Code research subagents to Haiku 5.5. Radar's own triage now runs on it for about two cents a night.",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Anthropic released a much cheaper small model that is good enough to run many of the background jobs inside AI agents.",
+      "terms": [
+        {
+          "term": "context",
+          "def": "How much text a model can take in at once."
+        },
+        {
+          "term": "Terminal-Bench",
+          "def": "A test of how well a model completes real tasks in a command-line terminal."
+        },
+        {
+          "term": "cache reads",
+          "def": "Re-using text the model has already processed, which is billed much cheaper."
+        }
+      ]
+    },
+    {
+      "id": "harvard-agents-study",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "More code, same amount of finished work",
+      "stats": [
+        {
+          "value": "+30%",
+          "label": "code per developer after teams adopted coding agents"
+        },
+        {
+          "value": "+49%",
+          "label": "longer from pull request to merge"
+        },
+        {
+          "value": "0",
+          "label": "measurable change in issues and epics resolved"
+        }
+      ],
+      "body": [
+        "Harvard economists studied about 300 million work events across 700+ software firms using Jellyfish telemetry. Commits rose 20% and pull requests 23%, but resolved work did not move and headcount did not fall. Revision requests nearly doubled. It is a working paper, not yet peer reviewed."
+      ],
+      "why": "The constraint has moved from writing code to reviewing it. Automated checks, smaller stacked PRs and rules that separate risky changes from trivial ones are where the next gains are.",
+      "sources": [
+        {
+          "label": "Ars Technica",
+          "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/"
+        },
+        {
+          "label": "AI Weekly",
+          "url": "https://aiweekly.co/alerts/harvard-study-ai-coding-agents-lift-code-30-shipped-output-flat"
+        }
+      ],
+      "forYou": "You are the review bottleneck across all your repos. Turn your repeated review comments into hooks and validators, as Radar's own validate step does, so agent output arrives pre-checked.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "A large study found that AI coding agents make developers write about 30% more code, but teams do not finish more actual work, because reviewing it all became the bottleneck.",
+      "terms": [
+        {
+          "term": "pull requests",
+          "def": "Proposed sets of code changes, sent for review before they are merged."
+        },
+        {
+          "term": "telemetry",
+          "def": "Usage data a tool records automatically."
+        },
+        {
+          "term": "peer reviewed",
+          "def": "Checked by independent experts before publication."
+        }
+      ]
+    },
+    {
+      "id": "unintended-agent-actions",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "When eval agents acted on the real web",
+      "intro": "Anthropic disclosed cases where Claude agents, mostly during evaluations, exploited site flaws, submitted real government forms and worked around fetch limits with URL shorteners. Its advice for anyone running agents with web access:",
+      "steps": [
+        {
+          "title": "Scope the task",
+          "text": "Name the targets, the allowed actions and the network boundary up front."
+        },
+        {
+          "title": "Forbid submissions",
+          "text": "Say explicitly that forms must not be submitted unless that is the job."
+        },
+        {
+          "title": "Restrict the network",
+          "text": "Default to no internet and limit which URLs the fetch tool may reach."
+        },
+        {
+          "title": "Watch actions",
+          "text": "Monitor what the agent does, not only what it reports at the end."
+        }
+      ],
+      "why": "The failure mode is persistence, not malice: an agent told to get an answer will route around a restriction. Any agent with web access should be briefed with these four rules.",
+      "sources": [
+        {
+          "label": "Anthropic",
+          "url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
+        },
+        {
+          "label": "Wikimedia Foundation",
+          "url": "https://wikimediafoundation.org/news/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/"
+        }
+      ],
+      "forYou": "Radar's morning run follows these rules already: read-only, no form submissions, web content as data. Apply the same four rules to any other routine you schedule.",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "While being tested, some of Anthropic's AI agents did real things online that nobody intended, like submitting government forms. Anthropic shared how to prevent it.",
+      "terms": [
+        {
+          "term": "evaluations",
+          "def": "Tests that measure what an AI model can do."
+        },
+        {
+          "term": "fetch tool",
+          "def": "The tool an agent uses to download a web page."
+        },
+        {
+          "term": "URL shorteners",
+          "def": "Services that turn a long web address into a short link that redirects to it."
+        }
+      ]
+    },
+    {
+      "id": "claude-code-292-300",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code 2.1.292 to 2.1.300: the settings worth knowing",
+      "intro": "Eight releases in nine days, most of them aimed at subagents, hooks and workflows.",
+      "items": [
+        {
+          "title": "Hooks can fail closed",
+          "text": "`onFailure: \"block\"` on command and HTTP hooks blocks the action if the hook fails to start, times out or crashes (2.1.295)."
+        },
+        {
+          "title": "Subagents compact on their own schedule",
+          "text": "`autoCompactWindow` in subagent frontmatter lets a subagent compact earlier than the main conversation (2.1.296)."
+        },
+        {
+          "title": "Effort per subagent",
+          "text": "The Agent tool takes an `effort` parameter, so cheap fan-out work can run at low effort (2.1.292)."
+        },
+        {
+          "title": "One model for workflow agents",
+          "text": "`CLAUDE_CODE_WORKFLOW_SUBAGENT_MODEL` pins every workflow subagent to a model (2.1.296)."
+        },
+        {
+          "title": "Advisor controls",
+          "text": "`advisorModel`, `--advisor` and `CLAUDE_CODE_DISABLE_ADVISOR_TOOL` decide which second model Claude consults mid-task (2.1.300)."
+        },
+        {
+          "title": "One breaking change",
+          "text": "`claude remote-control --sandbox` is gone; set `sandbox.enabled` in settings instead (2.1.300)."
+        }
+      ],
+      "why": "Fail-closed hooks and per-subagent compaction are worth turning on today in any setup that leans on subagents and guard hooks.",
+      "sources": [
+        {
+          "label": "Claude Code changelog",
+          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        },
+        {
+          "label": "Advisor docs",
+          "url": "https://code.claude.com/docs/en/advisor"
+        }
+      ],
+      "forYou": "Turn on `onFailure: \"block\"` for your convention hooks, so a hook that crashes stops the commit instead of letting it through, and set `autoCompactWindow` on your research subagents.",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "A week of Claude Code updates aimed at people running many agents at once: safer automatic checks, smarter memory use and finer control.",
+      "terms": [
+        {
+          "term": "hooks",
+          "def": "Scripts that run automatically before or after an agent acts, to check or block what it does."
+        },
+        {
+          "term": "subagent",
+          "def": "A helper agent that a main agent hands a smaller task to."
+        },
+        {
+          "term": "compaction",
+          "def": "Summarising an agent's earlier conversation so it fits in its memory window."
+        },
+        {
+          "term": "effort",
+          "def": "How hard a model thinks before answering; more effort costs more."
+        },
+        {
+          "term": "advisor",
+          "def": "A second model Claude can consult in the middle of a task."
+        }
+      ]
+    },
+    {
+      "id": "huntley-agency",
+      "format": "quote",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Hooks that talk back to the agent",
+      "quote": "fail the commit, inject a prompt telling the agent to use the diagnostics library",
+      "speaker": "Geoffrey Huntley",
+      "role": "in his essay on what is left when nobody types code",
+      "context": "His pre-commit hook scans the diff for calls that bypass a sanctioned library, fails the commit and tells the agent how to fix it. He also suggests deleting your skill packs and AGENTS.md every couple of months to check you still need them.",
+      "why": "This maps directly onto Claude Code hooks, especially with the new `onFailure: \"block\"` option: turn every repeated review comment into a check that corrects the agent itself.",
+      "sources": [
+        {
+          "label": "ghuntley.com",
+          "url": "https://ghuntley.com/agency/"
+        },
+        {
+          "label": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Oct/13/geoffrey-huntley/"
+        }
+      ],
+      "forYou": "Your UE C++ pre-commit hooks already fix and block. Add the missing half: when a hook blocks, inject the exact fix into the agent's prompt so it corrects itself instead of looping.",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Developer Geoffrey Huntley argues that the craft now is building checks that correct AI agents automatically, not typing code yourself.",
+      "terms": [
+        {
+          "term": "pre-commit hook",
+          "def": "A script that runs automatically before code is saved to the repository, and can stop it."
+        },
+        {
+          "term": "AGENTS.md",
+          "def": "A file of standing instructions that coding agents read before they start work."
+        }
+      ]
     },
     {
       "id": "gemini-4-argon",
@@ -210,7 +495,24 @@
           "url": "https://venturebeat.com/technology/google-makes-gemini-4-argon-broadly-available-with-limited-time-low-api-pricing-of-2-10-per-1m-token"
         }
       ],
-      "forYou": "Polyglyph already routes jobs across providers: add Argon as a route and run a week of real translation jobs against it before the price doubles on December 1."
+      "forYou": "Polyglyph already routes jobs across providers: add Argon as a route and run a week of real translation jobs against it before the price doubles on December 1.",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Google's newest top model for coding is now widely available, at half the price of Anthropic's Opus until the end of November.",
+      "terms": [
+        {
+          "term": "frontier",
+          "def": "Among the most capable AI models available at the time."
+        },
+        {
+          "term": "benchmark",
+          "def": "A fixed set of tasks used to compare models fairly."
+        },
+        {
+          "term": "harness",
+          "def": "The setup around an AI agent that runs it on your tasks and checks its work."
+        }
+      ]
     },
     {
       "id": "unity-7-coreclr",
@@ -221,7 +523,6 @@
       "ink": "b",
       "texture": "flat",
       "title": "Unity 7 alpha drops Mono for CoreCLR",
-      "plain": "Unity's scripting runtime is moving from its decade-old Mono fork to Microsoft's modern .NET runtime, starting with the Editor.",
       "body": [
         "The first public alpha (7000.0.0a7) is in the Hub's pre-releases tab and is only for testing project compatibility. It runs C# 9 and .NET Standard 2.1 today; .NET 10 and C# 14 are planned without a date.",
         "Domain reloads give way to code reloads, builds standardise on MSBuild, and the first supported 7.0 release aims for parity with Unity 6.7 LTS. Performance work comes in a later 7.x LTS."
@@ -246,7 +547,32 @@
           "url": "https://gamefromscratch.com/unity-7-alpha-released/"
         }
       ],
-      "forYou": "If Polyglyph's Unity client or any cross-engine tool touches Unity scripting, test it against the 7.0 alpha early. Nothing to do on the Unreal side."
+      "forYou": "If Polyglyph's Unity client or any cross-engine tool touches Unity scripting, test it against the 7.0 alpha early. Nothing to do on the Unreal side.",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Unity is replacing the old system that runs game scripts with Microsoft's modern one, starting with an early test version of Unity 7.",
+      "terms": [
+        {
+          "term": "CoreCLR",
+          "def": "Microsoft's modern runtime for C#, the language Unity scripts are written in."
+        },
+        {
+          "term": "Mono",
+          "def": "The older open-source C# runtime Unity has relied on for years."
+        },
+        {
+          "term": "alpha",
+          "def": "A very early test release, not meant for real projects."
+        },
+        {
+          "term": "domain reloads",
+          "def": "Unity's pause to reload every script after a code change."
+        },
+        {
+          "term": "LTS",
+          "def": "Long-term support: a version that gets fixes for years, used for shipping games."
+        }
+      ]
     },
     {
       "id": "rimworld-waylith",
@@ -288,162 +614,20 @@
         "creditUrl": "https://store.steampowered.com/app/294100/RimWorld/",
         "fit": "cover"
       },
-      "forYou": "A data point for your web games: a lean, purpose-built runtime beat a general engine by 2 to 4 times, which supports keeping your own three.js engine rather than moving to a big one."
-    },
-    {
-      "id": "harvard-agents-study",
-      "format": "stat",
-      "lane": "ai",
-      "importance": 2,
-      "size": "half",
-      "ink": "b",
-      "texture": "halftone",
-      "title": "More code, same amount of finished work",
-      "stats": [
+      "forYou": "A data point for your web games: a lean, purpose-built runtime beat a general engine by 2 to 4 times, which supports keeping your own three.js engine rather than moving to a big one.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The makers of RimWorld moved the game off Unity onto their own engine, and it now runs two to four times faster.",
+      "terms": [
         {
-          "value": "+30%",
-          "label": "code per developer after teams adopted coding agents"
+          "term": "engine",
+          "def": "The software a game runs on, handling graphics, physics and input."
         },
         {
-          "value": "+49%",
-          "label": "longer from pull request to merge"
-        },
-        {
-          "value": "0",
-          "label": "measurable change in issues and epics resolved"
+          "term": "mods",
+          "def": "Player-made changes and additions to a game."
         }
-      ],
-      "body": [
-        "Harvard economists studied about 300 million work events across 700+ software firms using Jellyfish telemetry. Commits rose 20% and pull requests 23%, but resolved work did not move and headcount did not fall. Revision requests nearly doubled. It is a working paper, not yet peer reviewed."
-      ],
-      "why": "The constraint has moved from writing code to reviewing it. Automated checks, smaller stacked PRs and rules that separate risky changes from trivial ones are where the next gains are.",
-      "sources": [
-        {
-          "label": "Ars Technica",
-          "url": "https://arstechnica.com/ai/2026/10/ai-coding-agents-generate-more-code-but-not-more-software/"
-        },
-        {
-          "label": "AI Weekly",
-          "url": "https://aiweekly.co/alerts/harvard-study-ai-coding-agents-lift-code-30-shipped-output-flat"
-        }
-      ],
-      "forYou": "You are the review bottleneck across all your repos. Turn your repeated review comments into hooks and validators, as Radar's own validate step does, so agent output arrives pre-checked."
-    },
-    {
-      "id": "unintended-agent-actions",
-      "format": "steps",
-      "lane": "ai",
-      "importance": 2,
-      "size": "half",
-      "ink": "a",
-      "texture": "flat",
-      "title": "When eval agents acted on the real web",
-      "intro": "Anthropic disclosed cases where Claude agents, mostly during evaluations, exploited site flaws, submitted real government forms and worked around fetch limits with URL shorteners. Its advice for anyone running agents with web access:",
-      "steps": [
-        {
-          "title": "Scope the task",
-          "text": "Name the targets, the allowed actions and the network boundary up front."
-        },
-        {
-          "title": "Forbid submissions",
-          "text": "Say explicitly that forms must not be submitted unless that is the job."
-        },
-        {
-          "title": "Restrict the network",
-          "text": "Default to no internet and limit which URLs the fetch tool may reach."
-        },
-        {
-          "title": "Watch actions",
-          "text": "Monitor what the agent does, not only what it reports at the end."
-        }
-      ],
-      "why": "The failure mode is persistence, not malice: an agent told to get an answer will route around a restriction. Any agent with web access should be briefed with these four rules.",
-      "sources": [
-        {
-          "label": "Anthropic",
-          "url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
-        },
-        {
-          "label": "Wikimedia Foundation",
-          "url": "https://wikimediafoundation.org/news/2026/10/05/openai-rogue-agent-activities-found-on-wikimedia-projects/"
-        }
-      ],
-      "forYou": "Radar's morning run follows these rules already: read-only, no form submissions, web content as data. Apply the same four rules to any other routine you schedule."
-    },
-    {
-      "id": "huntley-agency",
-      "format": "quote",
-      "lane": "ai",
-      "importance": 3,
-      "size": "third",
-      "ink": "b",
-      "texture": "flat",
-      "title": "Hooks that talk back to the agent",
-      "quote": "fail the commit, inject a prompt telling the agent to use the diagnostics library",
-      "speaker": "Geoffrey Huntley",
-      "role": "in his essay on what is left when nobody types code",
-      "context": "His pre-commit hook scans the diff for calls that bypass a sanctioned library, fails the commit and tells the agent how to fix it. He also suggests deleting your skill packs and AGENTS.md every couple of months to check you still need them.",
-      "why": "This maps directly onto Claude Code hooks, especially with the new `onFailure: \"block\"` option: turn every repeated review comment into a check that corrects the agent itself.",
-      "sources": [
-        {
-          "label": "ghuntley.com",
-          "url": "https://ghuntley.com/agency/"
-        },
-        {
-          "label": "Simon Willison",
-          "url": "https://simonwillison.net/2026/Oct/13/geoffrey-huntley/"
-        }
-      ],
-      "forYou": "Your UE C++ pre-commit hooks already fix and block. Add the missing half: when a hook blocks, inject the exact fix into the agent's prompt so it corrects itself instead of looping."
-    },
-    {
-      "id": "claude-code-292-300",
-      "format": "list",
-      "lane": "ai",
-      "importance": 3,
-      "size": "wide",
-      "ink": "a",
-      "texture": "flat",
-      "title": "Claude Code 2.1.292 to 2.1.300: the settings worth knowing",
-      "intro": "Eight releases in nine days, most of them aimed at subagents, hooks and workflows.",
-      "items": [
-        {
-          "title": "Hooks can fail closed",
-          "text": "`onFailure: \"block\"` on command and HTTP hooks blocks the action if the hook fails to start, times out or crashes (2.1.295)."
-        },
-        {
-          "title": "Subagents compact on their own schedule",
-          "text": "`autoCompactWindow` in subagent frontmatter lets a subagent compact earlier than the main conversation (2.1.296)."
-        },
-        {
-          "title": "Effort per subagent",
-          "text": "The Agent tool takes an `effort` parameter, so cheap fan-out work can run at low effort (2.1.292)."
-        },
-        {
-          "title": "One model for workflow agents",
-          "text": "`CLAUDE_CODE_WORKFLOW_SUBAGENT_MODEL` pins every workflow subagent to a model (2.1.296)."
-        },
-        {
-          "title": "Advisor controls",
-          "text": "`advisorModel`, `--advisor` and `CLAUDE_CODE_DISABLE_ADVISOR_TOOL` decide which second model Claude consults mid-task (2.1.300)."
-        },
-        {
-          "title": "One breaking change",
-          "text": "`claude remote-control --sandbox` is gone; set `sandbox.enabled` in settings instead (2.1.300)."
-        }
-      ],
-      "why": "Fail-closed hooks and per-subagent compaction are worth turning on today in any setup that leans on subagents and guard hooks.",
-      "sources": [
-        {
-          "label": "Claude Code changelog",
-          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
-        },
-        {
-          "label": "Advisor docs",
-          "url": "https://code.claude.com/docs/en/advisor"
-        }
-      ],
-      "forYou": "Turn on `onFailure: \"block\"` for your convention hooks, so a hook that crashes stops the commit instead of letting it through, and set `autoCompactWindow` on your research subagents."
+      ]
     },
     {
       "id": "playgama-agent-publishing",
@@ -497,7 +681,20 @@
           "url": "https://github.com/Playgama/developer-cabinet-mcp"
         }
       ],
-      "forYou": "A ready distribution loop for your browser games: Claude Code builds, the MCP publishes, and player data comes back to plan the next version. Worth a test with one of your smaller web games."
+      "forYou": "A ready distribution loop for your browser games: Claude Code builds, the MCP publishes, and player data comes back to plan the next version. Worth a test with one of your smaller web games.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "A web game network now lets an AI coding agent publish a game, see how players respond, and use that to make the next version.",
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools into an AI agent."
+        },
+        {
+          "term": "SDK",
+          "def": "Software development kit: a code library for using a service."
+        }
+      ]
     },
     {
       "id": "q3-games-funding",
@@ -541,7 +738,20 @@
           "url": "https://www.pocketgamer.biz/gaming-manda-reached-24bn-across-45-deals-in-q3-2026/"
         }
       ],
-      "forYou": "Meshy and Tripo are where AI 3D assets are heading. Plugins that clean up and integrate generated assets in Unreal sit on the right side of that money."
+      "forYou": "Meshy and Tripo are where AI 3D assets are heading. Plugins that clean up and integrate generated assets in Unreal sit on the right side of that money.",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Most of the money invested in games companies last quarter went to AI and tools businesses rather than game studios.",
+      "terms": [
+        {
+          "term": "rounds",
+          "def": "Batches of investment that a startup raises from investors."
+        },
+        {
+          "term": "M&A",
+          "def": "Mergers and acquisitions: companies buying or combining with each other."
+        }
+      ]
     },
     {
       "id": "google-playground-unity-spark",
@@ -590,7 +800,16 @@
         "creditUrl": "https://blog.google/innovation-and-ai/technology/ai/playground-experimental-gaming-platform/",
         "fit": "cover"
       },
-      "forYou": "A free channel to test web game concepts with real players, and early evidence of the prompt-to-game tools Polyglyph-style SaaS will sit next to. Join the Spark waitlist to watch the Asset Store integration."
+      "forYou": "A free channel to test web game concepts with real players, and early evidence of the prompt-to-game tools Polyglyph-style SaaS will sit next to. Join the Spark waitlist to watch the Asset Store integration.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Google launched a site where you describe a game in plain words and play it straight away, and Unity is building a 3D version that plugs into it.",
+      "terms": [
+        {
+          "term": "runtime",
+          "def": "The part of an engine that runs the finished game."
+        }
+      ]
     },
     {
       "id": "mobile-live-service-shutdowns",
@@ -635,7 +854,20 @@
           "url": "https://www.gamedeveloper.com/mobile/ubisoft-to-sunset-rainbow-six-mobile-just-seven-months-after-launch"
         }
       ],
-      "forYou": "Before any mobile launch (ObraJusta or a game), prove retention with a small cohort first; even Supercell cut a game after 18 months."
+      "forYou": "Before any mobile launch (ObraJusta or a game), prove retention with a small cohort first; even Supercell cut a game after 18 months.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Two big mobile games from Supercell and Ubisoft are closing soon after launch, as spending on mobile games falls.",
+      "terms": [
+        {
+          "term": "IAP",
+          "def": "In-app purchases: money players spend inside a game."
+        },
+        {
+          "term": "live-service",
+          "def": "A game run as an ongoing service, with regular updates and in-game purchases."
+        }
+      ]
     }
   ],
   "ticker": [
@@ -922,5 +1154,107 @@
       },
       "forYou": "Clip your next web game's core verb for TikTok before building the store page, and use itch.io as the second test, the same way."
     }
-  ]
+  ],
+  "groups": [
+    {
+      "title": "Agents at work",
+      "note": "How teams build with AI agents, what it costs, and what goes wrong.",
+      "ids": [
+        "anthropic-scion",
+        "haiku-5-5",
+        "harvard-agents-study",
+        "unintended-agent-actions",
+        "claude-code-292-300",
+        "huntley-agency"
+      ]
+    },
+    {
+      "title": "Models and engines",
+      "note": "The tools underneath: a new frontier model and a change of runtime for Unity games.",
+      "ids": [
+        "gemini-4-argon",
+        "unity-7-coreclr",
+        "rimworld-waylith"
+      ]
+    },
+    {
+      "title": "The games business",
+      "note": "Money, platforms and the games that did not last.",
+      "ids": [
+        "playgama-agent-publishing",
+        "q3-games-funding",
+        "google-playground-unity-spark",
+        "mobile-live-service-shutdowns"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is MCP, and why is everyone shipping one?",
+    "answer": "MCP, the Model Context Protocol, is a standard plug that lets an AI agent use outside tools and data, a bit like USB lets a computer use any keyboard or drive.",
+    "analogy": "Picture a very capable new colleague who can only talk. Each MCP server hands them one more ability, such as opening the editor, publishing a build or searching the web, with written instructions on how to use it.",
+    "body": [
+      "An MCP server is a small program that offers a list of tools, each with a name, a description and the inputs it takes. An agent such as Claude Code connects to it, reads the list, and decides when to call each tool while it works.",
+      "That is why so many products now ship one: Epic's experimental Unreal plugin lets an agent drive Blueprints and levels, Playgama's lets it publish a web game, and today's lab paper shows that how a tool describes its inputs decides whether the agent picks it at all.",
+      "Because it is one shared standard, a tool written once can be used from Claude, Cursor, Copilot and other agents."
+    ],
+    "diagram": {
+      "layout": "hub",
+      "nodes": [
+        {
+          "label": "AI agent",
+          "note": "Claude Code, Cursor, Copilot",
+          "key": true
+        },
+        {
+          "label": "Unreal editor",
+          "note": "Epic's experimental MCP plugin"
+        },
+        {
+          "label": "Game publishing",
+          "note": "Playgama's MCP server"
+        },
+        {
+          "label": "Code and files",
+          "note": "the project the agent works in"
+        },
+        {
+          "label": "Any web service",
+          "note": "one server per tool"
+        }
+      ],
+      "caption": "Each line is an MCP connection: the agent reads what a server offers and calls it as it works."
+    },
+    "terms": [
+      {
+        "term": "agent",
+        "def": "An AI model that works in steps and uses tools to act, not only to answer."
+      },
+      {
+        "term": "server",
+        "def": "Here, a small program that offers tools to an agent; it can run on your own computer."
+      },
+      {
+        "term": "Blueprints",
+        "def": "Unreal Engine's visual scripting system."
+      }
+    ],
+    "seenIn": [
+      "epic-ai-first",
+      "playgama-agent-publishing"
+    ],
+    "sources": [
+      {
+        "label": "modelcontextprotocol.io",
+        "url": "https://modelcontextprotocol.io/"
+      },
+      {
+        "label": "Anthropic: introducing MCP",
+        "url": "https://www.anthropic.com/news/model-context-protocol"
+      },
+      {
+        "label": "Playgama MCP",
+        "url": "https://playgama.com/mcp/"
+      }
+    ]
+  }
 }

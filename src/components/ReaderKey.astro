@@ -1,0 +1,28 @@
+---
+// A one-time key for new readers: how to read an issue. Shown until dismissed
+// (remembered per browser), and reopened from the colophon.
+import Lane from './Lane.astro';
+---
+<aside class="reader-key" aria-labelledby="key-h">
+  <h2 id="key-h">New here? How to read Radar</h2>
+  <ul>
+    <li><span class="key-ico"><Lane lane="gamedev" label={false} /><Lane lane="ai" label={false} /></span>Game dev stories carry a plus, AI engineering a spark.</li>
+    <li><span class="key-ico"><span class="kind-tag">News</span></span>Each story says what it is: news, a release, a lesson, something to do, or a trend.</li>
+    <li><span class="key-ico"><span class="term-demo">dotted words</span></span>Tap or hover a dotted word for a plain definition.</li>
+    <li><span class="key-ico"><span class="fold-demo">Technical details</span></span>Depth is folded away. Open it when you want it.</li>
+    <li><span class="key-ico">Sparks</span>What is catching on, and the idea worth borrowing.</li>
+    <li><span class="key-ico">Learn and lab</span>One concept explained from zero, and research in plain words.</li>
+  </ul>
+  <button type="button" class="key-ok">Got it</button>
+</aside>
+<script>
+  document.querySelector('.key-ok')?.addEventListener('click', () => {
+    document.documentElement.classList.remove('new-reader');
+    try { localStorage.setItem('radar-key', '1'); } catch {}
+  });
+  document.querySelectorAll('.key-open').forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.documentElement.classList.add('new-reader');
+    document.querySelector('.reader-key')?.scrollIntoView({ block: 'center' });
+  }));
+</script>

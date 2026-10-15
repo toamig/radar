@@ -85,18 +85,45 @@ function* publicText(node, path = '') {
 }
 
 const WIDTH = { full: 6, wide: 4, half: 3, third: 2 };
-function checkRows(issue) {
+// Rows pack within each themed group (the hero sits alone on top).
+function packRows(blocks) {
   let row = 0;
   const rows = [];
-  for (const b of issue.blocks) {
+  for (const b of blocks) {
     const w = WIDTH[b.size];
     if (row + w > 6) { rows.push(row); row = 0; }
     row += w;
     if (row === 6) { rows.push(row); row = 0; }
   }
   if (row) rows.push(row);
-  const ragged = rows.filter((r) => r !== 6).length;
-  if (ragged) warn(`${issue.date}: ${ragged} layout row(s) do not fill all 6 columns; sizes in order are ${issue.blocks.map((b) => b.size).join(', ')}`);
+  return rows.filter((r) => r !== 6).length;
+}
+function checkRows(issue) {
+  const byId = new Map(issue.blocks.map((b) => [b.id, b]));
+  const sets = issue.groups.length
+    ? issue.groups.map((g) => ({ name: g.title, blocks: g.ids.map((id) => byId.get(id)).filter(Boolean) }))
+    : [{ name: 'the grid', blocks: issue.blocks.slice(1) }];
+  for (const set of sets) {
+    const ragged = packRows(set.blocks);
+    if (ragged) warn(`${issue.date}: ${ragged} row(s) in "${set.name}" do not fill all 6 columns; sizes in order are ${set.blocks.map((b) => b.size).join(', ')}`);
+  }
+}
+
+// Readability: plain words and definitions for anyone who is not deep in the field.
+function checkReadability(issue) {
+  if (!issue.learn) warn(`${issue.date}: no Learn one thing; explain one concept from today's stories from zero`);
+  if (!issue.groups.length && issue.blocks.length > 7) warn(`${issue.date}: ${issue.blocks.length} stories and no themed groups; group them under 2 to 4 headings`);
+  const visible = (o) => JSON.stringify(o, (k, v) => (['terms', 'sources', 'forYou', 'image', 'url', 'id'].includes(k) ? undefined : v)).toLowerCase();
+  const holders = [...issue.blocks, ...(issue.learn ? [{ id: 'learn', ...issue.learn }] : [])];
+  let defined = 0;
+  for (const h of holders) {
+    const text = visible(h);
+    for (const t of h.terms ?? []) {
+      defined++;
+      if (!text.includes(t.term.toLowerCase())) warn(`${issue.date}/${h.id}: term "${t.term}" does not appear in the block's text, so it cannot be marked`);
+    }
+  }
+  if (defined < issue.blocks.length) warn(`${issue.date}: only ${defined} defined terms for ${issue.blocks.length} stories; define the jargon a curious non-specialist would trip on`);
 }
 
 // ------------------------------------------------------------ issues
@@ -132,6 +159,7 @@ for (const f of list(issueDir, '.json')) {
   const hero = issue.blocks[0];
   if (hero && !hero.image && !hero.art && !hero.diagram) warn(`${issue.date}: the hero has no real image, diagram or labelled schematic; that is fine only if nothing real fits`);
   checkRows(issue);
+  checkReadability(issue);
   const heroes = issue.blocks.filter((b) => b.format === 'hero').length;
   if (heroes > 1) err(`${issue.date}: only one hero per issue`);
   const lanes = new Set(issue.blocks.map((b) => b.lane));

@@ -172,7 +172,7 @@ strong { font-weight: 680; }
 /* A block is not a card. Hierarchy comes from scale, the ink bar on top and,
    for features, a tinted plate. */
 .block { position: relative; min-width: 0; align-self: start; container-type: inline-size; }
-.display, .b-title, .hero-title, .day-title, .spot-name { text-wrap: balance; }
+.display, .b-title, .hero-title, .day-title, .spot-name { text-wrap: balance; overflow-wrap: break-word; }
 p, li { text-wrap: pretty; }
 .block code { overflow-wrap: anywhere; }
 .block[data-ink='b'] { --on: var(--on-b); --ink: var(--ink-b); --display: var(--display-b); --tint: var(--tint-b); --ink-alt: var(--ink-a); }
@@ -273,7 +273,7 @@ p, li { text-wrap: pretty; }
 
 /* ------------------------------------------------------------ spotlight */
 
-.spot-name { font-size: clamp(2.2rem, 13cqi, 4.2rem); margin: 0; color: var(--display); }
+.spot-name { font-size: calc(var(--display-scale, 1) * clamp(2rem, 11cqi, 4.2rem)); margin: 0; color: var(--display); overflow-wrap: anywhere; hyphens: auto; }
 .spot-what { font-size: var(--step-1); margin: 8px 0 16px; line-height: 1.4; max-width: 40ch; }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0; margin: 18px 0 0; border-top: 2px solid var(--text); }
 .facts div { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--rule); }

@@ -1,8 +1,11 @@
 ---
-// One block of an issue: the shared frame (ink bar, lane, title, why it
-// matters, sources, tune links) around the format-specific body.
+// One block of an issue: the shared frame around the format-specific body.
+// Reading order, for anyone from curious to expert: what kind of item it is,
+// the title, background if needed, the story in plain words, the body (folded
+// for practitioner items), technical details (folded), why it matters.
 import Inline from './Inline.astro';
 import Lane from './Lane.astro';
+import Paras from './Paras.astro';
 import Hero from './blocks/Hero.astro';
 import Spotlight from './blocks/Spotlight.astro';
 import Steps from './blocks/Steps.astro';
@@ -18,36 +21,56 @@ import List from './blocks/List.astro';
 import Bespoke from './blocks/Bespoke.astro';
 import Diagram from './blocks/Diagram.astro';
 import Media from './Media.astro';
-import type { BlockData } from '../kit/data';
+import { blockMinutes, type BlockData } from '../kit/data';
 import type { Palette } from '../kit/palette';
 import { tuneUrl } from '../kit/site';
 
 interface Props { block: BlockData; date: string; palette: Palette }
 const { block, date, palette } = Astro.props;
 const b = block as any;
-const plate = false;
 const Body = {
   hero: Hero, spotlight: Spotlight, steps: Steps, compare: Compare, stat: Stat, chart: Chart,
   timeline: Timeline, quote: Quote, code: Code, concept: Concept, video: Video, list: List, diagram: Diagram, bespoke: Bespoke,
 }[block.format];
+// Hero and spotlight lay out their own title and plain-words line.
 const ownTitle = block.format === 'hero' || block.format === 'spotlight';
 // Hero, spotlight and concept place their picture themselves; every other format shows it under the title.
 const ownMedia = ['hero', 'spotlight', 'concept'].includes(block.format);
+const KIND = { news: 'News', release: 'Release', lesson: 'Lesson', action: 'Do this', trend: 'Trend' };
+const folded = block.level === 'practitioner' && !ownTitle;
 ---
 <article
   id={block.id}
-  class:list={['block', `b-${block.size}`, `f-${block.format}`, { plate, hero: block.format === 'hero' }]}
+  class:list={['block', `b-${block.size}`, `f-${block.format}`, `k-${block.kind}`, { hero: block.format === 'hero' }]}
   data-ink={block.ink}
   data-imp={block.importance}
   data-texture={block.texture}
   data-variant={b.variant}
+  data-terms={block.terms.length ? JSON.stringify(block.terms) : undefined}
 >
-  <div class="b-top"><Lane lane={block.lane} /></div>
+  <div class="b-top">
+    <Lane lane={block.lane} />
+    <span class="kind-tag">{KIND[block.kind]}</span>
+    {block.level === 'practitioner' && <span class="level-tag">For practitioners</span>}
+    <span class="read-time">{blockMinutes(block)} min</span>
+  </div>
   {!ownTitle && <h3 class="b-title display"><Inline text={block.title} /></h3>}
+  {!ownTitle && block.background && <p class="context"><b>Context</b><Inline text={block.background} /></p>}
+  {!ownTitle && <p class="gist"><Inline text={block.gist} /></p>}
   {block.image && !ownMedia && <Media image={block.image} ink={block.ink} />}
-  <Body block={b} date={date} palette={palette} />
+  {folded
+    ? <details class="fold"><summary>Show the details</summary><div class="fold-body"><Body block={b} date={date} palette={palette} /></div></details>
+    : <Body block={b} date={date} palette={palette} />}
+  {block.deep.length > 0 && (
+    <details class="fold deep"><summary>Technical details</summary><Paras items={block.deep} class="b-body fold-body" /></details>
+  )}
   <p class="why"><b>Why it matters</b><Inline text={block.why} /></p>
   {block.forYou && <p class="for-you"><b>For you</b><Inline text={block.forYou} /></p>}
+  {block.terms.length > 0 && (
+    <dl class="terms-list" aria-label="Terms used in this story">
+      {block.terms.map((t) => <div><dt>{t.term}</dt><dd>{t.def}</dd></div>)}
+    </dl>
+  )}
   <p class="srcs">
     <span>Sources</span>
     {block.sources.map((s) => <a href={s.url} rel="noopener" target="_blank">{s.label}</a>)}

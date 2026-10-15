@@ -48,9 +48,9 @@
       "title": "Agents rebuilt a shipped game",
       "takeaway": "A small team used Claude Code and Codex agents to turn a shipped shooter back into C++ that compiles to nearly the same bytes. Treat anything you ship as readable by anyone with an agent and patience.",
       "body": [
-        "Maurice Heumann (momo5502) describes three months of work using IDA through an MCP server, one GitHub issue per source file, and a fleet that grew to 14 Luna and 2 Opus 5.5 agents. He estimates 600 to 700 billion tokens in total. The game is not named and the code will not be shared.",
-        "The first month produced readable code that was quietly wrong, and a reviewer agent could not catch it. What worked was a **byte-matching oracle**: compile each function with the original compiler and compare it to the original executable. CI hashed the verify script so agents could not edit it. Compaction was lowered to 42% of context and the instructions were re-injected every hour.",
-        "The result: about 99% of functions present and about 83% byte-exact; the rest are believed correct but differ in compiler output. Indie developer Popcar says this wave is already producing preservation ports and game mashups, and Xbox launched Xbox Labs this week citing decompiled games, Apple Silicon translations and WebGPU browser ports as the experiments it wants to learn from."
+        "Maurice Heumann spent three months on it. Each source file became its own task, and a fleet of up to 16 agents worked through them, using an estimated 600 to 700 billion tokens. The game is not named and the code will not be shared.",
+        "The first month produced code that read well but was quietly wrong, and a reviewer agent did not catch it. What worked was a strict automatic check: compile each rebuilt function and compare it with the original, byte for byte. The agents could not edit that check, so they could not cheat it.",
+        "About 99% of the functions are back and 83% match exactly. Xbox's new Labs team named decompiled games among the experiments it wants to learn from, and indie developers are already making preservation ports."
       ],
       "stat": {
         "value": "83%",
@@ -103,90 +103,39 @@
           "compare bytes"
         ],
         "caption": "Functions that do not match go back to the agents. Result: about 99% of functions present, 83% byte-exact."
-      }
-    },
-    {
-      "id": "unity-2fa-lockout",
-      "format": "timeline",
-      "lane": "gamedev",
-      "importance": 2,
-      "size": "half",
-      "ink": "b",
-      "texture": "flat",
-      "title": "Unity locks out accounts that missed a 2FA reset",
-      "intro": "Accounts were suspended for \"ongoing account security measures\", and a suspended account loses its Hub sign-in, so projects and Asset Store purchases go with it.",
-      "events": [
-        {
-          "when": "Weeks before",
-          "text": "Unity emails users to reset two-factor authentication. Several users say they never got the email."
-        },
-        {
-          "when": "Oct 13",
-          "text": "The reset deadline passes."
-        },
-        {
-          "when": "Oct 14",
-          "text": "Suspensions hit the forums; staff say they are aware. One user reports a release blocked and over EUR 1,000 of assets locked."
-        },
-        {
-          "when": "Oct 14",
-          "text": "Unity's info post points to account recovery; staff say the two-week support wait \"should be accelerated\"."
-        }
-      ],
-      "why": "A missed security email can freeze an editor, purchased assets and a release. A minute checking 2FA and recovery codes on every engine and store account is cheap insurance.",
-      "sources": [
-        {
-          "label": "Unity Discussions",
-          "url": "https://discussions.unity.com/t/information-on-account-suspension/1739213"
-        },
-        {
-          "label": "User thread",
-          "url": "https://discussions.unity.com/t/what-the-is-wrong-with-2fa-my-account-got-suspended-for-some-2fa/1739170"
-        }
-      ],
-      "forYou": "Check 2FA and recovery codes today on Unity, Epic, Fab and Steam, and keep one account per vendor that is not your daily login."
-    },
-    {
-      "id": "epic-launcher-vibe-coded",
-      "format": "stat",
-      "lane": "gamedev",
-      "importance": 3,
-      "size": "half",
-      "ink": "a",
-      "texture": "halftone",
-      "title": "Epic vibe coded its new launcher",
-      "stats": [
-        {
-          "value": "1.8x",
-          "label": "faster cold start than Steam: 5.47 s against 10.07 s, Epic's test"
-        },
-        {
-          "value": "3x",
-          "label": "faster to open the store than Steam, per Epic"
-        }
-      ],
-      "body": [
-        "Epic's preview says it \"vibe coded\" a rebuilt Epic Games Launcher for Windows, Apple Silicon Macs and, for the first time, Linux. All numbers are Epic's own, with no published method."
-      ],
-      "image": {
-        "src": "img/2026-10-15/epic-launcher.webp",
-        "alt": "The new Epic Games Launcher library: a grid of game covers with Store, Library and Develop tabs and a friends panel on the right",
-        "credit": "Epic Games via Siliconera",
-        "creditUrl": "https://www.siliconera.com/new-epic-games-launcher-vibe-coded-because-programming-is-hard/",
-        "fit": "cover"
       },
-      "why": "A public case of a large AI-built rewrite shipped with measured claims, from a company that just moved its teams to AI-first production. Expect rough edges in the preview.",
-      "sources": [
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A developer used a team of AI coding agents to turn a shipped game back into readable source code that compiles to almost exactly the original.",
+      "deep": [
+        "Tooling: IDA connected through an MCP server, one GitHub issue per source file, and 14 Luna and 2 Opus 5.5 agents. CI hashed the verify script so agents could not change it, compaction was lowered to 42% of context, and the instructions were re-injected every hour."
+      ],
+      "terms": [
         {
-          "label": "Gaming.net",
-          "url": "https://www.gaming.net/epic-games-says-it-vibe-coded-its-rebuilt-launcher-now-in-preview/"
+          "term": "decompile",
+          "def": "Turning a compiled program back into source code a person can read and change."
         },
         {
-          "label": "Siliconera",
-          "url": "https://www.siliconera.com/new-epic-games-launcher-vibe-coded-because-programming-is-hard/"
+          "term": "source code",
+          "def": "The human-readable instructions developers write, before a compiler turns them into machine code."
+        },
+        {
+          "term": "reviewer agent",
+          "def": "An AI agent whose only job is to check another agent's work."
+        },
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools into an AI agent."
+        },
+        {
+          "term": "compaction",
+          "def": "Summarising an agent's earlier conversation so it fits in its memory window."
+        },
+        {
+          "term": "tokens",
+          "def": "The small chunks of text a model reads and writes; a token is roughly three quarters of a word."
         }
-      ],
-      "forYou": "It is where your Fab library and engine installs live, so expect launcher quirks around plugin installs during the preview."
+      ]
     },
     {
       "id": "game-as-harness",
@@ -236,22 +185,42 @@
           "url": "https://kylekukshtel.com/ai-harness-engineering-game-development-claude-code"
         }
       ],
-      "forYou": "This maps directly onto your UE5 C++ plugins: a gameplay module with tests that run without the editor gives Claude Code a pass or fail signal instead of your eyes."
+      "forYou": "This maps directly onto your UE5 C++ plugins: a gameplay module with tests that run without the editor gives Claude Code a pass or fail signal instead of your eyes.",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "If a game can replay the same match exactly and run without its graphics, an AI agent can test its own changes instead of waiting for a person to play them.",
+      "terms": [
+        {
+          "term": "harness",
+          "def": "The setup around an AI agent that lets it run, test and check its own work."
+        },
+        {
+          "term": "deterministic",
+          "def": "The same inputs always give the same result, so any run can be replayed exactly."
+        },
+        {
+          "term": "replayable",
+          "def": "A run can be recorded and played back step by step, identically."
+        },
+        {
+          "term": "engine",
+          "def": "The software a game runs on, such as Unreal or Unity, which handles graphics, physics and input."
+        }
+      ]
     },
     {
       "id": "claude-api-otel",
       "format": "spotlight",
       "lane": "ai",
       "importance": 2,
-      "size": "wide",
+      "size": "half",
       "ink": "a",
       "texture": "flat",
       "title": "The Claude API now emits OpenTelemetry traces",
       "name": "Claude OpenTelemetry",
       "what": "Traces for the Messages API, tool runs and Managed Agents, sent to any OTLP backend. In beta.",
       "body": [
-        "Two sources. SDK tracing is set in code in seven SDKs (TypeScript and Python among them) and emits a span per request and per tool run. API tracing is a destination an admin adds in the Console, and it is the only one that shows each model run, Managed Agents turns and server tools.",
-        "Spans follow the GenAI conventions, so you can group a thread by `gen_ai.conversation.id`. In TypeScript, set `propagation: false` if you use `@opentelemetry/instrumentation-undici`, or a package bug sends two `traceparent` headers."
+        "It covers the Messages API, tool runs and Managed Agents, and it is in beta. You can switch it on in code with the official SDKs, or have an admin add a destination in the Claude Console."
       ],
       "facts": [
         {
@@ -291,38 +260,32 @@
           "url": "https://platform.claude.com/docs/en/manage-claude/opentelemetry"
         }
       ],
-      "forYou": "Wire it into your Node and Supabase products, Polyglyph first: per-job token and latency traces will show where translation runs spend money."
-    },
-    {
-      "id": "xbox-labs-webgpu",
-      "format": "stat",
-      "lane": "gamedev",
-      "importance": 3,
-      "size": "third",
-      "ink": "b",
-      "texture": "overprint",
-      "title": "Xbox Labs bets on games that run anywhere",
-      "stats": [
-        {
-          "value": "~90%",
-          "label": "of browsers worldwide nearly support WebGPU, says Xbox's memo"
-        }
+      "forYou": "Wire it into your Node and Supabase products, Polyglyph first: per-job token and latency traces will show where translation runs spend money.",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "Apps built on Claude can now report a step-by-step timeline of what each request did, to the monitoring tools teams already use.",
+      "deep": [
+        "Two sources. SDK tracing is set in code in seven SDKs (TypeScript and Python among them) and emits a span per request and per tool run. API tracing is a destination an admin adds in the Console, and it is the only one that shows each model run, Managed Agents turns and server tools.",
+        "Spans follow the GenAI conventions, so you can group a thread by `gen_ai.conversation.id`. In TypeScript, set `propagation: false` if you use `@opentelemetry/instrumentation-undici`, or a package bug sends two `traceparent` headers."
       ],
-      "body": [
-        "Xbox Labs is a small team that will build in the open and share its tools, starting from experiments like browser ports over WebAssembly and WebGPU."
-      ],
-      "why": "A platform holder now treats the browser as a real game target. There is no developer program or timeline yet.",
-      "sources": [
+      "terms": [
         {
-          "label": "Xbox Wire",
-          "url": "https://news.xbox.com/en-us/2026/10/13/introducing-xbox-labs/"
+          "term": "OpenTelemetry",
+          "def": "An open standard for recording what software does, step by step, so any monitoring tool can display it."
         },
         {
-          "label": "Shacknews",
-          "url": "https://www.shacknews.com/article/150991/xbox-labs-mods-coding"
+          "term": "OTLP",
+          "def": "OpenTelemetry's format for sending that data to a monitoring service."
+        },
+        {
+          "term": "beta",
+          "def": "Released for use but still changing; details may break between versions."
+        },
+        {
+          "term": "SDKs",
+          "def": "Software development kits: the official code libraries for calling an API from a programming language."
         }
-      ],
-      "forYou": "It backs your three.js and browser game work as a lane worth staying in."
+      ]
     },
     {
       "id": "lscbench-secure-code",
@@ -333,7 +296,7 @@
       "ink": "a",
       "texture": "flat",
       "title": "Agents pass the tests, then ship the hole",
-      "intro": "Last Secure Code Benchmark: 450 tasks built from 150 real vulnerabilities in 7 languages, graded by hidden functional and security tests. Share of tasks both working and secure:",
+      "intro": "A new benchmark gave agents 450 tasks built from 150 real security flaws in 7 languages, then checked the results with hidden tests for both function and security. Share of tasks that were both working and secure:",
       "unit": "%",
       "series": [
         {
@@ -374,81 +337,27 @@
           "url": "https://github.com/alibaba/last-secure-code-benchmark"
         }
       ],
-      "forYou": "Add an explicit security line to CLAUDE.md in your SaaS repos and keep reviewing data exposure and URL fetches by hand."
-    },
-    {
-      "id": "npm-slugfest",
-      "format": "steps",
-      "lane": "ai",
-      "importance": 3,
-      "size": "half",
-      "ink": "b",
-      "texture": "flat",
-      "title": "npm Trusted Publishing trusted the name, not the repo",
-      "intro": "Bloom Security found Trusted Publishing matched a repository by its owner/repo slug before the first publish, so re-creating an abandoned slug could earn publish rights for someone else's package. Over 1,500 packages were exposed; GitHub shipped fixes on Oct 2 and no exploitation was seen.",
-      "steps": [
+      "forYou": "Add an explicit security line to CLAUDE.md in your SaaS repos and keep reviewing data exposure and URL fetches by hand.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "When AI coding agents fix real bugs, their code usually works but is also secure only about a quarter of the time. Simply asking for secure code helps a lot.",
+      "terms": [
         {
-          "title": "Check every binding",
-          "text": "Confirm each trusted-publisher slug still points to a repository you control."
+          "term": "benchmark",
+          "def": "A fixed set of tasks used to compare tools or models fairly."
         },
         {
-          "title": "Recreate after renames",
-          "text": "If a repo was renamed or transferred, delete the old binding and add it again."
-        },
-        {
-          "title": "Clean up",
-          "text": "Remove bindings when a repo is deleted, moved or renamed."
-        },
-        {
-          "title": "Watch publishes",
-          "text": "Alert on publish events you did not trigger, especially where agents pull latest versions."
+          "term": "security flaws",
+          "def": "Mistakes in code that an attacker could use to break in or steal data."
         }
-      ],
-      "why": "Anyone publishing Node packages has a ten-minute audit to do: bindings are now tied to the immutable repo ID, and unvalidated ones expire after 48 hours.",
-      "sources": [
-        {
-          "label": "The Hacker News",
-          "url": "https://thehackernews.com/2026/10/github-tightens-npm-publishing-after.html"
-        },
-        {
-          "label": "CSO Online",
-          "url": "https://www.csoonline.com/article/4234229/over-1500-npm-packages-exposed-by-trusted-publishing-validation-flaw.html"
-        }
-      ],
-      "forYou": "Run the audit on any npm packages you publish before the 48-hour window closes."
-    },
-    {
-      "id": "sbox-human-curation",
-      "format": "quote",
-      "lane": "gamedev",
-      "importance": 3,
-      "size": "third",
-      "ink": "a",
-      "texture": "flat",
-      "title": "s&box goes free and puts humans back in charge",
-      "quote": "My idea of a Netflix for games doesn't work.",
-      "speaker": "Garry Newman",
-      "role": "Facepunch Studios",
-      "context": "s&box goes free-to-play by the end of 2026, and its Play Fund moves from automatic enrollment to approval, discouraging clickers, idlers and slop.",
-      "why": "A UGC store flooded with low-effort games chose human gatekeeping. Expect more marketplaces to reward curation and quality signals over volume.",
-      "sources": [
-        {
-          "label": "GamingOnLinux",
-          "url": "https://www.gamingonlinux.com/2026/10/facepunch-are-rethinking-s-box-since-its-not-doing-well-its-going-free-to-play/"
-        },
-        {
-          "label": "GamesIndustry.biz",
-          "url": "https://www.gamesindustry.biz/sbox-plans-to-go-free-to-play-and-embrace-human-curation-saying-netflix-for-games-doesnt-work"
-        }
-      ],
-      "forYou": "If Fab follows, polish and documentation become ranking signals for your plugins. Treat the store page as part of the product."
+      ]
     },
     {
       "id": "check-your-setup",
       "format": "list",
       "lane": "ai",
       "importance": 3,
-      "size": "wide",
+      "size": "full",
       "ink": "b",
       "texture": "flat",
       "title": "Five changes to check in your setup",
@@ -495,18 +404,150 @@
           "url": "https://learn.chatgpt.com/docs/changelog"
         }
       ],
-      "forYou": "Check them against your Claude Code setup and the Radar routine first."
+      "forYou": "Check them against your Claude Code setup and the Radar routine first.",
+      "kind": "action",
+      "level": "practitioner",
+      "gist": "Five small tool changes from the last two days that can quietly break automated coding workflows, for anyone running AI agents or CI.",
+      "terms": [
+        {
+          "term": "hooks",
+          "def": "Scripts that run automatically before or after an agent acts, to check or block what it does."
+        },
+        {
+          "term": "compaction",
+          "def": "Summarising an agent's earlier conversation so it fits in its memory window."
+        },
+        {
+          "term": "push protection",
+          "def": "GitHub refusing a push that contains a secret such as an API key."
+        }
+      ]
+    },
+    {
+      "id": "unity-2fa-lockout",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Unity locks out accounts that missed a 2FA reset",
+      "intro": "Accounts were suspended for \"ongoing account security measures\", and a suspended account loses its Hub sign-in, so projects and Asset Store purchases go with it.",
+      "events": [
+        {
+          "when": "Weeks before",
+          "text": "Unity emails users to reset two-factor authentication. Several users say they never got the email."
+        },
+        {
+          "when": "Oct 13",
+          "text": "The reset deadline passes."
+        },
+        {
+          "when": "Oct 14",
+          "text": "Suspensions hit the forums; staff say they are aware. One user reports a release blocked and over EUR 1,000 of assets locked."
+        },
+        {
+          "when": "Oct 14",
+          "text": "Unity's info post points to account recovery; staff say the two-week support wait \"should be accelerated\"."
+        }
+      ],
+      "why": "A missed security email can freeze an editor, purchased assets and a release. A minute checking 2FA and recovery codes on every engine and store account is cheap insurance.",
+      "sources": [
+        {
+          "label": "Unity Discussions",
+          "url": "https://discussions.unity.com/t/information-on-account-suspension/1739213"
+        },
+        {
+          "label": "User thread",
+          "url": "https://discussions.unity.com/t/what-the-is-wrong-with-2fa-my-account-got-suspended-for-some-2fa/1739170"
+        }
+      ],
+      "forYou": "Check 2FA and recovery codes today on Unity, Epic, Fab and Steam, and keep one account per vendor that is not your daily login.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Unity locked some developers out of their accounts, and with them their projects and purchased assets, after they missed an email asking them to reset two-step sign-in.",
+      "terms": [
+        {
+          "term": "2FA",
+          "def": "Two-factor authentication: signing in with a second proof, such as a code from your phone, on top of the password."
+        },
+        {
+          "term": "Hub",
+          "def": "Unity Hub, the app that installs Unity and opens your projects; it needs your account signed in."
+        },
+        {
+          "term": "Asset Store",
+          "def": "Unity's marketplace for models, tools and plugins that developers buy for their projects."
+        }
+      ]
+    },
+    {
+      "id": "npm-slugfest",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "npm Trusted Publishing trusted the name, not the repo",
+      "intro": "Bloom Security found Trusted Publishing matched a repository by its owner/repo slug before the first publish, so re-creating an abandoned slug could earn publish rights for someone else's package. Over 1,500 packages were exposed; GitHub shipped fixes on Oct 2 and no exploitation was seen.",
+      "steps": [
+        {
+          "title": "Check every binding",
+          "text": "Confirm each trusted-publisher slug still points to a repository you control."
+        },
+        {
+          "title": "Recreate after renames",
+          "text": "If a repo was renamed or transferred, delete the old binding and add it again."
+        },
+        {
+          "title": "Clean up",
+          "text": "Remove bindings when a repo is deleted, moved or renamed."
+        },
+        {
+          "title": "Watch publishes",
+          "text": "Alert on publish events you did not trigger, especially where agents pull latest versions."
+        }
+      ],
+      "why": "Anyone publishing Node packages has a ten-minute audit to do: bindings are now tied to the immutable repo ID, and unvalidated ones expire after 48 hours.",
+      "sources": [
+        {
+          "label": "The Hacker News",
+          "url": "https://thehackernews.com/2026/10/github-tightens-npm-publishing-after.html"
+        },
+        {
+          "label": "CSO Online",
+          "url": "https://www.csoonline.com/article/4234229/over-1500-npm-packages-exposed-by-trusted-publishing-validation-flaw.html"
+        }
+      ],
+      "forYou": "Run the audit on any npm packages you publish before the 48-hour window closes.",
+      "kind": "action",
+      "level": "practitioner",
+      "gist": "A loophole could have let a stranger publish updates to someone else's JavaScript package after its project was renamed. It is fixed, but package owners should check their settings.",
+      "terms": [
+        {
+          "term": "npm",
+          "def": "The main registry JavaScript packages are published to and installed from."
+        },
+        {
+          "term": "Trusted Publishing",
+          "def": "Letting an automated pipeline publish a package without a stored password, by trusting one specific repository."
+        },
+        {
+          "term": "slug",
+          "def": "The short owner/name path that identifies a repository, such as toamig/radar."
+        }
+      ]
     },
     {
       "id": "self-replicating-models",
       "format": "concept",
       "lane": "ai",
       "importance": 3,
-      "size": "half",
+      "size": "full",
       "ink": "a",
       "texture": "halftone",
       "title": "Anthropic tests whether small models can spread on cheap devices",
-      "plain": "Anthropic's red team measured how far open-weight models get at copying themselves onto other machines and running there, without a datacenter.",
       "body": [
         "In a demo, Gemma4-26B-A4B ran split across 15 Android TV boxes at about $55 each, at 0.39 tokens a second. In a firewalled test network with open ADB, GLM-5.2 reached all 8 nodes in 4 of 5 trials; models of 30B or fewer handled single steps but could not chain them. The exploit was deliberately trivial, so treat results as an upper bound."
       ],
@@ -531,6 +572,82 @@
         {
           "label": "The New Stack",
           "url": "https://thenewstack.io/self-replicating-ai-worms/"
+        }
+      ],
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Anthropic's red team tested how far small open-weight AI models, the kind anyone can download and run, can copy themselves onto other cheap devices and keep running there, without a datacenter.",
+      "terms": [
+        {
+          "term": "red team",
+          "def": "People who attack a system on purpose to find its weaknesses before someone else does."
+        },
+        {
+          "term": "open-weight",
+          "def": "A model whose trained weights are published, so anyone can run it on their own hardware."
+        },
+        {
+          "term": "ADB",
+          "def": "Android Debug Bridge: a developer tool that can control Android devices over a network if left open."
+        },
+        {
+          "term": "tokens a second",
+          "def": "How fast a model writes text; a token is roughly three quarters of a word."
+        }
+      ]
+    },
+    {
+      "id": "epic-launcher-vibe-coded",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "Epic vibe coded its new launcher",
+      "stats": [
+        {
+          "value": "1.8x",
+          "label": "faster cold start than Steam: 5.47 s against 10.07 s, Epic's test"
+        },
+        {
+          "value": "3x",
+          "label": "faster to open the store than Steam, per Epic"
+        }
+      ],
+      "body": [
+        "Epic's preview says it \"vibe coded\" a rebuilt Epic Games Launcher for Windows, Apple Silicon Macs and, for the first time, Linux. All numbers are Epic's own, with no published method."
+      ],
+      "image": {
+        "src": "img/2026-10-15/epic-launcher.webp",
+        "alt": "The new Epic Games Launcher library: a grid of game covers with Store, Library and Develop tabs and a friends panel on the right",
+        "credit": "Epic Games via Siliconera",
+        "creditUrl": "https://www.siliconera.com/new-epic-games-launcher-vibe-coded-because-programming-is-hard/",
+        "fit": "cover"
+      },
+      "why": "A public case of a large AI-built rewrite shipped with measured claims, from a company that just moved its teams to AI-first production. Expect rough edges in the preview.",
+      "sources": [
+        {
+          "label": "Gaming.net",
+          "url": "https://www.gaming.net/epic-games-says-it-vibe-coded-its-rebuilt-launcher-now-in-preview/"
+        },
+        {
+          "label": "Siliconera",
+          "url": "https://www.siliconera.com/new-epic-games-launcher-vibe-coded-because-programming-is-hard/"
+        }
+      ],
+      "forYou": "It is where your Fab library and engine installs live, so expect launcher quirks around plugin installs during the preview.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Epic says it rebuilt its game launcher largely with AI-written code, and claims it now opens nearly twice as fast as Steam.",
+      "terms": [
+        {
+          "term": "vibe coded",
+          "def": "Built mainly by describing what you want to an AI and accepting the code it writes."
+        },
+        {
+          "term": "cold start",
+          "def": "How long an app takes to open when it is not already running."
         }
       ]
     },
@@ -580,7 +697,104 @@
           "url": "https://www.gamesindustry.biz/google-play-adds-game-finder-sprints-and-sidekick-playbacks-in-discovery-push"
         }
       ],
-      "forYou": "Wire it into your Flutter and mobile games before launch, not after."
+      "forYou": "Wire it into your Flutter and mobile games before launch, not after.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Google Play is adding AI game recommendations and short competitions between players, and a game only takes part if it reports a few basic stats.",
+      "terms": [
+        {
+          "term": "Game Stats",
+          "def": "Google Play's way for a game to report results such as scores, milestones and finished matches."
+        },
+        {
+          "term": "Sidekick",
+          "def": "Google Play's overlay that sits on top of a game while you play."
+        }
+      ]
+    },
+    {
+      "id": "xbox-labs-webgpu",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "overprint",
+      "title": "Xbox Labs bets on games that run anywhere",
+      "stats": [
+        {
+          "value": "~90%",
+          "label": "of browsers worldwide nearly support WebGPU, says Xbox's memo"
+        }
+      ],
+      "body": [
+        "Xbox Labs is a small team that will build in the open and share its tools, starting from experiments like browser ports over WebAssembly and WebGPU."
+      ],
+      "why": "A platform holder now treats the browser as a real game target. There is no developer program or timeline yet.",
+      "sources": [
+        {
+          "label": "Xbox Wire",
+          "url": "https://news.xbox.com/en-us/2026/10/13/introducing-xbox-labs/"
+        },
+        {
+          "label": "Shacknews",
+          "url": "https://www.shacknews.com/article/150991/xbox-labs-mods-coding"
+        }
+      ],
+      "forYou": "It backs your three.js and browser game work as a lane worth staying in.",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Xbox started a small team to experiment with games that run anywhere, including straight in a web browser.",
+      "terms": [
+        {
+          "term": "WebGPU",
+          "def": "A browser feature that lets web pages use the graphics card for fast 3D, close to how installed games do."
+        },
+        {
+          "term": "WebAssembly",
+          "def": "A way to run fast, compiled code inside a web page."
+        }
+      ]
+    },
+    {
+      "id": "sbox-human-curation",
+      "format": "quote",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "s&box goes free and puts humans back in charge",
+      "quote": "My idea of a Netflix for games doesn't work.",
+      "speaker": "Garry Newman",
+      "role": "Facepunch Studios",
+      "context": "s&box goes free-to-play by the end of 2026, and its Play Fund moves from automatic enrollment to approval, discouraging clickers, idlers and slop.",
+      "why": "A UGC store flooded with low-effort games chose human gatekeeping. Expect more marketplaces to reward curation and quality signals over volume.",
+      "sources": [
+        {
+          "label": "GamingOnLinux",
+          "url": "https://www.gamingonlinux.com/2026/10/facepunch-are-rethinking-s-box-since-its-not-doing-well-its-going-free-to-play/"
+        },
+        {
+          "label": "GamesIndustry.biz",
+          "url": "https://www.gamesindustry.biz/sbox-plans-to-go-free-to-play-and-embrace-human-curation-saying-netflix-for-games-doesnt-work"
+        }
+      ],
+      "forYou": "If Fab follows, polish and documentation become ranking signals for your plugins. Treat the store page as part of the product.",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "The s&box game platform is going free to play and will now choose by hand which games its fund pays, after automatic payouts attracted low-effort games.",
+      "terms": [
+        {
+          "term": "Play Fund",
+          "def": "s&box's program that pays creators for the games they publish on the platform."
+        },
+        {
+          "term": "slop",
+          "def": "Low-effort content made in bulk, often with AI, to farm views or payouts."
+        }
+      ],
+      "background": "s&box is the game-making platform from Facepunch, the studio behind Garry's Mod and Rust."
     }
   ],
   "ticker": [
@@ -872,5 +1086,110 @@
       },
       "forYou": "Add it to your global CLAUDE.md and compare a week of usage on the Radar routine before and after."
     }
-  ]
+  ],
+  "groups": [
+    {
+      "title": "Agents at work",
+      "note": "How teams build and check things with AI agents, and what changed in their tools.",
+      "ids": [
+        "game-as-harness",
+        "claude-api-otel",
+        "lscbench-secure-code",
+        "check-your-setup"
+      ]
+    },
+    {
+      "title": "Lock it down",
+      "note": "Accounts, packages and devices that need a look.",
+      "ids": [
+        "unity-2fa-lockout",
+        "npm-slugfest",
+        "self-replicating-models"
+      ]
+    },
+    {
+      "title": "Platforms and players",
+      "note": "Where games are sold, found and played.",
+      "ids": [
+        "epic-launcher-vibe-coded",
+        "google-play-game-stats",
+        "xbox-labs-webgpu",
+        "sbox-human-curation"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What does it mean to decompile a game?",
+    "answer": "Decompiling turns the machine code a game ships as back into source code that people can read and change.",
+    "analogy": "Like working a recipe back out of a baked cake: you can taste what went in, but you have to rediscover the steps and amounts yourself.",
+    "body": [
+      "Developers write games in languages like C++, and a compiler translates that source into machine code, the binary a player installs. Names, comments and structure are lost on the way, so the binary is fast for the computer but nearly unreadable for people.",
+      "Decompiling runs the other way. Tools such as IDA or Ghidra show the machine code and suggest what it does, and a person (or now an agent) rewrites it as source code. The hard part is proving the rewrite is right, which is why matching the original byte for byte is such a strong test.",
+      "It matters for preservation (keeping old games playable on new hardware), for mods and ports, and for security: anything shipped to players can be studied."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Source code",
+          "note": "what developers write"
+        },
+        {
+          "label": "Compiler",
+          "note": "turns it into machine code"
+        },
+        {
+          "label": "Binary",
+          "note": "what players install",
+          "key": true
+        },
+        {
+          "label": "Decompiled source",
+          "note": "rebuilt by people or agents"
+        }
+      ],
+      "links": [
+        "build",
+        "ship",
+        "decompile"
+      ],
+      "caption": "Compiling throws away names and comments; decompiling has to guess them back."
+    },
+    "terms": [
+      {
+        "term": "machine code",
+        "def": "The raw instructions a processor runs, stored as numbers rather than words."
+      },
+      {
+        "term": "compiler",
+        "def": "A program that translates source code into machine code."
+      },
+      {
+        "term": "binary",
+        "def": "The compiled file a program ships as."
+      },
+      {
+        "term": "Ghidra",
+        "def": "A free tool, published by the US National Security Agency, for reading machine code."
+      }
+    ],
+    "seenIn": [
+      "agents-decompile-games",
+      "xbox-labs-webgpu"
+    ],
+    "sources": [
+      {
+        "label": "Decompiler (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Decompiler"
+      },
+      {
+        "label": "momo5502 on the project",
+        "url": "https://momo5502.com/posts/2026-10-09-game-decompilation/"
+      },
+      {
+        "label": "Ghidra",
+        "url": "https://ghidra-sre.org/"
+      }
+    ]
+  }
 }

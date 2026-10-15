@@ -150,7 +150,7 @@
 
 /* Hero visuals: a kit diagram in place of an image, or no visual at all. */
 .dia-fig { margin: 0; }
-.hero-dia { align-self: center; }
+.hero-dia { align-self: center; container-type: inline-size; min-width: 0; }
 .hero-dia .dia { margin: 0; }
 .hero-dia .dia-node b { font-size: 1.25rem; }
 .hero[data-variant='split'] .hero-wrap.hero-visual-none { grid-template-columns: 1fr; }

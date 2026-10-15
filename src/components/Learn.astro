@@ -1,0 +1,34 @@
+---
+// Learn one thing: one concept from today's stories, explained from zero.
+import Inline from './Inline.astro';
+import Paras from './Paras.astro';
+import Media from './Media.astro';
+import DiagramFigure from './DiagramFigure.astro';
+interface Props { learn: any; blocks: { id: string; title: string }[] }
+const { learn, blocks } = Astro.props;
+const seen = learn.seenIn.map((id: string) => blocks.find((b) => b.id === id)).filter(Boolean);
+---
+<section id="learn" class="learn jump" aria-labelledby="learn-h" data-terms={learn.terms.length ? JSON.stringify(learn.terms) : undefined}>
+  <header class="learn-head">
+    <p class="learn-kicker">Learn one thing</p>
+    <h2 id="learn-h" class="learn-q display">{learn.question}</h2>
+  </header>
+  <div class:list={['learn-grid', { 'has-visual': learn.diagram || learn.image }]}>
+    <div class="learn-text">
+      <p class="learn-a"><Inline text={learn.answer} /></p>
+      {learn.analogy && <p class="learn-analogy"><b>Think of it like this</b><Inline text={learn.analogy} /></p>}
+      <Paras items={learn.body} />
+    </div>
+    {learn.diagram && <DiagramFigure class="learn-dia" id="learn" title={learn.question} {...learn.diagram} />}
+    {!learn.diagram && learn.image && <Media image={learn.image} class="learn-img" />}
+  </div>
+  {learn.terms.length > 0 && (
+    <dl class="terms-list" aria-label="Terms used here">
+      {learn.terms.map((t: any) => <div><dt>{t.term}</dt><dd>{t.def}</dd></div>)}
+    </dl>
+  )}
+  <footer class="learn-foot">
+    {seen.length > 0 && <p class="learn-seen"><span>Seen today in</span>{seen.map((b: any) => <a href={`#${b.id}`}><Inline text={b.title} /></a>)}</p>}
+    <p class="srcs"><span>Go further</span>{learn.sources.map((s: any) => <a href={s.url} rel="noopener" target="_blank">{s.label}</a>)}</p>
+  </footer>
+</section>

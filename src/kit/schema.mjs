@@ -41,6 +41,17 @@ export const Source = z.object({ label: text(80), url });
 
 export const Lane = z.enum(['gamedev', 'ai', 'both']);
 
+/** A technical word and its one-sentence plain definition; the page marks its first use. */
+export const Term = z.object({ term: text(40), def: text(200) });
+
+/** A kit-drawn diagram: used by the diagram format, the hero and Learn one thing. */
+export const DiagramSpec = z.object({
+  layout: z.enum(['flow', 'layers', 'hub', 'cycle']),
+  nodes: z.array(z.object({ label: text(40), note: text(120).optional(), key: z.boolean().default(false) })).min(2).max(6),
+  links: z.array(text(40)).max(6).default([]),
+  caption: text(300).optional(),
+});
+
 const base = {
   id: slug,
   lane: Lane,
@@ -51,6 +62,18 @@ const base = {
   ink: z.enum(['a', 'b']).default('a'),
   texture: z.enum(['flat', 'halftone', 'overprint']).default('flat'),
   title: text(120),
+  /** What kind of item it is: news, a release, a lesson, something to do, or a trend. */
+  kind: z.enum(['news', 'release', 'lesson', 'action', 'trend']),
+  /** everyone: anyone curious can follow it. practitioner: needs hands-on background, so its body starts folded. */
+  level: z.enum(['everyone', 'practitioner']).default('everyone'),
+  /** The story in plain words: one sentence, no jargon, read before anything else. */
+  gist: text(240),
+  /** Background a newcomer needs when the story builds on earlier news. (Quote blocks use `context` for their own paragraph.) */
+  background: text(240).optional(),
+  /** Technical words in this block, each defined in one plain sentence. */
+  terms: z.array(Term).max(6).default([]),
+  /** Technical details for those who want them, folded behind "Technical details". */
+  deep: z.array(text(700)).max(4).default([]),
   /** Why this matters to any developer, in one or two sentences. Public: never about the owner's own work. */
   why: text(320),
   /**
@@ -70,19 +93,13 @@ export const Hero = z.object({
   ...base,
   format: z.literal('hero'),
   variant: z.enum(['split', 'poster', 'stack']).default('split'),
-  takeaway: text(240),
+  /** Older issues only: the gist now plays this role. */
+  takeaway: text(240).optional(),
   body: z.array(Para).min(1).max(4),
   art: artPath.optional(),
   artAlt: text(200).optional(),
   /** A kit diagram as the hero's visual, when no real image shows the story. */
-  diagram: z
-    .object({
-      layout: z.enum(['flow', 'layers', 'hub', 'cycle']),
-      nodes: z.array(z.object({ label: text(40), note: text(120).optional(), key: z.boolean().default(false) })).min(2).max(6),
-      links: z.array(text(40)).max(6).default([]),
-      caption: text(300).optional(),
-    })
-    .optional(),
+  diagram: DiagramSpec.optional(),
   stat: z.object({ value: text(16), label: text(80) }).optional(),
 });
 
@@ -160,8 +177,8 @@ export const Code = z.object({
 export const Concept = z.object({
   ...base,
   format: z.literal('concept'),
-  /** The idea in one plain sentence. */
-  plain: text(220),
+  /** Older issues only: the gist now plays this role. */
+  plain: text(220).optional(),
   body: z.array(Para).min(1).max(3),
   points: z.array(text(160)).max(5).default([]),
   art: artPath.optional(),
@@ -231,6 +248,23 @@ export const Spark = z.object({
   image: Image.optional(),
 });
 
+/** Learn one thing: one concept from today's stories, explained from zero. */
+export const Learn = z.object({
+  /** The question a newcomer would ask: "What is OpenTelemetry?" */
+  question: text(90),
+  /** The answer in one or two plain sentences. */
+  answer: text(260),
+  body: z.array(text(700)).min(1).max(3),
+  /** An everyday comparison that makes it click. */
+  analogy: text(260).optional(),
+  diagram: DiagramSpec.optional(),
+  image: Image.optional(),
+  terms: z.array(Term).max(6).default([]),
+  /** Ids of today's blocks where the concept appears. */
+  seenIn: z.array(slug).max(4).default([]),
+  sources: z.array(Source).min(1).max(4),
+});
+
 /** A research result for The lab: papers, theses, preprints, lab reports. */
 export const Paper = z.object({
   id: slug,
@@ -271,6 +305,10 @@ export const Issue = z
     tldr: z.array(z.object({ text: text(220), lane: Lane })).min(3).max(5),
     blocks: z.array(Block).min(4).max(14),
     ticker: z.array(TickerItem).max(14).default([]),
+    /** Themed groups for the grid, each a heading over its own rows. The hero stays on top. */
+    groups: z.array(z.object({ title: text(40), note: text(160).optional(), ids: z.array(slug).min(1) })).max(5).default([]),
+    /** Learn one thing: today's concept explained from zero. */
+    learn: Learn.optional(),
     /** The lab: 1 to 3 research results worth knowing. */
     lab: z.array(Paper).max(3).default([]),
     /** Sparks: 3 to 6 rising games, concepts and techniques. */
@@ -294,6 +332,25 @@ export const Issue = z
         }
       }
     });
+    const blockIds = new Set(issue.blocks.map((b) => b.id));
+    if (issue.groups.length) {
+      const placed = new Map();
+      issue.groups.forEach((g, gi) => g.ids.forEach((id, k) => {
+        if (!blockIds.has(id)) ctx.addIssue({ code: 'custom', message: `no block with id ${id}`, path: ['groups', gi, 'ids', k] });
+        else if (id === issue.blocks[0]?.id) ctx.addIssue({ code: 'custom', message: 'the hero stays above the groups', path: ['groups', gi, 'ids', k] });
+        else if (placed.has(id)) ctx.addIssue({ code: 'custom', message: `${id} is in two groups`, path: ['groups', gi, 'ids', k] });
+        placed.set(id, gi);
+      }));
+      issue.blocks.slice(1).forEach((b) => {
+        if (!placed.has(b.id)) ctx.addIssue({ code: 'custom', message: `${b.id} is in no group`, path: ['groups'] });
+      });
+    }
+    issue.learn?.seenIn.forEach((id, k) => {
+      if (!blockIds.has(id)) ctx.addIssue({ code: 'custom', message: `no block with id ${id}`, path: ['learn', 'seenIn', k] });
+    });
+    if (issue.learn?.image && !issue.learn.image.src.includes(`/${issue.date}/`)) {
+      ctx.addIssue({ code: 'custom', message: "image must live under the issue's own date folder", path: ['learn', 'image'] });
+    }
     issue.sparks.forEach((spark, i) => {
       if (spark.image && !spark.image.src.includes(`/${issue.date}/`)) {
         ctx.addIssue({ code: 'custom', message: "image must live under the issue's own date folder", path: ['sparks', i, 'image'] });
