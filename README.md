@@ -27,6 +27,7 @@ data/issues/<date>.json    one issue per day (kept 7 days)
 data/weeks/<id>.json       Sunday's weekly summary (kept 4 weeks)
 public/art/<date>/         SVG art drawn for that issue
 public/bespoke/<date>/     sandboxed interactive pieces
+public/og/                 share cards, generated at build by scripts/og.mjs (not committed)
 inbox/<date>.json          sweep and triage output
 editorial/taste.md         the reader profile: what earns a place
 editorial/feedback.md      "more/less like this" feedback, folded in daily

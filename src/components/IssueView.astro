@@ -18,7 +18,7 @@ interface Props { issue: IssueData; path: string }
 const { issue, path } = Astro.props;
 const pal = palette(issue.theme);
 ---
-<Base title={`Radar No. ${issue.number}: ${issue.title}`} description={plain(issue.dek)} theme={issue.theme} path={path}>
+<Base title={`Radar No. ${issue.number}: ${issue.title}`} shareTitle={`${issue.title} | Radar No. ${issue.number}`} description={plain(issue.dek)} theme={issue.theme} path={path} ogImage={`og/${issue.date}.jpg`} ogImageAlt={`Radar No. ${issue.number}: ${issue.title}`}>
   <Masthead date={issue.date} number={issue.number} minutes={readingMinutes(issue)} />
   <section class="day" aria-labelledby="day-title">
     <div>
