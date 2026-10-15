@@ -15,7 +15,7 @@ interactive piece). Nothing is kept for more than a week.
 |---|---|---|---|
 | 05:37 | **Sweep**: read ~35 sources (feeds, Hacker News, GitHub releases), keep the last 48 hours, drop what was already featured | GitHub Actions, `scripts/sweep.mjs` | free |
 | 05:38 | **Triage**: Claude Haiku 5.5 scores every candidate against `editorial/taste.md` | GitHub Actions, `scripts/triage.mjs` | about $0.05, only if `ANTHROPIC_API_KEY` is set |
-| 06:07 | **Morning run**: research desks dig in, the editor picks and writes, the art director composes the page, then it validates, screenshots, fixes and pushes | Claude Code routine, `routine/PROMPT.md` | Claude subscription |
+| 06:07 | **Morning run**: research desks dig in, the editor picks and writes, the art director composes the page, then it validates, screenshots, fixes and pushes | Claude Code routine, `routine/PROMPT.md`: research desks on Sonnet 5.5, editing and layout on Opus 5.5 | Claude Max plan (scheduled runs cannot use cloud session credits) |
 | on push | **Deploy**: validate, build, publish to GitHub Pages | GitHub Actions | free |
 
 Both schedules are in UTC (sweep 04:37, routine 05:07), so they read 05:37 and 06:07 in Lisbon summer time and an hour earlier in winter. The routine is managed at [claude.ai/code/routines](https://claude.ai/code/routines).

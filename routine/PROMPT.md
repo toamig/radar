@@ -76,6 +76,11 @@ The inbox is a net, not the research. Fan out with the Agent tool: start these f
 desks in parallel, each with a self-contained brief that includes today's date, the
 reader profile summary, the relevant shortlisted candidates, and the ground rules above.
 
+**Start every desk with `model: "sonnet"`.** The desks do the reading, which is most of
+the run's tokens, and Sonnet does it well at about half the cost. You stay on your own
+model for everything after step 3: picking, writing, art direction and the visual review
+are where the stronger model earns its cost. Do not do the desks' reading yourself.
+
 1. **Game dev desk**: engines, tools, rendering, stores and marketplaces, studio business, postmortems.
 2. **AI engineering desk**: models, coding agents, workflows, MCP and agent tooling, evals, pricing.
 3. **Changelog desk**: what shipped in the tools the reader uses daily (Claude Code, the Claude API
