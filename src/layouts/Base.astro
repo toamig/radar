@@ -82,6 +82,7 @@ const canonical = new URL(`${BASE}${path}`, Astro.site).href;
     <div class="page">
       <slot />
     </div>
+    <a class="tune-flag" href="?tune=0">Tune mode is on in this browser. <u>Turn it off</u></a>
     <script>
       // Charts draw their bars when they scroll into view.
       const charts = document.querySelectorAll('.chart');
