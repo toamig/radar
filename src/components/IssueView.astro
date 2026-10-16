@@ -26,7 +26,7 @@ const groups = issue.groups.length
   ? issue.groups.map((g) => ({ ...g, blocks: g.ids.map((id) => byId.get(id)!).filter(Boolean) }))
   : [{ title: '', note: undefined, blocks: rest }];
 ---
-<Base title={`Radar No. ${issue.number}: ${issue.title}`} shareTitle={`${issue.title} | Radar No. ${issue.number}`} description={plain(issue.dek)} theme={issue.theme} path={path} ogImage={`og/${issue.date}.jpg`} ogImageAlt={`Radar No. ${issue.number}: ${issue.title}`}>
+<Base title={`${issue.title} | Toa Radar No. ${issue.number}`} shareTitle={`${issue.title} | Toa Radar No. ${issue.number}`} description={plain(issue.dek)} theme={issue.theme} path={path} ogImage={`og/${issue.date}.jpg`} ogImageAlt={`Toa Radar No. ${issue.number} by Toamig: ${issue.title}`}>
   <Masthead date={issue.date} number={issue.number} minutes={readingMinutes(issue)} />
   <section class="day" aria-labelledby="day-title">
     <div>

@@ -15,7 +15,7 @@ const { week } = Astro.props;
 const kept = new Set(issues.map((i) => i.date));
 const range = `${formatDate(week.from, { day: 'numeric', month: 'long' })} to ${formatDate(week.to, { day: 'numeric', month: 'long' })}`;
 ---
-<Base title={`Radar week ${week.id.split('-W')[1]}: ${week.title}`} shareTitle={`${week.title} | Radar, the week`} description={plain(week.dek)} theme={week.theme} path={`week/${week.id}/`} ogImage={`og/week-${week.id}.jpg`}>
+<Base title={`${week.title} | Toa Radar, week ${week.id.split('-W')[1]}`} shareTitle={`${week.title} | Toa Radar, the week`} description={plain(week.dek)} theme={week.theme} path={`week/${week.id}/`} ogImage={`og/week-${week.id}.jpg`}>
   <Masthead date={week.to} number={Number(week.id.split('-W')[1])} sub={`The week of ${range}`} />
   <section class="day">
     <div>

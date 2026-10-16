@@ -12,6 +12,7 @@ import '../styles/nav.css';
 import '../styles/readability.css';
 import { resolveTheme, onInk } from '../kit/catalog.mjs';
 import { BASE } from '../kit/data';
+import { toaSvg } from '../kit/toa-mark.mjs';
 
 interface Props {
   title: string;
@@ -39,6 +40,8 @@ const css = `:root{${vars(t.day)}${typeVars}}
 @media (prefers-color-scheme: dark){:root:not([data-theme='light']){${vars(t.night)}}}
 :root[data-theme='dark']{${vars(t.night)}}`;
 const canonical = new URL(`${BASE}${path}`, Astro.site).href;
+// The tab icon is the TOA mark in this issue's two inks, so it changes with the palette.
+const favicon = `data:image/svg+xml,${encodeURIComponent(toaSvg(t.day.inkB, t.day.inkA, { square: true }))}`;
 const ogImageUrl = ogImage ? new URL(`${BASE}${ogImage}`, Astro.site).href : undefined;
 ---
 <!doctype html>
@@ -49,7 +52,7 @@ const ogImageUrl = ogImage ? new URL(`${BASE}${ogImage}`, Astro.site).href : und
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta property="og:site_name" content="Radar by Toamig" />
+    <meta property="og:site_name" content="Toa Radar by Toamig" />
     <meta property="og:title" content={shareTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="article" />
@@ -67,7 +70,8 @@ const ogImageUrl = ogImage ? new URL(`${BASE}${ogImage}`, Astro.site).href : und
     <meta name="twitter:description" content={description} />
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
     <meta name="theme-color" content={t.day.paper} />
-    <link rel="icon" href={`${BASE}favicon.svg`} type="image/svg+xml" />
+    <link rel="icon" href={favicon} type="image/svg+xml" />
+    <link rel="alternate icon" href={`${BASE}favicon.svg`} type="image/svg+xml" />
     <style set:html={css}></style>
     <script is:inline>
       document.documentElement.classList.add('js');

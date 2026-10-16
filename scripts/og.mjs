@@ -8,6 +8,7 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
 import { resolveTheme } from '../src/kit/catalog.mjs';
+import { toaSvg } from '../src/kit/toa-mark.mjs';
 
 const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const W = 1200, H = 630;
@@ -29,6 +30,8 @@ const DISPLAY = {
   grotesk: { family: 'Bricolage', upper: false, size: 1, tracking: -2 },
 };
 
+const toaMark = (t, oa) => `data:image/svg+xml;base64,${Buffer.from(toaSvg(t, oa)).toString('base64')}`;
+
 const h = (type, style, ...children) => ({ type, props: { style: { display: 'flex', ...style }, children: children.flat().filter((c) => c !== null && c !== false && c !== undefined) } });
 const plain = (s) => String(s).replace(/\*\*([^*]+)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
 const formatDate = (d) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
@@ -49,11 +52,13 @@ function card({ theme, number, date, title, line, points = [], image }) {
   const len = title.length;
   const base = len <= 28 ? 84 : len <= 44 ? 72 : len <= 60 ? 62 : 54;
   const size = Math.round(base * d.size * (image ? 0.92 : 1));
-  const word = (color, dx, dy) => h('div', { position: 'absolute', left: dx, top: dy, fontFamily: d.family, fontSize: 64, lineHeight: 1, color, textTransform: 'uppercase', letterSpacing: d.tracking }, 'Radar');
+  const word = (color, dx, dy) => h('div', { position: 'absolute', left: dx, top: dy, fontFamily: d.family, fontSize: 64, lineHeight: 1, color, textTransform: d.upper ? 'uppercase' : 'none', letterSpacing: d.tracking }, 'Radar');
   return h('div', { width: W, height: H, backgroundColor: c.paper, color: c.text, fontFamily: 'Literata' },
     h('div', { width: textW, height: H, flexDirection: 'column', padding: '44px 56px 40px 56px' },
       h('div', { justifyContent: 'space-between', alignItems: 'flex-end', paddingBottom: 18, borderBottom: `6px solid ${c.text}` },
-        h('div', { position: 'relative', width: 260, height: 64 }, word(c.inkB, 5, 4), word(c.displayA, 0, 0)),
+        h('div', { alignItems: 'flex-end', gap: 12 },
+          { type: 'img', props: { src: toaMark(c.inkB, c.displayA), style: { width: 84, height: 48, marginBottom: 6 } } },
+          h('div', { position: 'relative', width: 230, height: 64 }, word(c.inkB, 5, 4), word(c.displayA, 0, 0))),
         h('div', { flexDirection: 'column', alignItems: 'flex-end', fontSize: 22, lineHeight: 1.25 },
           h('div', { fontWeight: 600 }, number),
           h('div', { color: c.muted }, date))),
@@ -65,10 +70,8 @@ function card({ theme, number, date, title, line, points = [], image }) {
             h('div', { width: 14, height: 14, marginTop: 9, flexShrink: 0, backgroundColor: i % 2 ? c.inkB : c.inkA }),
             h('div', { maxWidth: 1000 }, pt)))) : null),
       h('div', { position: 'absolute', left: 56, right: image ? 576 : 56, bottom: 36, alignItems: 'center', gap: 16, fontSize: 21, color: c.muted },
-        h('div', { position: 'relative', width: 52, height: 30 },
-          h('div', { position: 'absolute', left: 0, top: 0, width: 30, height: 30, borderRadius: 15, backgroundColor: c.inkA }),
-          h('div', { position: 'absolute', left: 20, top: 0, width: 30, height: 30, borderRadius: 15, backgroundColor: c.inkB, opacity: 0.85 })),
-        image ? null : h('div', { whiteSpace: 'nowrap' }, 'A daily briefing on game dev and AI engineering'),
+        h('div', { fontWeight: 600, color: c.text, whiteSpace: 'nowrap' }, 'by Toamig'),
+        image ? null : h('div', { whiteSpace: 'nowrap' }, 'a daily briefing on game dev and AI engineering'),
         h('div', { marginLeft: image ? 0 : 'auto', fontWeight: 600, color: c.text, whiteSpace: 'nowrap' }, 'toamig.com/radar'))),
     image ? h('div', { width: 520, height: H, borderLeft: `8px solid ${c.inkA}` }, { type: 'img', props: { src: image, width: 512, height: H, style: { objectFit: 'cover' } } }) : null);
 }

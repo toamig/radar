@@ -1,6 +1,6 @@
 # Reader profile
 
-Radar is written for one developer first. Anyone else who reads it is welcome, but
+Toa Radar is written for one developer first: its owner, Toamig. Anyone else who reads it is welcome, but
 every editorial choice is made for this reader. Tune this file freely; the triage
 step and the morning run both read it.
 

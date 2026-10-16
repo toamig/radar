@@ -88,13 +88,18 @@ strong { font-weight: 680; }
   padding: 28px 0 18px;
   border-bottom: 6px solid var(--text);
 }
-.mast-word {
+/* The TOA mark and the word "Radar" read together as "Toa Radar". The mark
+   prints in the day's inks: T in the second ink, O and A like the wordmark. */
+.mast-brand {
   margin: 0;
   font-size: calc(var(--display-scale, 1) * clamp(3rem, 10vw, 7.5rem));
   line-height: .78;
-  position: relative;
 }
-.mast-word a { text-decoration: none; }
+.mast-brand a { display: inline-flex; align-items: flex-end; gap: .16em; text-decoration: none; color: inherit; }
+.mast-mark { height: .74em; width: auto; flex: none; margin-bottom: .02em; }
+.mast-mark .toa-t { fill: var(--ink-b); }
+.mast-mark .toa-oa { fill: var(--display-a); }
+.mast-word { display: inline-block; position: relative; }
 .mast-meta {
   display: grid;
   justify-items: end;

@@ -1,0 +1,12 @@
+---
+// The TOA monogram, printed in the day's inks like everything else: the T in the
+// second ink, the O and A in the wordmark's color. Never fixed brand colors.
+import { TOA_PATHS, TOA_TRANSFORM, TOA_VIEWBOX } from '../kit/toa-mark.mjs';
+interface Props { class?: string; title?: string }
+const { title } = Astro.props;
+---
+<svg class:list={['toa-mark', Astro.props.class]} viewBox={TOA_VIEWBOX} role={title ? 'img' : undefined} aria-label={title} aria-hidden={title ? undefined : 'true'} focusable="false">
+  <g transform={TOA_TRANSFORM}>
+    {TOA_PATHS.map((p) => <path class={p.part === 't' ? 'toa-t' : 'toa-oa'} d={p.d} />)}
+  </g>
+</svg>

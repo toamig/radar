@@ -6,7 +6,7 @@ const { current } = Astro.props;
 const week = weeks[0];
 ---
 <section id="week" class="week jump" aria-labelledby="week-h">
-  <h2 id="week-h" class="display">This week on Radar</h2>
+  <h2 id="week-h" class="display">This week on Toa Radar</h2>
   <ul class="days">
     {issues.map((i) => {
       const t = resolveTheme(i.theme);
