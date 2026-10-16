@@ -14,7 +14,7 @@ import SectionNav from './SectionNav.astro';
 import { issues } from '../kit/data';
 import WeekStrip from './WeekStrip.astro';
 import Colophon from './Colophon.astro';
-import { readingMinutes, type IssueData } from '../kit/data';
+import type { IssueData } from '../kit/data';
 import { palette } from '../kit/palette';
 import { plain } from '../kit/inline';
 interface Props { issue: IssueData; path: string }
@@ -28,7 +28,7 @@ const groups = issue.groups.length
   : [{ title: '', note: undefined, blocks: rest }];
 ---
 <Base title={`${issue.title} | Toa Radar No. ${issue.number}`} shareTitle={`${issue.title} | Toa Radar No. ${issue.number}`} description={plain(issue.dek)} theme={issue.theme} path={path} ogImage={`og/${issue.date}.jpg`} ogImageAlt={`Toa Radar No. ${issue.number} by Toamig: ${issue.title}`}>
-  <Masthead date={issue.date} number={issue.number} minutes={readingMinutes(issue)} />
+  <Masthead date={issue.date} number={issue.number} />
   <section class="day" aria-labelledby="day-title">
     <div>
       <h1 id="day-title" class="day-title display">{issue.title}</h1>

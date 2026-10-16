@@ -21,7 +21,7 @@ import List from './blocks/List.astro';
 import Bespoke from './blocks/Bespoke.astro';
 import Diagram from './blocks/Diagram.astro';
 import Media from './Media.astro';
-import { blockMinutes, type BlockData } from '../kit/data';
+import type { BlockData } from '../kit/data';
 import type { Palette } from '../kit/palette';
 import { tuneUrl } from '../kit/site';
 
@@ -52,7 +52,6 @@ const folded = block.level === 'practitioner' && !ownTitle;
     <Lane lane={block.lane} />
     <span class="kind-tag">{KIND[block.kind]}</span>
     {block.level === 'practitioner' && <span class="level-tag">For practitioners</span>}
-    <span class="read-time">{blockMinutes(block)} min</span>
   </div>
   {!ownTitle && <h3 class="b-title display"><Inline text={block.title} /></h3>}
   {!ownTitle && block.background && <p class="context"><b>Context</b><Inline text={block.background} /></p>}

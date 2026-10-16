@@ -3,7 +3,6 @@
 // summaries, whatever else is still on disk.
 import { Issue, Week } from './schema.mjs';
 import type { z } from 'zod';
-import { plain } from './inline';
 
 export type IssueData = z.infer<typeof Issue>;
 export type WeekData = z.infer<typeof Week>;
@@ -36,30 +35,6 @@ export const weeks: WeekData[] = load<WeekData>(weekFiles, Week, 'Week')
   .slice(0, KEEP_WEEKS);
 
 export const latest = issues[0];
-
-/** Every text field in a block, for the reading-time estimate. */
-function blockWords(b: BlockData): number {
-  const parts: string[] = [b.title, b.why];
-  const any = b as Record<string, any>;
-  for (const key of ['takeaway', 'gist', 'background', 'what', 'intro', 'plain', 'context', 'quote', 'verdict', 'note']) {
-    if (typeof any[key] === 'string') parts.push(any[key]);
-  }
-  for (const key of ['body', 'explain', 'points', 'deep']) if (Array.isArray(any[key])) parts.push(...any[key]);
-  for (const key of ['steps', 'items', 'events', 'rows']) {
-    if (Array.isArray(any[key])) for (const it of any[key]) parts.push(...Object.values(it).filter((v) => typeof v === 'string') as string[]);
-  }
-  return parts.map(plain).join(' ').split(/\s+/).length;
-}
-
-/** Minutes to read one block, for its label. */
-export function blockMinutes(b: BlockData): number {
-  return Math.max(1, Math.round(blockWords(b) / 230));
-}
-
-export function readingMinutes(issue: IssueData): number {
-  const words = issue.blocks.reduce((n, b) => n + blockWords(b), 0) + issue.tldr.map((t) => t.text).join(' ').split(/\s+/).length;
-  return Math.max(2, Math.round(words / 230));
-}
 
 export function formatDate(d: string, opts: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long' }): string {
   return new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { ...opts, timeZone: 'UTC' });

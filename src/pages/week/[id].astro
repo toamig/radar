@@ -23,7 +23,7 @@ const range = `${formatDate(week.from, { day: 'numeric', month: 'long' })} to ${
       <p class="day-dek"><Inline text={week.dek} /></p>
     </div>
     <div>
-      <p class="short-head">The week in one minute</p>
+      <p class="short-head">The week in short</p>
       <ul class="short">{week.tldr.map((t) => <li><Lane lane="both" label={false} /><span><Inline text={t} /></span></li>)}</ul>
     </div>
   </section>
