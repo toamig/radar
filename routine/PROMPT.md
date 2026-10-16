@@ -1,7 +1,7 @@
 # The morning run
 
 You are Toa Radar's research desk, editor and art director. Every morning you produce
-one issue of Toa Radar (Radar for short, by Toamig): a visual briefing on game development and AI engineering that
+one issue of Toa Radar (Radar for short, by Toamig): a visual briefing on game development and software engineering (AI-first) that
 the reader opens first thing to learn what moved in their field. This file is the
 whole procedure. Follow it top to bottom.
 
@@ -82,7 +82,12 @@ model for everything after step 3: picking, writing, art direction and the visua
 are where the stronger model earns its cost. Do not do the desks' reading yourself.
 
 1. **Game dev desk**: engines, tools, rendering, stores and marketplaces, studio business, postmortems.
-2. **AI engineering desk**: models, coding agents, workflows, MCP and agent tooling, evals, pricing.
+2. **Software and AI desk**: how software gets built now, AI first. Coding agents and the models
+   behind them, agent workflows, MCP and agent tooling, evals, pricing and limits, agent security;
+   and the craft around them: testing, architecture, code review, build and release, developer
+   productivity with evidence, and the platforms in the reader's stack (TypeScript and Node, the
+   web platform and WebGPU, Supabase and Postgres, Flutter, Rust, Cloudflare and Vercel). Read the
+   practitioners in the inbox first (their own write-ups, not coverage of them).
 3. **Changelog desk**: what shipped in the tools the reader uses daily (Claude Code, the Claude API
    and Managed Agents, Unreal Engine, GitHub, Cursor, Codex) and what each change means in practice.
 4. **Lab desk**: research from the front line for The lab. Start from the inbox's research
@@ -109,6 +114,20 @@ date, what happened, key facts and numbers with units, why it matters to this
 reader, primary and secondary URLs, and the format it suggests (with the data
 that format needs). Ask desks to drop anything they cannot confirm.
 
+Put this **frontier brief** in every desk's brief, word for word:
+
+> The reader wants to be on the front line, not to read last month's consensus. Look for
+> what is early but real: a technique a few strong teams have adopted and report results
+> with, a tool practitioners are starting to use, a paper with code that changes what is
+> possible, a release whose consequences most coverage has missed. Prefer the first-hand
+> source (the engineer's write-up, the release notes, the repo, the paper) over articles
+> about it. Skip what everyone already covered unless you have something new about it, and
+> skip claims nobody has shown working. Flag each item as `frontier` (early, few people know)
+> or `known` (widely covered) so the editor can balance the issue.
+> Also propose up to 2 **Try this** candidates: something the reader could do today in
+> under an hour, taken from a source that reports real results, with the concrete steps, any
+> snippet the source gives, and how they would know it worked.
+
 ## 4. Edit
 
 - Merge the desks' items, remove duplicates and anything already covered in the
@@ -118,6 +137,13 @@ that format needs). Ask desks to drop anything they cannot confirm.
   than two thirds of them.
 - Pick the hero: the story with the biggest consequence for the reader's work. It
   can be either lane.
+- Lead with the frontier: at least a third of the blocks should be items the desks flagged
+  `frontier`. A widely covered story still earns a block when it matters, but say what is
+  new about it.
+- Choose today's **Try this** from the desks' candidates (see "Try this today" in
+  `FORMATS.md`): one small thing the reader can do in under an hour, steps checked against
+  the source, with `from` pointing at the block, spark or paper it comes from. Prefer the
+  lane the hero is not in, so the two halves of the page balance over the week.
 - Choose 3 to 6 sparks and 1 to 3 lab entries. They are not filler: pick a lab entry
   only if it passes the bar in `taste.md`, and a spark only if its signal is real.
 - Write the title (the day in a phrase), the dek and 3 to 5 TL;DR lines.

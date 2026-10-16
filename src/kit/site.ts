@@ -2,7 +2,7 @@
 export const REPO = 'toamig/radar';
 export const REPO_URL = `https://github.com/${REPO}`;
 
-const LANES = { gamedev: 'Game dev', ai: 'AI engineering', both: 'Game dev and AI' } as const;
+const LANES = { gamedev: 'Game dev', ai: 'Software and AI', both: 'Games and software' } as const;
 export const laneName = (lane: keyof typeof LANES) => LANES[lane];
 
 /** A prefilled GitHub issue that the feedback workflow folds into editorial/feedback.md. */

@@ -262,7 +262,7 @@
       "lane": "ai",
       "weight": 2,
       "section": "research",
-      "match": "agent|LLM|language model|code generation|program repair|coding"
+      "match": "agent|LLM|language model|code generation|program repair|coding|test generation|testing|fuzz|static analysis|code review|developer productivity|refactor|vulnerab|technical debt|build system"
     },
     {
       "name": "arXiv AI",
@@ -436,6 +436,193 @@
       "weight": 3,
       "section": "trend",
       "windowHours": 168
+    },
+    {
+      "name": "The Pragmatic Engineer",
+      "kind": "rss",
+      "url": "https://newsletter.pragmaticengineer.com/feed",
+      "lane": "ai",
+      "weight": 3,
+      "windowHours": 120
+    },
+    {
+      "name": "Martin Fowler",
+      "kind": "rss",
+      "url": "https://martinfowler.com/feed.atom",
+      "lane": "ai",
+      "weight": 3,
+      "windowHours": 120
+    },
+    {
+      "name": "Addy Osmani",
+      "kind": "rss",
+      "url": "https://addyo.substack.com/feed",
+      "lane": "ai",
+      "weight": 3,
+      "windowHours": 120
+    },
+    {
+      "name": "Kent Beck",
+      "kind": "rss",
+      "url": "https://tidyfirst.substack.com/feed",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 120
+    },
+    {
+      "name": "Thorsten Ball",
+      "kind": "rss",
+      "url": "https://registerspill.thorstenball.com/feed",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 168
+    },
+    {
+      "name": "Armin Ronacher",
+      "kind": "rss",
+      "url": "https://lucumr.pocoo.org/feed.atom",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 168
+    },
+    {
+      "name": "Mitchell Hashimoto",
+      "kind": "rss",
+      "url": "https://mitchellh.com/feed.xml",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 168
+    },
+    {
+      "name": "Hamel Husain",
+      "kind": "rss",
+      "url": "https://hamel.dev/index.xml",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 168
+    },
+    {
+      "name": "Geoffrey Huntley",
+      "kind": "rss",
+      "url": "https://ghuntley.com/rss/",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 120
+    },
+    {
+      "name": "lobste.rs",
+      "kind": "rss",
+      "url": "https://lobste.rs/rss",
+      "lane": "ai",
+      "weight": 2
+    },
+    {
+      "name": "r/ExperiencedDevs",
+      "kind": "rss",
+      "url": "https://www.reddit.com/r/ExperiencedDevs/top/.rss?t=day",
+      "lane": "ai",
+      "weight": 1
+    },
+    {
+      "name": "InfoQ",
+      "kind": "rss",
+      "url": "https://feed.infoq.com/",
+      "lane": "ai",
+      "weight": 1
+    },
+    {
+      "name": "Stack Overflow blog",
+      "kind": "rss",
+      "url": "https://stackoverflow.blog/feed/",
+      "lane": "ai",
+      "weight": 1,
+      "windowHours": 72
+    },
+    {
+      "name": "GitHub Engineering",
+      "kind": "rss",
+      "url": "https://github.blog/engineering/feed/",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 72
+    },
+    {
+      "name": "Cloudflare",
+      "kind": "rss",
+      "url": "https://blog.cloudflare.com/rss/",
+      "lane": "ai",
+      "weight": 2
+    },
+    {
+      "name": "Vercel",
+      "kind": "rss",
+      "url": "https://vercel.com/atom",
+      "lane": "ai",
+      "weight": 1
+    },
+    {
+      "name": "Chrome for Developers",
+      "kind": "rss",
+      "url": "https://developer.chrome.com/static/blog/feed.xml",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 120
+    },
+    {
+      "name": "web.dev",
+      "kind": "rss",
+      "url": "https://web.dev/static/blog/feed.xml",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 120
+    },
+    {
+      "name": "TypeScript",
+      "kind": "rss",
+      "url": "https://devblogs.microsoft.com/typescript/feed/",
+      "lane": "ai",
+      "weight": 3,
+      "windowHours": 168
+    },
+    {
+      "name": "Node.js",
+      "kind": "rss",
+      "url": "https://nodejs.org/en/feed/blog.xml",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 72
+    },
+    {
+      "name": "Rust",
+      "kind": "rss",
+      "url": "https://blog.rust-lang.org/feed.xml",
+      "lane": "ai",
+      "weight": 1,
+      "windowHours": 72
+    },
+    {
+      "name": "Flutter",
+      "kind": "rss",
+      "url": "https://medium.com/feed/flutter",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 168
+    },
+    {
+      "name": "Supabase",
+      "kind": "rss",
+      "url": "https://supabase.com/rss.xml",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 72
+    },
+    {
+      "name": "Cursor changelog",
+      "kind": "rss",
+      "url": "https://cursor.com/changelog/rss.xml",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 72
     }
   ]
 }

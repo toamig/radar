@@ -1,6 +1,6 @@
 # Toa Radar
 
-A daily visual briefing on game development and AI engineering by Toamig,
+A daily visual briefing on game development, software engineering and AI by Toamig,
 researched, written and laid out by Claude every morning. Live at [toamig.com/radar](https://toamig.com/radar/).
 
 Each issue is "printed" like a risograph zine: two inks on a paper stock, chosen

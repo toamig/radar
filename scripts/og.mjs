@@ -71,7 +71,7 @@ function card({ theme, number, date, title, line, points = [], image }) {
             h('div', { maxWidth: 1000 }, pt)))) : null),
       h('div', { position: 'absolute', left: 56, right: image ? 576 : 56, bottom: 36, alignItems: 'center', gap: 16, fontSize: 21, color: c.muted },
         h('div', { fontWeight: 600, color: c.text, whiteSpace: 'nowrap' }, 'by Toamig'),
-        image ? null : h('div', { whiteSpace: 'nowrap' }, 'a daily briefing on game dev and AI engineering'),
+        image ? null : h('div', { whiteSpace: 'nowrap' }, 'a daily briefing on game dev, software and AI'),
         h('div', { marginLeft: image ? 0 : 'auto', fontWeight: 600, color: c.text, whiteSpace: 'nowrap' }, 'toamig.com/radar'))),
     image ? h('div', { width: 520, height: H, borderLeft: `8px solid ${c.inkA}` }, { type: 'img', props: { src: image, width: 512, height: H, style: { objectFit: 'cover' } } }) : null);
 }

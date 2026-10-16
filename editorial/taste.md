@@ -21,18 +21,41 @@ step and the morning run both read it.
    and others), tools and middleware, rendering and tech, AI in game production,
    marketplaces and stores (Fab, Steam, mobile stores, web portals), the business of
    small studios, postmortems and talks with real lessons.
-2. **AI engineering and software workflows**: coding agents and their releases
-   (Claude Code first), models that change what agents can do, techniques people are
-   adopting, MCP and agent tooling, evals, pricing and limits, security of agents,
-   practitioners writing from real experience.
+2. **Software engineering, AI-first**: how good software gets built now, for games and
+   for everything else. AI is the leading edge, so coding agents and their releases
+   (Claude Code first), models that change what agents can do, MCP and agent tooling,
+   evals, pricing and limits, and agent security all belong here. So does the craft
+   around them: testing and verification, architecture, code review, build and release,
+   developer productivity backed by evidence, and how strong teams organise their work.
+   Platforms in the reader's own stack count too: TypeScript and Node, the web platform
+   and WebGPU, Supabase and Postgres, Flutter, Rust, Cloudflare and Vercel.
+
+## The frontier
+
+The reader wants to be on the vanguard, not to read last month's consensus. Prefer:
+
+- **Early but real**: a technique a few strong teams are adopting, with first-hand
+  results; a new tool getting traction among practitioners; a paper with code that
+  changes what is possible. Not rumours, not hype, not "AI will change everything".
+- **First-hand over coverage**: the engineer's own write-up, the release notes, the paper,
+  the repo, ahead of a news article about them.
+- **Practitioners who show their work**: people like Simon Willison, Kent Beck, Martin
+  Fowler, Addy Osmani, Mitchell Hashimoto, Armin Ronacher, Thorsten Ball, Hamel Husain,
+  Geoffrey Huntley and The Pragmatic Engineer, when they report something new from their
+  own practice.
+- **Transferable ideas**: a workflow from AI tooling that game teams could use, or a game
+  industry practice that would help any software team.
+
+Every day ends with one thing to try (see Try this today in `routine/FORMATS.md`).
 
 ## The lab: research
 
 The reader wants to be on the front line of the technology that matters, not just its
 press coverage. The lab carries 1 to 3 research results a day: papers, theses, lab
 reports and conference talks in game technology (rendering, animation, physics,
-procedural generation, game AI, tools) and in AI engineering (coding agents, agent
-reliability, evaluation, tool use, program synthesis).
+procedural generation, game AI, tools) and in software engineering (coding agents, agent
+reliability, evaluation, tool use, program synthesis, testing and program repair, code
+review, developer productivity studies).
 
 - Practical over impressive: it should change what someone could build or how they
   work, now or within a year.
