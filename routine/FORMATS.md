@@ -19,6 +19,7 @@ disagree, the schema wins and this file is wrong.
 | `blocks` | 4 to 14 blocks. The first is always the hero. 9 to 12 is the sweet spot. Order them by group. |
 | `groups` | 2 to 4 themed groups `{ title, note, ids }` that split the grid under headings, such as "Agents at work" or "Lock it down". Every block except the hero is in exactly one group. Titles name the theme in plain words (40 characters at most). |
 | `learn` | Learn one thing: one concept from today's stories explained from zero (see Learn one thing). |
+| `tryThis` | Try this today: one small thing to do in under an hour (see Try this today). Shown under Learn one thing. |
 | `ticker` | Up to 14 one-line briefs `{ text, lane, url, source }` for "Also moving". |
 | `sparks` | 3 to 6 rising games, concepts and techniques (see Sparks). Shown after the grid. |
 | `lab` | 1 to 3 research results (see The lab). Shown after Sparks. |
@@ -120,6 +121,33 @@ How to get there:
 
 Pick the concept the day's stories lean on most, which a non-specialist would not know.
 Do not repeat a concept from the last 7 issues.
+
+## Try this today
+
+`tryThis`: the daily nudge from reading to doing. One small, concrete thing the reader can
+do today in under an hour, taken from a technique someone reported real results with.
+
+| Field | What it is |
+|---|---|
+| `lane` | `gamedev`, `ai` or `both`. Alternate over the week; prefer the lane the hero is not in. |
+| `title` | An imperative headline, 90 characters at most: "Make your pre-commit hook teach the agent". |
+| `gist` | What the reader gets out of it, in one plain sentence. |
+| `time` | An honest estimate: "15 minutes", "half an hour". Over an hour does not qualify. |
+| `level` | `practitioner` (default) or `everyone` when no setup is needed. |
+| `needs` | Optional: what you need before you start (a repo with tests, Claude Code, UE 5.6). |
+| `steps` | 2 to 6 `{ title, text }` steps. Concrete actions, checked against the source. |
+| `code` | Optional `{ lang, code }`: the config, prompt or command to paste. Only what the source shows or what follows directly from it. |
+| `check` | How the reader knows it worked: what they should see. |
+| `terms` | Definitions, as on blocks. |
+| `from` | Id of today's block, spark or paper it comes from; shown as a link back. |
+| `forYou` | Private: where to try it in the owner's own projects. Tune mode only. |
+| `sources` | 1 to 3: the practitioner's write-up, the docs, the repo. |
+
+Good picks: a workflow change a strong engineer reports results with, a new setting or flag
+in a tool the reader uses, a small experiment that tests a claim from today's issue, a
+technique from one lane that the other could borrow. Not a product signup, not "read this
+article", not anything that needs money or an account the reader does not already have.
+Do not repeat a Try this from the last 14 days.
 
 ## Public and private
 

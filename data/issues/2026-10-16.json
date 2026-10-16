@@ -920,6 +920,55 @@
       }
     ]
   },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Open a copy of a real project in Godot 4.8 beta 1",
+    "gist": "The feature list is frozen, so what breaks for you now is what will break in the stable release unless someone reports it.",
+    "time": "30 minutes",
+    "level": "practitioner",
+    "needs": "A Godot 4.x project you can copy. C# projects also need .NET 10.",
+    "steps": [
+      {
+        "title": "Copy first",
+        "text": "Duplicate the project folder or work on a new branch. Scenes save in a new way in 4.8, so do not open your only copy."
+      },
+      {
+        "title": "Read the breaking changes",
+        "text": "Skim the 16 breaking changes in the release post; for C# the jump from .NET 8 to .NET 10 is the big one."
+      },
+      {
+        "title": "Run your main scenes",
+        "text": "Open the project, let it import, and play the scenes you rely on most. Note anything that looks or behaves differently."
+      },
+      {
+        "title": "Try one new feature",
+        "text": "Turn on screen space contact shadows or texture streaming in one scene and compare."
+      },
+      {
+        "title": "Report what breaks",
+        "text": "File each regression on the Godot issue tracker with the beta version and steps to reproduce."
+      }
+    ],
+    "check": "Your main scenes run in 4.8 beta 1, or you have an issue filed for each one that does not.",
+    "terms": [
+      {
+        "term": "breaking changes",
+        "def": "Changes that can stop existing projects from working until they are updated."
+      },
+      {
+        "term": "regression",
+        "def": "Something that worked in the previous version and no longer does."
+      }
+    ],
+    "from": "godot-48-beta",
+    "forYou": "Only worth the half hour if a Godot web or mobile spin-off is on the table; otherwise try the reference trace and diff loop from the hardware story on a plugin port.",
+    "sources": [
+      {
+        "label": "Godot: dev snapshot 4.8 beta 1",
+        "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-1"
+      }
+    ]
+  },
   "ticker": [
     {
       "lane": "ai",

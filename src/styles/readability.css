@@ -135,6 +135,40 @@
   .learn-grid.has-visual { grid-template-columns: 1fr; }
 }
 
+/* ------------------------------------------------------------ try this today */
+
+.trythis {
+  --ink: var(--ink-b);
+  --on: var(--on-b);
+  --display: var(--display-b);
+  margin: 8px 0 56px;
+  border: 3px solid var(--text);
+  background: var(--paper);
+  container-type: inline-size;
+}
+/* Right after Learn one thing it hangs from it, as the doing half of the same lesson. */
+.learn + .trythis { margin-top: -56px; border-top: 0; }
+.try-band {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px;
+  padding: 10px clamp(16px, 3vw, 36px);
+  background: var(--ink-b); color: var(--on-b);
+}
+.try-kicker { margin: 0; font-weight: 800; font-size: .95rem; letter-spacing: .02em; text-transform: uppercase; }
+.try-meta { margin: 0; display: flex; align-items: center; gap: 10px; font-size: .88rem; }
+.try-meta .lane svg { fill: currentColor; }
+.try-meta .level-tag { color: inherit; }
+.try-meta .level-tag::before { border-color: currentColor; }
+.try-time { padding: 2px 10px; border: 1.5px solid currentColor; border-radius: 99px; font-weight: 700; }
+.try-body { padding: 22px clamp(16px, 3vw, 36px) 28px; }
+.try-title { margin: 0 0 10px; font-size: calc(var(--display-scale, 1) * var(--step-3)); max-width: 26ch; overflow-wrap: anywhere; }
+.try-gist { margin: 0 0 14px; font-size: clamp(1.1rem, 1.8vw, 1.3rem); line-height: 1.4; font-weight: 560; max-width: 48ch; }
+.try-needs, .try-check { margin: 0 0 12px; max-width: var(--measure); font-size: .98rem; }
+.try-needs b, .try-check b { display: block; font-size: var(--step--1); color: var(--muted); }
+.try-steps { margin-top: 6px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); column-gap: 28px; }
+.trythis .codebox { max-width: 100%; }
+.try-check { padding: 10px 14px; border-left: 5px solid var(--ink-b); background: var(--tint-b); }
+.try-check b { color: var(--text); }
+
 /* ------------------------------------------------------------ first-visit key */
 
 .reader-key { display: none; }

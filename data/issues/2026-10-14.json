@@ -1256,5 +1256,58 @@
         "url": "https://playgama.com/mcp/"
       }
     ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Turn one repeated review comment into a hook that tells the agent the fix",
+    "gist": "A failed commit that says exactly what to do instead lets a coding agent correct itself, so you stop typing the same review comment.",
+    "time": "20 minutes",
+    "level": "practitioner",
+    "needs": "A git repository you work on with a coding agent, and one mistake you keep correcting by hand.",
+    "steps": [
+      {
+        "title": "Pick the comment",
+        "text": "Choose the review note you write most often, such as \"use our logger, not console.log\". It must be something a script can spot in a diff."
+      },
+      {
+        "title": "Check the staged diff",
+        "text": "Write a pre-commit hook that scans only the added lines of the staged diff for the pattern."
+      },
+      {
+        "title": "Fail with the fix",
+        "text": "When it matches, exit with an error and print the exact replacement, written as an instruction. The agent reads the failed commit output and acts on it."
+      },
+      {
+        "title": "Watch one run",
+        "text": "Ask the agent for a change that would trip the rule and watch it fix itself on the second commit."
+      }
+    ],
+    "code": {
+      "lang": "sh",
+      "code": "#!/bin/sh\n# .git/hooks/pre-commit (make it executable)\nif git diff --cached -U0 -- '*.ts' | grep -E '^\\+.*console\\.log\\(' >/dev/null; then\n  echo \"Commit blocked: console.log in staged code.\"\n  echo \"Fix: replace it with log.info() from src/log.ts, then commit again.\"\n  exit 1\nfi"
+    },
+    "check": "The agent hits the hook once, makes the replacement the message names and commits cleanly, without you saying anything.",
+    "terms": [
+      {
+        "term": "pre-commit hook",
+        "def": "A script that runs automatically before code is saved to the repository, and can stop it."
+      },
+      {
+        "term": "staged diff",
+        "def": "The changes you have marked to go into the next commit."
+      }
+    ],
+    "from": "huntley-agency",
+    "forYou": "Your UE C++ hooks already block; make each block message an instruction the agent can follow, starting with the rule it trips most.",
+    "sources": [
+      {
+        "label": "Geoffrey Huntley",
+        "url": "https://ghuntley.com/agency/"
+      },
+      {
+        "label": "Git hooks",
+        "url": "https://git-scm.com/docs/githooks"
+      }
+    ]
   }
 }

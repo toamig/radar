@@ -112,9 +112,14 @@ function checkRows(issue) {
 // Readability: plain words and definitions for anyone who is not deep in the field.
 function checkReadability(issue) {
   if (!issue.learn) warn(`${issue.date}: no Learn one thing; explain one concept from today's stories from zero`);
+  if (!issue.tryThis) warn(`${issue.date}: no Try this today; give the reader one small thing to do from today's reading`);
   if (!issue.groups.length && issue.blocks.length > 7) warn(`${issue.date}: ${issue.blocks.length} stories and no themed groups; group them under 2 to 4 headings`);
   const visible = (o) => JSON.stringify(o, (k, v) => (['terms', 'sources', 'forYou', 'image', 'url', 'id'].includes(k) ? undefined : v)).toLowerCase();
-  const holders = [...issue.blocks, ...(issue.learn ? [{ id: 'learn', ...issue.learn }] : [])];
+  const holders = [
+    ...issue.blocks,
+    ...(issue.learn ? [{ id: 'learn', ...issue.learn }] : []),
+    ...(issue.tryThis ? [{ ...issue.tryThis, id: 'try' }] : []),
+  ];
   let defined = 0;
   for (const h of holders) {
     const text = visible(h);
@@ -164,7 +169,7 @@ for (const f of list(issueDir, '.json')) {
   if (heroes > 1) err(`${issue.date}: only one hero per issue`);
   const lanes = new Set(issue.blocks.map((b) => b.lane));
   if (!lanes.has('gamedev') && !lanes.has('both')) warn(`${issue.date}: no game dev story today`);
-  if (!lanes.has('ai') && !lanes.has('both')) warn(`${issue.date}: no AI engineering story today`);
+  if (!lanes.has('ai') && !lanes.has('both')) warn(`${issue.date}: no software or AI story today`);
   const formats = new Set(issue.blocks.map((b) => b.format));
   if (formats.size < 5) warn(`${issue.date}: only ${formats.size} different formats; aim for variety`);
   issues.push(issue);

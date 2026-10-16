@@ -1,0 +1,38 @@
+---
+// Try this today: one small, concrete thing to do, from today's reading.
+import Inline from './Inline.astro';
+import Lane from './Lane.astro';
+interface Props { tryThis: any; refs: { id: string; title: string }[] }
+const { tryThis: t, refs } = Astro.props;
+const from = t.from ? refs.find((r) => r.id === t.from) : undefined;
+---
+<section id="try" class="trythis jump" aria-labelledby="try-h" data-terms={t.terms.length ? JSON.stringify(t.terms) : undefined}>
+  <header class="try-band">
+    <p class="try-kicker">Try this today</p>
+    <p class="try-meta">
+      <Lane lane={t.lane} label={false} />
+      <span class="try-time">{t.time}</span>
+      {t.level === 'practitioner' && <span class="level-tag">For practitioners</span>}
+    </p>
+  </header>
+  <div class="try-body">
+    <h2 id="try-h" class="try-title display"><Inline text={t.title} /></h2>
+    <p class="try-gist"><Inline text={t.gist} /></p>
+    {t.needs && <p class="try-needs"><b>You need</b><Inline text={t.needs} /></p>}
+    <ol class="steps try-steps">
+      {t.steps.map((s: any) => <li><div><h4><Inline text={s.title} /></h4><p><Inline text={s.text} /></p></div></li>)}
+    </ol>
+    {t.code && <div class="codebox" data-lang={t.code.lang}><pre><code>{t.code.code}</code></pre></div>}
+    <p class="try-check"><b>You know it worked when</b><Inline text={t.check} /></p>
+    {t.forYou && <p class="for-you"><b>For you</b><Inline text={t.forYou} /></p>}
+    {t.terms.length > 0 && (
+      <dl class="terms-list" aria-label="Terms used here">
+        {t.terms.map((x: any) => <div><dt>{x.term}</dt><dd>{x.def}</dd></div>)}
+      </dl>
+    )}
+    <footer class="learn-foot">
+      {from && <p class="learn-seen"><span>From today's</span><a href={`#${from.id}`}><Inline text={from.title} /></a></p>}
+      <p class="srcs"><span>Where it comes from</span>{t.sources.map((s: any) => <a href={s.url} rel="noopener" target="_blank">{s.label}</a>)}</p>
+    </footer>
+  </div>
+</section>

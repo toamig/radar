@@ -1191,5 +1191,50 @@
         "url": "https://ghidra-sre.org/"
       }
     ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Add one security sentence to your agent instructions",
+    "gist": "In the LSCBench study one added sentence asking for secure code raised the share of secure fixes by 15 to 21 points for most models re-run.",
+    "time": "10 minutes",
+    "level": "everyone",
+    "needs": "A coding agent that reads a standing instructions file, such as CLAUDE.md or AGENTS.md.",
+    "steps": [
+      {
+        "title": "Add the line",
+        "text": "Put one plain sentence asking for secure code near the top of the instructions file the agent reads on every task."
+      },
+      {
+        "title": "Give it a real task",
+        "text": "Pick a small change that handles outside input: a form, an upload, a webhook or an API route."
+      },
+      {
+        "title": "Review the weak spots",
+        "text": "The study found data exposure and outbound URL fetches stayed weak even with the instruction, so read those parts of the change yourself."
+      }
+    ],
+    "code": {
+      "lang": "md",
+      "code": "Write secure code: treat every input as untrusted, never expose data the task does not need, and never fetch a URL that comes from user input without checking it."
+    },
+    "check": "The agent's change validates its input and says so in its summary, and you have read the data and URL handling yourself.",
+    "terms": [
+      {
+        "term": "outbound URL fetches",
+        "def": "Code that makes your server request a web address, which an attacker can abuse if they control the address."
+      }
+    ],
+    "from": "lscbench-secure-code",
+    "forYou": "Do it in the SaaS repos first; they have the forms, uploads and webhooks.",
+    "sources": [
+      {
+        "label": "LSCBench on arXiv",
+        "url": "https://arxiv.org/abs/2610.14766"
+      },
+      {
+        "label": "Benchmark code",
+        "url": "https://github.com/alibaba/last-secure-code-benchmark"
+      }
+    ]
   }
 }

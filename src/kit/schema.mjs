@@ -265,6 +265,35 @@ export const Learn = z.object({
   sources: z.array(Source).min(1).max(4),
 });
 
+/**
+ * Try this today: one small, concrete thing to do in under an hour, drawn from a
+ * technique someone reported real results with. The page's daily nudge from
+ * reading to doing.
+ */
+export const TryThis = z.object({
+  lane: Lane,
+  /** An imperative headline: "Make your pre-commit hook talk to the agent". */
+  title: text(90),
+  /** What you get out of it, in one plain sentence. */
+  gist: text(240),
+  /** How long it takes: "15 minutes". */
+  time: text(24),
+  level: z.enum(['everyone', 'practitioner']).default('practitioner'),
+  /** What you need before you start. */
+  needs: text(200).optional(),
+  steps: z.array(z.object({ title: text(70), text: text(320) })).min(2).max(6),
+  /** An optional snippet to paste: a config, a prompt, a command. */
+  code: z.object({ lang: text(20), code: z.string().min(1).max(1200) }).optional(),
+  /** How you know it worked. */
+  check: text(260),
+  terms: z.array(Term).max(6).default([]),
+  /** Id of today's block, spark or paper it comes from. */
+  from: slug.optional(),
+  /** Private angle for the owner, shown only in tune mode. */
+  forYou: text(400).optional(),
+  sources: z.array(Source).min(1).max(3),
+});
+
 /** A research result for The lab: papers, theses, preprints, lab reports. */
 export const Paper = z.object({
   id: slug,
@@ -309,6 +338,8 @@ export const Issue = z
     groups: z.array(z.object({ title: text(40), note: text(160).optional(), ids: z.array(slug).min(1) })).max(5).default([]),
     /** Learn one thing: today's concept explained from zero. */
     learn: Learn.optional(),
+    /** Try this today: one small thing to do, from today's reading. */
+    tryThis: TryThis.optional(),
     /** The lab: 1 to 3 research results worth knowing. */
     lab: z.array(Paper).max(3).default([]),
     /** Sparks: 3 to 6 rising games, concepts and techniques. */
@@ -365,6 +396,9 @@ export const Issue = z
       if (seen.has(paper.id)) ctx.addIssue({ code: 'custom', message: `duplicate id ${paper.id}`, path: ['lab', i, 'id'] });
       seen.add(paper.id);
     });
+    if (issue.tryThis?.from && !seen.has(issue.tryThis.from)) {
+      ctx.addIssue({ code: 'custom', message: `no block, spark or paper with id ${issue.tryThis.from}`, path: ['tryThis', 'from'] });
+    }
   });
 
 export const Week = z.object({

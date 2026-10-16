@@ -8,6 +8,7 @@ import Ticker from './Ticker.astro';
 import Lab from './Lab.astro';
 import Sparks from './Sparks.astro';
 import Learn from './Learn.astro';
+import TryThis from './TryThis.astro';
 import ReaderKey from './ReaderKey.astro';
 import SectionNav from './SectionNav.astro';
 import { issues } from '../kit/data';
@@ -41,7 +42,7 @@ const groups = issue.groups.length
     </div>
   </section>
   <ReaderKey />
-  <SectionNav stories={issue.blocks.length} learn={issue.learn ? 1 : 0} sparks={issue.sparks.length} lab={issue.lab.length} days={issues.length} />
+  <SectionNav stories={issue.blocks.length} learn={(issue.learn ? 1 : 0) + (issue.tryThis ? 1 : 0)} learnHref={issue.learn ? '#learn' : '#try'} sparks={issue.sparks.length} lab={issue.lab.length} days={issues.length} />
   <main id="stories" class="stories jump" aria-label="Stories">
     <div class="grid grid-hero"><Block block={hero} date={issue.date} palette={pal} /></div>
     {groups.map((g) => (
@@ -57,6 +58,7 @@ const groups = issue.groups.length
     ))}
   </main>
   {issue.learn && <Learn learn={issue.learn} blocks={issue.blocks} />}
+  {issue.tryThis && <TryThis tryThis={issue.tryThis} refs={[...issue.blocks, ...issue.sparks, ...issue.lab.map((p) => ({ id: p.id, title: p.headline }))]} />}
   <Sparks sparks={issue.sparks} />
   <Lab papers={issue.lab} />
   <Ticker items={issue.ticker} />
