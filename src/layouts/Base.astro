@@ -90,6 +90,7 @@ const ogImageUrl = ogImage ? new URL(`${BASE}${ogImage}`, Astro.site).href : und
     <a class="tune-flag" href="?tune=0">Tune mode is on in this browser. <u>Turn it off</u></a>
     <script>
       import '../kit/terms-client';
+      import '../kit/lightbox-client';
       // Charts draw their bars when they scroll into view.
       const charts = document.querySelectorAll('.chart');
       if ('IntersectionObserver' in window) {

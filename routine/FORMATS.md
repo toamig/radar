@@ -282,3 +282,11 @@ no same-origin), so it cannot touch the site, cookies or storage.
 - Paint the day's paper color as its background and use the day's inks.
 - Works with mouse, touch and keyboard, and the block's `body` must still tell the
   story if the frame never loads.
+
+## Enlarging pictures
+
+Every real `image` links to its full file and opens in a viewer on click or tap: fitted to the
+screen first, then real pixel size on a second click (phones open wide diagrams at real size).
+It closes with the Close button, Esc, a click outside, or Back. Nothing to write for it, but
+it is why `fetch-image.mjs` keeps images at up to 1600 px wide: a diagram's small labels
+must stay legible at real size, so prefer the largest clear version of a figure.

@@ -1,5 +1,7 @@
 ---
-// A real picture with its credit line.
+// A real picture with its credit line. The picture is a link to the full image,
+// which the lightbox (src/kit/lightbox-client.ts) opens in place; without
+// JavaScript it opens the image file itself.
 import { asset } from '../kit/data';
 interface Props {
   image: { src: string; alt: string; credit: string; creditUrl: string; fit: 'cover' | 'contain' };
@@ -10,8 +12,12 @@ interface Props {
 const { image, ink = 'a', eager = false } = Astro.props;
 ---
 <figure class:list={['media', Astro.props.class, `fit-${image.fit}`]} data-ink={ink}>
-  <div class="media-frame">
+  <a class="media-frame" href={asset(image.src)} data-zoom data-credit={image.credit} data-credit-url={image.creditUrl} aria-label={`${image.alt} (view larger)`}>
     <img src={asset(image.src)} alt={image.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
-  </div>
+    <span class="zoom-badge" aria-hidden="true">
+      <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="4.5" /><path d="M10 10l4.5 4.5M4.5 6.5h4M6.5 4.5v4" /></svg>
+      <span>Enlarge</span>
+    </span>
+  </a>
   <figcaption>Image: <a href={image.creditUrl} rel="noopener" target="_blank">{image.credit}</a></figcaption>
 </figure>
