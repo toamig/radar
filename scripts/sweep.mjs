@@ -23,16 +23,20 @@ const config = JSON.parse(readFileSync(join(root, 'config', 'sources.json'), 'ut
 const date = arg('date', new Date().toISOString().slice(0, 10));
 const hours = Number(arg('hours', config.windowHours ?? 48));
 const UA = 'Mozilla/5.0 (compatible; RadarSweep/1.0; +https://toamig.com/radar/)';
-const CAPS = { news: 300, research: 140, trend: 90 };
+const CAPS = { news: 300, research: 180, trend: 160 };
+// No single source or platform fills a section: one source's best items only.
+const SOURCE_CAP = { research: 40, trend: 30 };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const GH_TOKEN = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
 
 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@', textNodeName: '#text', processEntities: true, htmlEntities: true });
 
-async function get(url, accept = 'application/rss+xml, application/atom+xml, application/xml, text/xml, */*') {
-  const res = await fetch(url, { headers: { 'User-Agent': UA, Accept: accept }, signal: AbortSignal.timeout(20_000), redirect: 'follow' });
+async function get(url, accept = 'application/rss+xml, application/atom+xml, application/xml, text/xml, */*', headers = {}) {
+  const res = await fetch(url, { headers: { 'User-Agent': UA, Accept: accept, ...headers }, signal: AbortSignal.timeout(20_000), redirect: 'follow' });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.text();
 }
-const json = async (url) => JSON.parse(await get(url, 'application/json'));
+const json = async (url, headers) => JSON.parse(await get(url, 'application/json', headers));
 
 const text = (v) => {
   if (v == null) return '';
@@ -45,6 +49,18 @@ const strip = (html) =>
     .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+const entities = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+/** Post HTML to plain text: hashtags and links stay whole, paragraphs become spaces. */
+const postText = (html) =>
+  String(html ?? '')
+    .replace(/<br\s*\/?>|<\/p>/gi, ' ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (m, e) => {
+      if (e[0] === '#') { const n = e[1].toLowerCase() === 'x' ? parseInt(e.slice(2), 16) : Number(e.slice(1)); return Number.isFinite(n) ? String.fromCodePoint(n) : m; }
+      return entities[e.toLowerCase()] ?? m;
+    })
     .replace(/\s+/g, ' ')
     .trim();
 const clip = (s, n) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
@@ -66,6 +82,7 @@ const normalize = (u) => {
 function parseFeed(xml) {
   const doc = parser.parse(xml);
   const rssItems = doc?.rss?.channel?.item ?? doc?.['rdf:RDF']?.item;
+  if (!rssItems && (doc?.rss?.channel || doc?.['rdf:RDF'])) return [];
   if (rssItems) {
     return [].concat(rssItems).map((it) => ({
       title: strip(it.title),
@@ -74,6 +91,7 @@ function parseFeed(xml) {
       summary: strip(it.description ?? it['content:encoded'] ?? ''),
     }));
   }
+  if (doc?.feed && !doc.feed.entry) return [];
   const entries = doc?.feed?.entry;
   if (entries) {
     return [].concat(entries).map((it) => ({
@@ -88,9 +106,179 @@ function parseFeed(xml) {
 
 const now = new Date().toISOString();
 
+// Reddit allows about one unauthenticated request per minute per IP, and a shared
+// runner address has usually spent it already. So the subreddits are read as a few
+// grouped feeds (r/a+b+c), one every 65 seconds, waiting out the limit on a 429.
+let lastReddit = 0;
+async function redditGet(url) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const wait = lastReddit + 65_000 - Date.now();
+    if (wait > 0) await sleep(wait);
+    const res = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/atom+xml, */*' }, signal: AbortSignal.timeout(25_000) });
+    lastReddit = Date.now();
+    if (res.ok) return res.text();
+    if (res.status !== 429) throw new Error(`HTTP ${res.status}`);
+    await sleep((Number(res.headers.get('x-ratelimit-reset')) || 60) * 1000 + 3000);
+    lastReddit = 0;
+  }
+  throw new Error('HTTP 429 after waiting twice');
+}
+
+
 async function readSource(src) {
   if (src.kind === 'rss') return parseFeed(await get(src.url));
   if (src.kind === 'github') return parseFeed(await get(`https://github.com/${src.repo}/releases.atom`));
+  if (src.kind === 'reddit') {
+    const url = `https://www.reddit.com/r/${src.subs.join('+')}/top/.rss?t=${src.t ?? 'day'}&limit=100`;
+    const doc = parser.parse(await redditGet(url));
+    if (!doc?.feed) throw new Error('not an Atom feed');
+    const seen = {};
+    const out = [];
+    for (const it of [].concat(doc.feed.entry ?? [])) {
+      const sub = it.category?.['@label'] ?? `r/${it.category?.['@term'] ?? 'reddit'}`;
+      const rank = (seen[sub] = (seen[sub] ?? 0) + 1);
+      if (rank > (src.perSub ?? 8)) continue;
+      out.push({
+        title: strip(it.title),
+        url: linkOf(it.link),
+        published: text(it.published ?? it.updated),
+        summary: strip(it.content ?? it.summary ?? '').slice(0, 480),
+        signal: `#${rank} of the ${src.t === 'week' ? 'week' : 'day'}'s top posts on ${sub}`,
+        source: sub,
+        boost: Math.max(0, 1.6 - rank * 0.16),
+      });
+    }
+    return out;
+  }
+  if (src.kind === 'arxiv') {
+    // The API answers every day; the RSS feeds are empty at weekends.
+    const q = src.query ?? `cat:${src.cat}`;
+    const xml = await get(`https://export.arxiv.org/api/query?search_query=${encodeURIComponent(q)}&sortBy=submittedDate&sortOrder=descending&max_results=${src.max ?? 100}`);
+    return parseFeed(xml).map((it) => ({ ...it, url: it.url.replace(/^http:/, 'https:').replace(/v\d+$/, '') }));
+  }
+  if (src.kind === 'mastodon') {
+    // Hashtag timelines, ranked by how much people engaged with each post.
+    const out = [];
+    for (const tag of src.tags) {
+      try {
+        for (const p of await json(`https://${src.instance}/api/v1/timelines/tag/${tag}?limit=40`)) {
+          const score = p.favourites_count + 2 * p.reblogs_count;
+          const body = postText(p.content);
+          if (score < (src.minScore ?? 8) || body.length < 30) continue;
+          out.push({
+            title: clip(body, 160),
+            url: p.url,
+            published: p.created_at,
+            summary: clip(`${body}${p.card?.title ? ` Link: ${p.card.title} (${p.card.url})` : ''}`, 480),
+            signal: `${p.favourites_count} favourites and ${p.reblogs_count} boosts on Mastodon (#${tag})`,
+            source: `Mastodon #${tag}`,
+            boost: Math.min(1.8, Math.log10(score + 1)),
+          });
+        }
+      } catch {}
+      await sleep(400);
+    }
+    return out;
+  }
+  if (src.kind === 'bluesky') {
+    // Public custom feeds on Bluesky, kept when a post has real engagement.
+    const out = [];
+    for (const f of src.feeds) {
+      try {
+        const data = await json(`https://public.api.bsky.app/xrpc/app.bsky.feed.getFeed?feed=${encodeURIComponent(f.uri)}&limit=100`);
+        for (const { post } of data.feed) {
+          const likes = post.likeCount ?? 0;
+          const reposts = post.repostCount ?? 0;
+          const score = likes + 2 * reposts;
+          const body = String(post.record?.text ?? '').trim();
+          if (score < (f.minScore ?? src.minScore ?? 25) || body.length < 30) continue;
+          const ext = post.embed?.external ?? post.embed?.media?.external;
+          out.push({
+            title: clip(body.replace(/\s+/g, ' '), 160),
+            url: `https://bsky.app/profile/${post.author.handle}/post/${post.uri.split('/').pop()}`,
+            published: post.record?.createdAt ?? post.indexedAt,
+            summary: clip(`${body}${ext ? ` Link: ${ext.title ?? ''} (${ext.uri})` : ''}`, 480),
+            signal: `${likes} likes and ${reposts} reposts on Bluesky (${f.name})`,
+            source: `Bluesky ${f.name}`,
+            boost: Math.min(1.8, Math.log10(score + 1) * 0.8),
+          });
+        }
+      } catch {}
+      await sleep(300);
+    }
+    return out;
+  }
+  if (src.kind === 'youtube') {
+    // Channel feeds carry view counts, so a fast riser stands out.
+    const out = [];
+    for (const ch of src.channels) {
+      try {
+        const doc = parser.parse(await get(`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`));
+        for (const e of [].concat(doc?.feed?.entry ?? [])) {
+          const group = e['media:group'] ?? {};
+          const views = Number(group['media:community']?.['media:statistics']?.['@views'] ?? 0);
+          out.push({
+            title: strip(e.title),
+            url: linkOf(e.link),
+            published: text(e.published),
+            summary: clip(strip(group['media:description'] ?? ''), 400),
+            signal: `${views.toLocaleString('en-US')} views on ${ch.name}'s channel`,
+            source: `YouTube: ${ch.name}`,
+            lane: ch.lane,
+            boost: Math.min(2, Math.log10(views + 1) / 3),
+          });
+        }
+      } catch {}
+      await sleep(150);
+    }
+    return out;
+  }
+  if (src.kind === 'devto') {
+    const out = [];
+    for (const tag of src.tags) {
+      try {
+        for (const a of await json(`https://dev.to/api/articles?top=${src.days ?? 7}&tag=${tag}&per_page=30`)) {
+          if (a.public_reactions_count < (src.minReactions ?? 40)) continue;
+          out.push({
+            title: a.title,
+            url: a.canonical_url || a.url,
+            published: a.published_at,
+            summary: strip(a.description ?? ''),
+            signal: `${a.public_reactions_count} reactions and ${a.comments_count} comments on DEV (#${tag})`,
+            points: a.public_reactions_count,
+            comments: a.comments_count,
+          });
+        }
+      } catch {}
+      await sleep(300);
+    }
+    return out;
+  }
+  if (src.kind === 'ghtrending') {
+    // New repositories (created within the window) that gathered the most stars.
+    const days = src.days ?? 7;
+    const since = new Date(Date.now() - days * 86400_000).toISOString().slice(0, 10);
+    const out = [];
+    for (const topic of src.topics) {
+      try {
+        const q = `topic:${topic} created:>${since} stars:>${src.minStars ?? 60}`;
+        const data = await json(`https://api.github.com/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=8`, GH_TOKEN ? { Authorization: `Bearer ${GH_TOKEN}` } : {});
+        for (const r of data.items) {
+          out.push({
+            title: `${r.full_name}: ${r.description ?? 'no description'}`,
+            url: r.html_url,
+            published: r.created_at,
+            summary: clip(`${r.description ?? ''} Topics: ${(r.topics ?? []).join(', ')}. Language: ${r.language ?? 'n/a'}.`, 480),
+            signal: `${r.stargazers_count.toLocaleString('en-US')} stars since it was created ${r.created_at.slice(0, 10)}`,
+            points: r.stargazers_count,
+            windowDays: days,
+          });
+        }
+      } catch {}
+      await sleep(2200);
+    }
+    return out;
+  }
   if (src.kind === 'hn') {
     const after = Math.floor((Date.now() - hours * 3600_000) / 1000);
     const q = src.query ? `&query=${encodeURIComponent(src.query)}` : '';
@@ -199,10 +387,12 @@ if (existsSync(issueDir)) {
 
 const results = [];
 const report = [];
-// Reddit rate-limits parallel readers, so its feeds go one at a time with a pause.
-const isReddit = (src) => /reddit\.com/.test(src.url ?? '');
-const queue = config.sources.filter((s) => !isReddit(s));
-const slow = config.sources.filter(isReddit);
+// Reddit and arXiv ask for one reader at a time, so each gets its own slow lane.
+const isReddit = (src) => src.kind === 'reddit';
+const isArxiv = (src) => src.kind === 'arxiv';
+const queue = config.sources.filter((s) => !isReddit(s) && !isArxiv(s));
+const redditLane = config.sources.filter(isReddit);
+const arxivLane = config.sources.filter(isArxiv);
 
 async function worker(list = queue, pause = 0) {
   while (list.length) {
@@ -226,13 +416,14 @@ async function worker(list = queue, pause = 0) {
           section,
           title: clip(it.title, 200),
           url,
-          source: src.name,
-          lane: src.lane,
+          source: it.source ?? src.name,
+          lane: it.lane ?? src.lane,
           published: new Date(ts).toISOString(),
           summary: clip(it.summary ?? '', 480),
           ...(it.signal && { signal: it.signal }),
           ...(it.code && { code: it.code }),
           ...(it.appid && { appid: it.appid }),
+          ...(it.boost && { boost: Math.round(it.boost * 100) / 100 }),
           ...(it.points != null && { points: it.points, comments: it.comments, discussion: it.discussion }),
           weight: src.weight ?? 1,
         });
@@ -243,7 +434,7 @@ async function worker(list = queue, pause = 0) {
     }
   }
 }
-await Promise.all([...Array.from({ length: 8 }, () => worker()), worker(slow, 2500)]);
+await Promise.all([...Array.from({ length: 8 }, () => worker()), worker(redditLane), worker(arxivLane, 3500)]);
 
 // Merge duplicates (same URL from two feeds) and score.
 const byUrl = new Map();
@@ -260,15 +451,33 @@ const scored = [...byUrl.values()].map((it) => {
   const ageH = (Date.now() - Date.parse(it.published)) / 3600_000;
   const fresh = it.section === 'news' ? Math.max(0.3, 1 - ageH / (hours * 1.2)) : 1;
   const buzz = it.points ? Math.log10(it.points + 1) + Math.log10((it.comments ?? 0) + 1) * 0.5 : 0;
-  return { ...it, score: Math.round((it.weight * 2 + buzz) * fresh * 100) / 100 };
+  return { ...it, score: Math.round((it.weight * 2 + buzz + (it.boost ?? 0)) * fresh * 100) / 100 };
 });
 const items = [];
 for (const section of Object.keys(CAPS)) {
-  scored
-    .filter((it) => it.section === section)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, CAPS[section])
-    .forEach((it) => items.push(it));
+  const ranked = scored.filter((it) => it.section === section).sort((a, b) => b.score - a.score);
+  if (!SOURCE_CAP[section]) {
+    ranked.slice(0, CAPS[section]).forEach((it) => items.push(it));
+    continue;
+  }
+  // Research and trends draw from dozens of very different sources. Taking the top
+  // scores alone would let the buzziest ones (stars, upvotes) crowd out the rest, so
+  // each source gives its best item in turn until the section is full.
+  const lanes = new Map();
+  for (const it of ranked) {
+    const list = lanes.get(it.source) ?? [];
+    if (list.length < SOURCE_CAP[section]) list.push(it);
+    lanes.set(it.source, list);
+  }
+  const picked = [];
+  for (let round = 0; picked.length < CAPS[section]; round++) {
+    let any = false;
+    for (const list of lanes.values()) {
+      if (list[round] && picked.length < CAPS[section]) { picked.push(list[round]); any = true; }
+    }
+    if (!any) break;
+  }
+  picked.sort((a, b) => b.score - a.score).forEach((it) => items.push(it));
 }
 items.forEach((it, i) => { it.id = `c${String(i + 1).padStart(3, '0')}`; });
 

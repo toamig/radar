@@ -99,10 +99,17 @@ are where the stronger model earns its cost. Do not do the desks' reading yourse
    Read each candidate paper itself (abstract and the HTML full text or PDF), check for released
    code, and return 3 to 5 with every field The lab needs (see `FORMATS.md`) plus the URL of
    its teaser or main figure. Window: the last 30 days for papers, 60 for theses.
+   Vary the venues: of the 3 to 5, bring at least one that is not an arXiv preprint (a journal or
+   proceedings paper, a thesis, a lab report or an industry research post) whenever one clears the
+   bar, and say where each came from.
 5. **Sparks desk**: what is catching on. Start from the inbox's trend items (Steam climbers and
    most-wishlisted, itch.io, Show HN, the game dev and AI game dev subreddits) and search beyond
    them: games and demos going viral on X, YouTube, TikTok and Reddit, devlogs being shared,
    AI-made games and experiments people are talking about, techniques and art styles spreading.
+   The inbox already carries Reddit, Bluesky, Mastodon, YouTube, DEV and new-GitHub-repo
+   signals; spend your own searches on what it cannot see: X (search the day's game dev and
+   AI developer hashtags and top posts, with WebSearch), TikTok, Threads and the open web. Prefer
+   a mix of platforms over one platform's whole day.
    Confirm each signal with a number and a source. Return 5 to 8 with title, kind, where,
    signal, hook, what to borrow, URL and an image URL (Steam screenshots, itch.io screenshots,
    YouTube stills). Also bring one surprising thing from outside the usual sources.

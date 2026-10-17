@@ -65,6 +65,10 @@ review, developer productivity studies).
   to do with it.
 - Avoid incremental benchmark bumps, surveys, and anything whose only claim is "state of
   the art" without a use.
+- Vary where results come from. Preprints are most of what exists, so they will lead, but a
+  day with three arXiv links should be rare: look for a journal or proceedings paper (ACM TOG,
+  Computer Graphics Forum, PACM CGIT, TOSEM), a thesis, a lab report or an industry research
+  post, and prefer one of those when it clears the same bar.
 
 ## Sparks: trends and ideas
 
@@ -74,6 +78,11 @@ going viral on X, YouTube, TikTok or Reddit, a devlog everyone is sharing, an AI
 game or experiment people are talking about, a technique spreading among developers.
 3 to 6 sparks a day, each with the evidence it is rising and the idea worth borrowing.
 Skip pure hype and marketing with nothing to learn from.
+
+The inbox draws trends from Reddit (grouped subreddits), Bluesky and Mastodon game dev and AI feeds,
+YouTube channels (with view counts), DEV, new GitHub repositories gathering stars, Steam, itch.io,
+Hacker News and lobste.rs. Prefer a spark that shows up on more than one of them, and a mix of
+platforms over one platform's whole day. X has no free feed, so the Sparks desk searches it.
 
 ## What earns a place
 

@@ -19,6 +19,7 @@ concurrency:
 jobs:
   sweep:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     env:
       PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
@@ -31,6 +32,9 @@ jobs:
       - name: Lisbon date
         run: echo "TODAY=$(TZ=Europe/Lisbon date +%F)" >> "$GITHUB_ENV"
       - run: node scripts/sweep.mjs --date "$TODAY"
+        env:
+          # Lets the GitHub rising searches use the authenticated rate limit.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: node scripts/triage.mjs --date "$TODAY"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

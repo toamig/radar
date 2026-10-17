@@ -87,27 +87,6 @@
       "weight": 2
     },
     {
-      "name": "r/gamedev",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/gamedev/top/.rss?t=day",
-      "lane": "gamedev",
-      "weight": 1
-    },
-    {
-      "name": "r/unrealengine",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/unrealengine/top/.rss?t=day",
-      "lane": "gamedev",
-      "weight": 1
-    },
-    {
-      "name": "r/godot",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/godot/top/.rss?t=day",
-      "lane": "gamedev",
-      "weight": 1
-    },
-    {
       "name": "Godot releases",
       "kind": "github",
       "repo": "godotengine/godot",
@@ -206,20 +185,6 @@
       "weight": 2
     },
     {
-      "name": "r/ClaudeAI",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/ClaudeAI/top/.rss?t=day",
-      "lane": "ai",
-      "weight": 1
-    },
-    {
-      "name": "r/LocalLLaMA",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day",
-      "lane": "ai",
-      "weight": 1
-    },
-    {
       "name": "Claude Code releases",
       "kind": "github",
       "repo": "anthropics/claude-code",
@@ -246,41 +211,6 @@
       "minPoints": 120,
       "lane": "mixed",
       "weight": 2
-    },
-    {
-      "name": "arXiv graphics",
-      "kind": "rss",
-      "url": "https://rss.arxiv.org/rss/cs.GR",
-      "lane": "gamedev",
-      "weight": 2,
-      "section": "research"
-    },
-    {
-      "name": "arXiv software engineering",
-      "kind": "rss",
-      "url": "https://rss.arxiv.org/rss/cs.SE",
-      "lane": "ai",
-      "weight": 2,
-      "section": "research",
-      "match": "agent|LLM|language model|code generation|program repair|coding|test generation|testing|fuzz|static analysis|code review|developer productivity|refactor|vulnerab|technical debt|build system"
-    },
-    {
-      "name": "arXiv AI",
-      "kind": "rss",
-      "url": "https://rss.arxiv.org/rss/cs.AI",
-      "lane": "mixed",
-      "weight": 1,
-      "section": "research",
-      "match": "game|gaming|player|level design|procedural|NPC|character|animation|motion|render|shader|ray trac|path trac|gaussian splat|nerf|physics|simulation|3D|mesh|texture|terrain|world model|interactive|coding agent|software engineering agent|tool use|MCP"
-    },
-    {
-      "name": "arXiv human-computer interaction",
-      "kind": "rss",
-      "url": "https://rss.arxiv.org/rss/cs.HC",
-      "lane": "mixed",
-      "weight": 1,
-      "section": "research",
-      "match": "game|player|designer|creative tool|developer|programming"
     },
     {
       "name": "Hugging Face daily papers",
@@ -381,54 +311,6 @@
       "match": "\\bgames?\\b|\\bplay(able|er)?\\b"
     },
     {
-      "name": "r/aigamedev",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/aigamedev/top/.rss?t=day",
-      "lane": "both",
-      "weight": 2,
-      "section": "trend"
-    },
-    {
-      "name": "r/IndieDev",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/IndieDev/top/.rss?t=day",
-      "lane": "gamedev",
-      "weight": 1,
-      "section": "trend"
-    },
-    {
-      "name": "r/indiegames",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/indiegames/top/.rss?t=day",
-      "lane": "gamedev",
-      "weight": 1,
-      "section": "trend"
-    },
-    {
-      "name": "r/proceduralgeneration",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/proceduralgeneration/top/.rss?t=week",
-      "lane": "gamedev",
-      "weight": 1,
-      "section": "trend",
-      "windowHours": 168
-    },
-    {
-      "name": "r/vibecoding",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/vibecoding/top/.rss?t=day",
-      "lane": "ai",
-      "weight": 1,
-      "section": "trend"
-    },
-    {
-      "name": "r/Unity3D",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/Unity3D/top/.rss?t=day",
-      "lane": "gamedev",
-      "weight": 1
-    },
-    {
       "name": "GameDiscoverCo",
       "kind": "rss",
       "url": "https://newsletter.gamediscover.co/feed",
@@ -456,17 +338,9 @@
     {
       "name": "Addy Osmani",
       "kind": "rss",
-      "url": "https://addyo.substack.com/feed",
+      "url": "https://addyosmani.com/feed.xml",
       "lane": "ai",
       "weight": 3,
-      "windowHours": 120
-    },
-    {
-      "name": "Kent Beck",
-      "kind": "rss",
-      "url": "https://tidyfirst.substack.com/feed",
-      "lane": "ai",
-      "weight": 2,
       "windowHours": 120
     },
     {
@@ -515,13 +389,6 @@
       "url": "https://lobste.rs/rss",
       "lane": "ai",
       "weight": 2
-    },
-    {
-      "name": "r/ExperiencedDevs",
-      "kind": "rss",
-      "url": "https://www.reddit.com/r/ExperiencedDevs/top/.rss?t=day",
-      "lane": "ai",
-      "weight": 1
     },
     {
       "name": "InfoQ",
@@ -623,6 +490,488 @@
       "lane": "ai",
       "weight": 2,
       "windowHours": 72
+    },
+    {
+      "name": "Reddit game dev",
+      "kind": "reddit",
+      "subs": [
+        "gamedev",
+        "godot",
+        "unrealengine",
+        "Unity3D"
+      ],
+      "t": "day",
+      "lane": "gamedev",
+      "weight": 1
+    },
+    {
+      "name": "Reddit indie showcase",
+      "kind": "reddit",
+      "subs": [
+        "IndieDev",
+        "indiegames",
+        "aigamedev",
+        "proceduralgeneration"
+      ],
+      "t": "day",
+      "lane": "gamedev",
+      "weight": 1,
+      "section": "trend"
+    },
+    {
+      "name": "Reddit AI and coding",
+      "kind": "reddit",
+      "subs": [
+        "ClaudeAI",
+        "LocalLLaMA",
+        "ChatGPTCoding",
+        "vibecoding",
+        "ExperiencedDevs",
+        "programming"
+      ],
+      "t": "day",
+      "lane": "ai",
+      "weight": 1
+    },
+    {
+      "name": "Reddit research and graphics",
+      "kind": "reddit",
+      "subs": [
+        "MachineLearning",
+        "GraphicsProgramming",
+        "computergraphics",
+        "shaders"
+      ],
+      "t": "week",
+      "perSub": 6,
+      "lane": "mixed",
+      "weight": 1,
+      "section": "research",
+      "windowHours": 168
+    },
+    {
+      "name": "arXiv graphics",
+      "kind": "arxiv",
+      "cat": "cs.GR",
+      "lane": "gamedev",
+      "weight": 2,
+      "section": "research",
+      "windowHours": 96
+    },
+    {
+      "name": "arXiv software engineering",
+      "kind": "arxiv",
+      "cat": "cs.SE",
+      "max": 150,
+      "lane": "ai",
+      "weight": 2,
+      "match": "agent|LLM|language model|code generation|program repair|coding|test generation|testing|fuzz|static analysis|code review|developer productivity|refactor|vulnerab|technical debt|build system",
+      "section": "research",
+      "windowHours": 96
+    },
+    {
+      "name": "arXiv AI",
+      "kind": "arxiv",
+      "cat": "cs.AI",
+      "max": 200,
+      "lane": "mixed",
+      "weight": 1,
+      "match": "game|gaming|player|level design|procedural|NPC|character|animation|motion|render|shader|ray trac|path trac|gaussian splat|nerf|physics|simulation|3D|mesh|texture|terrain|world model|interactive|coding agent|software engineering agent|tool use|MCP",
+      "section": "research",
+      "windowHours": 96
+    },
+    {
+      "name": "arXiv human-computer interaction",
+      "kind": "arxiv",
+      "cat": "cs.HC",
+      "max": 100,
+      "lane": "mixed",
+      "weight": 1,
+      "match": "game|player|designer|creative tool|developer|programming",
+      "section": "research",
+      "windowHours": 96
+    },
+    {
+      "name": "arXiv games",
+      "kind": "arxiv",
+      "query": "abs:\"video game\" OR abs:\"game engine\" OR abs:\"procedural content generation\" OR abs:\"game AI\" OR abs:\"game development\" OR abs:\"playtesting\"",
+      "max": 60,
+      "lane": "gamedev",
+      "weight": 3,
+      "section": "research",
+      "windowHours": 96
+    },
+    {
+      "name": "arXiv coding agents",
+      "kind": "arxiv",
+      "query": "(cat:cs.SE OR cat:cs.AI OR cat:cs.LG) AND (abs:\"coding agent\" OR abs:\"agentic coding\" OR abs:\"software engineering agent\" OR abs:\"AI pair programming\")",
+      "max": 60,
+      "lane": "ai",
+      "weight": 3,
+      "section": "research",
+      "windowHours": 96
+    },
+    {
+      "name": "arXiv theses",
+      "kind": "arxiv",
+      "query": "abs:\"this thesis\" AND (cat:cs.GR OR cat:cs.SE OR cat:cs.HC OR cat:cs.AI OR cat:cs.MA)",
+      "max": 40,
+      "lane": "mixed",
+      "weight": 3,
+      "section": "research",
+      "windowHours": 1080
+    },
+    {
+      "name": "Computer Graphics Forum",
+      "kind": "rss",
+      "url": "https://onlinelibrary.wiley.com/feed/14678659/most-recent",
+      "lane": "gamedev",
+      "weight": 3,
+      "section": "research",
+      "windowHours": 336
+    },
+    {
+      "name": "ACM Transactions on Graphics",
+      "kind": "rss",
+      "url": "https://dl.acm.org/action/showFeed?type=etoc&feed=rss&jc=tog",
+      "lane": "gamedev",
+      "weight": 3,
+      "section": "research",
+      "windowHours": 720
+    },
+    {
+      "name": "PACM on Computer Graphics and Interactive Techniques",
+      "kind": "rss",
+      "url": "https://dl.acm.org/action/showFeed?type=etoc&feed=rss&jc=pacmcgit",
+      "lane": "gamedev",
+      "weight": 3,
+      "section": "research",
+      "windowHours": 1080
+    },
+    {
+      "name": "ACM TOSEM",
+      "kind": "rss",
+      "url": "https://dl.acm.org/action/showFeed?type=etoc&feed=rss&jc=tosem",
+      "lane": "ai",
+      "weight": 3,
+      "section": "research",
+      "windowHours": 720
+    },
+    {
+      "name": "Google Research",
+      "kind": "rss",
+      "url": "https://research.google/blog/rss/",
+      "lane": "ai",
+      "weight": 2,
+      "section": "research",
+      "windowHours": 168,
+      "match": "agent|code|coding|software|game|render|3D|world model|simulation|reasoning|tool|evaluation"
+    },
+    {
+      "name": "Apple Machine Learning Research",
+      "kind": "rss",
+      "url": "https://machinelearning.apple.com/rss.xml",
+      "lane": "ai",
+      "weight": 1,
+      "section": "research",
+      "windowHours": 240,
+      "match": "agent|code|coding|software|game|render|3D|world model|simulation|tool|on-device"
+    },
+    {
+      "name": "Meta Engineering",
+      "kind": "rss",
+      "url": "https://engineering.fb.com/feed/",
+      "lane": "ai",
+      "weight": 2,
+      "windowHours": 168
+    },
+    {
+      "name": "Bluesky game dev feeds",
+      "kind": "bluesky",
+      "feeds": [
+        {
+          "name": "Game Dev",
+          "uri": "at://did:plc:4jrld6fwpnwqehtce56qshzv/app.bsky.feed.generator/game-dev",
+          "minScore": 40
+        },
+        {
+          "name": "Indie Devs and Games",
+          "uri": "at://did:plc:d7lrvgxxmfrmy6ytu5njtipk/app.bsky.feed.generator/aaakemvkhn4xq",
+          "minScore": 30
+        },
+        {
+          "name": "Godot",
+          "uri": "at://did:plc:brwvwcp2x6oj3gq7odlfq5qf/app.bsky.feed.generator/aaacpffsfczxe",
+          "minScore": 25
+        },
+        {
+          "name": "Bluesky GameDev",
+          "uri": "at://did:plc:3z7fz2uzhy5vt627pasakzxh/app.bsky.feed.generator/aaaojmdjtuco4",
+          "minScore": 20
+        },
+        {
+          "name": "Unreal Engine",
+          "uri": "at://did:plc:brwvwcp2x6oj3gq7odlfq5qf/app.bsky.feed.generator/aaae7p5mq4fr4",
+          "minScore": 8
+        }
+      ],
+      "lane": "gamedev",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 72
+    },
+    {
+      "name": "Bluesky AI and coding feeds",
+      "kind": "bluesky",
+      "feeds": [
+        {
+          "name": "AI Coding Tools",
+          "uri": "at://did:plc:alzsepyrvyfel6a4k4fn37rc/app.bsky.feed.generator/ai-coding-tools",
+          "minScore": 8
+        },
+        {
+          "name": "Claude Code",
+          "uri": "at://did:plc:fyozrzrb6clrkgj7sk3s7myd/app.bsky.feed.generator/aaafit7abnh6o",
+          "minScore": 5
+        }
+      ],
+      "lane": "ai",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 72
+    },
+    {
+      "name": "Mastodon game dev",
+      "kind": "mastodon",
+      "instance": "mastodon.gamedev.place",
+      "tags": [
+        "gamedev",
+        "indiedev",
+        "screenshotsaturday",
+        "devlog",
+        "godotengine",
+        "unrealengine"
+      ],
+      "minScore": 8,
+      "lane": "gamedev",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 96
+    },
+    {
+      "name": "Mastodon tech",
+      "kind": "mastodon",
+      "instance": "mastodon.social",
+      "tags": [
+        "gamedev",
+        "indiedev",
+        "claudecode",
+        "llm",
+        "aiagents"
+      ],
+      "minScore": 10,
+      "lane": "mixed",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 96
+    },
+    {
+      "name": "YouTube game dev",
+      "kind": "youtube",
+      "lane": "gamedev",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 168,
+      "channels": [
+        {
+          "name": "Game Maker's Toolkit",
+          "id": "UCqJ-Xo29CKyLTjn6z2XwYAw",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Brackeys",
+          "id": "UCYbK_tjZ2OrIZFBvU6CCMiA",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Sebastian Lague",
+          "id": "UCmtyQOKKmrMVaKuRXz02jbQ",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Thomas Brush",
+          "id": "UCuHVjteDW9tCb8QqMrtGvwQ",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Acerola",
+          "id": "UCQG40havu4kNpB4pxUDQhYQ",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Freya Holmer",
+          "id": "UC7M-Wz4zK8oikt6ATcoTwBA",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Ben Cloward",
+          "id": "UCoG9TB1eL6dm9eNbLFueHBQ",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Unreal Engine",
+          "id": "UCBobmJyzsJ6Ll7UbfhI4iwQ",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Unity",
+          "id": "UCG08EqOAXJk_YXPDsAvReSg",
+          "lane": "gamedev"
+        },
+        {
+          "name": "The Cherno",
+          "id": "UCQ-W1KE9EYfdxhL6S4twUNw",
+          "lane": "gamedev"
+        },
+        {
+          "name": "Code Bullet",
+          "id": "UC0e3QhIYukixgh5VVpKHH9Q",
+          "lane": "both"
+        },
+        {
+          "name": "Jonas Tyroller",
+          "id": "UC_p_9arduPuxM8DHTGIuSOg",
+          "lane": "gamedev"
+        }
+      ]
+    },
+    {
+      "name": "YouTube software and AI",
+      "kind": "youtube",
+      "lane": "ai",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 168,
+      "channels": [
+        {
+          "name": "Fireship",
+          "id": "UCsBjURrPoezykLs9EqgamOA",
+          "lane": "ai"
+        },
+        {
+          "name": "ThePrimeagen",
+          "id": "UC8ENHE5xdFSwx71u3fDH5Xw",
+          "lane": "ai"
+        },
+        {
+          "name": "IndyDevDan",
+          "id": "UC_x36zCEGilGpB1m-V4gmjg",
+          "lane": "ai"
+        },
+        {
+          "name": "Theo",
+          "id": "UCbRP3c757lWg9M-U7TyEkXA",
+          "lane": "ai"
+        },
+        {
+          "name": "Matt Pocock",
+          "id": "UCswG6FSbgZjbWtdf_hMLaow",
+          "lane": "ai"
+        },
+        {
+          "name": "Anthropic",
+          "id": "UCrDwWp7EBBv4NwvScIpBDOA",
+          "lane": "ai"
+        },
+        {
+          "name": "AI Explained",
+          "id": "UCNJ1Ymd5yFuUPtn21xtRbbw",
+          "lane": "ai"
+        },
+        {
+          "name": "Two Minute Papers",
+          "id": "UCbfYPyITQ-7l4upoX8nvctg",
+          "lane": "both"
+        },
+        {
+          "name": "Cole Medin",
+          "id": "UCMwVTLZIRRUyyVrkjDpn4pA",
+          "lane": "ai"
+        },
+        {
+          "name": "AI Jason",
+          "id": "UCrXSVX9a1mj8l0CMLwKgMVw",
+          "lane": "ai"
+        }
+      ]
+    },
+    {
+      "name": "DEV software and AI",
+      "kind": "devto",
+      "tags": [
+        "ai",
+        "webdev",
+        "programming",
+        "productivity",
+        "claude"
+      ],
+      "days": 7,
+      "minReactions": 40,
+      "lane": "ai",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 168
+    },
+    {
+      "name": "DEV game dev",
+      "kind": "devto",
+      "tags": [
+        "gamedev",
+        "godot",
+        "unity3d"
+      ],
+      "days": 7,
+      "minReactions": 15,
+      "lane": "gamedev",
+      "weight": 1,
+      "section": "trend",
+      "windowHours": 168
+    },
+    {
+      "name": "GitHub rising: AI tools",
+      "kind": "ghtrending",
+      "topics": [
+        "ai-agents",
+        "mcp",
+        "llm",
+        "claude-code",
+        "coding-agent",
+        "vibe-coding"
+      ],
+      "days": 7,
+      "minStars": 80,
+      "lane": "ai",
+      "weight": 2,
+      "section": "trend",
+      "windowHours": 168
+    },
+    {
+      "name": "GitHub rising: game dev",
+      "kind": "ghtrending",
+      "topics": [
+        "gamedev",
+        "game-development",
+        "godot",
+        "unreal-engine",
+        "webgpu",
+        "game-engine"
+      ],
+      "days": 7,
+      "minStars": 30,
+      "lane": "gamedev",
+      "weight": 2,
+      "section": "trend",
+      "windowHours": 168
     }
   ]
 }
