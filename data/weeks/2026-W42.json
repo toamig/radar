@@ -1,0 +1,143 @@
+{
+  "id": "2026-W42",
+  "from": "2026-10-12",
+  "to": "2026-10-18",
+  "title": "The week proof became the bottleneck",
+  "dek": "Agents now write most of the code at the companies that build them. This week's stories were about what that leaves for people: checking, choosing the risks, and keeping the keys safe.",
+  "theme": {
+    "paper": "blush",
+    "text": "brown",
+    "inks": ["blue", "sunflower"],
+    "type": "grotesk",
+    "mood": "a Sunday look back at a week of checks and proof"
+  },
+  "tldr": [
+    "Anthropic, Meta and Uber all described the same shift: agents write and test, and **human time moves to review, risk and judgment**.",
+    "A cheap model plus a test harness matched an expensive model alone in one paired experiment; checking, not writing, decided the result.",
+    "Agents rebuilt a shipped game from its binary, and a decompilation index shut down: **shipped code is now readable**.",
+    "Two very large open-weight models arrived in one week, from Meta and DeepSeek.",
+    "Engines are changing their foundations: Unity 7 moves to CoreCLR, RimWorld left Unity, and Godot 4.8 reached beta."
+  ],
+  "threads": [
+    {
+      "title": "Verification is the new bottleneck",
+      "lane": "ai",
+      "summary": [
+        "The Claude Code team now sends every pull request through parallel AI reviewers and sets human review by risk tier. Meta's Forum team reached feature parity in eight weeks with agents running the build and test loop and engineers approving evidence.",
+        "The costs showed too: PostgreSQL 19 slipped after AI review found more defects than its developers could fix, and a paired experiment showed a harness rescued a cheap model while only slowing an expensive one."
+      ],
+      "days": ["2026-10-17", "2026-10-18"],
+      "sources": [
+        { "label": "Claude Code blog: solving code review", "url": "https://claude.dev/blog/solving-code-review-at-anthropic" },
+        { "label": "Engineering at Meta: How Meta built Forum", "url": "https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/" },
+        { "label": "martinfowler.com: Are Harnesses Worth the Cost?", "url": "https://martinfowler.com/articles/are-harnesses-worth-the-cost.html" },
+        { "label": "Peter Eisentraut", "url": "https://peter.eisentraut.org/blog/2026/10/09/the-reverts-will-continue-until-morale-improves" }
+      ]
+    },
+    {
+      "title": "Epic goes AI-first, and builds tools that way",
+      "lane": "gamedev",
+      "summary": [
+        "Epic moved teams to AI-first production and said the gains would reach everyone on Unreal. Its new launcher was vibe coded, and it is rebuilding Easy Anti-Cheat for Linux with Fortnite as the pilot."
+      ],
+      "days": ["2026-10-14", "2026-10-15", "2026-10-16"],
+      "sources": [
+        { "label": "Game Developer", "url": "https://www.gamedeveloper.com/programming/no-more-hand-written-code-epic-s-disney-project-reportedly-shifts-to-ai-first-development" },
+        { "label": "Wccftech", "url": "https://wccftech.com/epic-games-ai-acceleration-tim-sweeney-better-games-not-fewer-people/" }
+      ]
+    },
+    {
+      "title": "Shipped code is readable now",
+      "lane": "both",
+      "summary": [
+        "A team of agents decompiled a shipped shooter, rebuilding 99% of its functions with 83% byte-exact, kept honest by a verifier they could not edit. Later in the week decomp.dev closed its public index, citing AI-finished projects."
+      ],
+      "days": ["2026-10-15", "2026-10-17"],
+      "sources": [
+        { "label": "momo5502", "url": "https://momo5502.com/posts/2026-10-09-game-decompilation/" },
+        { "label": "Simon Willison", "url": "https://simonwillison.net/2026/Oct/14/ai-is-mass-decompiling-games" }
+      ]
+    },
+    {
+      "title": "Big open-weight models you can download",
+      "lane": "ai",
+      "summary": [
+        "Meta released Muse Spark Open, about 816B parameters with 42B active per token, which runs at 2 bits on a 512 GB Mac. DeepSeek followed with V4.1 Flash 1017 under MIT, with its largest vendor-reported gains on agent benchmarks."
+      ],
+      "days": ["2026-10-16", "2026-10-18"],
+      "sources": [
+        { "label": "Hugging Face: Muse Spark Open", "url": "https://huggingface.co/blog/meta-muse-spark-open" },
+        { "label": "Hugging Face: DeepSeek V4.1 Flash 1017", "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017" }
+      ]
+    },
+    {
+      "title": "Engines swap their foundations",
+      "lane": "gamedev",
+      "summary": [
+        "Unity 7's alpha runs on CoreCLR instead of Mono, though Unity says faster iteration is a longer-term goal. RimWorld left Unity for its own engine and reports 2 to 4 times better speed. Godot 4.8 reached beta with a long rendering list."
+      ],
+      "days": ["2026-10-14", "2026-10-16", "2026-10-18"],
+      "sources": [
+        { "label": "Unity: CoreCLR scripting update", "url": "https://discussions.unity.com/t/coreclr-scripting-and-net-update-october-2026/1738338" },
+        { "label": "Godot 4.8 beta 1", "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-1/" }
+      ]
+    },
+    {
+      "title": "Keys, sandboxes and the supply chain",
+      "lane": "ai",
+      "summary": [
+        "npm's Trusted Publishing was shown to trust a package name rather than its repo, Chainguard put coding agents in throwaway machines with signed results, and OpenCode said provider keys saved in its console may have leaked."
+      ],
+      "days": ["2026-10-15", "2026-10-17", "2026-10-18"],
+      "sources": [
+        { "label": "OfficeChai: OpenCode breach", "url": "https://officechai.com/ai/opencode-discloses-security-breach-says-attackers-may-have-accessed-users-openai-anthropic-and-google-api-keys/" }
+      ]
+    }
+  ],
+  "numbers": [
+    { "value": "30,000+", "label": "daily code changes across Anthropic's monorepo in September, up from about 2,500 in May", "date": "2026-10-17" },
+    { "value": "99%", "label": "of a shipped shooter's functions rebuilt by agents from its binary", "date": "2026-10-15" },
+    { "value": "3 to 10", "label": "accepted runs out of 10 for a cheaper model once a test harness was added", "date": "2026-10-17" },
+    { "value": "8 weeks", "label": "for Meta's Forum team to reach feature parity with Facebook Groups", "date": "2026-10-18" },
+    { "value": "40.7 pts", "label": "of task state lost between an agent's run and its reports, in one study", "date": "2026-10-18" }
+  ],
+  "watch": [
+    "Steam Next Fest runs October 19 to 26; watch which demos climb and what their pages have in common.",
+    "OpenCode's breach is described as ongoing; watch for a full account of how the keys were stored.",
+    "DeepSeek starts billing its hosted Search and Fetch tools on October 31.",
+    "PostgreSQL 19's new date is around November 19.",
+    "Copilot retires several older Claude and GPT models on November 16."
+  ],
+  "deepRead": {
+    "id": "ctxgap-deep",
+    "lane": "ai",
+    "kind": "preprint",
+    "title": "What Coding Agents Leave Unsaid: Measuring Task-State Gaps Between Execution and Reports",
+    "headline": "A coding agent's progress reports leave out about 40 points' worth of what actually happened, such as failed checks and workarounds.",
+    "authors": "Guoyang Xu, Rui Zhang, Xiuyu Wu et al. (Tencent)",
+    "where": "arXiv preprint",
+    "date": "2026-10-14",
+    "problem": "A person supervising an agent can only investigate failures they are told about, and agent reports may skip failed attempts, workarounds and open risks.",
+    "idea": "Ask the same probe questions of two readers: one sees the full record of the run, the other only the agent's reports to the user. The difference in correct answers measures what the reports lose.",
+    "result": "Across 37 coding tasks and 4,799 probes, full-context readers recovered 92.7% of the task state and report-only readers 52.0%, a 40.7-point gap. Even on 30 verified fixes the gap was 34.8 points.",
+    "useIt": "Make your agent's final report list every failed or skipped check, workaround and open risk with the command and output, then test it with a fresh session that sees only the report.",
+    "maturity": "code",
+    "links": [
+      { "label": "arXiv 2610.20003", "url": "https://arxiv.org/abs/2610.20003" },
+      { "label": "Code", "url": "https://github.com/Kaguraaaaaa/Ctxgap" }
+    ],
+    "image": {
+      "src": "img/2026-10-18/ctxgap.webp",
+      "alt": "Overview figure: an agent's checkpoints include failed tests and workarounds; its accumulated reports lose some of that; probe questions score 92.7% recovery from the full execution view against 52.0% from reports alone.",
+      "credit": "Xu et al., arXiv, CC BY 4.0",
+      "creditUrl": "https://arxiv.org/abs/2610.20003",
+      "fit": "contain"
+    },
+    "more": [
+      "Why it matters this week: every story about agent-first teams ended with a person approving evidence. This paper measures how much of that evidence never reaches the person. The agents were not hiding anything; asked directly, they answered 93.6% of the probes. The loss happens in what they choose to put in their reports.",
+      "How it works: the run is cut into checkpoints. At each one, probe questions ask about concrete task state, such as whether tests failed, whether a workaround was used, and what risk remains. One reader model sees the full execution context; the other sees only the reports the agent wrote for the user. Full terminal scrollback, a middle ground, recovered 73.6%.",
+      "What it found: the biggest unrecovered category was not silence but thin mentions, where a report names a problem without enough detail to act on. The gap held across different agent harnesses and in independent runs with DeepSeek models. Rewriting reports from full context at the same length recovered only about 8 more points, so shorter, sharper summaries are not enough on their own.",
+      "What to do: treat the final report as an artifact with a required shape. Ask for failed or skipped checks, workarounds and open risks, each with its evidence, and test the report the way the paper does: a fresh session that sees only the report should be able to answer what went wrong."
+    ]
+  }
+}

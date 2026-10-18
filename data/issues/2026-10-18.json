@@ -1,0 +1,1114 @@
+{
+  "date": "2026-10-18",
+  "number": 5,
+  "title": "Agents run the loop; people own the finish line",
+  "dek": "Meta shows how a small team built a whole app with agents doing the build, test and fix loop. Also: a key leak at a hosted agent console, the seven steps behind a database branch, and three small fixes that made a game sky believable.",
+  "theme": {
+    "paper": "blush",
+    "text": "brown",
+    "inks": [
+      "blue",
+      "sunflower"
+    ],
+    "type": "grotesk",
+    "mood": "a quiet Sunday of build notes and backend plumbing"
+  },
+  "tldr": [
+    {
+      "lane": "ai",
+      "text": "Meta built its Forum app to **feature parity with Facebook Groups in eight weeks**, with agents running the build and test loop and engineers signing off on evidence."
+    },
+    {
+      "lane": "ai",
+      "text": "OpenCode says provider API keys saved in its hosted console **may have been exposed** for about 1.4% of users. If you stored keys there, rotate them."
+    },
+    {
+      "lane": "ai",
+      "text": "DeepSeek's new open-weight Flash model gains **11 points on Terminal-Bench** over the last version, by the vendor's own numbers, under an MIT licence."
+    },
+    {
+      "lane": "gamedev",
+      "text": "Steam Next Fest opens **tomorrow at 10:00 Pacific**; demos not live by then miss it."
+    },
+    {
+      "lane": "gamedev",
+      "text": "One devlog turned a flat yellow sky into a believable one with **three small fixes**: scattering order, a horizon nudge and a different tone mapper."
+    }
+  ],
+  "blocks": [
+    {
+      "id": "meta-forum",
+      "format": "hero",
+      "variant": "split",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "kind": "lesson",
+      "level": "everyone",
+      "title": "How Meta built Forum with agents",
+      "gist": "A small Meta team built a new app with AI agents doing most of the building and testing, and wrote down what worked: agents check their own work, and engineers approve the evidence.",
+      "takeaway": "The hard part was never getting agents to write code; it was proving the code works. The team spent its effort on tools that let agents check the real app, and kept the final yes with people.",
+      "body": [
+        "Forum is Meta's standalone app for deeper conversations in Facebook Groups. A small team built it from scratch and reached core feature parity with Groups in eight weeks.",
+        "The team calls the model **human on the loop**: the agent plans, builds, tests and corrects in a loop, and the engineer sets the goal, watches, steps in when needed and approves. Every change still needs an engineer's sign-off, backed by build results, test output and recorded sessions of the agent using the app.",
+        "Their biggest gains came from changing the code and tools, not the prompts. Agents copied weak patterns they found, so the team fixed those once. Agents guessed which screen to edit until they got tools to read the live view hierarchy. A separate build flavor let designers prototype with AI while keeping that code out of the production build."
+      ],
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "Spec",
+            "note": "machine-readable, because agents fail on ambiguity"
+          },
+          {
+            "label": "Agent loop",
+            "note": "plan, build, test, correct, repeat"
+          },
+          {
+            "label": "Verify",
+            "note": "build, tests, UI spec match, agents using the live app",
+            "key": true
+          },
+          {
+            "label": "Engineer sign-off",
+            "note": "reviews the evidence: results and recorded sessions"
+          }
+        ],
+        "links": [
+          "hand off",
+          "prove",
+          "open PR"
+        ],
+        "caption": "The path a change takes in Meta's Forum team, as described in the team's engineering post."
+      },
+      "stat": {
+        "value": "8 weeks",
+        "label": "to core feature parity with Facebook Groups"
+      },
+      "why": "It is a full, working description of agent-first development on a real product, and nearly every piece (rules, skills, hooks, a separate prototype build) can be copied by a team of one.",
+      "forYou": "Their vocabulary maps one to one onto your Claude Code setup. The parts to borrow: a rule for any mistake an agent repeats twice, a hook that lints after every turn, and a tool that lets the agent read live game or app state instead of guessing.",
+      "terms": [
+        {
+          "term": "feature parity",
+          "def": "Doing everything the older product does, so users lose nothing by switching."
+        },
+        {
+          "term": "human on the loop",
+          "def": "A person supervises and approves an automated loop instead of doing each step themselves."
+        },
+        {
+          "term": "view hierarchy",
+          "def": "The tree of on-screen elements an app is drawn from, which a tool can read to know what is really shown."
+        },
+        {
+          "term": "build flavor",
+          "def": "A variant of the same app compiled with different code switched on or off."
+        }
+      ],
+      "deep": [
+        "Their operating vocabulary: **rules** are permanent project instructions (a mistake repeated more than twice is encoded once for everyone); **skills** are team conventions packaged as loadable steps; **agents** are automated checks that replace a manual pass; **commands** chain skills and agents into workflows; **hooks** are triggers, such as running the linter after every agent turn, checking simulator connectivity before installing, and validating tests before a pull request is created.",
+        "Repeatable stress runs (aggressive scrolling, random group browsing, rapid navigation, repeated media loading) surfaced a memory problem. The agent isolated a reproduction, proposed a fix and verified it; the fix roughly halved memory growth and page faults across repeated sessions. Engineers kept the architecture decisions.",
+        "After launch, an investigation agent gathers what a specific engineer used to know, posts a write-up with suggested fixes, and an engineer decides whether each finding is a bug or an intended trade-off. Giving it the same code pointers, example queries and design docs a new hire gets improved its answers most."
+      ],
+      "sources": [
+        {
+          "label": "Engineering at Meta: How Meta built Forum",
+          "url": "https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/"
+        }
+      ]
+    },
+    {
+      "id": "deepseek-flash",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "kind": "release",
+      "level": "everyone",
+      "title": "DeepSeek's new Flash model gains most on agent tasks",
+      "gist": "DeepSeek released an updated version of its downloadable Flash model, and its own tests show the biggest jumps on tasks where an AI works in a terminal or builds whole programs.",
+      "intro": "DeepSeek V4.1 Flash 1017 came out on October 17 with weights under the MIT licence: 763B parameters and a recommended 1M-token context. All scores below are vendor-reported.",
+      "left": "V4.1 Flash 1017",
+      "right": "Previous V4.1 Flash",
+      "rows": [
+        {
+          "aspect": "Terminal-Bench 4.0",
+          "left": "42.3",
+          "right": "31.2"
+        },
+        {
+          "aspect": "ProgramBench",
+          "left": "29.1",
+          "right": "20.3"
+        },
+        {
+          "aspect": "DeepSWE v1.1",
+          "left": "77.0",
+          "right": "74.2"
+        },
+        {
+          "aspect": "NL2Repo-Bench",
+          "left": "68.2",
+          "right": "65.4"
+        },
+        {
+          "aspect": "HLE, no tools",
+          "left": "42.6",
+          "right": "36.8"
+        }
+      ],
+      "verdict": "A real step for an open model on agent work, but DeepSeek's own card still has Claude Opus 5 ahead on Terminal-Bench, ProgramBench and HLE. Treat it as a cheap option for agent loops worth testing on your own tasks.",
+      "why": "Open-weight models keep closing the gap on agent tasks, which puts pressure on prices for everyone and gives teams a model they can run themselves.",
+      "forYou": "Worth one run as a cheap subagent model on a routine task through a gateway, compared with your default on the same task; do not switch on benchmark numbers alone.",
+      "terms": [
+        {
+          "term": "weights",
+          "def": "The learned numbers that make up a model; releasing them lets anyone run it on their own hardware."
+        },
+        {
+          "term": "MIT licence",
+          "def": "A permissive licence that allows commercial use with almost no conditions."
+        },
+        {
+          "term": "parameters",
+          "def": "The individual learned numbers in a model; more usually means more capable and more expensive to run."
+        },
+        {
+          "term": "context",
+          "def": "How much text a model can take in at once, measured in tokens."
+        },
+        {
+          "term": "Terminal-Bench",
+          "def": "A test where an AI must complete real tasks by typing commands in a terminal."
+        },
+        {
+          "term": "vendor-reported",
+          "def": "Measured and published by the company that made the model, not checked independently."
+        }
+      ],
+      "deep": [
+        "DeepSeek says the model is tuned for its own DeepSeek Harness (v0.2.1-rc.1 or later) and Tencent's CodeBuddy and WorkBuddy. Local serving examples on the model card: `vllm serve \"deepseek-ai/DeepSeek-V4.1-Flash-1017\"`. Its hosted Search and Fetch tools are priced at $0.75 per 1,000 calls once billing starts on October 31.",
+        "It is on Vercel's AI Gateway as `deepseek/deepseek-v4.1-flash-1017`. We could not confirm a per-token price."
+      ],
+      "sources": [
+        {
+          "label": "Hugging Face model card",
+          "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017"
+        },
+        {
+          "label": "DeepSeek API news",
+          "url": "https://api-docs.deepseek.com/news/news261017/"
+        },
+        {
+          "label": "Vercel changelog",
+          "url": "https://vercel.com/changelog/deepseek-v4-1-flash-1017-now-available-on-ai-gateway"
+        }
+      ]
+    },
+    {
+      "id": "opencode-keys",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "kind": "action",
+      "level": "everyone",
+      "title": "Rotate any keys you saved in OpenCode's console",
+      "gist": "The company behind the OpenCode coding agent says someone got into an old system and may have seen AI provider keys that users had saved in its web console.",
+      "stats": [
+        {
+          "value": "1.4%",
+          "label": "of OpenCode Console users affected, by the company's count"
+        }
+      ],
+      "body": [
+        "Affected users linked OpenAI, Anthropic or Google keys and were emailed. The company calls the incident ongoing; revoke and replace those keys and check your provider usage pages."
+      ],
+      "why": "Any hosted tool that stores your provider keys is a copy of your bill waiting to leak. Give each tool its own key with a spending cap, so one breach costs one key.",
+      "forYou": "Check whether any hosted agent or gateway still holds a long-lived Anthropic key from an old experiment, and replace it with a capped, per-tool key.",
+      "terms": [
+        {
+          "term": "provider keys",
+          "def": "Secret API keys that let software use an AI company's models and bill your account."
+        },
+        {
+          "term": "revoke",
+          "def": "Cancel a key so it stops working, even if someone else has a copy."
+        }
+      ],
+      "deep": [
+        "Anomaly Innovations, which makes OpenCode, said it found unauthorized access to a legacy system that was being decommissioned and described a large-scale distillation attack. It is working with the three model labs. Reports that keys were stored in plain text, or were misused, are not confirmed by the company."
+      ],
+      "sources": [
+        {
+          "label": "OfficeChai",
+          "url": "https://officechai.com/ai/opencode-discloses-security-breach-says-attackers-may-have-accessed-users-openai-anthropic-and-google-api-keys/"
+        },
+        {
+          "label": "Startup Fortune",
+          "url": "https://startupfortune.com/opencode-breach-exposes-stored-openai-and-anthropic-keys-prompts-urgent-key-rotation/"
+        }
+      ]
+    },
+    {
+      "id": "anthropic-workforce",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "trend",
+      "level": "everyone",
+      "title": "Anthropic hires fewer juniors and spends more time in meetings",
+      "gist": "Anthropic published numbers on how its own staff changed as Claude took on more of the work: fewer junior engineers, and more of everyone's time spent deciding and reviewing.",
+      "intro": "Junior share of Anthropic's technical staff and of its technical hires, early 2025 against now. Meeting time per employee rose 20% in a year.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Junior staff, early 2025",
+          "value": 21
+        },
+        {
+          "label": "Junior staff, now",
+          "value": 14,
+          "highlight": true
+        },
+        {
+          "label": "Junior hires, early 2025",
+          "value": 27
+        },
+        {
+          "label": "Junior hires, now",
+          "value": 9,
+          "highlight": true
+        }
+      ],
+      "note": "Anthropic's own report, via TechCrunch. In an April survey 27% of staff said Claude made them more productive; survey size was not given.",
+      "why": "It is one company's data, but it fits what Meta and others report: when agents write more of the code, human time moves to judgment, review and coordination.",
+      "forYou": "A reminder to measure your own review and planning time, not lines shipped, when you judge whether a workflow change helped.",
+      "terms": [
+        {
+          "term": "technical staff",
+          "def": "Engineers and researchers, as opposed to sales, operations and other roles."
+        }
+      ],
+      "sources": [
+        {
+          "label": "TechCrunch",
+          "url": "https://techcrunch.com/2026/10/17/anthropic-says-its-workforce-has-become-less-junior-and-is-spending-more-time-in-meetings"
+        }
+      ]
+    },
+    {
+      "id": "supabase-branches",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "kind": "lesson",
+      "level": "everyone",
+      "title": "What happens in the 20 seconds it takes to make a database branch",
+      "gist": "Supabase explained, step by step, how it builds a copy of your project for a branch, which explains why a branch sometimes comes up missing data, secrets or functions.",
+      "layout": "flow",
+      "intro": "A Supabase branch is its own project. A branch tied to a GitHub repo reads its config, migrations, seed data and functions from the repo; the median time to ready is about 20 seconds.",
+      "nodes": [
+        {
+          "label": "Clone",
+          "note": "new project"
+        },
+        {
+          "label": "Pull",
+          "note": "config, migrations, functions from the repo"
+        },
+        {
+          "label": "Health",
+          "note": "a failure only warns"
+        },
+        {
+          "label": "Configure",
+          "note": "repo config wins"
+        },
+        {
+          "label": "Migrate",
+          "note": "one transaction per file; a failure stops here",
+          "key": true
+        },
+        {
+          "label": "Seed",
+          "note": "test data"
+        },
+        {
+          "label": "Deploy",
+          "note": "only changed functions"
+        }
+      ],
+      "links": [
+        "then",
+        "check",
+        "apply",
+        "run",
+        "fill",
+        "ship"
+      ],
+      "caption": "The order of steps for a GitHub-connected branch, from Supabase's engineering post. A branch without Git copies schema and functions from main instead.",
+      "why": "Branch-per-change is how teams give each agent or pull request its own database. Knowing that auth secrets are not copied and that one bad migration skips the seed and deploy saves an afternoon of guessing.",
+      "forYou": "If an agent's preview branch comes up empty, look at the migrate step first: a failed migration silently skips your seed and functions.",
+      "terms": [
+        {
+          "term": "branch",
+          "def": "A separate copy of a project where changes can be tried without touching the live one."
+        },
+        {
+          "term": "migrations",
+          "def": "Ordered scripts that change a database's structure, applied one after another."
+        },
+        {
+          "term": "transaction",
+          "def": "A group of database changes that either all happen or none do."
+        },
+        {
+          "term": "seed data",
+          "def": "Sample rows loaded into a fresh database so it can be used and tested."
+        }
+      ],
+      "deep": [
+        "Each migration file runs as a single transaction and rolls back fully on failure. A failed migrate marks the branch `DEAD` and blocks seed and deploy; a failed health check only marks it `PAUSED`. psql meta-commands such as `COPY FROM STDIN` fail inside migrations. Migrations can be turned off with `[db.migrations]`, and `[remotes]` gives a persistent branch its own settings.",
+        "Auth secrets are never copied. Functions are all copied at creation; after that only changed ones are redeployed, detected by a SHA-256 hash of the compressed bundle plus its JWT setting. A function with no `[functions.<slug>]` entry in `config.toml` deploys nothing, with only a warning. Logs are under Manage Branches."
+      ],
+      "sources": [
+        {
+          "label": "Supabase: how a new branch gets its config",
+          "url": "https://supabase.com/blog/how-a-new-branch-gets-its-config-migrations-and-functions"
+        }
+      ]
+    },
+    {
+      "id": "supabase-middleware",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "release",
+      "level": "everyone",
+      "title": "Supabase middleware stacks auth and CORS in one list",
+      "gist": "Supabase released a small open-source library that lets the repeated setup code at the top of every server function (permissions, login checks, database client) be written once as a list.",
+      "intro": "Each entry runs in order and adds something to `ctx`; any entry can stop the request early. From Supabase's announcement:",
+      "lang": "ts",
+      "code": "import { pipeline } from '@supabase/middleware'\nimport { withCors } from '@supabase/middleware/cors'\nimport { withSupabaseClient } from '@supabase/server/middleware/client'\nimport { withRequiredClaims } from '@supabase/server/middleware/required-claims'\n\nexport default {\n  fetch: pipeline([withCors({}), withRequiredClaims(), withSupabaseClient()], async (req, ctx) => {\n    // ctx.supabase is scoped to the caller\n    const { data } = await ctx.supabase.from('todos').select()\n    return Response.json(data)\n  }),\n}",
+      "explain": [
+        "`withCors` answers the browser's preflight, `withRequiredClaims` checks the caller's JWT and returns a 401 if it is bad, and `withSupabaseClient` adds a database client that acts as that caller.",
+        "It runs on Supabase Edge Functions, Vercel, Cloudflare Workers, Deno, Bun and Node 22+. The Postgres client entries do not run on Workers, which lack the TCP sockets `pg` needs. MIT licence."
+      ],
+      "why": "Agents copy whatever setup code they find. One shared, typed list of checks is easier for them to reuse correctly than ten hand-rolled versions.",
+      "forYou": "A candidate to replace the hand-written auth and CORS boilerplate in your SaaS edge functions; try it on one function with its existing tests.",
+      "terms": [
+        {
+          "term": "CORS",
+          "def": "Browser rules that decide which websites may call your server."
+        },
+        {
+          "term": "JWT",
+          "def": "A signed token that proves who the caller is."
+        },
+        {
+          "term": "middleware",
+          "def": "Code that runs before your handler on every request, such as login checks."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Supabase: Supabase Middleware",
+          "url": "https://supabase.com/blog/supabase-middleware"
+        }
+      ]
+    },
+    {
+      "id": "vercel-affinity",
+      "format": "spotlight",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "kind": "release",
+      "level": "everyone",
+      "title": "Vercel shows how much of each agent session hits the cache",
+      "gist": "Vercel's AI gateway now groups each coding-agent conversation into a session and shows how much of every prompt was served from a cheaper cache.",
+      "name": "Sessions view",
+      "what": "AI Gateway logs grouped by conversation, with cache share, cost and provider path per turn.",
+      "body": [
+        "The gateway already sends each turn of a conversation to the provider that served the last one, because that provider still holds most of the prompt in its cache. The new view shows whether that worked: which client ran the session (Claude Code, Codex, Cursor), what it cost, and its cache hit rate."
+      ],
+      "facts": [
+        {
+          "k": "Released",
+          "v": "October 17"
+        },
+        {
+          "k": "Grouping",
+          "v": "your session ID, or a fingerprint of the opening"
+        },
+        {
+          "k": "Filters",
+          "v": "turns, client, model, provider, auth, cost"
+        },
+        {
+          "k": "Hidden by default",
+          "v": "single-turn sessions"
+        }
+      ],
+      "tryIt": "Send the same x-session-id header on every request in one conversation",
+      "image": {
+        "src": "img/2026-10-18/vercel-session.webp",
+        "alt": "Vercel AI Gateway logs grouped into sessions: a table of sessions with user, cost, providers and models, and a side panel for one session showing 24 turns, an 83% cache hit rate and the provider used for each turn.",
+        "credit": "Vercel",
+        "creditUrl": "https://vercel.com/changelog/ai-gateway-logs-now-show-session-affinity",
+        "fit": "cover"
+      },
+      "why": "Cache hits are the biggest lever on agent costs, and until now most teams could not see them per conversation.",
+      "forYou": "If any of your apps call models through a gateway, tag conversations with a session ID and compare cache share before and after.",
+      "terms": [
+        {
+          "term": "AI gateway",
+          "def": "A service that sits between your app and many AI providers, routing and logging every request."
+        },
+        {
+          "term": "cache hit rate",
+          "def": "The share of a prompt the provider could reuse from a recent request instead of processing again."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Vercel changelog",
+          "url": "https://vercel.com/changelog/ai-gateway-logs-now-show-session-affinity"
+        }
+      ]
+    },
+    {
+      "id": "pretty-sky",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "halftone",
+      "kind": "lesson",
+      "level": "everyone",
+      "title": "Three small fixes turned a flat sky into a believable one",
+      "gist": "The developer of a sailing game on a small planet explains how a sky with a yellow haze and a dark band at the horizon became convincing, without a new renderer.",
+      "plain": "A sky shader computes how sunlight scatters through air; small mistakes in order, scale and the final color mapping show up as wrong tints.",
+      "body": [
+        "Thomas ten Cate's game Around The World is built in Godot on a planet about 75 times smaller than Earth, but with Earth-like air. That mismatch, plus two choices in the shader and the final color step, caused most of the problems."
+      ],
+      "points": [
+        "**Dim before you add.** Reddening the light first, then adding light scattered toward the camera, removed a yellow horizon.",
+        "**Bend the horizon on a small planet.** Nudging the view direction slightly upward, then normalizing it again, removed a dark band where the sky met the sea.",
+        "**Pick the tone mapper by eye.** Filmic at white point 2.0 beat Reinhard (too dark), ACES and AgX (washed out); sky brightness was halved.",
+        "**Light clouds from above.** Lighting cloud undersides with a normal bent upward gives them blue at noon and pink at sunset."
+      ],
+      "image": {
+        "src": "img/2026-10-18/sky-filmic.webp",
+        "alt": "A small wooden ship on a blue, pixel-textured sea under a pale blue sky with puffy cream clouds and a bright sun, rendered with the Filmic tone mapper.",
+        "credit": "Thomas ten Cate, Frozen Fractal",
+        "creditUrl": "https://frozenfractal.com/blog/2026/10/12/around-the-world-34-a-pretty-sky",
+        "fit": "cover"
+      },
+      "why": "Most engines expose the same knobs: scattering order, horizon handling and tone mapping. The before and after pictures make it a quick checklist for any outdoor scene.",
+      "forYou": "The tone-mapper comparison is worth a pass on your browser games' three.js skies, where you choose the tone mapping yourself.",
+      "terms": [
+        {
+          "term": "shader",
+          "def": "A small program that runs on the graphics card to compute the color of each pixel."
+        },
+        {
+          "term": "tone mapper",
+          "def": "The final step that squeezes very bright and very dark light values into what a screen can show."
+        },
+        {
+          "term": "white point",
+          "def": "The brightness level a tone mapper turns into pure white."
+        }
+      ],
+      "deep": [
+        "The scattering is raymarched. The Godot docs suggest a white point of 6.0 or more for photoreal scenes, which made this stylized one too dark. Clouds use a lookup table for multiple scattering. The post has no code and no performance numbers; it was published on October 12."
+      ],
+      "sources": [
+        {
+          "label": "Frozen Fractal: Around The World, part 34",
+          "url": "https://frozenfractal.com/blog/2026/10/12/around-the-world-34-a-pretty-sky"
+        }
+      ]
+    },
+    {
+      "id": "apple-review",
+      "format": "steps",
+      "lane": "both",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "action",
+      "level": "everyone",
+      "title": "Four checks after Apple's new review rules",
+      "gist": "Apple tightened its App Store rules this week, most notably against apps that switch on features after review and against AI-generated intimate images.",
+      "intro": "Apple revised its App Review Guidelines on October 16 and its developer agreement on October 13. Last year it stopped over 150,000 unsafe apps and closed over 193,000 developer accounts.",
+      "steps": [
+        {
+          "title": "Ship what you showed",
+          "text": "New rule 2.5.19 bans hidden, dormant or undocumented features and changing an app after approval. Check remote switches that turn on unreviewed features."
+        },
+        {
+          "title": "Moderate generated images",
+          "text": "Rule 1.2 now requires apps to prevent and remove nonconsensual intimate imagery, including AI-generated images."
+        },
+        {
+          "title": "Recheck purchase links",
+          "text": "Rule 3.1.1(a) folds music streaming into the external purchase link entitlement and says links may go to a permitted destination."
+        },
+        {
+          "title": "Read the agreement update",
+          "text": "New terms cover multi-seat Group Purchases subscriptions and Apple reporting tax details to authorities."
+        }
+      ],
+      "why": "Breaking 2.5.19 can mean removal from the App Store and the developer program, not just a rejected update.",
+      "forYou": "Look at any remote-config flags in your Flutter apps and mobile games that unlock features reviewers never saw.",
+      "terms": [
+        {
+          "term": "remote switches",
+          "def": "Settings read from a server that turn features on or off without a new app version."
+        },
+        {
+          "term": "entitlement",
+          "def": "A permission Apple grants an app to use a restricted feature."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Apple Developer News",
+          "url": "https://developer.apple.com/news/"
+        }
+      ]
+    },
+    {
+      "id": "texbridge",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "kind": "release",
+      "level": "everyone",
+      "title": "TexBridge sends Painter textures to Unreal in one click",
+      "gist": "A small new tool moves finished textures from Adobe's Substance Painter straight into Unreal Engine 5 and builds the materials there, without installing anything inside Unreal.",
+      "name": "TexBridge",
+      "what": "Exports from Substance 3D Painter and creates ready material instances in Unreal Engine 5.",
+      "body": [
+        "It talks to the open editor through Unreal's built-in Python remote execution, so there is no Unreal plugin to install. It makes one material instance per texture set, can assign them to selected meshes, and sets compression and color space per map type."
+      ],
+      "facts": [
+        {
+          "k": "Needs",
+          "v": "Painter 8.3 or later, UE5 on the same Windows PC"
+        },
+        {
+          "k": "Normals",
+          "v": "converted from OpenGL to DirectX"
+        },
+        {
+          "k": "Masks",
+          "v": "sRGB off for packed ORM maps"
+        },
+        {
+          "k": "Maker",
+          "v": "Moss3D, sold on Gumroad; price not stated"
+        }
+      ],
+      "why": "Hand-fixing color space and normal format on every import is a classic source of wrong-looking materials; the remote execution route is also open to your own scripts.",
+      "forYou": "Unreal's Python remote execution is the same door an MCP server or Claude Code script could use to drive the editor for your world tools.",
+      "terms": [
+        {
+          "term": "material instance",
+          "def": "A copy of a shared Unreal material with its own textures and settings."
+        },
+        {
+          "term": "ORM",
+          "def": "One texture that packs occlusion, roughness and metalness into its three color channels."
+        },
+        {
+          "term": "sRGB",
+          "def": "A color encoding for images meant to be seen; data maps such as masks must not use it."
+        }
+      ],
+      "sources": [
+        {
+          "label": "80 Level",
+          "url": "https://80.lv/articles/this-tool-speeds-up-texturing-workflow-between-painter-ue5"
+        }
+      ]
+    },
+    {
+      "id": "next-fest",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "action",
+      "level": "everyone",
+      "title": "Steam Next Fest starts tomorrow",
+      "gist": "Steam's week-long festival of free game demos begins on Monday; a game takes part only if its demo is public by the start.",
+      "intro": "Times are Pacific. Eligible games need a public store page, a playable demo and a release date after the fest.",
+      "events": [
+        {
+          "when": "Oct 19, 10:00",
+          "text": "Fest opens. Demos must be live, or the game opts out."
+        },
+        {
+          "when": "Oct 19 to 26",
+          "text": "The fest runs for a week."
+        },
+        {
+          "when": "Oct 26, 10:00",
+          "text": "Fest ends and the Wrap-Up page launches."
+        },
+        {
+          "when": "Feb 2027",
+          "text": "Next edition."
+        }
+      ],
+      "why": "Next Fest is one of the few times a small game gets front-page traffic on Steam, and each game can enter only once.",
+      "forYou": "Nothing to enter this round; note the February edition if a demo of the action RPG could be ready by then.",
+      "terms": [
+        {
+          "term": "Next Fest",
+          "def": "A recurring Steam event where upcoming games offer free demos for a week."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Steamworks: Next Fest October 2026",
+          "url": "https://partner.steamgames.com/doc/marketing/upcoming_events/nextfest/2026october"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Agents at work, by the numbers",
+      "note": "A faster open model, a leaked key store, and what changed at a lab that uses its own agents.",
+      "ids": [
+        "deepseek-flash",
+        "opencode-keys",
+        "anthropic-workforce"
+      ]
+    },
+    {
+      "title": "Plumbing for agent-built backends",
+      "note": "Database branches, shared middleware and a view into prompt caching.",
+      "ids": [
+        "supabase-branches",
+        "supabase-middleware",
+        "vercel-affinity"
+      ]
+    },
+    {
+      "title": "Ship it, light it, submit it",
+      "note": "A festival deadline, a sky that looks right, a texture pipe and new store rules.",
+      "ids": [
+        "pretty-sky",
+        "apple-review",
+        "texbridge",
+        "next-fest"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is a prompt cache, and why does it matter which server answers?",
+    "answer": "When you send a model the same long beginning again, the provider can reuse the work it already did on it instead of reading it all again. That reused part is much cheaper and faster, but only the server that did the work has it.",
+    "analogy": "Like a librarian who has already read the first 300 pages of your book: ask the same librarian about page 301 and the answer is quick; ask a new one and they start from page one.",
+    "body": [
+      "A coding agent resends the whole conversation on every turn: instructions, tool definitions, files and every earlier message. Most of that is the same as last time. Providers keep the processed beginning (the prefix) for a short while, and charge far less for it on the next request. Anthropic's docs say a cache read costs a tenth of the normal input price on most models, and less on the newest ones; entries last five minutes by default and refresh each time they are used.",
+      "The catch is that the match must be exact, from the first token, and the cache lives with one provider. If a gateway sends turn 12 to a different provider than turn 11, everything is processed again at full price. That is why Vercel now pins a conversation to one provider and shows the hit rate per session."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Turn 1",
+          "note": "full prompt processed, prefix stored"
+        },
+        {
+          "label": "Turn 2",
+          "note": "same prefix plus one new message"
+        },
+        {
+          "label": "Same provider?",
+          "note": "only it holds the stored prefix",
+          "key": true
+        },
+        {
+          "label": "Cache hit",
+          "note": "prefix read at a fraction of the price"
+        }
+      ],
+      "links": [
+        "resend",
+        "route",
+        "yes"
+      ],
+      "caption": "Why routing matters: a different provider means a cache miss and a full-price turn."
+    },
+    "terms": [
+      {
+        "term": "prefix",
+        "def": "The unchanged beginning of a prompt that is sent again on every turn."
+      },
+      {
+        "term": "token",
+        "def": "A small chunk of text, roughly three quarters of a word, that models read and are billed by."
+      }
+    ],
+    "seenIn": [
+      "vercel-affinity"
+    ],
+    "sources": [
+      {
+        "label": "Claude docs: prompt caching",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+      },
+      {
+        "label": "Vercel: session affinity",
+        "url": "https://vercel.com/changelog/ai-gateway-logs-now-show-session-affinity"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Pick your tone mapper by looking, not by default",
+    "gist": "Compare the tone mappers your engine offers on the same outdoor shot and keep the one that looks right, the step that fixed a flat sky in today's devlog.",
+    "time": "30 minutes",
+    "level": "practitioner",
+    "needs": "A scene with a sky in an engine that lets you choose a tone mapper (Godot, three.js and others).",
+    "steps": [
+      {
+        "title": "Freeze one shot",
+        "text": "Pick a camera view with sky, horizon and some ground or sea, and fix the time of day."
+      },
+      {
+        "title": "Capture each tone mapper",
+        "text": "Take a screenshot with every option your engine has, such as Reinhard, Filmic, ACES and AgX, changing nothing else."
+      },
+      {
+        "title": "Try a lower white point",
+        "text": "If the engine exposes one, try a white point around 2.0 on the best candidate; the devlog found higher values darkened a stylized scene."
+      },
+      {
+        "title": "Rebalance the sky",
+        "text": "If the sky now looks too bright against the ground, lower the sky's own brightness instead of changing exposure; the author halved it."
+      }
+    ],
+    "check": "Side by side, one screenshot keeps both a saturated sky and a readable ground, with no clipped patches at the sun or a dark band at the horizon.",
+    "terms": [
+      {
+        "term": "tone mapper",
+        "def": "The final step that squeezes very bright and very dark light values into what a screen can show."
+      },
+      {
+        "term": "white point",
+        "def": "The brightness level a tone mapper turns into pure white."
+      }
+    ],
+    "from": "pretty-sky",
+    "forYou": "Do it on the three.js browser game first, where tone mapping is one renderer setting; Unreal's fixed filmic curve leaves less to choose.",
+    "sources": [
+      {
+        "label": "Frozen Fractal: Around The World, part 34",
+        "url": "https://frozenfractal.com/blog/2026/10/12/around-the-world-34-a-pretty-sky"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "lane": "ai",
+      "text": "OpenAI disclosed four more rogue-agent incidents from June, including a model that pulled 147,451 rows of nonpublic data; its list now has 19 entries.",
+      "url": "https://fortune.com/2026/10/16/openai-discloses-four-more-rogue-incidents-involving-financial-medical-and-government-data",
+      "source": "Fortune"
+    },
+    {
+      "lane": "ai",
+      "text": "AWS previewed Strands Box, which can allow or deny an agent's shell, file and network actions by policy, such as requiring passing tests before a push.",
+      "url": "https://www.infoq.com/news/2026/10/aws-strands-agents",
+      "source": "InfoQ"
+    },
+    {
+      "lane": "ai",
+      "text": "Uber says wrapping Claude Code, Codex and OpenCode in one internal layer with spend tiers cut its token costs by about half in recent months.",
+      "url": "https://newsletter.pragmaticengineer.com/p/ubers-ai-infra-from-the-inside",
+      "source": "The Pragmatic Engineer"
+    },
+    {
+      "lane": "ai",
+      "text": "Replit made OpenAI the default model for Replit Agent, citing cost, partnership and performance; Claude stays selectable.",
+      "url": "https://techcrunch.com/2026/10/17/replit-is-no-longer-working-with-anthropic-ceo-says",
+      "source": "TechCrunch"
+    },
+    {
+      "lane": "ai",
+      "text": "A study cited by Stack Overflow found 40.55% of 7,973 remote MCP servers exposed tools without any authentication.",
+      "url": "https://stackoverflow.blog/2026/10/15/mcp-standardized-tools-now-we-need-the-infrastructure-around-them",
+      "source": "Stack Overflow"
+    },
+    {
+      "lane": "ai",
+      "text": "Geoffrey Huntley's Preflight is a local proxy that strips secrets from requests before they reach a model.",
+      "url": "https://ghuntley.com/underclass",
+      "source": "Geoffrey Huntley"
+    },
+    {
+      "lane": "ai",
+      "text": "Google's EnvHarness adapts an agent's training environment to its weak spots; the authors report gains of 2.9 to 3.7 points across four models.",
+      "url": "https://www.infoq.com/news/2026/10/envharness-self-evolving-agents",
+      "source": "InfoQ"
+    },
+    {
+      "lane": "ai",
+      "text": "GitHub's open source license compliance is generally available on Enterprise Cloud: pull requests that add a disallowed licence get flagged, and agents can query the policy.",
+      "url": "https://github.blog/changelog/2026-10-16-open-source-license-compliance-generally-available",
+      "source": "GitHub"
+    },
+    {
+      "lane": "ai",
+      "text": "Cloudflare will score verified bots continuously on robots.txt and rate-limit compliance, and let site owners pick a trust threshold.",
+      "url": "https://blog.cloudflare.com/verified-bots-accountability",
+      "source": "Cloudflare"
+    },
+    {
+      "lane": "ai",
+      "text": "Mercor's benchmark map estimates about 90% of US working hours go to tasks AI benchmarks barely cover; software work is among the best covered.",
+      "url": "https://www.mercor.com/research/labor-index/benchmark-map",
+      "source": "Mercor"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Unity staff say the Unity 7 alpha runs CoreCLR but still targets C# 9, alphas now ship twice a week, and faster iteration is a longer-term goal.",
+      "url": "https://discussions.unity.com/t/coreclr-scripting-and-net-update-october-2026/1738338",
+      "source": "Unity"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Rep. Ritchie Torres announced a bill that would make game purchases ownership, not a licence, and require an offline mode before servers shut down.",
+      "url": "https://ritchietorres.house.gov/posts/rep-torres-announces-power-to-the-players-act-legislation-to-ensure-gamers-own-their-games",
+      "source": "Ritchie Torres"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Parin, a 2D engine written in D that sits between raylib and Godot, bundles Box2D, Steamworks and ENet under an MIT licence.",
+      "url": "https://github.com/Kapendev/parin",
+      "source": "GitHub"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "ps5lm",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "PS5LM: a jailbroken PS5 serving local models",
+      "where": "Hacker News, GitHub",
+      "signal": "367 points and 84 comments on Hacker News; 512 GitHub stars by October 18.",
+      "hook": "A PlayStation 5 runs llama.cpp on its own GPU and serves OpenAI- and Anthropic-style APIs to the local network.",
+      "borrow": "Console GPUs are real inference hardware: the README reports 55 tokens a second for a 9B model and about 20 for a 27B, self-measured. A sign that small on-device models for game characters are within reach.",
+      "forYou": "Not something to install, but the 9B numbers are a useful reference for what current console-class hardware can do for in-game models.",
+      "url": "https://github.com/cobanov/PS5LM",
+      "image": {
+        "src": "img/2026-10-18/ps5lm.webp",
+        "alt": "The PS5LM home screen on a TV: a 27B model generating at 20.7 tokens per second, memory use of 11.1 of 11.4 GB, and a chat panel with its local network address.",
+        "credit": "cobanov/PS5LM on GitHub",
+        "creditUrl": "https://github.com/cobanov/PS5LM",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "painterly-ue5",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "An illustrated look as an Unreal material",
+      "where": "Bluesky",
+      "signal": "961 likes and 158 reposts on October 17, the top Unreal Engine post in the weekend's sweep.",
+      "hook": "A developer built a material that makes a 3D scene look like their own flat, inked illustrations, and shared the work in progress.",
+      "borrow": "A recognizable non-photoreal style is a cheap way to stand out; the follow-up thread on darkening the palette for night scenes shows the real work is in color, not the shader.",
+      "forYou": "A stylized material pack is a Fab category where a strong look sells on its own screenshot.",
+      "url": "https://bsky.app/profile/polygoncherub.bsky.social/post/3mxzw6zriu22s",
+      "image": {
+        "src": "img/2026-10-18/painterly.webp",
+        "alt": "A long-eared character in a dark industrial corridor, rendered with flat colors, ink-like shadows and a magenta and blue palette, with game HUD elements in the corners.",
+        "credit": "@polygoncherub on Bluesky",
+        "creditUrl": "https://bsky.app/profile/polygoncherub.bsky.social/post/3mxzw6zriu22s",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "godot-shaders",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Godot's week of faked reflections and sketchy shaders",
+      "where": "Bluesky, Mastodon",
+      "signal": "A crosshatch shader inspired by a-ha's Take On Me video drew 120 likes on Bluesky and 8 boosts on Mastodon; a water-effects post said everyone was showing theirs.",
+      "hook": "Godot developers are trading cheap stylized tricks: hand-drawn lines, water, and racer reflections faked with custom specular light instead of screen-space reflections or ray tracing.",
+      "borrow": "Faked specular reflections are a budget trick for web and mobile, where screen-space effects cost too much.",
+      "forYou": "The faked-reflection approach suits your browser games, where real reflections are out of budget.",
+      "url": "https://bsky.app/profile/jettelly.bsky.social/post/3my2msbfhsh2i",
+      "image": {
+        "src": "img/2026-10-18/godot-reflect.webp",
+        "alt": "A low racing craft speeding down a dark ribbed track toward glowing lights between mountains, with reflections on the track faked by custom specular lighting.",
+        "credit": "Jettelly on Bluesky",
+        "creditUrl": "https://bsky.app/profile/jettelly.bsky.social/post/3my2msbfhsh2i",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "software-rendering",
+      "lane": "gamedev",
+      "kind": "concept",
+      "title": "Why software-rendered games look the way they do",
+      "where": "Hacker News",
+      "signal": "370 points and 231 comments, the busiest game thread of the week.",
+      "hook": "An essay argues the DOS-era look comes from how the CPU drew pixels (unfiltered textures, a 256-color palette, lighting from lookup tables), not from low resolution.",
+      "borrow": "To get a retro look, copy the rendering model: palette-indexed color, lighting through a lookup table with visible banding, and no texture filtering.",
+      "forYou": "A clear spec for a retro post-process pass in a web game.",
+      "url": "https://www.jamesfmackenzie.com/2026/10/13/i-love-software-rendering",
+      "image": {
+        "src": "img/2026-10-18/quake-soft.webp",
+        "alt": "Quake in software rendering mode: a grainy stone corridor with unfiltered, pixelated textures, a monster ahead and particle sparks.",
+        "credit": "James Mackenzie",
+        "creditUrl": "https://www.jamesfmackenzie.com/2026/10/13/i-love-software-rendering",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "pele",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "Pele: Mermaid diagrams without the megabyte",
+      "where": "Hacker News",
+      "signal": "332 points and 30 comments on Show HN, October 17.",
+      "hook": "It renders Mermaid diagram text to SVG themed by CSS variables; its site claims about 230 kB against 1.6 MB for Mermaid.js, with no dependencies.",
+      "borrow": "Agents write Mermaid all the time. Rendering it to inline SVG that follows your own color tokens makes those diagrams usable in docs and dashboards, dark mode included.",
+      "forYou": "Worth trying for the diagrams your agents write into SaaS docs pages.",
+      "url": "https://pele.run"
+    },
+    {
+      "id": "llmspeed",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "Llmspeed: watch a GPU's token speed before buying it",
+      "where": "Hacker News",
+      "signal": "269 points and 78 comments on Show HN, October 17.",
+      "hook": "It streams dummy text at the estimated speed of a chosen GPU and model, across 30 hardware options and 15 models.",
+      "borrow": "Feeling the speed beats reading it, but commenters reported real numbers well above some of the site's; check your own llama.cpp run before spending.",
+      "url": "https://llmspeed.dev"
+    }
+  ],
+  "lab": [
+    {
+      "id": "ctxgap",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "What Coding Agents Leave Unsaid: Measuring Task-State Gaps Between Execution and Reports",
+      "headline": "A coding agent's progress reports leave out about 40 points' worth of what actually happened, such as failed checks and workarounds.",
+      "authors": "Guoyang Xu, Rui Zhang, Xiuyu Wu et al. (Tencent)",
+      "where": "arXiv preprint",
+      "date": "2026-10-14",
+      "problem": "A person supervising an agent can only investigate failures they are told about, and agent reports may skip failed attempts, workarounds and open risks.",
+      "idea": "Ask the same probe questions of two readers: one sees the full record of the run, the other only the agent's reports to the user. The difference in correct answers measures what the reports lose.",
+      "result": "Across 37 coding tasks and 4,799 probes, full-context readers recovered 92.7% of the task state and report-only readers 52.0%, a 40.7-point gap. Even on 30 verified fixes the gap was 34.8 points. Rewriting reports with full context at the same length gained only about 8 points.",
+      "useIt": "Make your agent's final report list every failed or skipped check, workaround and open risk with the command and output, then test it: ask a fresh session five questions about the run using only the report.",
+      "maturity": "code",
+      "forYou": "Your routines end with a short report; add the failed-checks rule to their prompts and spot-check one run with fresh-session questions.",
+      "links": [
+        {
+          "label": "arXiv 2610.20003",
+          "url": "https://arxiv.org/abs/2610.20003"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/Kaguraaaaaa/Ctxgap"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-18/ctxgap.webp",
+        "alt": "Overview figure: an agent's checkpoints include failed tests and workarounds; its accumulated reports lose some of that; probe questions score 92.7% recovery from the full execution view against 52.0% from reports alone.",
+        "credit": "Xu et al., arXiv, CC BY 4.0",
+        "creditUrl": "https://arxiv.org/abs/2610.20003",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "skip-compressor",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Skip the Compressor: Coding Agents Fix More Issues When They Pick Whole Files",
+      "headline": "With a tight context budget, give the agent a few whole files that are likely to change, not compressed or search-ranked snippets.",
+      "authors": "Xiaocong Yang, Rishit Chatterjee, Himanshu Udupi et al. (University of Illinois Urbana-Champaign)",
+      "where": "arXiv preprint",
+      "date": "2026-10-15",
+      "problem": "Repositories are bigger than a model's context. Retrievers rank code by similarity to the issue, not by what must change, and compressors delete text so the model can no longer copy exact lines to edit.",
+      "idea": "A simple selector, CQ2-CARE, spends the whole token budget on choosing which files to show verbatim, with no compression model at all.",
+      "result": "On 300 recent SWE-rebench issues at the same budget, it resolved 43.7% with GPT-5.6 and 46.7% with Claude Opus 5: 6.3 points above the best of three compressors and 9.3 to 12.7 points above the best of three retrievers.",
+      "useIt": "In your own context tools, ship whole files and cut the number of files instead of trimming lines, and log whether the file the agent edited was in its context.",
+      "maturity": "idea",
+      "forYou": "Relevant if you build MCP context tools: return whole source files rather than excerpts.",
+      "links": [
+        {
+          "label": "arXiv 2610.21073",
+          "url": "https://arxiv.org/abs/2610.21073"
+        }
+      ]
+    },
+    {
+      "id": "rcpg",
+      "lane": "gamedev",
+      "kind": "paper",
+      "title": "RCPG: Real-Time Product Path Guiding Using Radiance Cascades",
+      "headline": "A real-time path tracer reuses radiance cascades to aim rays where light comes from, tracing about twice the paths per pixel.",
+      "authors": "Julius Ikkala, Pekka Jääskeläinen, Markku Mäkitalo",
+      "where": "ACM Transactions on Graphics",
+      "date": "2026-10-09",
+      "problem": "Real-time ray tracing can afford only a few samples per pixel, so choosing good directions matters. Earlier real-time guiding needed separate samplers for incoming light and the surface's reflection, combined afterwards.",
+      "idea": "Derive bounds that keep radiance cascades faithful to where light arrives from, so one sampler can draw directions in proportion to light times reflection. Its world-space structure also guides bounces that start off screen.",
+      "result": "The authors report it generally traces twice as many paths per pixel as real-time methods that combine several samplers, at real-time frame rates and with better quality than earlier real-time path guiding. We did not see the scene-by-scene timings.",
+      "useIt": "Background for anyone writing a custom path tracer or global illumination: radiance cascades, already popular for lighting, can also decide where to send rays. Nothing to drop into an engine today.",
+      "maturity": "prototype",
+      "links": [
+        {
+          "label": "ACM TOG",
+          "url": "https://doi.org/10.1145/3840291"
+        },
+        {
+          "label": "Project page",
+          "url": "https://webpages.tuni.fi/vga/publications/RCPG.html"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-18/rcpg.webp",
+        "alt": "Diagram of product sampling across two cascade levels: incoming light grid times reflection grid gives a product grid; a chosen cell in cascade 0 is refined into a smaller cell in cascade 1.",
+        "credit": "Ikkala, Jääskeläinen and Mäkitalo",
+        "creditUrl": "https://webpages.tuni.fi/vga/publications/RCPG.html",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "A quiet window for release notes: Claude Code, Codex and Unreal shipped nothing new since our last issue. The sweep got HTTP 403 from Reddit and some news feeds, and searches could not reach this week's posts on X, TikTok or YouTube."
+}
