@@ -49,7 +49,7 @@ const range = `${formatDate(week.from, { day: 'numeric', month: 'long' })} to ${
     ))}
   </main>
   {week.watch.length > 0 && (
-    <section class="ticker">
+    <section class="watch-section">
       <h2 class="display">Worth watching next week</h2>
       <ul class="watch">{week.watch.map((w) => <li><Inline text={w} /></li>)}</ul>
     </section>

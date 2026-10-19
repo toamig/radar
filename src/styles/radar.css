@@ -433,8 +433,11 @@ p, li { text-wrap: pretty; }
 .threads { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 48px 40px; padding: 40px 0 56px; }
 .thread-days { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 10px; }
 .thread-days a { font-size: var(--step--1); font-weight: 600; padding: 2px 8px; border: 1.5px solid var(--text); border-radius: 99px; text-decoration: none; }
-.watch { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-.watch li { padding-left: 24px; position: relative; max-width: var(--measure); }
+/* Not .ticker: its list items are a two-column grid built for a lane icon and a line. */
+.watch-section { border-top: 6px solid var(--text); padding: 18px 0 40px; }
+.watch-section h2 { margin: 0 0 16px; font-size: var(--step-3); }
+.watch { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 14px 36px; }
+.watch li { padding-left: 24px; position: relative; line-height: 1.45; }
 .watch li::before { content: ''; position: absolute; left: 0; top: .45em; width: 12px; height: 12px; border: 3px solid var(--ink-a); border-radius: 50%; }
 
 /* ------------------------------------------------------------ dark */
