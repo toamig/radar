@@ -30,7 +30,7 @@ const range = `${formatDate(week.from, { day: 'numeric', month: 'long' })} to ${
   {week.numbers.length > 0 && (
     <section class="block b-full" data-ink="b" style="margin-top:40px">
       <h2 class="b-title display">The week in numbers</h2>
-      <div class="stats">{week.numbers.map((n) => <p><span class="n display">{n.value}</span><span class="l">{n.label}</span></p>)}</div>
+      <div class="stats" style={`--len:${Math.max(3, ...week.numbers.map((n) => n.value.length))}`}>{week.numbers.map((n) => <p><span class="n display">{n.value}</span><span class="l">{n.label}</span></p>)}</div>
     </section>
   )}
   <main class="threads">

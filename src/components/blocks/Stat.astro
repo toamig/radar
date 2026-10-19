@@ -2,7 +2,7 @@
 import Paras from '../Paras.astro';
 const { block: b } = Astro.props;
 ---
-<div class="stats">
+<div class="stats" style={`--len:${Math.max(3, ...b.stats.map((s: any) => s.value.length))}`}>
   {b.stats.map((s) => <p><span class="n display">{s.value}</span><span class="l">{s.label}</span></p>)}
 </div>
 <Paras items={b.body} />
