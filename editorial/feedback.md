@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #2 More like: Tiny Logic: build a computer from gates, then run DOOM (2026-10-21)
+  direction: more
+  issue: 2026-10-21
+  block: tiny-logic
+  format: spark
+  lane: gamedev
+  
+  Optional note (what exactly, and why):
+
 - #1 Less like: Eight leaked certificate keys: patch more than your browser (2026-10-21)
   direction: less
   issue: 2026-10-21
