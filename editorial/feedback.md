@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #3 More like: An IKEA manual rebuilt as a 3D, step-by-step scene (2026-10-21)
+  direction: more
+  issue: 2026-10-21
+  block: flatpack-3d
+  format: spark
+  lane: gamedev
+  
+  Optional note (what exactly, and why):
+
 - #2 More like: Tiny Logic: build a computer from gates, then run DOOM (2026-10-21)
   direction: more
   issue: 2026-10-21
