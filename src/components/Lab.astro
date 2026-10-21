@@ -4,8 +4,9 @@
 import Inline from './Inline.astro';
 import Lane from './Lane.astro';
 import Media from './Media.astro';
+import Tune from './Tune.astro';
 import { formatDate } from '../kit/data';
-const { papers } = Astro.props;
+const { papers, date } = Astro.props;
 const STAGES = [
   { id: 'idea', label: 'Idea' },
   { id: 'prototype', label: 'Prototype' },
@@ -38,6 +39,7 @@ const KIND = { paper: 'Paper', preprint: 'Preprint', thesis: 'Thesis', report: '
               </dl>
             </div>
             {p.forYou && <p class="for-you"><b>For you</b><Inline text={p.forYou} /></p>}
+            <Tune date={date} item={{ id: p.id, title: p.headline, format: 'lab', lane: p.lane }} />
             <ol class="maturity" aria-label={`Maturity: ${STAGES[level].label}`}>
               {STAGES.map((s, k) => <li class:list={{ on: k <= level, here: k === level }}>{s.label}</li>)}
             </ol>

@@ -2,8 +2,9 @@
 // Try this today: one small, concrete thing to do, from today's reading.
 import Inline from './Inline.astro';
 import Lane from './Lane.astro';
-interface Props { tryThis: any; refs: { id: string; title: string }[] }
-const { tryThis: t, refs } = Astro.props;
+import Tune from './Tune.astro';
+interface Props { tryThis: any; refs: { id: string; title: string }[]; date: string }
+const { tryThis: t, refs, date } = Astro.props;
 const from = t.from ? refs.find((r) => r.id === t.from) : undefined;
 ---
 <section id="try" class="trythis jump" aria-labelledby="try-h" data-terms={t.terms.length ? JSON.stringify(t.terms) : undefined}>
@@ -33,6 +34,7 @@ const from = t.from ? refs.find((r) => r.id === t.from) : undefined;
     <footer class="learn-foot">
       {from && <p class="learn-seen"><span>From today's</span><a href={`#${from.id}`}><Inline text={from.title} /></a></p>}
       <p class="srcs"><span>Where it comes from</span>{t.sources.map((s: any) => <a href={s.url} rel="noopener" target="_blank">{s.label}</a>)}</p>
+      <Tune date={date} item={{ id: 'try', title: t.title, format: 'try-this', lane: t.lane }} />
     </footer>
   </div>
 </section>

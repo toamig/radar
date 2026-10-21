@@ -1,0 +1,11 @@
+---
+// "More like this" and "Less like this" links for one item, shown only in tune
+// mode. They open a prefilled GitHub issue that the feedback workflow records.
+import { tuneUrl } from '../kit/site';
+interface Props { date: string; item: { id: string; title: string; format: string; lane: string } }
+const { date, item } = Astro.props;
+---
+<p class="tune">
+  <a href={tuneUrl('more', date, item)} target="_blank" rel="noopener">More like this</a>
+  <a href={tuneUrl('less', date, item)} target="_blank" rel="noopener">Less like this</a>
+</p>

@@ -290,3 +290,11 @@ screen first, then real pixel size on a second click (phones open wide diagrams 
 It closes with the Close button, Esc, a click outside, or Back. Nothing to write for it, but
 it is why `fetch-image.mjs` keeps images at up to 1600 px wide: a diagram's small labels
 must stay legible at real size, so prefer the largest clear version of a figure.
+
+## Feedback on every part of the page
+
+In tune mode (`?tune=1`, owner only) every story, spark, lab entry, Learn one thing and Try this
+carries "More like this" and "Less like this". The feedback entry's `format` says which part it
+came from: a block format, or `spark`, `lab`, `learn` or `try-this`. When folding feedback into
+`taste.md`, read a spark or lab entry as a signal about that section's picks (platforms, topics,
+venues), not about the news grid.

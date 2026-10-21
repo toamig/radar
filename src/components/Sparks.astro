@@ -3,7 +3,8 @@
 import Inline from './Inline.astro';
 import Lane from './Lane.astro';
 import Media from './Media.astro';
-const { sparks } = Astro.props;
+import Tune from './Tune.astro';
+const { sparks, date } = Astro.props;
 const KIND = { game: 'Game', concept: 'Concept', devlog: 'Devlog', technique: 'Technique', tool: 'Tool', experiment: 'Experiment' };
 ---
 {sparks.length > 0 && (
@@ -22,6 +23,7 @@ const KIND = { game: 'Game', concept: 'Concept', devlog: 'Devlog', technique: 'T
           <p class="spark-hook"><Inline text={s.hook} /></p>
           <p class="spark-borrow"><b>Borrow this</b> <Inline text={s.borrow} /></p>
           {s.forYou && <p class="for-you"><b>For you</b><Inline text={s.forYou} /></p>}
+          <Tune date={date} item={{ id: s.id, title: s.title, format: 'spark', lane: s.lane }} />
         </li>
       ))}
     </ul>

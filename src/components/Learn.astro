@@ -4,8 +4,9 @@ import Inline from './Inline.astro';
 import Paras from './Paras.astro';
 import Media from './Media.astro';
 import DiagramFigure from './DiagramFigure.astro';
-interface Props { learn: any; blocks: { id: string; title: string }[] }
-const { learn, blocks } = Astro.props;
+import Tune from './Tune.astro';
+interface Props { learn: any; blocks: { id: string; title: string }[]; date: string }
+const { learn, blocks, date } = Astro.props;
 const seen = learn.seenIn.map((id: string) => blocks.find((b) => b.id === id)).filter(Boolean);
 ---
 <section id="learn" class="learn jump" aria-labelledby="learn-h" data-terms={learn.terms.length ? JSON.stringify(learn.terms) : undefined}>
@@ -30,5 +31,6 @@ const seen = learn.seenIn.map((id: string) => blocks.find((b) => b.id === id)).f
   <footer class="learn-foot">
     {seen.length > 0 && <p class="learn-seen"><span>Seen today in</span>{seen.map((b: any) => <a href={`#${b.id}`}><Inline text={b.title} /></a>)}</p>}
     <p class="srcs"><span>Go further</span>{learn.sources.map((s: any) => <a href={s.url} rel="noopener" target="_blank">{s.label}</a>)}</p>
+    <Tune date={date} item={{ id: 'learn', title: learn.question, format: 'learn', lane: 'both' }} />
   </footer>
 </section>

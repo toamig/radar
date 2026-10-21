@@ -57,10 +57,10 @@ const groups = issue.groups.length
       </section>
     ))}
   </main>
-  {issue.learn && <Learn learn={issue.learn} blocks={issue.blocks} />}
-  {issue.tryThis && <TryThis tryThis={issue.tryThis} refs={[...issue.blocks, ...issue.sparks, ...issue.lab.map((p) => ({ id: p.id, title: p.headline }))]} />}
-  <Sparks sparks={issue.sparks} />
-  <Lab papers={issue.lab} />
+  {issue.learn && <Learn learn={issue.learn} blocks={issue.blocks} date={issue.date} />}
+  {issue.tryThis && <TryThis tryThis={issue.tryThis} date={issue.date} refs={[...issue.blocks, ...issue.sparks, ...issue.lab.map((p) => ({ id: p.id, title: p.headline }))]} />}
+  <Sparks sparks={issue.sparks} date={issue.date} />
+  <Lab papers={issue.lab} date={issue.date} />
   <Ticker items={issue.ticker} />
   <WeekStrip current={issue.date} />
   <Colophon theme={issue.theme} note={issue.note} />
