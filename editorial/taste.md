@@ -79,6 +79,14 @@ game or experiment people are talking about, a technique spreading among develop
 3 to 6 sparks a day, each with the evidence it is rising and the idea worth borrowing.
 Skip pure hype and marketing with nothing to learn from.
 
+One kind the reader asked for by name: creative, playful AI builds from everyday life, where a
+smart-glasses, phone or laptop rig plays or beats people at a familiar game (chess, poker, a
+board or card game, a sport), a hack that makes a daily object smart, or a creator wiring AI
+models and a game engine together for a stunt. Features of this kind should show the pipeline in
+plain words (what sees, what decides, what acts), say whether it is new or a variant of an older
+stunt, and name the original creator or say it could not be found. Reposts and clip accounts are
+not sources: trace the earliest post. Note when a demo is edited and cannot be verified.
+
 The inbox draws trends from Reddit (grouped subreddits), Bluesky and Mastodon game dev and AI feeds,
 YouTube channels (with view counts), DEV, new GitHub repositories gathering stars, Steam, itch.io,
 Hacker News and lobste.rs. Prefer a spark that shows up on more than one of them, and a mix of
