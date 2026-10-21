@@ -8,4 +8,13 @@ entries under "Folded in".
 
 ## New
 
+- #1 Less like: Eight leaked certificate keys: patch more than your browser (2026-10-21)
+  direction: less
+  issue: 2026-10-21
+  block: emudhra-keys
+  format: hero
+  lane: both
+  
+  Optional note (what exactly, and why):
+
 ## Folded in
