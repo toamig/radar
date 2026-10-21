@@ -1,0 +1,1111 @@
+{
+  "date": "2026-10-21",
+  "number": 8,
+  "title": "Browsers already block the leaked certificate keys. Your servers might not",
+  "dek": "Eight certificate authority keys anyone can recover, and the fix that has to reach every container and runtime, not just Chrome. Also: TypeScript gets faster twice, curl opens its bug queue, and a game that ships its own bot army.",
+  "theme": {
+    "paper": "mint",
+    "text": "black",
+    "inks": [
+      "medium-blue",
+      "coral"
+    ],
+    "type": "condensed",
+    "mood": "a patch-everything Wednesday"
+  },
+  "tldr": [
+    {
+      "lane": "both",
+      "text": "The private keys of **eight eMudhra intermediate certificates** can be recovered by anyone. Browsers blocked them; servers, containers and runtimes need their own updates, and Node.js and Bun were still pending."
+    },
+    {
+      "lane": "ai",
+      "text": "TypeScript 7.1 beta type-checks up to **1.9x faster** than 7.0 on the team's test projects, and Cloudflare showed an experimental Rust port it says is up to 8x faster again."
+    },
+    {
+      "lane": "ai",
+      "text": "curl will take low and medium security reports in public from October 26, to cope with a flood of AI-found reports. Two critical PHP fixes land today at 14:00 UTC."
+    },
+    {
+      "lane": "gamedev",
+      "text": "About **36% of Steam Next Fest demos** now disclose generative AI, up from nearly 20% in June. GameDiscoverCo argues most studios should still keep their demos up."
+    },
+    {
+      "lane": "gamedev",
+      "text": "A solo developer ran **37,800 bot playthroughs in 154 seconds** inside the shipping build of a new Steam game, and found six ways to print money."
+    }
+  ],
+  "blocks": [
+    {
+      "id": "emudhra-keys",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "both",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "kind": "action",
+      "level": "everyone",
+      "title": "Eight leaked certificate keys: patch more than your browser",
+      "gist": "A certificate authority made eight of its signing keys so badly that anyone can work them out, letting an attacker fake a secure connection to any website. Browsers were patched fast; much other software was not.",
+      "background": "eMudhra is an Indian certificate authority whose certificates chain up to roots trusted by Mozilla, Microsoft, Apple and Google.",
+      "takeaway": "Your browser is fine. Your backend, your CI images and your command-line tools each carry their own list of trusted certificates, and each one needs updating and rebuilding.",
+      "body": [
+        "On October 17 a researcher showed that the private keys of eight eMudhra intermediate certificates, created in April 2025, can be recovered from the certificates themselves. The proof was a message signed with every one of them. With such a key, anyone can issue a valid-looking certificate for any domain.",
+        "Firefox and Chrome blocked the certificates the same day, Apple on October 19 and Microsoft on October 20, and eMudhra has revoked them. No certificates from these intermediates appear in the public logs browsers require, so browsers were probably never exposed. Nobody knows whether attackers used the keys against other clients.",
+        "Those other clients are the problem. Servers, scripts, mobile apps and containers often check certificates against a bundle shipped with the operating system, the language runtime or a library, and many never check revocation. Each of those bundles has to be updated, and every container image rebuilt."
+      ],
+      "stat": {
+        "value": "8",
+        "label": "intermediate certificates whose private keys anyone can recover"
+      },
+      "diagram": {
+        "layout": "layers",
+        "nodes": [
+          {
+            "label": "Browsers",
+            "note": "blocked October 17 to 20 through their own revocation lists: nothing to do"
+          },
+          {
+            "label": "Operating systems",
+            "note": "fixed ca-certificates in Debian, Ubuntu, Alpine, Fedora, Homebrew: update"
+          },
+          {
+            "label": "Language runtimes",
+            "note": "Go, Python certifi, pip, uv, Rust webpki fixed; Node.js and Bun pending"
+          },
+          {
+            "label": "Container images",
+            "note": "keep the old bundle until you rebuild them",
+            "key": true
+          },
+          {
+            "label": "macOS system curl",
+            "note": "no revocation check and an old bundle: needs a manual distrust"
+          }
+        ],
+        "caption": "Who still accepts a certificate forged with a recovered key depends on which trust bundle does the checking. Status as listed on the incident page on October 20."
+      },
+      "why": "Most production traffic between services never touches a browser. Until each runtime, base image and app bundle is updated, a forged certificate from these intermediates could pass as real there.",
+      "forYou": "Rebuild the Docker images behind the SaaS backends and CI, and keep an eye on Node.js: it is the runtime the Supabase edge and Node services depend on, and its fix was still pending. Flutter apps that pin their own bundle need the same check.",
+      "terms": [
+        {
+          "term": "certificate authority",
+          "def": "An organisation trusted to vouch that a website really is who it says, by signing its certificate."
+        },
+        {
+          "term": "intermediate certificates",
+          "def": "Certificates a certificate authority uses for day-to-day signing, themselves signed by a more carefully guarded root."
+        },
+        {
+          "term": "private keys",
+          "def": "The secret half of a key pair; whoever holds it can sign things that others will trust."
+        },
+        {
+          "term": "revocation",
+          "def": "Marking a certificate as no longer valid before it expires, so clients that check will reject it."
+        },
+        {
+          "term": "bundle",
+          "def": "The list of trusted root and intermediate certificates a program uses to decide which connections are genuine."
+        }
+      ],
+      "deep": [
+        "Fixed versions listed by the incident page: Go 1.27.3 and 1.26.10; Python certifi 2026.10.19, pip 26.2.2, uv 0.13.4; rustls-webpki 0.103.16 and webpki-roots 1.0.10; Electron 44.9.1, 43.8.1, 42.11.16; NSS 3.131.1; the curl CA bundle of 2026-10-20; Composer ca-bundle 1.4.16 and 1.6.0; Alpine ca-certificates 20261020-r0; Debian 20250419+deb13u1 and 20250419~deb12u2; Ubuntu 20260816ubuntu0.24.04.1 (and siblings); Homebrew ca-certificates 2026-09-25_1; cloudflared 2026.10.2. Pending: Node.js, Bun and FreeBSD ca_root_nss.",
+        "Test hosts: `https://dv-g3b-emudhra.we-have-a-problem.com/` and `https://dv-g3b-aaa-emudhra.we-have-a-problem.com/`. A certificate error means the client no longer trusts the compromised intermediates; a page that loads means it still does. The affected roots are Comodo AAA Services and emSign ECC Root CA - G3.",
+        "Cloudflare's advice: update the HTTP library, runtime and OS trust store underneath your SDK, not just the SDK; rebuild images and restart services; never fix new certificate errors by turning verification off; and test through the application's real connection path, because a passing browser or curl test does not prove a background service is protected."
+      ],
+      "sources": [
+        {
+          "label": "eMudhra intermediate CA compromise (incident page)",
+          "url": "https://emudhra.we-have-a-problem.com"
+        },
+        {
+          "label": "Cloudflare: 8 eMudhra certificates are compromised",
+          "url": "https://blog.cloudflare.com/emudhra-certificate-compromise"
+        },
+        {
+          "label": "Simon Willison: eMudhra intermediate CA compromise",
+          "url": "https://simonwillison.net/2026/Oct/20/emudhra-certificates"
+        }
+      ]
+    },
+    {
+      "id": "curl-open-reports",
+      "format": "quote",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "news",
+      "level": "everyone",
+      "title": "curl moves minor security reports into the open",
+      "gist": "The team behind curl, a networking tool inside billions of devices, is drowning in security reports, many found by AI. From October 26 it will handle the less serious ones in public instead of in private.",
+      "quote": "We aim to not drown.",
+      "speaker": "Daniel Stenberg",
+      "role": "curl's lead developer",
+      "context": "From October 26, reports rated low or medium go to public GitHub issues; only high and critical stay private. Stenberg says over 90% of recent reports could quickly be rated below high.",
+      "why": "Open source projects are rewriting their security process around a flood of AI-generated reports. Expect a faster, noisier stream of curl advisories in the base images you ship.",
+      "forYou": "If you ever publish a security policy for the plugins, this is a template: keep only the serious tier private.",
+      "terms": [
+        {
+          "term": "curl",
+          "def": "A widely used tool and library for fetching things over the internet, built into countless apps and devices."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Daniel Stenberg: do minor curl vulnerabilities in the open",
+          "url": "https://daniel.haxx.se/blog/2026/10/20/do-minor-curl-vulnerabilities-in-the-open"
+        }
+      ]
+    },
+    {
+      "id": "github-package-firewall",
+      "format": "diagram",
+      "layout": "flow",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "halftone",
+      "kind": "release",
+      "level": "everyone",
+      "title": "GitHub puts a firewall between your agents and npm",
+      "gist": "GitHub is testing a filter that sits between the machines that install packages (build servers, coding agents) and the npm registry, and blocks downloads that look malicious or are too new to trust.",
+      "intro": "Install-time malware steals credentials the moment a package is installed, and agents install packages unattended. The firewall checks every request on the way through.",
+      "nodes": [
+        {
+          "label": "Agent or CI runner",
+          "note": "runs npm install, often unattended"
+        },
+        {
+          "label": "Package firewall",
+          "note": "policy set by the organisation's admins",
+          "key": true
+        },
+        {
+          "label": "Checks",
+          "note": "cooldown for new versions, Advisory Database, attestation downgrades"
+        },
+        {
+          "label": "npm registry",
+          "note": "the only registry supported in the preview"
+        }
+      ],
+      "links": [
+        "requests",
+        "applies",
+        "allows"
+      ],
+      "caption": "The flow described in GitHub's changelog. Blocked packages can be released through an exception request.",
+      "why": "A cooldown on brand-new package versions is the cheapest defence against the poisoned-update attacks that keep hitting npm, and it matters more when an agent runs the install.",
+      "forYou": "This is Enterprise Cloud only, so not directly usable on a personal account; the cooldown idea is the part to copy into your own install habits for agent sessions.",
+      "terms": [
+        {
+          "term": "npm",
+          "def": "The main package registry and installer for JavaScript and TypeScript code."
+        },
+        {
+          "term": "cooldown",
+          "def": "A waiting period during which newly published package versions are not installed, giving time for malware to be spotted."
+        },
+        {
+          "term": "attestation downgrades",
+          "def": "A package version that suddenly arrives without the signed build proof its earlier versions had, a sign of tampering."
+        }
+      ],
+      "deep": [
+        "Public preview for all GitHub Enterprise Cloud customers, including data residency; free during the preview, metered billing like Actions at general availability. Endpoints have to be configured to route package requests through the firewall."
+      ],
+      "sources": [
+        {
+          "label": "GitHub changelog: package firewall in public preview",
+          "url": "https://github.blog/changelog/2026-10-20-github-package-firewall-in-public-preview"
+        }
+      ]
+    },
+    {
+      "id": "php-critical",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "action",
+      "level": "everyone",
+      "title": "Two critical PHP fixes land today",
+      "gist": "PHP's security team warned that it will release fixes for two critical vulnerabilities today, so anyone running PHP should be ready to update this afternoon.",
+      "stats": [
+        {
+          "value": "14:00",
+          "label": "UTC today, October 21: release time"
+        },
+        {
+          "value": "9.2",
+          "label": "severity of each flaw (CVSS 4.0, out of 10)"
+        }
+      ],
+      "body": [
+        "The announcement names no affected versions or bug ids yet, and says the release may come early if details leak or attacks start. A claim on Hacker News of two 10.0 flaws does not match the official notice."
+      ],
+      "why": "WordPress sites, marketing pages and old admin tools run on PHP even in stacks that are otherwise Node or Go. Find them before the details go public.",
+      "forYou": "Check whether any landing page or Composer tooling still runs PHP; the core stack does not.",
+      "terms": [
+        {
+          "term": "CVSS",
+          "def": "A standard 0 to 10 score for how dangerous a security flaw is."
+        }
+      ],
+      "sources": [
+        {
+          "label": "php.announce: upcoming critical security release",
+          "url": "https://news-web.php.net/php.announce/509"
+        }
+      ]
+    },
+    {
+      "id": "supabase-agent-checks",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "kind": "release",
+      "level": "practitioner",
+      "title": "Supabase hands your coding agent a read-only view of production",
+      "gist": "Supabase published ready-made prompts and tools that let a coding agent check a live project's health, security and speed on a schedule, without being able to change anything.",
+      "intro": "Connect Supabase's MCP server to one project in read-only mode, then install the updated agent skill:",
+      "lang": "bash",
+      "code": "claude mcp add --scope project --transport http supabase \"https://mcp.supabase.com/mcp?project_ref=abc123&read_only=true\"\nnpx skills add supabase/agent-skills",
+      "explain": [
+        "Replace `abc123` with your project ref, then authenticate under `/mcp`. With `read_only=true` every query runs as a read-only Postgres user, and a new `query_logs` tool reads up to 24 hours of logs per call.",
+        "Four prompts come with suggested schedules: health and performance hourly, security and resource growth daily. Scheduled runs cannot stop for approval, so pre-approve only the read-only tools, and run each prompt once by hand first."
+      ],
+      "why": "It is a ready-made pattern for letting an agent watch production: read-only credentials, narrow prompts, and reports that list only new problems.",
+      "forYou": "This drops straight into a routine for the Supabase-backed SaaS products: start with the daily security prompt on one project.",
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to give an AI agent tools, such as querying a database."
+        },
+        {
+          "term": "Postgres",
+          "def": "The open-source database Supabase is built on."
+        }
+      ],
+      "deep": [
+        "Also shipped: a Health tab in Advisors and a Database Connections page in the dashboard (on for every project, including self-hosted; it can cancel queries, so it is not read-only). The prompts tell the agent to ignore instructions found inside logs or query results. To report only new or worsening findings, the agent tool has to keep alert state between runs. For small projects Supabase suggests one prompt on a daily or weekly schedule."
+      ],
+      "sources": [
+        {
+          "label": "Supabase: check production with your coding agent",
+          "url": "https://supabase.com/blog/operate-with-confidence-check-production-with-your-coding-agent"
+        }
+      ]
+    },
+    {
+      "id": "typescript-71",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "release",
+      "level": "everyone",
+      "title": "TypeScript 7.1 beta checks big projects up to twice as fast",
+      "gist": "The TypeScript team's next version finds type errors faster than the one released this summer, with the biggest gains on the largest projects in its tests.",
+      "intro": "Speedup over TypeScript 7.0 when checking types only, with four checker threads, as measured by the TypeScript team.",
+      "unit": "x faster",
+      "series": [
+        {
+          "label": "mui-docs",
+          "value": 1.9,
+          "highlight": true
+        },
+        {
+          "label": "t3code-server",
+          "value": 1.4
+        },
+        {
+          "label": "sentry",
+          "value": 1.3
+        },
+        {
+          "label": "bluesky",
+          "value": 1.2
+        },
+        {
+          "label": "vscode",
+          "value": 1.2
+        }
+      ],
+      "note": "Vendor-reported. mui-docs went from 22.2 s to 11.9 s; memory use fell 16% to 50% across the five projects.",
+      "why": "Type checking is the cheapest test a coding agent can run on its own changes. Faster checks mean tighter agent loops and shorter CI runs.",
+      "forYou": "Try the beta on one of the React or Node repos and time `tsc --noEmit` before and after; read the breaking changes first.",
+      "terms": [
+        {
+          "term": "type errors",
+          "def": "Mistakes such as passing text where a number is expected, which TypeScript catches before the code runs."
+        }
+      ],
+      "deep": [
+        "Install with `npm install -D typescript@beta`. New: `--target es2026` is stable, `import source` declarations, `Promise.allKeyed`, `Iterator.zip` and `Iterator.prototype.chunks` under `--lib esnext`, new `typescript/sync`, `typescript/fs` and `typescript/ast` API entry points, and content mappers for Vue, Svelte and MDX. Breaking: a regenerated DOM lib.d.ts and stricter checks on distributive type parameters."
+      ],
+      "sources": [
+        {
+          "label": "Announcing TypeScript 7.1 Beta",
+          "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-1-beta"
+        }
+      ]
+    },
+    {
+      "id": "tsrs-port",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "overprint",
+      "kind": "news",
+      "level": "everyone",
+      "title": "Cloudflare ports the TypeScript compiler to Rust",
+      "gist": "Cloudflare and VoidZero built an experimental Rust version of the TypeScript checker that they say runs much faster than the official one.",
+      "stats": [
+        {
+          "value": "8x",
+          "label": "faster than TypeScript 7.0, same thread count (vendor)"
+        },
+        {
+          "value": "-70%",
+          "label": "memory use (vendor)"
+        }
+      ],
+      "body": [
+        "Called tsrs, it is not a fork: the TypeScript team still decides the language. Output still differs from the original in places. Cloudflare plans to keep it in step with agents that track upstream changes and propose fixes."
+      ],
+      "why": "Large ports that took teams years now take months, and keeping them in sync is becoming an agent's job.",
+      "forYou": "Not ready to depend on; worth watching for the agent-driven upstream sync, which is a pattern for keeping a plugin fork current with engine releases.",
+      "terms": [
+        {
+          "term": "fork",
+          "def": "A copy of a project that goes its own way, with its own decisions about features."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Cloudflare: tsrs, a port of TypeScript to Rust",
+          "url": "https://blog.cloudflare.com/typescript-rust-port"
+        }
+      ]
+    },
+    {
+      "id": "claude-code-305",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "release",
+      "level": "practitioner",
+      "title": "Claude Code 2.1.305 and 2.1.306: the changes worth knowing",
+      "gist": "Two Claude Code updates fix a bug that broke every request behind some company gateways, stop resumed workflows redoing finished work, and quietly change which managed MCP servers load.",
+      "intro": "Version 2.1.305 is a large release; 2.1.306 followed with two fixes. Update to 2.1.306.",
+      "items": [
+        {
+          "title": "Gateway regression fixed",
+          "text": "On 2.1.304, every request could fail on Vertex, Bedrock or a gateway that rejects tool search. It now retries without it.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.305"
+        },
+        {
+          "title": "Workflow resume skips finished agents",
+          "text": "Resuming a workflow no longer re-runs agents that already completed inside `pipeline()` or `parallel()`; their results come from the run's journal.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.305"
+        },
+        {
+          "title": "Managed MCP servers may now load",
+          "text": "`allowedMcpServers` stops filtering `managed-mcp.json` stdio servers that use `${VAR}` only in `env`. Use `deniedMcpServers` to keep one off.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.305"
+        },
+        {
+          "title": "Sandbox can allow nested namespaces",
+          "text": "`sandbox.allowNestedUserNamespaces` lets sandboxed Linux commands such as Chromium run, at the cost of weaker file protection.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.305"
+        },
+        {
+          "title": "Unattended retries notice a lifted limit",
+          "text": "`CLAUDE_CODE_RETRY_WATCHDOG_USAGE_LIMIT_RECHECK_MS` sets how often retry mode rechecks a usage limit before its reset time.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.305"
+        },
+        {
+          "title": "Real errors in big MCP sessions",
+          "text": "2.1.306 stops a real API error showing up as \"prompt is too long\" and forcing a compaction in sessions with many MCP tools.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.306"
+        }
+      ],
+      "why": "If you run Claude Code through a cloud provider or a company gateway, 2.1.304 could stop it working; and the MCP allowlist change can load a server you meant to keep off.",
+      "forYou": "Check managed-mcp.json after updating, and the Chromium sandbox setting is what Playwright tests for the three.js games need inside the sandbox.",
+      "terms": [
+        {
+          "term": "gateway",
+          "def": "A proxy a company puts between its staff and an AI provider to control access and costs."
+        },
+        {
+          "term": "compaction",
+          "def": "When an agent summarises its earlier conversation to free up room in its context."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Claude Code v2.1.305 release notes",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.305"
+        },
+        {
+          "label": "Claude Code v2.1.306 release notes",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.306"
+        }
+      ]
+    },
+    {
+      "id": "demo-clone-rule",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "halftone",
+      "kind": "lesson",
+      "level": "everyone",
+      "title": "Should you pull your demo because of AI cloners? Usually not",
+      "gist": "After two well-wishlisted games pulled public demos over fears of AI-assisted cloning, the games market analyst GameDiscoverCo set out when that fear is justified and when it is not.",
+      "plain": "Clone risk depends on how easy your idea is to copy and how easily players can search for it, not on whether a demo exists.",
+      "body": [
+        "Drunken Goddess Reflux, with an estimated 570,000 wishlists, cancelled its public demo, and ReVamp, with about 250,000, swapped its Steam playtest for a closed one. GameDiscoverCo's view: most clones are made by hand, are not popular and do not scale, so they are not worth losing a demo over."
+      ],
+      "points": [
+        "Complex game, some momentum, distinctive name: keep the demo and playtests.",
+        "Simple, casual, meme-able idea with a searchable name: shorten the gap from reveal to launch instead.",
+        "Ignore unpopular fast-follow clones.",
+        "If a decompiled copy of your code takes off, document it and report it to Steam as copyright infringement."
+      ],
+      "why": "Demos remain one of the strongest wishlist drivers on Steam. Pulling one out of fear costs real players for a risk that mostly hits simple, copyable ideas.",
+      "forYou": "Plugin-based action RPGs are hard to clone from a demo; the risk applies more to a small, searchable browser game concept.",
+      "terms": [
+        {
+          "term": "wishlists",
+          "def": "Players saving a game on Steam to be told when it launches; the main early sign of demand."
+        },
+        {
+          "term": "decompiled",
+          "def": "Turned from a shipped program back into readable source code."
+        }
+      ],
+      "deep": [
+        "GameDiscoverCo cites the needle-in-a-haystack micro-genre as the clone case: a simple concept shown in videos in late August, with no playable version, was copied quickly because the idea was simple and the name searchable. The same post notes Next Fest had about 7,100 playable demos against about 5,000 predicted by the trend line."
+      ],
+      "sources": [
+        {
+          "label": "GameDiscoverCo: should your discovery plans change due to AI?",
+          "url": "https://newsletter.gamediscover.co/p/should-your-game-discovery-plans"
+        }
+      ]
+    },
+    {
+      "id": "next-fest-ai-share",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "kind": "trend",
+      "level": "everyone",
+      "title": "More than a third of Next Fest demos now disclose AI",
+      "gist": "The share of games in Steam's demo festival that say they used generative AI has nearly doubled since June, and players are asking for a way to hide them.",
+      "stats": [
+        {
+          "value": "36%",
+          "label": "2,593 of 7,145 Next Fest games (SteamDB)"
+        },
+        {
+          "value": "~20%",
+          "label": "in June's Next Fest"
+        }
+      ],
+      "body": [
+        "Valve has not commented and offers no official filter. Disclosures are self-reported and not checked."
+      ],
+      "why": "On a crowded store page an AI label is now a visible signal players react to, for better or worse.",
+      "forYou": "Know exactly what your disclosure says and why before a launch; AI used only for code does not need one.",
+      "terms": [
+        {
+          "term": "generative AI",
+          "def": "AI that produces new content such as images, text, voices or music."
+        }
+      ],
+      "sources": [
+        {
+          "label": "PC Guide: Next Fest has even more generative AI",
+          "url": "https://www.pcguide.com/news/steam-next-fest-has-even-more-generative-ai-than-last-time-gamers-say-the-event-is-absolutely-ruined/"
+        }
+      ]
+    },
+    {
+      "id": "pegi-paid-random",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "kind": "news",
+      "level": "everyone",
+      "title": "Games with loot boxes are being re-rated 16 in Europe",
+      "gist": "Games already on sale that let players pay for random rewards are getting a PEGI 16 age rating, not just new releases.",
+      "intro": "PEGI's paid random items rule, from criteria to re-rating:",
+      "events": [
+        {
+          "when": "March 2026",
+          "text": "New criteria announced: paid random items mean a PEGI 16 rating."
+        },
+        {
+          "when": "June 2026",
+          "text": "Applied to new games submitted for a rating."
+        },
+        {
+          "when": "October 2026",
+          "text": "Existing digital games re-rated, including through IARC on mobile stores; Pokémon TCG Pocket and Fire Emblem Heroes among them."
+        }
+      ],
+      "why": "A 16 rating hides a game from younger players and family settings on stores across Europe, so random paid rewards now carry a reach cost.",
+      "forYou": "Any gacha or crate monetisation in a mobile game would now cost the under-16 audience in Europe.",
+      "terms": [
+        {
+          "term": "PEGI",
+          "def": "The age rating system used for games across most of Europe."
+        },
+        {
+          "term": "IARC",
+          "def": "A shared questionnaire that gives digital games age ratings on stores such as Google Play."
+        }
+      ],
+      "sources": [
+        {
+          "label": "PocketGamer.biz: loot box games get PEGI 16",
+          "url": "https://www.pocketgamer.biz/games-with-loot-boxes-receive-updated-pegi-16-rating-for-paid-random-items/"
+        }
+      ]
+    },
+    {
+      "id": "oblock-bots",
+      "format": "steps",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "kind": "lesson",
+      "level": "everyone",
+      "title": "37,800 bot runs in 154 seconds, inside the shipping game",
+      "gist": "A solo developer built a balance-testing harness into the actual build of a new Steam trading game: bots of three skill levels play thousands of seeded runs, and the numbers show which loops break the economy.",
+      "intro": "O'BLOCK, a free sneaker-flipping game, launched on Steam on October 20. Its developer says Claude Code wrote most of its 40,000 lines, while they designed the game, set the rules and decided what was fun.",
+      "steps": [
+        {
+          "title": "Put the harness in the real build",
+          "text": "One environment variable skips the window, plays headless bot runs and writes a report, so the tests run against exactly what players get."
+        },
+        {
+          "title": "Write three kinds of player",
+          "text": "A random button-masher, a sensible player who reads prices, and an exploit seeker that hunts for loops. All see only what a human sees and obey the same limits."
+        },
+        {
+          "title": "Run many seeds per mode",
+          "text": "300 seeds per cell across four modes: 37,800 full runs in 154 seconds on two threads, each replayable from its seed."
+        },
+        {
+          "title": "Check invariants",
+          "text": "No negative cash, no NaN money, no empty stacks. The run found zero violations."
+        },
+        {
+          "title": "Compare the bots",
+          "text": "In the open-ended mode the seeker's 90th percentile net worth was about 16 times the sensible player's, which pointed to six money printers, such as same-day buy and resell."
+        }
+      ],
+      "why": "Agents now write game code fast enough that balance and economy bugs pile up faster than people can playtest. Bots that play the real build turn balance into a number you can track.",
+      "forYou": "The inventory and combat plugins could ship a headless harness like this as a feature: a simulated player per policy, run in CI, with a per-bot table in the report.",
+      "terms": [
+        {
+          "term": "headless",
+          "def": "Running a program without a window or screen, so it can run fast on a server."
+        },
+        {
+          "term": "seeds",
+          "def": "Starting numbers for the random generator; the same seed replays the same game exactly."
+        },
+        {
+          "term": "invariants",
+          "def": "Rules that must always be true in a program, such as cash never going below zero."
+        },
+        {
+          "term": "90th percentile",
+          "def": "The value that 90% of results fall below; a way to look at the best runs without the single luckiest one."
+        }
+      ],
+      "deep": [
+        "Bots are a `Policy` enum in the game's Rust code: Random, Reader and Seeker. In the billion-dollar mode, Random was evicted every time, Reader won 81% (median day 43) and Seeker won only 7%. In the 90-day tycoon mode, p90 net worth was $21.48B for Random, $914.62B for Reader and $14,460.33B for Seeker. Exploits measured per dollar in: top-rung mark multiplier 27.1x, stacked angles 12x, lot slicing 6.55x, connects 6.34x, relisted outlet pallets 2.49x, and same-day resale returning 1,763.8% across 9,812 sales. Seeker runs past the sane bound fell from 493 of 4,200 on October 6 to 73 after four passes of fixes; the launch build measured 82.",
+        "The developer also notes an AI-written report that listed three exploits as live after the CSV showed them fixed: check generated summaries against the raw data."
+      ],
+      "sources": [
+        {
+          "label": "Matt Busel: 37,800 bots crashed my vibe-coded game",
+          "url": "https://dev.to/mattbusel/sweeney-wants-rockets-37800-bots-crashed-my-vibe-coded-game-59kh"
+        },
+        {
+          "label": "O'BLOCK on Steam",
+          "url": "https://store.steampowered.com/app/5357680"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-21/oblock.webp",
+        "alt": "O'BLOCK screenshot: a pixel-art Chicago block at night, with lit apartment towers, a glowing corner shop and a few people on the street.",
+        "credit": "O'BLOCK, Steam store",
+        "creditUrl": "https://store.steampowered.com/app/5357680",
+        "fit": "cover"
+      }
+    }
+  ],
+  "groups": [
+    {
+      "title": "Patch, check, lock down",
+      "note": "Security work that cannot wait, and a safer way to let agents watch production.",
+      "ids": [
+        "curl-open-reports",
+        "github-package-firewall",
+        "php-critical",
+        "supabase-agent-checks"
+      ]
+    },
+    {
+      "title": "Faster tools",
+      "note": "TypeScript gets quicker from two directions, and Claude Code fixes a gateway bug.",
+      "ids": [
+        "typescript-71",
+        "tsrs-port",
+        "claude-code-305"
+      ]
+    },
+    {
+      "title": "Next Fest, clones and ratings",
+      "note": "How much of the demo festival uses AI, whether cloners should change your plans, and a new age rating rule.",
+      "ids": [
+        "demo-clone-rule",
+        "next-fest-ai-share",
+        "pegi-paid-random"
+      ]
+    },
+    {
+      "title": "Let bots playtest",
+      "note": "A solo developer shipped a game with its own bot army, and it found six ways to print money.",
+      "ids": [
+        "oblock-bots"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is a chain of trust, and why can one bad link break it?",
+    "answer": "When your app connects securely to a server, the server shows a certificate, signed by an intermediate, signed in turn by a root your system already trusts. Your app accepts the server only if every signature in that chain checks out.",
+    "analogy": "Like a passport: a border officer trusts it because a government issued it, and trusts the government's stamp because it is on a short list they already hold. Steal the stamp and you can print passports anyone will accept.",
+    "body": [
+      "Roots are kept offline and used rarely, so certificate authorities do daily signing with intermediates. That makes an intermediate's private key as powerful as the root for anyone who gets it: they can sign a certificate for any domain, and clients will follow the chain up to a root they trust.",
+      "Two things limit the damage. Revocation lets clients learn that a certificate should no longer be trusted, and certificate transparency logs make every issued certificate public, so browsers that require a log entry refuse certificates nobody has seen. Many non-browser clients do neither, which is why today's leaked keys need fixes in every trust bundle."
+    ],
+    "diagram": {
+      "layout": "layers",
+      "nodes": [
+        {
+          "label": "Root certificate",
+          "note": "pre-installed in your OS, browser or runtime; signs intermediates"
+        },
+        {
+          "label": "Intermediate certificate",
+          "note": "does the daily signing; today's leaked keys are here",
+          "key": true
+        },
+        {
+          "label": "Server certificate",
+          "note": "names one domain, signed by the intermediate"
+        },
+        {
+          "label": "Your client",
+          "note": "follows the signatures up to a root it trusts"
+        }
+      ],
+      "caption": "Each layer vouches for the one below. A client trusts the server only if every signature leads to a root in its own trust bundle."
+    },
+    "terms": [
+      {
+        "term": "root",
+        "def": "A top-level certificate that operating systems and browsers ship with and trust without question."
+      },
+      {
+        "term": "certificate transparency",
+        "def": "Public, append-only logs of every certificate issued, so misissued ones can be spotted."
+      }
+    ],
+    "seenIn": [
+      "emudhra-keys"
+    ],
+    "sources": [
+      {
+        "label": "MDN: Transport Layer Security",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security"
+      },
+      {
+        "label": "Cloudflare: what is a certificate authority?",
+        "url": "https://www.cloudflare.com/learning/ssl/what-is-a-certificate-authority/"
+      },
+      {
+        "label": "eMudhra incident page",
+        "url": "https://emudhra.we-have-a-problem.com"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Give your game three bots and let them play overnight",
+    "gist": "A small headless harness with a random, a sensible and an exploit-hunting player turns game balance into a table of numbers you can compare after every change.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A game or gameplay system whose rules can run without rendering, such as an economy, a crafting loop or a combat simulation.",
+    "steps": [
+      {
+        "title": "Add a headless switch",
+        "text": "Behind an environment variable or command-line flag, skip the window and run the game loop as fast as it will go, writing results to a file."
+      },
+      {
+        "title": "Write three policies",
+        "text": "Random picks any legal action. Sensible follows the obvious good play. Seeker repeats whichever action gained the most last time. Give them only what a player can see."
+      },
+      {
+        "title": "Seed every run",
+        "text": "Run a few hundred seeds per bot and record the seed with each result, so any odd run can be replayed exactly."
+      },
+      {
+        "title": "Assert your invariants",
+        "text": "After every step, check the rules that must hold: no negative money, no impossible counts. Fail the run with its seed when one breaks."
+      },
+      {
+        "title": "Print a per-bot table",
+        "text": "Median and 90th percentile of your main score for each bot. Put it in CI, so a balance change shows up as a number in the build log."
+      }
+    ],
+    "check": "Random loses, sensible wins most runs, and the seeker does not beat the sensible player by a wide margin. If it does, replay its best seed to see which loop it found.",
+    "terms": [
+      {
+        "term": "policies",
+        "def": "The rules a bot uses to choose its next move."
+      }
+    ],
+    "from": "oblock-bots",
+    "forYou": "Start with the inventory plugin's crafting and trading loop as a commandlet that runs headless in the editor build.",
+    "sources": [
+      {
+        "label": "Matt Busel: 37,800 bots crashed my vibe-coded game",
+        "url": "https://dev.to/mattbusel/sweeney-wants-rockets-37800-bots-crashed-my-vibe-coded-game-59kh"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "lane": "ai",
+      "text": "GitHub can now convert all of a repository's branch protection rules into rulesets in one step, with an Evaluate mode to dry-run them first.",
+      "url": "https://github.blog/changelog/2026-10-20-bulk-migrate-branch-protections-to-rulesets-for-a-repository",
+      "source": "GitHub"
+    },
+    {
+      "lane": "ai",
+      "text": "Dependabot now updates projects on npm 12, pnpm 11 and 12, and Bun 1.4; its alerts API now returns the vulnerable dependency's version.",
+      "url": "https://github.blog/changelog/2026-10-20-dependabot-now-supports-npm-12-pnpm-11-and-12-and-bun-1-4",
+      "source": "GitHub"
+    },
+    {
+      "lane": "ai",
+      "text": "GitHub secret scanning can now revoke base64-encoded tokens (preview); the audit log's `business` field switches to the enterprise slug on November 12.",
+      "url": "https://github.blog/changelog/2026-10-20-updates-to-github-secret-scanning",
+      "source": "GitHub"
+    },
+    {
+      "lane": "ai",
+      "text": "The Claude API adds user profiles, so an enforcement action can hit one end customer instead of a whole organisation; the Models API now reports `between_tools` thinking support.",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "source": "Anthropic"
+    },
+    {
+      "lane": "ai",
+      "text": "Vercel Functions support WebSockets in general availability, billed like other invocations; its CDN now carries 15 million WebSocket connections a day.",
+      "url": "https://vercel.com/changelog/websocket-support-is-now-generally-available",
+      "source": "Vercel"
+    },
+    {
+      "lane": "ai",
+      "text": "Buildkite released MCP tools that let an agent validate a pipeline file and compare a failed build with the branch's last good one.",
+      "url": "https://www.infoq.com/news/2026/10/buildkite-ci-secrets-agentic",
+      "source": "InfoQ"
+    },
+    {
+      "lane": "ai",
+      "text": "The Pragmatic Engineer surveyed 27 companies on AI spend per engineer: monthly caps run from $150 to $4,000, and spend peaked in June and July.",
+      "url": "https://newsletter.pragmaticengineer.com/p/whats-the-roi-of-software-engineers",
+      "source": "The Pragmatic Engineer"
+    },
+    {
+      "lane": "ai",
+      "text": "Josh Comeau's Interop 2027 wish list: `@function`, `corner-shape`, anchored container queries and more ship in Chrome but not yet in Firefox or Safari.",
+      "url": "https://www.joshwcomeau.com/css/interop-2027",
+      "source": "Josh W. Comeau"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Mobile in-app spending fell 7% year on year to $19.6B in the third quarter and downloads fell 10%; Squad Busters leaves the stores on December 1.",
+      "url": "https://www.pocketgamer.biz/hot-five-flow-games-secures-46m-mobile-iaps-down-7-and-squad-busters-ending-service-in-december/",
+      "source": "PocketGamer.biz"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Subway Surfers turns 15 with over 4.5 billion downloads and about $1,500 ever spent on paid user acquisition, SYBO's CEO says.",
+      "url": "https://www.pocketgamer.biz/sybo-mathias-gredal-norvig-subway-surfers-15-years/",
+      "source": "PocketGamer.biz"
+    },
+    {
+      "lane": "gamedev",
+      "text": "An Innersloth co-founder warns developers that there are some very bad publishing deals out there.",
+      "url": "https://www.gamedeveloper.com/business/outersloth-co-founder-warns-devs-there-are-some-very-bad-deals-out-there-",
+      "source": "Game Developer"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Fab's free assets until November 3 include a modular post-apocalyptic desert environment and an armored stone golem.",
+      "url": "https://gamefromscratch.com/october-free-gamedev-assets-round-up-2",
+      "source": "GameFromScratch"
+    },
+    {
+      "lane": "gamedev",
+      "text": "A work-in-progress mod brings full path tracing to Fallout: New Vegas through NVIDIA's RTX Remix.",
+      "url": "https://80.lv/articles/this-wip-mod-adds-path-tracing-to-fallout-new-vegas",
+      "source": "80 Level"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "permit-pending",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Permit Pending: a city builder where the hearings are the game",
+      "where": "Hacker News",
+      "signal": "671 points and 55 comments on Hacker News on October 20.",
+      "hook": "A SimCity-style browser game where every upzoning goes to a hearing, neighbours object and appeals drag on; it runs offline with no backend.",
+      "borrow": "Turn a real-world friction into the core loop instead of hiding it. A no-backend browser build makes a front-page link cheap to survive.",
+      "forYou": "A good reference for a small three.js game that wins on its premise, not its scope.",
+      "url": "https://permit.petercai.com",
+      "image": {
+        "src": "img/2026-10-21/permit.webp",
+        "alt": "Isometric illustrated city blocks with houses and new apartment buildings; a hearing icon and a NO protest sign float over one lot.",
+        "credit": "Permit Pending, Peter Cai",
+        "creditUrl": "https://permit.petercai.com",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "battle-drones",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "Battle Drones: a phone RTS that syncs over sound",
+      "where": "Simon Willison's blog",
+      "signal": "321 commits over 12 iterations, written mostly by Claude Code; 1,200 AI-versus-AI test matches cut stalemates after 25 minutes from 14% to 0.9%.",
+      "hook": "Two phones in the same room sync game state by audio; online play runs through a stateless relay costing at most $2.19 a month.",
+      "borrow": "Let simulated matches tune the rules: measure stalemates and comebacks, change one rule, run again.",
+      "forYou": "The cheap stateless relay is a pattern for browser multiplayer without a game server.",
+      "url": "https://simonwillison.net/2026/Oct/20/battledrones",
+      "image": {
+        "src": "img/2026-10-21/battledrones.webp",
+        "alt": "Top-down Battle Drones screen: a base and drone pad on brown ground, three turrets, a harvester and fighter drones near a scrap field.",
+        "credit": "Simon Willison",
+        "creditUrl": "https://simonwillison.net/2026/Oct/20/battledrones",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "next-fest-idlers",
+      "lane": "gamedev",
+      "kind": "concept",
+      "title": "Idle games crowd the top of Next Fest",
+      "where": "Steam",
+      "signal": "Three of the top seven Next Fest demos by peak players are idle games: Character House 17,489, Find The Needle 8,758 and Melvor Idle 2 6,646 (Output Lag, October 21).",
+      "hook": "Games that run beside you on the desktop, needing a click now and then, fit a festival where players open dozens of demos at once.",
+      "borrow": "A demo that keeps running in the background racks up play time and keeps its window open while players try other games.",
+      "forYou": "An idle or companion mode is a cheap add-on for a browser game and plays well on Steam.",
+      "url": "https://outputlag.com/next-fest/",
+      "image": {
+        "src": "img/2026-10-21/needle.webp",
+        "alt": "Find The Needle screenshot: a huge haystack inside a large barn-like shed, viewed from above.",
+        "credit": "Find The Needle, Steam store",
+        "creditUrl": "https://store.steampowered.com/app/5160800",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "tiny-logic",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Tiny Logic: build a computer from gates, then run DOOM",
+      "where": "itch.io",
+      "signal": "On itch.io's featured list this week; the page says its CPU has 93,338 simulated transistors.",
+      "hook": "No emulator: the circuit on screen is the computer, and it is fast enough to run DOOM, chess and a tiny language model.",
+      "borrow": "Show the payoff first. The page leads with what your circuit will eventually run, which sells hours of wiring.",
+      "forYou": "The payoff-first store page is worth copying for any long-build systems game.",
+      "url": "https://whoismuzzy.itch.io/tinylogic",
+      "image": {
+        "src": "img/2026-10-21/tinylogic.webp",
+        "alt": "Five Tiny Logic screens built from simulated gates: DOOM, a blocky 3D world, chess, Java and a tiny AI writing a story.",
+        "credit": "Tiny Logic, itch.io",
+        "creditUrl": "https://whoismuzzy.itch.io/tinylogic",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "flatpack-3d",
+      "lane": "gamedev",
+      "kind": "experiment",
+      "title": "An IKEA manual rebuilt as a 3D, step-by-step scene",
+      "where": "Hacker News",
+      "signal": "170 points on Hacker News.",
+      "hook": "The BILLY bookcase manual played back in a browser room: 14 steps, 82 pieces of hardware, each part placed in the order the drawings show.",
+      "borrow": "Build an interactive tutorial from a real step list, with the source page shown beside each step.",
+      "forYou": "The same scrubbable build timeline would make a striking documentation page for a modular plugin.",
+      "url": "https://sael.net/flatpack",
+      "image": {
+        "src": "img/2026-10-21/flatpack.webp",
+        "alt": "A 3D room with a white BILLY bookcase, a step panel at left showing step 14 of 14 beside the manual page, and build controls at right.",
+        "credit": "sael.net",
+        "creditUrl": "https://sael.net/flatpack",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "dumb-tv",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "People are using coding agents to strip ads from their TVs",
+      "where": "GitHub, via TechCrunch",
+      "signal": "A few thousand people modified their TVs within two days of one project's post, TechCrunch reports.",
+      "hook": "Point Claude Code at a TV over the network and ask it to remove bloatware and swap the launcher; one user cut a 192 MB launcher to 83 MB.",
+      "borrow": "A repo of instructions that an agent follows on the user's own device is a new way to ship a tool. It also bricked at least one TV, so build in a way back.",
+      "forYou": "The instructions-for-an-agent repo is a distribution idea for plugin setup scripts.",
+      "url": "https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again/"
+    }
+  ],
+  "lab": [
+    {
+      "id": "tracelite",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "TraceLite: Efficient Trace Reduction for SWE Agents via Optical Compression and Redundancy Removal",
+      "headline": "Squeeze a coding agent's old tool output, and it uses a third fewer tokens with no loss of success.",
+      "authors": "Jingyu Xiao, Qianxi Liu, Yintong Huo et al. (Chinese University of Hong Kong, Dalian University of Technology, Singapore Management University)",
+      "where": "arXiv preprint",
+      "date": "2026-10-20",
+      "problem": "A coding agent's context grows with every command it runs, and most of the old output is stale or repeated, which costs money and attention.",
+      "idea": "Keep the three newest observations as text, render older ones as images at four times compression, strip lines repeated between observations, and clear old file dumps after an edit. No training and no extra model calls.",
+      "result": "On 400 SWE-bench Verified tasks it solved 78.25% against 78.00% with the full trace, with 33% fewer input tokens. It beat AgentDiet, SWE-Pruner and LLMLingua2 on solve rate; LongCodeZip cut more tokens but solved 13.75 points fewer.",
+      "useIt": "The cheap half works without vision: dedupe repeated lines in tool output and drop stale pre-edit file contents, then compare tokens per task on a few of your usual jobs.",
+      "maturity": "code",
+      "forYou": "A PostToolUse hook that trims repeated test and build output is the experiment to try.",
+      "links": [
+        {
+          "label": "arXiv: TraceLite",
+          "url": "https://arxiv.org/abs/2610.28612"
+        },
+        {
+          "label": "Code on GitHub",
+          "url": "https://github.com/xjywhu/TraceLite"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-21/tracelite.webp",
+        "alt": "TraceLite overview: an agent loop; older observations turned into compact images while recent ones stay as text; overlapping lines removed and history cleared after an edit.",
+        "credit": "Xiao et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.28612",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "doc-drift",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Documentation Drift in AI-Generated Pull Requests",
+      "headline": "Nearly two thirds of coding-agent pull requests change code without touching any documentation.",
+      "authors": "Will De Michele, Kla Tantithamthavorn (Monash University)",
+      "where": "arXiv preprint",
+      "date": "2026-10-19",
+      "problem": "Agents now open many pull requests on public repositories. Nobody had measured whether they keep the docs in step with the code.",
+      "idea": "Check 29,669 agent pull requests from 2,585 repositories for whether code changes came with a documentation change, by agent and by kind of task, and follow the files for 90 days.",
+      "result": "63.2% changed code with no doc update: 55.2% of feature work and 77.5% of refactors. Claude Code had the lowest rate at 48.1%, Devin the highest at 72.8%. Files changed without docs were re-documented within 90 days 24% of the time, against 48% for documented ones.",
+      "useIt": "Add a check to your agent's review step that flags code changes with no matching README, docs or changelog edit when behaviour changes.",
+      "maturity": "idea",
+      "forYou": "Plugin buyers read the docs; a doc co-change check in the plugin repos' review skill is cheap.",
+      "links": [
+        {
+          "label": "arXiv: Documentation Drift in AI-Generated PRs",
+          "url": "https://arxiv.org/abs/2610.27381"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-21/docdrift.webp",
+        "alt": "Bar chart of documentation co-change rate by pull request type: feat 44.8%, chore 43.9%, docs 43.2% down to ci 12.7% and style 11.2%; overall 36.8%.",
+        "credit": "De Michele and Tantithamthavorn, arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.27381",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "rcpg",
+      "lane": "gamedev",
+      "kind": "paper",
+      "title": "RCPG: Real-Time Product Path Guiding Using Radiance Cascades",
+      "headline": "Reusing radiance cascades lets a real-time path tracer aim its rays better, for about twice as many paths per pixel.",
+      "authors": "Julius Ikkala, Pekka Jääskeläinen, Markku Mäkitalo (Tampere University)",
+      "where": "ACM Transactions on Graphics",
+      "date": "2026-10-09",
+      "problem": "Real-time path tracers have to guess where light comes from. Guiding usually samples incoming light and surface reflection separately and blends them, wasting samples.",
+      "idea": "Bound the radiance stored in radiance cascades so they keep accurate light directions, then sample the product of light and surface reflection in one step. The world-space structure also guides bounces that start off screen.",
+      "result": "The authors report generally about twice as many paths per pixel at real-time rates compared with earlier real-time guiding that combines several samplers. It works alongside unbiased ReSTIR.",
+      "useIt": "A reference for anyone building a custom path-traced or global illumination pass; radiance cascades are already popular for 2D lighting.",
+      "maturity": "prototype",
+      "forYou": "Background for judging Lumen alternatives; no code to drop in.",
+      "links": [
+        {
+          "label": "ACM TOG: RCPG",
+          "url": "https://doi.org/10.1145/3840291"
+        },
+        {
+          "label": "Project page",
+          "url": "https://webpages.tuni.fi/vga/publications/RCPG.html"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-21/rcpg.webp",
+        "alt": "Diagram of two cascade levels: incoming radiance times the surface reflection term gives a product grid; the chosen cell in cascade 0 leads to a finer cell in cascade 1.",
+        "credit": "Ikkala, Jääskeläinen and Mäkitalo, Tampere University",
+        "creditUrl": "https://webpages.tuni.fi/vga/publications/RCPG.html",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "Valve's own Next Fest numbers arrive after the event, so the player peaks come from Output Lag's hourly chart. PHP's fixes were not out when this went to press."
+}
