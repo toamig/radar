@@ -8,6 +8,8 @@ entries under "Folded in".
 
 ## New
 
+## Folded in
+
 - #3 More like: An IKEA manual rebuilt as a 3D, step-by-step scene (2026-10-21)
   direction: more
   issue: 2026-10-21
@@ -34,5 +36,4 @@ entries under "Folded in".
   lane: both
   
   Optional note (what exactly, and why):
-
-## Folded in
+  Lesson (2026-10-22): more clever playful builds in Sparks; security incidents do not lead. Added to taste.md.

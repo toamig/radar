@@ -92,6 +92,11 @@ YouTube channels (with view counts), DEV, new GitHub repositories gathering star
 Hacker News and lobste.rs. Prefer a spark that shows up on more than one of them, and a mix of
 platforms over one platform's whole day. X has no free feed, so the Sparks desk searches it.
 
+The reader rates clever, playful builds highest: a real-world artifact rebuilt as an interactive
+scene (an IKEA manual played back step by step in 3D), a systems game whose payoff is absurdly
+large (wire logic gates into a computer, then run DOOM on it). Look for one or two of these every
+day: something built with care that teaches a technique by showing it off.
+
 ## What earns a place
 
 - It changes how this reader works this week: a release, a setting, a technique,
@@ -111,6 +116,9 @@ platforms over one platform's whole day. X has no free feed, so the Sparks desk 
 - Opinion pieces with no new evidence; AI doom or hype in either direction.
 - Crypto, NFTs, politics, celebrity CEOs, unless a decision directly changes the work.
 - Anything older than three days, unless it was missed and still matters.
+- Security incidents as the lead story. A patch-now story belongs in a block or the ticker when it
+  touches the reader's stack; the hero should be something that changes how they build, not a
+  breach or a certificate scare.
 
 ## Public and private
 
