@@ -3,6 +3,11 @@ name: Feedback
 # "More like this" / "Less like this" links open a prefilled issue labeled
 # feedback. Only the repository owner's issues count: anything else is ignored,
 # because the morning run reads this file as editorial direction.
+#
+# An issue created with the label fires both opened and labeled, so this runs
+# twice per issue. The group is per issue, so the second run waits for the
+# first and then finds the entry already recorded. Different issues run side by
+# side and retry the push against the latest main.
 on:
   issues:
     types: [opened, labeled]
@@ -12,7 +17,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: feedback
+  group: feedback-${{ github.event.issue.number }}
   cancel-in-progress: false
 
 jobs:
@@ -23,29 +28,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Append to editorial/feedback.md
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Append to editorial/feedback.md and push
+        id: record
         env:
           TITLE: ${{ github.event.issue.title }}
           BODY: ${{ github.event.issue.body }}
           NUMBER: ${{ github.event.issue.number }}
-        run: |
-          node -e '
-            const fs = require("fs");
-            const p = "editorial/feedback.md";
-            const clean = (s) => String(s ?? "").replace(/\r/g, "").replace(/<!--[\s\S]*?-->/g, "").trim().slice(0, 1200);
-            const body = clean(process.env.BODY).split("\n").map((l) => "  " + l).join("\n");
-            const entry = `- #${process.env.NUMBER} ${clean(process.env.TITLE)} (${new Date().toISOString().slice(0, 10)})\n${body}\n`;
-            const s = fs.readFileSync(p, "utf8");
-            fs.writeFileSync(p, s.replace("## New\n", "## New\n\n" + entry));
-          '
-      - name: Commit
+          BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           git config user.name "radar-feedback"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add editorial/feedback.md
-          git diff --cached --quiet || git commit -m "feedback: #${{ github.event.issue.number }}"
-          git push
+          for attempt in 1 2 3 4 5; do
+            git fetch origin "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            if grep -q "^- #$NUMBER " editorial/feedback.md; then
+              echo "#$NUMBER is already recorded"
+              exit 0
+            fi
+            node -e '
+              const fs = require("fs");
+              const p = "editorial/feedback.md";
+              const clean = (s) => String(s ?? "").replace(/\r/g, "").replace(/<!--[\s\S]*?-->/g, "").trim().slice(0, 1200);
+              const body = clean(process.env.BODY).split("\n").map((l) => "  " + l).join("\n");
+              const entry = `- #${process.env.NUMBER} ${clean(process.env.TITLE)} (${new Date().toISOString().slice(0, 10)})\n${body}\n`;
+              const s = fs.readFileSync(p, "utf8");
+              fs.writeFileSync(p, s.replace("## New\n", "## New\n\n" + entry));
+            '
+            git add editorial/feedback.md
+            git commit -m "feedback: #$NUMBER"
+            if git push origin "HEAD:$BRANCH"; then
+              echo "recorded=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          echo "Could not push after 5 attempts"
+          exit 1
       - name: Close the issue
+        if: steps.record.outputs.recorded == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh issue close ${{ github.event.issue.number }} --repo ${{ github.repository }} --comment "Recorded in editorial/feedback.md. The next morning run will fold it in."
