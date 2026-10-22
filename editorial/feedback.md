@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #5 More like: A video model you can play (2026-10-22)
+  direction: more
+  issue: 2026-10-22
+  block: matrix-game
+  format: hero
+  lane: gamedev
+  
+  Optional note (what exactly, and why):
+
 - #4 More like: Claude agents left alone on an island started inventing games (2026-10-22)
   direction: more
   issue: 2026-10-22
