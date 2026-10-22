@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #4 More like: Claude agents left alone on an island started inventing games (2026-10-22)
+  direction: more
+  issue: 2026-10-22
+  block: eko-island
+  format: spark
+  lane: ai
+  
+  Optional note (what exactly, and why):
+
 ## Folded in
 
 - #3 More like: An IKEA manual rebuilt as a 3D, step-by-step scene (2026-10-21)
