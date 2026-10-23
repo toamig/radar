@@ -1,0 +1,1151 @@
+{
+  "date": "2026-10-23",
+  "number": 10,
+  "title": "Proofs, fences and a review queue",
+  "dek": "Claude wrote machine-checked proofs that 123 open-source libraries cannot crash. Agents are also getting fenced in by sandboxes and per-user logins, while the code they write piles up in review.",
+  "theme": {
+    "paper": "sky",
+    "text": "burgundy",
+    "inks": [
+      "green",
+      "orange"
+    ],
+    "type": "poster",
+    "mood": "a careful Friday about proof over promises"
+  },
+  "tldr": [
+    {
+      "text": "Anthropic and Theorem had Claude **prove** that 123 open-source libraries never crash on any input under 64 MB, and released the proofs and the skill they used.",
+      "lane": "ai"
+    },
+    {
+      "text": "Agents are getting fences: a Supabase template that runs every agent tool call as the signed-in user, NVIDIA's OpenShell, microVMs for evals, and sandbox fixes in Claude Code 2.1.309.",
+      "lane": "ai"
+    },
+    {
+      "text": "A study of 718 firms finds coding agents add 30% more lines of code but only 12% more finished issues, and pull request reviews take 49% longer.",
+      "lane": "ai"
+    },
+    {
+      "text": "About 98% of Unity CLI runs now come from agents. Epic's AI MegaJam lets you set up your agents and MCP servers before November 12.",
+      "lane": "both"
+    },
+    {
+      "text": "earstrip triangulates map polygons faster than earcut and takes the same arguments. Today's Try this races the two on your own shapes.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "proof-at-scale",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude proved 123 libraries cannot crash",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Anthropic and Theorem had Claude write mathematical proofs that 123 widely used open-source libraries can never crash on any input up to 64 MB. A separate program checked every proof, and the attempt turned up hundreds of real bugs.",
+      "background": "Formal verification means proving, not testing, that code behaves as specified. It was so expensive that it was kept for a few critical systems.",
+      "takeaway": "Machine-checked proofs used to take years of expert time per project. With an agent writing them and a strict checker grading them, they start to look like something you could run as part of a release.",
+      "body": [
+        "Each project already had a fuzz test: a small program that feeds the library random inputs and watches for crashes. Theorem turns that test into a precise claim about the compiled program, a RISC-V binary: no memory errors and no failed assertions for any input under 64 MB. Claude then writes a proof in Rocq, and the Rocq checker accepts or rejects it.",
+        "When a proof would not close because the code really could crash, Claude patched the code and proved the new version. That is how the work found hundreds of bugs. The team penalised and audited patches, because an agent could also make a proof pass by rewriting the code to do nothing.",
+        "Across 239 entry points in 123 libraries the proofs add up to about 180 million lines, roughly 600,000 for a typical one, and some took hundreds of millions of tokens. Every number here comes from the authors. The proofs, the machine model and the Claude skill used to add projects are public."
+      ],
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "Fuzz test",
+            "note": "The project's existing crash test"
+          },
+          {
+            "label": "Spec",
+            "note": "No crash on any input under 64 MB, on the compiled binary"
+          },
+          {
+            "label": "Claude writes a proof",
+            "note": "In Rocq, often 600,000 lines",
+            "key": true
+          },
+          {
+            "label": "Checker",
+            "note": "Rocq accepts or rejects every step"
+          },
+          {
+            "label": "Bug found?",
+            "note": "Claude patches, then proves again"
+          }
+        ],
+        "links": [
+          "becomes",
+          "proved by",
+          "checked by",
+          "if it fails"
+        ],
+        "caption": "The pipeline Anthropic and Theorem describe. The agent can be wrong; the checker cannot be talked round."
+      },
+      "stat": {
+        "value": "123",
+        "label": "libraries proved crash-free (authors' figure)"
+      },
+      "terms": [
+        {
+          "term": "Formal verification",
+          "def": "Proving with mathematical logic that a program meets a precise description, for every possible input."
+        },
+        {
+          "term": "fuzz test",
+          "def": "A test that throws large amounts of random input at code to find crashes."
+        },
+        {
+          "term": "RISC-V",
+          "def": "An open processor instruction set; here, the machine the compiled libraries were proved against."
+        },
+        {
+          "term": "Rocq",
+          "def": "A proof assistant (formerly called Coq) whose small checker verifies every step of a proof."
+        },
+        {
+          "term": "entry points",
+          "def": "The functions a fuzz test calls into; each one got its own proof."
+        }
+      ],
+      "deep": [
+        "The guarantee holds for a single-threaded static binary with a fixed memory budget, linked against musl libc, on RISC-V under modelled Linux. Most users run x86 or ARM with glibc, so the proof does not transfer one to one. The authors also note that the crash detector (ASan-class errors) misses some memory bugs, that not every entry point was verified, and that callers can still misuse a library.",
+        "On 36 small proof tasks with a 5M token budget per agent, Opus 5.5 finished half of them with about 40% fewer tokens than Opus 5. Letting agents copy each other's proofs in a shared workspace cut tokens by 17%, and solo runs cost more in 30 of 34 completed proofs.",
+        "A second case: Claude wrote a Python interpreter in Rust and proved it against a published model of CPython's semantics with Verus. On 1.7 million random programs it matched CPython 99.95% of the time; the authors call the rest known corner cases. Proofs that would reveal unpatched bugs are withheld."
+      ],
+      "why": "Agents now write more code than people can review, and this is the strongest sign yet that machines can check what machines write. A fuzz test you already have is the starting point, so the cost of entry is lower than it sounds.",
+      "forYou": "Your C++ plugin code will not get a RISC-V proof soon, but the habit transfers today: treat each fuzz or property test as a spec and ask Claude to state it precisely. The shared proof workspace result (17% fewer tokens) is a pattern worth copying in your subagent teams.",
+      "sources": [
+        {
+          "label": "Anthropic research post",
+          "url": "https://www.anthropic.com/research/formal-verification"
+        },
+        {
+          "label": "Released proofs",
+          "url": "https://github.com/theorem-labs/oss-verify-proofs"
+        },
+        {
+          "label": "RISC-V and Linux semantics",
+          "url": "https://github.com/theorem-labs/rocq-linux-process-semantics"
+        },
+        {
+          "label": "Claude skill for adding projects",
+          "url": "https://github.com/theorem-labs/oss-verify/blob/main/.claude/skills/add-project/SKILL.md"
+        }
+      ]
+    },
+    {
+      "id": "supabase-mcp",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Supabase gives your app its own MCP server, with your users' permissions",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A new Supabase template adds a server that AI assistants can connect to. Each user signs in and approves the assistant, and every request runs with that user's own permissions, so it can only see that user's data.",
+      "layout": "flow",
+      "intro": "One command adds an Edge Function at `supabase/functions/mcp`. The agent never holds a master key: Supabase Auth issues it a token for one person, and the database's own row rules decide what it can read.",
+      "nodes": [
+        {
+          "label": "AI client",
+          "note": "Finds your server and asks to connect"
+        },
+        {
+          "label": "Your consent page",
+          "note": "The user signs in and approves"
+        },
+        {
+          "label": "Access token",
+          "note": "Issued by Supabase Auth over OAuth 2.1"
+        },
+        {
+          "label": "Edge Function tools",
+          "note": "Run with that user's database client",
+          "key": true
+        },
+        {
+          "label": "Postgres RLS",
+          "note": "Row rules decide what comes back"
+        }
+      ],
+      "links": [
+        "redirects",
+        "issues",
+        "calls",
+        "queries"
+      ],
+      "caption": "No service role key anywhere: the example tool, list_open_tasks, returns only the signed-in user's unfinished tasks.",
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way for AI assistants to discover and call tools."
+        },
+        {
+          "term": "OAuth 2.1",
+          "def": "The standard flow where a user approves an app to act for them without sharing their password."
+        },
+        {
+          "term": "RLS",
+          "def": "Row level security: database rules that decide which rows each user may read or change."
+        },
+        {
+          "term": "Edge Function",
+          "def": "Supabase's small serverless functions that run close to users."
+        }
+      ],
+      "deep": [
+        "Install: `npx shadcn@latest add https://supabase.com/library/r/mcp.json`. Then enable asymmetric signing keys, the OAuth 2.1 server and dynamic client registration, set the Auth Site URL to where your consent page lives, add the OAuth Consent block, and set `[functions.mcp] verify_jwt = false` in `config.toml` so discovery requests reach the function; the middleware checks tokens instead.",
+        "The handler chains `withOAuthProtectedResource()` (discovery and the OAuth challenge) and `withSupabase({ auth: 'user' })` (token check and a user-scoped client). Each tool lives in its own file and is registered in `tools/index.ts`; the sample is marked `readOnlyHint: true`."
+      ],
+      "why": "Letting an agent into a product used to mean a powerful key and hope. This keeps the security model you already wrote: the agent sees exactly what the person who approved it can see.",
+      "forYou": "This is a near drop-in agent API for your Supabase SaaS apps, and it reuses the RLS policies you already maintain. Try it on the least sensitive table first and check that a second test user's rows never appear.",
+      "sources": [
+        {
+          "label": "Supabase blog",
+          "url": "https://supabase.com/blog/give-your-supabase-app-its-own-mcp-server"
+        }
+      ]
+    },
+    {
+      "id": "skills-aaif",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Agent Skills move to a neutral foundation",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Anthropic gave the Agent Skills format to the Agentic AI Foundation, the Linux Foundation group that already looks after MCP, so no single company owns it.",
+      "stats": [
+        {
+          "value": "70+",
+          "label": "platforms support skills"
+        },
+        {
+          "value": "280M",
+          "label": "installs, nearly (Anthropic's figure)"
+        }
+      ],
+      "body": [
+        "Maintainers from several AI companies now steer it. The roadmap adds versioned releases, a proposal process and security guidance for writing and installing skills."
+      ],
+      "terms": [
+        {
+          "term": "Agent Skills",
+          "def": "Folders of instructions and scripts an AI agent loads when a task needs them."
+        }
+      ],
+      "why": "A skill you write once should keep working across tools, and the security guidance will matter as more people install other people's skills.",
+      "forYou": "Your skill library is now on a vendor-neutral format. Watch the security guidance when it lands and check your hooks against it.",
+      "sources": [
+        {
+          "label": "Anthropic announcement",
+          "url": "https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation"
+        },
+        {
+          "label": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Oct/22/donating-agent-skills/"
+        }
+      ]
+    },
+    {
+      "id": "agent-boxes",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "Two new boxes for agents: one keeps the keys, one keeps evals fair",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "NVIDIA's OpenShell lets agents use credentials without ever seeing them, and the Harbor eval framework now runs each test task in its own tiny virtual machine. Both move safety out of the prompt.",
+      "intro": "Both are open source and arrived this week. They solve different problems: OpenShell is for agents doing real work, Harbor with Docker Sandboxes is for scoring agents on a benchmark.",
+      "left": "NVIDIA OpenShell",
+      "right": "Harbor + Docker Sandboxes",
+      "rows": [
+        {
+          "aspect": "What it is",
+          "left": "A runtime that runs each agent in a sandbox under a written policy",
+          "right": "An agent evaluation framework that now runs each task in a microVM"
+        },
+        {
+          "aspect": "Isolation",
+          "left": "Kernel limits on which files and system calls each agent may use",
+          "right": "Its own kernel per task; nothing reaches the host or other tasks"
+        },
+        {
+          "aspect": "Network",
+          "left": "Every outbound connection is checked against the policy",
+          "right": "In the cloud: open for setup, then restricted while the agent works"
+        },
+        {
+          "aspect": "Credentials",
+          "left": "Added only to requests to approved endpoints; the agent never sees them",
+          "right": "Not its focus"
+        },
+        {
+          "aspect": "Changing the rules",
+          "left": "Formal checks flag risky new access for a person to approve",
+          "right": "Fine-grained network policy only in Docker's cloud; local runs are public or no network"
+        },
+        {
+          "aspect": "Status",
+          "left": "0.1.x, Apache 2.0",
+          "right": "Nightly now, stable release planned for October 23"
+        }
+      ],
+      "verdict": "Neither claims to stop an agent from gaming its own task, such as editing a test it can write to. They limit what a mistake or an injected instruction can reach.",
+      "terms": [
+        {
+          "term": "microVM",
+          "def": "A very small virtual machine that starts fast and gives each task its own operating system kernel."
+        },
+        {
+          "term": "kernel",
+          "def": "The core of an operating system, which controls access to files, memory and the network."
+        },
+        {
+          "term": "evaluation framework",
+          "def": "Software that runs an AI agent on a set of tasks and scores the results the same way every time."
+        }
+      ],
+      "deep": [
+        "OpenShell install: `curl -LsSf https://raw.githubusercontent.com/NVIDIA/OpenShell/main/install.sh | sh`, then `openshell sandbox create --name demo`. Runs on Linux, Apple Silicon macOS or WSL 2 (experimental) and needs Docker, Podman or host virtualization. The default sandbox is a minimal Ubuntu image with no agent installed.",
+        "Harbor: install with the `sbx` extra and run `harbor run -t hello-world/hello-world -a oracle -e sbx`; cloud runs need `SBX_DOCKER_USERNAME` and `SBX_DOCKER_PAT`, local runs use `sbx login` and `--ek target=local`. Docker reports testing 64 concurrent tasks on Cloud Sandboxes and gives no figures for start-up overhead or cost."
+      ],
+      "why": "Telling an agent to be careful does not work against prompt injection. Putting the secret outside its reach does, and so does giving every eval run identical conditions.",
+      "forYou": "OpenShell's credential injection is the missing piece for routines that need API keys: the agent can call your services without the key appearing in its context. Worth a trial on one unattended job.",
+      "sources": [
+        {
+          "label": "NVIDIA OpenShell",
+          "url": "https://github.com/NVIDIA/OpenShell"
+        },
+        {
+          "label": "InfoQ on Harbor and Docker Sandboxes",
+          "url": "https://www.infoq.com/news/2026/10/ai-agents-harbor-docker"
+        }
+      ]
+    },
+    {
+      "id": "claude-code-309",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Claude Code 2.1.309 closes sandbox gaps you probably did not know about",
+      "kind": "action",
+      "level": "practitioner",
+      "gist": "The latest Claude Code update fixes several ways commands could slip past its sandbox, and changes one command that scripts call, so unattended setups should update and check.",
+      "intro": "Released October 22. The fixes matter most if you run Claude Code unattended or rely on the sandbox to protect files.",
+      "items": [
+        {
+          "title": "Shell startup files ran outside the sandbox",
+          "text": "On macOS and Linux, sandboxed Bash ran your shell's startup files unsandboxed before each command. Fixed."
+        },
+        {
+          "title": "The MCP config could be rewritten",
+          "text": "Sandboxed commands and auto-accepted edits could modify the file passed with `--mcp-config`, and a later prompt could reconnect a disabled MCP server. Both fixed."
+        },
+        {
+          "title": "Symlinks dodged write rules",
+          "text": "macOS `denyWrite` globs now apply at a path's real location when it is reached through a symlink; `Edit(path)` deny rules now also block Bash redirects to that path."
+        },
+        {
+          "title": "ultrareview now needs trust",
+          "text": "`claude ultrareview` asks for workspace trust and refuses without a terminal. Scripts pass `--trust-workspace` or set `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1`."
+        },
+        {
+          "title": "sed -i is a normal Bash command",
+          "text": "It now gets the standard Bash prompt and is no longer undone by `/rewind`, like other edits made through the shell."
+        },
+        {
+          "title": "Windows hooks fail closed",
+          "text": "PowerShell hooks now block on exit code 2, and `PreToolUse` hooks no longer fail open without Git for Windows."
+        }
+      ],
+      "terms": [
+        {
+          "term": "sandbox",
+          "def": "A restricted environment that limits which files and network addresses a command may touch."
+        },
+        {
+          "term": "symlink",
+          "def": "A file that points to another location, so one path can lead somewhere else."
+        }
+      ],
+      "deep": [
+        "Also in 2.1.309: split-pane teammates inherit the leader's tool deny rules; Linux write denies no longer lift when a background command outlives the session; an oversized nested CLAUDE.md now loads only its start instead of triggering repeated compaction; the `/claude-api` skill now builds Managed Agents teams on `multiagent_20261001` with workflows on. Version 2.1.308 lists only bug fixes."
+      ],
+      "why": "Sandbox escapes are quiet: nothing looks wrong until something outside the fence changes. If any script calls `ultrareview`, it fails until you add the new flag.",
+      "forYou": "Update the machines that run your routines, and grep your automation for `ultrareview` before the next scheduled run.",
+      "sources": [
+        {
+          "label": "Release notes v2.1.309",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.309"
+        }
+      ]
+    },
+    {
+      "id": "unity-cli-agents",
+      "format": "stat",
+      "lane": "both",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "Almost nobody types Unity's command line by hand",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Unity says nearly all runs of its new command-line tool come from AI agents and scripts, not people, and Claude Code is the agent that uses it most.",
+      "stats": [
+        {
+          "value": "98%",
+          "label": "of runs from agents and automation"
+        },
+        {
+          "value": "0.2%",
+          "label": "from a person at a terminal"
+        }
+      ],
+      "body": [
+        "From July 20 to October 13, over 226,000 users ran more than 200 million commands. The top one, `unity command`, drives a live editor; Codex is second behind Claude Code. Unity reported these figures."
+      ],
+      "terms": [
+        {
+          "term": "command-line tool",
+          "def": "A program you control by typing text commands, which agents can also call."
+        }
+      ],
+      "why": "Engines are being driven by agents through simple text interfaces. A CLI an agent can call is now part of an engine's product, not an extra.",
+      "forYou": "The same shape (an agent calling a CLI that controls a running editor) is what an Unreal tool for your plugin workflow would need. Unity's numbers say it gets used once official agent plugins exist.",
+      "sources": [
+        {
+          "label": "Unity blog",
+          "url": "https://unity.com/blog/unity-cli-usage-data-ai-coding-agents"
+        }
+      ]
+    },
+    {
+      "id": "review-bottleneck",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Agents write more code; finished work rises less, and reviews take longer",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A study of 718 companies found that teams using coding agents produce much more code, but finish only slightly more tasks, because the extra code has to be reviewed by people.",
+      "intro": "Change after adopting coding agents, from about 300 million work events at 718 firms (January 2021 to March 2026), as reported by InfoQ.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Lines of code",
+          "value": 30
+        },
+        {
+          "label": "Pull requests",
+          "value": 23
+        },
+        {
+          "label": "Commits",
+          "value": 20
+        },
+        {
+          "label": "Resolved issues",
+          "value": 12,
+          "highlight": true
+        },
+        {
+          "label": "Time to review a PR",
+          "value": 49,
+          "highlight": true
+        },
+        {
+          "label": "Comments per PR",
+          "value": 53
+        }
+      ],
+      "note": "Chat-style assistants did less: lines of code rose 12% and finished issues did not rise. The share of PRs needing changes doubled, and larger PRs did not explain the extra review.",
+      "terms": [
+        {
+          "term": "pull request",
+          "def": "A proposed change to a codebase that others review before it is merged."
+        },
+        {
+          "term": "PR",
+          "def": "Short for pull request."
+        }
+      ],
+      "why": "Output went up and finished work rose much less, so the bottleneck has moved to review and checking. Speeding up review is now the bigger gain.",
+      "forYou": "As a solo developer you are the whole review queue. The study is a reason to spend agent time on tests, checks and smaller diffs rather than on more code.",
+      "sources": [
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/jellyfish-ai-productivity"
+        }
+      ]
+    },
+    {
+      "id": "ai-megajam",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Epic's AI MegaJam: set up your agents early, build in four days",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Epic announced a four-day Unreal Engine game jam where teams can use as many AI agents as they like, with $65,000 in prizes and grants of up to $50,000 to keep building.",
+      "intro": "Solo or teams of up to five, Unreal Engine or UEFN. AI is optional. You may set up tools, agents and MCP servers before the start, but not build the game, and you must declare anything prepared earlier.",
+      "events": [
+        {
+          "when": "Nov 1",
+          "text": "Registration opens for the in-person days in San Francisco."
+        },
+        {
+          "when": "Nov 11",
+          "text": "Kickoff livestream and theme reveal, 11 AM PST."
+        },
+        {
+          "when": "Nov 12",
+          "text": "The jam starts at midnight EST."
+        },
+        {
+          "when": "Nov 15",
+          "text": "Deadline 5:59 PM PST: a packaged build under 1 GB on itch.io and a 30 to 60 second video."
+        },
+        {
+          "when": "Jan 29, 2027",
+          "text": "Winners announced, at the latest."
+        }
+      ],
+      "terms": [
+        {
+          "term": "UEFN",
+          "def": "Unreal Editor for Fortnite: Epic's tool for making games that run inside Fortnite."
+        },
+        {
+          "term": "game jam",
+          "def": "A contest to make a game from scratch in a short, fixed time."
+        }
+      ],
+      "deep": [
+        "Prizes: $7,500, $5,000 and $2,500 in each main category (Best Overall UE, Best Overall UEFN, Best Student Project); $5,000 for Best Team; $2,500 modifiers including Solo Driver and Glass Box (needs a dev log). Development Continuation Grants of $50,000, $25,000 and $10,000 for both UE and UEFN entries. Fab assets are allowed if you hold the licence and list them."
+      ],
+      "why": "It is a dated, public test of agent-assisted Unreal development, with rules written for it. The backlash on social media shows how divided game developers still are about AI.",
+      "forYou": "Fab assets are allowed if listed, so a jam entry built on your own plugins doubles as a showcase. Use the window before November 12 to set up an Unreal MCP workflow.",
+      "sources": [
+        {
+          "label": "Rules on itch.io",
+          "url": "https://itch.io/jam/2026-epic-ai-megajam"
+        },
+        {
+          "label": "Insider Gaming",
+          "url": "https://insider-gaming.com/epic-ai-megajam-50k-grants-unreal/"
+        }
+      ]
+    },
+    {
+      "id": "alters-foliage",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The Alters merged thousands of plant instances into one per mesh",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The studio behind The Alters explains how three environment artists covered levels in plants for a terraforming expansion in Unreal Engine 5, and the engine change that kept it fast.",
+      "plain": "Prefabs each brought their own batch of instanced plants, so the team merged them into one shared batch per plant type across the whole level.",
+      "body": [
+        "11 bit studios built the foliage as solid Nanite geometry with cut-out shapes instead of see-through masked materials, which they say tested faster. Plants were scattered with three in-engine tools: PCG rules, a geometry script that grows moss, and a tool that places meshes by tracing against surfaces."
+      ],
+      "points": [
+        "One global instanced mesh component per plant type, even inside packed level actors.",
+        "Do not pack actors with non-uniform scale if they have collision.",
+        "Each level exists in a scorched and a terraformed state.",
+        "A 15-minute tool that saves each artist a few minutes a day was worth building."
+      ],
+      "image": {
+        "src": "img/2026-10-23/alters.webp",
+        "alt": "A mossy rock outcrop overgrown with roots and pink plants, with a grey human silhouette beside it for scale.",
+        "credit": "11 bit studios via 80 Level",
+        "creditUrl": "https://80.lv/articles/terraforming-the-alters-last-variable-with-blender-zbrush-ue5",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "Nanite",
+          "def": "Unreal Engine 5's system for drawing very detailed meshes efficiently."
+        },
+        {
+          "term": "PCG",
+          "def": "Procedural content generation: rules that place content automatically."
+        },
+        {
+          "term": "instanced mesh",
+          "def": "One mesh drawn many times in one batch, which is much cheaper than separate objects."
+        }
+      ],
+      "why": "Many small prefabs quietly multiply draw work. Merging instances by mesh type is a fix any Unreal project with reusable props can borrow.",
+      "forYou": "If your world tools spawn Blueprint prefabs with their own instanced components, a merge step like this is worth offering as a plugin option.",
+      "sources": [
+        {
+          "label": "80 Level",
+          "url": "https://80.lv/articles/terraforming-the-alters-last-variable-with-blender-zbrush-ue5"
+        }
+      ]
+    },
+    {
+      "id": "method-reload",
+      "format": "code",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Unity can now swap a method's code on a running phone build",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "An experimental Unity feature lets you edit some methods and see the change on a connected test device straight away, without rebuilding or restarting the game.",
+      "intro": "Tag a public method, start watching in Project Settings, and edits to its body reach connected development players, including IL2CPP builds, over the existing cable. This is the example from Unity's post.",
+      "lang": "csharp",
+      "code": "[MethodReload]\npublic void Update()\n{\n    transform.Rotate(Vector3.up,\n        rotationSpeed * Time.deltaTime);\n}",
+      "explain": [
+        "The new body runs through an interpreter for a subset of C#: no async, try and catch, LINQ query syntax, reflection, generics or ref parameters, and only method bodies can change, not fields or types.",
+        "Interpreted code runs slower than compiled code, and release builds always run the compiled version. Unity gives no timings."
+      ],
+      "terms": [
+        {
+          "term": "IL2CPP",
+          "def": "Unity's build path that converts C# to C++ for phones and consoles, which usually rules out hot reload."
+        },
+        {
+          "term": "interpreter",
+          "def": "A program that runs code step by step instead of compiling it first."
+        }
+      ],
+      "deep": [
+        "Package `com.unity.pipeline@0.7.0-exp.1`, Unity 6.0 or later, enabled under Project Settings > Pipeline > Editor > Method Reload Interpreter Watch. Methods must return `void` or `IEnumerator`; coroutines pick up new code only when restarted, and `[OnMethodReloaded]` can restart them. Unity says existing Asset Store hot reload tools are still better for Editor-only iteration."
+      ],
+      "why": "Waiting for a device build is one of the slowest loops in mobile game work. Even a limited hot reload on the real hardware shortens tuning sessions.",
+      "forYou": "Not for your Unreal work directly, but a useful comparison point for Live Coding when you tune mobile builds of your web and phone games.",
+      "sources": [
+        {
+          "label": "Unity blog",
+          "url": "https://unity.com/blog/skipping-domain-reload-faster-iteration-using-the-methodreload-feature"
+        }
+      ]
+    },
+    {
+      "id": "earstrip",
+      "format": "chart",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A faster earcut for filling shapes with triangles",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A map company released earstrip, a free library that cuts complex shapes into triangles for drawing faster than the popular earcut library, and gets hard shapes right more often.",
+      "intro": "Milliseconds to triangulate 3.74 million map polygons on one core, best of 7. The author's benchmark, Apple M4 Pro.",
+      "unit": "ms",
+      "series": [
+        {
+          "label": "earstrip, C++",
+          "value": 489,
+          "highlight": true
+        },
+        {
+          "label": "earcut, C++",
+          "value": 557
+        },
+        {
+          "label": "earstrip, Wasm in V8",
+          "value": 601,
+          "highlight": true
+        },
+        {
+          "label": "earcut, Wasm in V8",
+          "value": 930
+        },
+        {
+          "label": "earstrip, npm in V8",
+          "value": 766,
+          "highlight": true
+        },
+        {
+          "label": "earcut, npm in V8",
+          "value": 1103
+        }
+      ],
+      "note": "On the hardest polygons, earcut's fill differed from the correct result on about 31% of pixels and earstrip's on about 0.15% (author's figures). ISC licence, the same arguments as earcut.",
+      "terms": [
+        {
+          "term": "triangulate",
+          "def": "Split a shape into triangles, the only thing a graphics card draws."
+        },
+        {
+          "term": "Wasm",
+          "def": "WebAssembly: a compact format that runs compiled code in browsers at near-native speed."
+        }
+      ],
+      "why": "Filling shapes is everywhere in web graphics: maps, text, vector art, level outlines. A drop-in replacement that is faster and more correct is a cheap win.",
+      "forYou": "Worth testing in your three.js games wherever you build geometry from 2D shapes; see today's Try this.",
+      "sources": [
+        {
+          "label": "Globus blog",
+          "url": "https://globus.software/blog/2026/10/16/cutting-map-polygons"
+        },
+        {
+          "label": "earstrip on GitHub",
+          "url": "https://github.com/GLMap/earstrip"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Fences for agents",
+      "note": "Per-user logins, hidden keys, sealed test boxes and a sandbox patch.",
+      "ids": [
+        "supabase-mcp",
+        "skills-aaif",
+        "agent-boxes",
+        "claude-code-309"
+      ]
+    },
+    {
+      "title": "Where agent work lands",
+      "note": "Who drives the tools, and where the extra code piles up.",
+      "ids": [
+        "unity-cli-agents",
+        "review-bottleneck"
+      ]
+    },
+    {
+      "title": "Engines, jams and geometry",
+      "note": "A jam with rules for agents, hot reload on device, foliage at scale, faster triangles.",
+      "ids": [
+        "ai-megajam",
+        "alters-foliage",
+        "method-reload",
+        "earstrip"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What does it mean to formally verify a program?",
+    "answer": "It means proving with logic, step by step, that a program meets a precise description for every possible input, not just the inputs you tested. A small, trusted program checks the proof.",
+    "analogy": "Tests are like test-driving a car on a hundred roads. A proof is the engineer's calculation that the brakes hold on any road, checked by an inspector who never takes anyone's word for it.",
+    "body": [
+      "You write a spec, such as \"never crashes on any input under 64 MB\". Someone, now often an AI, writes a proof that the code meets it. A proof checker, a small program that is easy to trust, then confirms every step. If one step is wrong, the whole proof is rejected.",
+      "The guarantee is only as good as what sits underneath it. The proof assumes a model of the machine and the operating system, and it says nothing about properties the spec left out. That is why the authors of today's lead say verified does not mean bug-free.",
+      "Proofs used to cost years of expert work, so they were kept for things like aircraft software and secure kernels. AI writing them, with a checker that cannot be fooled, is what makes larger projects worth trying."
+    ],
+    "diagram": {
+      "layout": "layers",
+      "nodes": [
+        {
+          "label": "The guarantee",
+          "note": "No crash on any input under 64 MB",
+          "key": true
+        },
+        {
+          "label": "The proof",
+          "note": "Written by Claude, can be millions of lines"
+        },
+        {
+          "label": "The spec",
+          "note": "The precise claim, built from the fuzz test"
+        },
+        {
+          "label": "The machine model",
+          "note": "Trusted: how RISC-V and Linux behave"
+        },
+        {
+          "label": "The checker",
+          "note": "Trusted: the small Rocq kernel"
+        }
+      ],
+      "caption": "Each layer rests on the ones below. You trust the bottom two; everything above them is checked."
+    },
+    "terms": [
+      {
+        "term": "spec",
+        "def": "Short for specification: an exact statement of what the program must or must never do."
+      },
+      {
+        "term": "proof checker",
+        "def": "A small program that verifies each step of a proof follows the rules of logic."
+      }
+    ],
+    "seenIn": [
+      "proof-at-scale",
+      "agent-boxes"
+    ],
+    "sources": [
+      {
+        "label": "Anthropic: formal verification at scale",
+        "url": "https://www.anthropic.com/research/formal-verification"
+      },
+      {
+        "label": "Rocq proof assistant",
+        "url": "https://rocq-prover.org/"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Race earstrip against earcut on your own shapes",
+    "gist": "In half an hour you will know whether a faster, more correct triangulator speeds up your game's shape geometry, measured on your own data.",
+    "time": "30 minutes",
+    "level": "practitioner",
+    "needs": "A JavaScript project that already uses earcut, directly or through your own geometry code, and Node.",
+    "steps": [
+      {
+        "title": "Install it next to earcut",
+        "text": "Run `npm install earstrip`. It takes the same arguments as earcut: a flat coordinate array and an array of hole start indices."
+      },
+      {
+        "title": "Dump real shapes",
+        "text": "Log the coordinate and hole arrays your game passes to earcut during a typical level load, and save them to a JSON file."
+      },
+      {
+        "title": "Time both",
+        "text": "In a small Node script, run each library over every saved shape several times and keep the best time for each, as the author did."
+      },
+      {
+        "title": "Compare the output",
+        "text": "For each shape, compare triangle counts and render both results once to spot holes or overlaps."
+      }
+    ],
+    "code": {
+      "lang": "js",
+      "code": "import earcut from 'earcut';\nimport earstrip from 'earstrip';\n\n// the README's example: a square with a square hole starting at vertex 4\nconst coords = [0, 0, 10, 0, 10, 10, 0, 10, 3, 3, 7, 3, 7, 7, 3, 7];\nconst holes = [4];\n\nconsole.log(earcut(coords, holes).length / 3, 'triangles (earcut)');\nconsole.log(earstrip(coords, holes).length / 3, 'triangles (earstrip)');"
+    },
+    "check": "Both print the same kind of index list, three indices per triangle. On your saved shapes, earstrip's best time should be lower; if a shape renders differently, check it against the even-odd fill you expect.",
+    "terms": [
+      {
+        "term": "hole start indices",
+        "def": "Positions in the vertex list where each hole's outline begins."
+      }
+    ],
+    "from": "earstrip",
+    "forYou": "Try it on the shape-based geometry in your three.js browser games, and on any level outline tools you build for the web.",
+    "sources": [
+      {
+        "label": "earstrip README",
+        "url": "https://github.com/GLMap/earstrip"
+      },
+      {
+        "label": "Benchmark write-up",
+        "url": "https://globus.software/blog/2026/10/16/cutting-map-polygons"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Unreal Engine 5.8.4 adds Visual Studio 2026 `.slnx` support, fixes a Lumen regression that cleared indirect lighting every frame, and makes iOS use the UIScene lifecycle by default.",
+      "lane": "gamedev",
+      "url": "https://forums.unrealengine.com/t/5-8-4-hotfix-released/2842775",
+      "source": "Unreal Engine forums"
+    },
+    {
+      "text": "Khronos ratified OpenXR spatial containers, which let XR apps switch between a shared, bounded space and full immersion; Godot says its next release will support them.",
+      "lane": "gamedev",
+      "url": "https://www.khronos.org/blog/openxr-spatial-containers",
+      "source": "Khronos"
+    },
+    {
+      "text": "UVgami unwraps UVs automatically in the browser without uploading your model, and also ships as a Blender add-on and desktop app.",
+      "lane": "gamedev",
+      "url": "https://gamefromscratch.com/uvgami-free-uv-unwrappinng-tool",
+      "source": "GameFromScratch"
+    },
+    {
+      "text": "Kenney released six Godot starter kits, including new Match-3 and Racing projects, as bases for a first or next game.",
+      "lane": "gamedev",
+      "url": "https://kenney.nl/starter-kits",
+      "source": "Kenney"
+    },
+    {
+      "text": "DuckDB 2.0 is a long-term support release; its CLI detects coding agents and switches to compact output, which cut what the model had to read by 59% in DuckDB's tests.",
+      "lane": "ai",
+      "url": "https://duckdb.org/2026/10/21/announcing-duckdb-200.html",
+      "source": "DuckDB"
+    },
+    {
+      "text": "Codex CLI 0.164.0 adds `/presets` (ten slots for reusable prompts), inline arguments for `/model` and `/permissions`, and image previews on Kitty and Sixel terminals.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.164.0",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "OpenAI released an official Go command-line tool for its API, aimed at scripted jobs such as batches and image generation, with JSON and JSONL output.",
+      "lane": "ai",
+      "url": "https://github.com/openai/openai-cli",
+      "source": "GitHub"
+    },
+    {
+      "text": "Vercel will label Marketplace integrations that still rely on long-lived secrets as not secure from November 30 and delist them in January, pushing short-lived OIDC tokens instead.",
+      "lane": "ai",
+      "url": "https://vercel.com/blog/death-to-long-lived-static-credentials",
+      "source": "Vercel"
+    },
+    {
+      "text": "1Password for Agents lets an AI agent log in to sites after you approve it, without the agent ever seeing the password.",
+      "lane": "ai",
+      "url": "https://techcrunch.com/2026/10/22/1password-launches-a-way-for-ai-agents-to-log-in-on-your-behalf-without-seeing-your-password",
+      "source": "TechCrunch"
+    },
+    {
+      "text": "GitHub's Copilot usage metrics API now names the custom skills, agents, MCP servers and plugins people use, up to 25 per record.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-10-22-custom-skills-agents-and-mcp-servers-in-usage-metrics-api",
+      "source": "GitHub Changelog"
+    },
+    {
+      "text": "The two critical PHP flaws patched this week were found with AI, by Calif under OpenAI's Patch the Planet program and separately by Wiz; OpenAI released a Codex skill to check exposure.",
+      "lane": "ai",
+      "url": "https://www.latent.space/p/ainews-openais-patch-the-planet-program",
+      "source": "Latent Space"
+    },
+    {
+      "text": "Omnara is an open-source, self-hosted take on managed agents: bring your own model keys, with every step saved in Postgres so runs resume after a crash.",
+      "lane": "ai",
+      "url": "https://github.com/omnara-ai/omnara",
+      "source": "GitHub"
+    },
+    {
+      "text": "Vercel Labs open-sourced fx, an experimental coding agent written in Zig that can be embedded as a library or built for WebAssembly.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/10/vercel-zig-fx-agent",
+      "source": "InfoQ"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "worldtui",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "WorldTUI: a terminal that is really a tiny model",
+      "where": "Hacker News",
+      "signal": "514 points on Hacker News (October 22); the demo runs live in the browser.",
+      "hook": "There is no shell behind it. Each keypress goes into a 360M-parameter model that predicts the next screen, so vim, tmux and snake are all imagined. Type `pythoon` and it still plays along.",
+      "borrow": "A small model trained on recordings of real programs can fake any text interface well enough to play. Simon Edwardsson recorded about 336,000 sessions in Docker and runs the result on WebGPU in a tab.",
+      "forYou": "A cheap, local world model you can poke in a browser: a good reference for how far a small WebGPU model goes before you try one in a web game.",
+      "url": "https://simedw.com/2026/10/21/world-model-terminal",
+      "image": {
+        "src": "img/2026-10-23/worldtui.webp",
+        "alt": "A dark terminal window where a cow drawn in text says I'm running in a model, with the caption A 360M model predicts every frame, live in the browser.",
+        "credit": "Simon Edwardsson, simedw.com",
+        "creditUrl": "https://simedw.com/2026/10/21/world-model-terminal",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "sloppy-forgeries",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Sloppy Forgeries: copy a masterpiece in three minutes",
+      "where": "Steam Next Fest",
+      "signal": "The developer says players made over 1,000 paintings in the Next Fest demo, and posted them ranked by accuracy, set to music.",
+      "hook": "A few colours, three brush sizes, no undo and a timer. Every pixel is scored against the original, and replays line up everyone's attempts from worst to best.",
+      "borrow": "Per-pixel scoring against a reference is a cheap, readable metric, and the ranked replay montage is a trailer made from player data for free.",
+      "forYou": "A ranked replay of player attempts is an easy shareable moment to add to any skill-based mode.",
+      "url": "https://store.steampowered.com/app/3030560/Sloppy_Forgeries/",
+      "image": {
+        "src": "img/2026-10-23/sloppy.webp",
+        "alt": "A gallery screen with Frans Hals's Laughing Cavalier in a gold frame, four players' rough copies on the left and a live accuracy meter on the right.",
+        "credit": "Playful Systems via Steam",
+        "creditUrl": "https://store.steampowered.com/app/3030560/Sloppy_Forgeries/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "flutter-kart",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "A 3D kart racer in Flutter, from 15 prompts and no asset files",
+      "where": "DEV",
+      "signal": "Author's log: 3 hours 26 minutes of active build, 12,082 lines of Dart, a web port in under 7 minutes; playable build and MIT code online (October 19).",
+      "hook": "Karts, mascots and textures are all built in code, and the agent debugged by screenshotting its own game window and reading browser logs.",
+      "borrow": "Let the agent see what it renders: a screenshot of the running window is a feedback loop for visual bugs that logs cannot show. The first build ran about 22% too fast because AI drivers had no reaction delay.",
+      "forYou": "The screenshot loop is worth adding to your own agent setup for three.js and Flutter game work.",
+      "url": "https://dev.to/gde/stress-testing-gemini-4-argon-building-a-3d-flutter-kart-game-in-15-prompts-with-zero-assets-55ha",
+      "image": {
+        "src": "img/2026-10-23/kart.webp",
+        "alt": "Flutter Kart GP title screen: a blue mascot in a kart on a racetrack with pine trees and balloons, menus for racer and engine class.",
+        "credit": "Jhin Lee via DEV",
+        "creditUrl": "https://dev.to/gde/stress-testing-gemini-4-argon-building-a-3d-flutter-kart-game-in-15-prompts-with-zero-assets-55ha",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "hedra-pre-ai",
+      "lane": "gamedev",
+      "kind": "devlog",
+      "title": "A hand-written open-world engine, on a branch named pre-ai",
+      "where": "Hacker News",
+      "signal": "167 points on Hacker News (October 22); the same project drew 11 points in March, and the pre-AI framing is new.",
+      "hook": "About 100,000 lines of C# and OpenGL written in high school: procedural worlds, marching cubes terrain, Python mods and four character classes.",
+      "borrow": "Provenance is becoming a selling point. Saying plainly what was made by hand, as Hedra's branch name and this week's no-AI demo threads do, answers buyers' questions before they ask.",
+      "forYou": "Clear AI-use notes on your store pages may soon be expected by Fab and Steam buyers either way.",
+      "url": "https://github.com/maxilevi/project-hedra/tree/pre-ai",
+      "image": {
+        "src": "img/2026-10-23/hedra.webp",
+        "alt": "A low-poly character with a lantern faces a giant spider boss under huge blue mushroom trees, with a health bar and hotbar.",
+        "credit": "Project Hedra via Steam",
+        "creditUrl": "https://github.com/maxilevi/project-hedra/tree/pre-ai",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "folded-fables",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Folded Fables: tidy a dragon's hoard of 14 years of art",
+      "where": "Steam, Bluesky",
+      "signal": "16,944 copies sold in its first week, by the developer's own count on Bluesky (October 23).",
+      "hook": "A cozy co-op game for up to 16 players about sorting 5,648 papercraft treasures, many drawn over 14 years for the studio's earlier games.",
+      "borrow": "An old art archive can become the content of a new, cheap game. Sorting is a mechanic that turns a big pile of assets into play.",
+      "forYou": "A small, low-price spin-off made from assets you already own is a way to test a new audience with little risk.",
+      "url": "https://store.steampowered.com/app/4995030",
+      "image": {
+        "src": "img/2026-10-23/folded.webp",
+        "alt": "A great hall heaped with colourful paper-cut treasures: swords, keys, potions and a cat figurine in the centre.",
+        "credit": "Codename Entertainment via Steam",
+        "creditUrl": "https://store.steampowered.com/app/4995030",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "hail-meowy",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Project Hail Meowy: program your ship with punch cards",
+      "where": "itch.io",
+      "signal": "Rated 4.9 out of 5 by 7 players on itch.io after Ludum Dare 60 (theme: Old Tech); a small sample.",
+      "hook": "Punch one move or shot per card, press RUN and watch the program play out against enemies whose next move is shown in advance.",
+      "borrow": "Show the enemy's intent, then let players queue a short program. It turns a shooter into a puzzle and fits an \"old tech\" look.",
+      "forYou": "A plan-then-execute combat mode is a neat variant to prototype with a combat plugin's ability queue.",
+      "url": "https://cosmicadventuresquad.itch.io/project-hail-meowy",
+      "image": {
+        "src": "img/2026-10-23/meowy.webp",
+        "alt": "A green CRT screen beside a punch-card machine with move and shoot buttons, a red RUN key and a stack of 25 punch cards.",
+        "credit": "Cosmic Adventure Squad via itch.io",
+        "creditUrl": "https://cosmicadventuresquad.itch.io/project-hail-meowy",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "streameval",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "StreamEval: Evaluating Interactive Streaming Video Generation Models",
+      "headline": "Playable video models look great but mostly ignore what you tell them mid-stream.",
+      "authors": "StreamEval Team (no individual authors or institutions listed)",
+      "where": "arXiv preprint",
+      "date": "2026-10-20",
+      "problem": "Real-time video and world models are judged on looks. Nobody measured whether they keep responding when a player or user gives new instructions while the video plays.",
+      "idea": "A benchmark of 300 scripted cases from 15 to 300 seconds long across five tasks: avatar dialogue, avatar performance, world generation, instruction editing and reference editing. It scores 37 models on ten metrics in four dimensions, including how well they follow instructions.",
+      "result": "In world generation the best instruction-following score was 25.93 out of 100 (Krea Realtime). HappyOyster had the best visual quality, 58.34, but followed instructions at only 5.56. Matrix-Game 3.5 led on continuity. The best following score in any task was 36.90.",
+      "useIt": "If you are trying a world model for a game prototype, pick by its following score, not by its demo reel. The public leaderboard lets you check a model before you download it.",
+      "maturity": "prototype",
+      "forYou": "Read this next to yesterday's Matrix-Game 4.0: an engine that owns the rules sidesteps the following problem these scores expose.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.28402"
+        },
+        {
+          "label": "Leaderboard",
+          "url": "https://streameval.ai"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-23/streameval.webp",
+        "alt": "The benchmark's five tasks: avatar dialogue and performance, world generation with timed camera instructions, and real-time video editing of a vase's colour.",
+        "credit": "StreamEval Team (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2610.28402",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "plan-or-retrieve",
+      "lane": "ai",
+      "kind": "paper",
+      "title": "Plan or Retrieve First? A Scale Study of Tool Discovery Architectures",
+      "headline": "For one-tool requests, search for tools first; for multi-tool jobs, let the model sketch the tools it needs, then search.",
+      "authors": "Mingfei Zhang, Amit Surana, Ziauddin Majid et al. (Apple)",
+      "where": "EMNLP 2026 (Apple Machine Learning Research)",
+      "date": "2026-10-13",
+      "problem": "Agents with thousands of tools cannot see them all at once, so something has to pick candidates. It was unclear whether to search on the user's words or let the model plan first.",
+      "idea": "Compare retrieve-then-plan (embed the request, fetch similar tools) with plan-then-retrieve (the model writes imagined function signatures, then searches with those) on ToolBench's 46,984 APIs, at registry sizes from 1,000 to 47,000 and with two model families.",
+      "result": "Retrieve-then-plan wins on single-tool queries; plan-then-retrieve wins on multi-tool queries, at every retrieval budget and registry size tested, but its extra call roughly doubles inference cost.",
+      "useIt": "Route by difficulty: if the top search hit scores high, use it; if not, have the model draft the tool signatures it wants and search with those. The score is already in your pipeline, so the routing costs nothing.",
+      "maturity": "prototype",
+      "forYou": "Relevant to how you organise many MCP servers and skills: a confident first match can skip the planning step.",
+      "links": [
+        {
+          "label": "Apple ML Research",
+          "url": "https://machinelearning.apple.com/research/plan-retrieve-tool-discovery"
+        },
+        {
+          "label": "Preprint (arXiv)",
+          "url": "https://arxiv.org/abs/2610.19068"
+        }
+      ]
+    },
+    {
+      "id": "cache-engineering",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Cache Engineering for Agents",
+      "headline": "Instead of summarising an agent's history, drop old tool outputs straight from the model's memory cache: cheaper and slightly better.",
+      "authors": "Tianyu Fu, Ruoxi Wang, Zihan Min et al. (Tsinghua University)",
+      "where": "arXiv preprint",
+      "date": "2026-10-20",
+      "problem": "Long agent runs fill the context. Summarising old turns rewrites the start of the prompt, which throws away the cached work and forces the model to re-read everything.",
+      "idea": "Give the agent two cache operations: drop entries so later steps ignore them, and shift the remaining positions so they stay contiguous. A serving engine called AKV keeps a normal stateless API on top.",
+      "result": "Dropping old tool responses on a rolling basis scored 1.7 points higher on average and cost 27.7% less than summarising when a threshold is hit, across four agent benchmarks including SWE-bench Verified. Up to 1.2 times the throughput.",
+      "useIt": "If you serve open models for agents, try dropping stale tool output rather than summarising. If you use a hosted API, the lesson still holds: clearing old tool results keeps the cache warm where a summary resets it.",
+      "maturity": "code",
+      "forYou": "Explains why compaction in long Claude Code sessions is costly; clearing bulky tool output early is the cheap habit.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.28577"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/thu-nics/AKV"
+        }
+      ]
+    }
+  ],
+  "note": "The research desks could not reach X, TikTok or YouTube pages today, so Sparks draws on Hacker News, Steam, itch.io, DEV and Bluesky."
+}

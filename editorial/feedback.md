@@ -8,6 +8,8 @@ entries under "Folded in".
 
 ## New
 
+## Folded in
+
 - #5 More like: A video model you can play (2026-10-22)
   direction: more
   issue: 2026-10-22
@@ -16,6 +18,7 @@ entries under "Folded in".
   lane: gamedev
   
   Optional note (what exactly, and why):
+  Lesson (2026-10-23): playable world models lead well; emergent agent play belongs in Sparks. Added to taste.md.
 
 - #4 More like: Claude agents left alone on an island started inventing games (2026-10-22)
   direction: more
@@ -25,8 +28,7 @@ entries under "Folded in".
   lane: ai
   
   Optional note (what exactly, and why):
-
-## Folded in
+  Lesson (2026-10-23): see #5. Added to taste.md.
 
 - #3 More like: An IKEA manual rebuilt as a 3D, step-by-step scene (2026-10-21)
   direction: more

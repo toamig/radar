@@ -97,6 +97,11 @@ scene (an IKEA manual played back step by step in 3D), a systems game whose payo
 large (wire logic gates into a computer, then run DOOM on it). Look for one or two of these every
 day: something built with care that teaches a technique by showing it off.
 
+The reader also rates builds where AI and play meet: a video or world model you can actually play,
+and agents left to themselves that start inventing games or rules. Treat interactive
+generative worlds as a lead-worthy game dev story when there is a real demo or paper, and
+look for one AI-plays-or-makes-games experiment in Sparks most days.
+
 ## What earns a place
 
 - It changes how this reader works this week: a release, a setting, a technique,
