@@ -1,0 +1,1068 @@
+{
+  "date": "2026-10-24",
+  "number": 11,
+  "title": "Agents take the chores",
+  "dek": "DoorDash lets agents clean up stale feature flags for under $5 each. A study finds agents trust an outdated CLAUDE.md over your code, and one sentence fixes it. Plus a 2D look built in Unreal and a free GameMaker runtime.",
+  "theme": {
+    "paper": "fog",
+    "text": "black",
+    "inks": [
+      "teal",
+      "fluoro-pink"
+    ],
+    "type": "grotesk",
+    "mood": "a hands-off Saturday about handing agents the cleanup"
+  },
+  "tldr": [
+    {
+      "text": "DoorDash's agents removed **45 of 50** stale feature flags with engineer-approved pull requests, at an average of $4.79 and 13.8 minutes each.",
+      "lane": "ai"
+    },
+    {
+      "text": "When CLAUDE.md or AGENTS.md disagrees with the code, agents followed the file in 90% of choices. One sentence in your user-level file turns that around; today's Try this adds it.",
+      "lane": "ai"
+    },
+    {
+      "text": "Vercel shows how its agent asks for production access once per plan, and a ClickBench entry was pulled for answering 43 known queries from hand-written kernels and caches.",
+      "lane": "ai"
+    },
+    {
+      "text": "The Brotli bug behind Node's last patch also hits Python, Bun, Envoy and Istio, and common audit tools miss it.",
+      "lane": "both"
+    },
+    {
+      "text": "Gameloft explains Bluey's flat 2D look in Unreal Engine 5, GameMaker's new runtime goes free for commercial games in 2027, and Epic dropped its AI-is-mandatory jam rule.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "flag-cleanup",
+      "format": "hero",
+      "variant": "split",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "DoorDash hands stale feature flags to a team of agents",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "DoorDash built a team of AI agents that remove old on/off switches from its code. Engineers approved the result for 45 of 50 switches, at about $5 and 14 minutes each, where a person needs one to two hours.",
+      "background": "Feature flags are switches in code that turn a feature on for some users. Once a feature has fully launched, the switch and the code behind it are dead weight.",
+      "body": [
+        "DoorDash has over 56,000 flags across about 623 repositories; 1,659 were stale in May and about 2,300 new ones appear each month. Rule-based cleanup tools did not fit its code, so the team built a two-phase agent system and wrote it up for the ICSME 2026 industry track.",
+        "First, an orchestrator agent reads the cleanup ticket, asks the experimentation platform through MCP which value each flag actually settled on, finds every reference and writes a report. An engineer confirms it. Then one removal agent per flag works in its own git worktree, up to four at once per repository, and must pass build, tests, 95% patch coverage and the linter before it opens a pull request to the flag's owner.",
+        "On 50 stale flags, 31 were accepted first time, 14 after small revisions and 5 failed. CI passed on the first attempt for 44, and all six first-time failures were coverage gaps, not wrong code. The figures are the authors' own, from one company's Kotlin repositories."
+      ],
+      "image": {
+        "src": "img/2026-10-24/doordash-flags.webp",
+        "alt": "Architecture diagram: an orchestrator agent queries Jira, an experimentation platform MCP and GitHub to write a report; after engineer verification, parallel cleanup agents each edit, test, check coverage and lint, then open a pull request.",
+        "credit": "Chandratre and Datar, DoorDash (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2610.31351",
+        "fit": "contain"
+      },
+      "stat": {
+        "value": "$4.79",
+        "label": "average cost per flag removed (authors' figure)"
+      },
+      "terms": [
+        {
+          "term": "Feature flags",
+          "def": "Switches in code that turn a feature on or off for some users without a new release."
+        },
+        {
+          "term": "orchestrator",
+          "def": "The agent that plans the work and hands pieces of it to other agents."
+        },
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way for AI agents to discover and call tools and data sources."
+        },
+        {
+          "term": "git worktree",
+          "def": "A second working folder for the same repository, so two changes can be made side by side without touching each other."
+        },
+        {
+          "term": "patch coverage",
+          "def": "The share of the lines a change touches that the tests actually run."
+        }
+      ],
+      "deep": [
+        "The orchestrator runs on Claude Sonnet 4.6 and the removal agents on Claude Opus 4.6: a cheaper model plans, a stronger one edits. Each removal agent deletes the flag definition, its wrapper and call sites, updates tests, then loops on build, tests, JaCoCo patch coverage of at least 95% and Detekt until they pass.",
+        "Simple flags succeeded 6 of 6, medium 17 of 18 and complex 22 of 26. Of the revised pull requests, several had missed a dead variable or reference deep in a call chain, which the agent fixed when asked. The authors say early runs without worktree isolation corrupted each other's changes, and that asking production for the real flag value beat letting the agent guess it."
+      ],
+      "why": "This is agent work with a clear finish line: a deterministic check list decides when an edit is done, and a person signs off before and after. Most codebases have a backlog of the same shape, such as dead config or deprecated calls.",
+      "forYou": "The same shape fits your SaaS repos and plugin code: one subagent per cleanup task in its own worktree, real state fetched through MCP or a CLI, and build, tests and lint as the gate. Start with deprecated engine API calls in a plugin.",
+      "sources": [
+        {
+          "label": "Paper (arXiv, ICSME 2026 industry track)",
+          "url": "https://arxiv.org/abs/2610.31351"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2610.31351v1"
+        }
+      ]
+    },
+    {
+      "id": "stale-docs",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 2,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Agents obey an old CLAUDE.md over your code",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "When a project's instruction file says one thing and the existing code does another, coding agents follow the outdated file. One sentence in your own settings file flips that.",
+      "stats": [
+        {
+          "value": "90.1%",
+          "label": "of choices followed the stale file"
+        },
+        {
+          "value": "91.4%",
+          "label": "followed the code with one sentence"
+        }
+      ],
+      "body": [
+        "In 320 runs on 40 small Python projects, Claude Code flagged the conflict in 79 of 80 runs and followed the file anyway. Codex CLI rewrote working code to match the file 20 times, breaking tests in 17. With the sentence, no rewrites happened and every test passed."
+      ],
+      "terms": [
+        {
+          "term": "CLAUDE.md",
+          "def": "A file of standing instructions that Claude Code reads at the start of every session; AGENTS.md plays the same role for other agents."
+        }
+      ],
+      "deep": [
+        "The authors' explanation: the instruction file reaches the model as an instruction, while code it reads arrives as tool output, which models are trained to rank lower. The sentence goes in the user-level file (`~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`), so it applies to every repository. Runs used Claude Code 2.1.302 with Sonnet 5.5 and Codex CLI 0.163.0 with GPT-6 Sol. The projects were synthetic, so treat the size of the effect as an estimate."
+      ],
+      "why": "Instruction files rarely get updated, so every repository drifts. This fix needs no audit of old files: it tells the agent which source wins.",
+      "forYou": "You keep CLAUDE.md files in many repos and plugins; some are surely stale. Add the sentence to your user-level file today (see Try this).",
+      "sources": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.30571"
+        }
+      ]
+    },
+    {
+      "id": "actors-agents",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Build long-running agents like actors, not loops",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A QCon AI talk argues that agents in production are long-lived, stateful programs that fail in pieces, so they should be built from small actors that own their state and talk only by messages.",
+      "plain": "Split the agent into independent workers, each owning its own data, passing messages, and watched by a supervisor that restarts whatever fails.",
+      "body": [
+        "Manju Rajashekhar of Mad Labs demoed a minimal coding agent as four actors in Rust: a supervisor, the model, a tool registry and the agent itself. Chat turns, tool results and cancellations are all just messages."
+      ],
+      "points": [
+        "One owner per piece of state.",
+        "Write state through as you go, so recovery is just resuming.",
+        "A task records its next step instead of blocking and waiting.",
+        "Every failure stops at a supervisor boundary."
+      ],
+      "terms": [
+        {
+          "term": "actors",
+          "def": "Independent units of a program that each keep private state and communicate only by sending messages."
+        },
+        {
+          "term": "supervisor",
+          "def": "An actor whose job is to watch others and restart them when they crash."
+        }
+      ],
+      "why": "Retries, timeouts and half-finished tool calls are distributed-systems problems. Treating them that way from the start beats patching a single loop later.",
+      "forYou": "Your long-running automations are exactly this shape. When one gets flaky, model it as a supervisor plus workers before adding more retry code.",
+      "sources": [
+        {
+          "label": "InfoQ presentation",
+          "url": "https://www.infoq.com/presentations/actors-for-production-ai-agents"
+        }
+      ]
+    },
+    {
+      "id": "vercel-agent",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Vercel's agent asks for production access once per plan",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Vercel explains how its AI agent fixes live sites safely: it investigates with read-only access, writes a plan that lists the access each step needs, and asks the user to approve the plan once instead of every click.",
+      "layout": "flow",
+      "intro": "Approving every single action trains people to click yes without reading. Vercel ties permission to a plan the user can review as a whole.",
+      "nodes": [
+        {
+          "label": "Intent",
+          "note": "What the user wants: fix a failed deployment"
+        },
+        {
+          "label": "Work",
+          "note": "Investigate with read-only scopes, propose the tasks"
+        },
+        {
+          "label": "Access",
+          "note": "Each task lists the scopes it needs; one approval",
+          "key": true
+        },
+        {
+          "label": "Enforcement",
+          "note": "Short-lived scoped token, checked on every call"
+        }
+      ],
+      "links": [
+        "becomes",
+        "requests",
+        "enforced by"
+      ],
+      "caption": "Approval can never grant more than the approving user already has. GitHub access is a separate credential for one repository, with its own approval.",
+      "terms": [
+        {
+          "term": "scopes",
+          "def": "Named permissions, such as reading deployments or redeploying, that a token can carry."
+        },
+        {
+          "term": "token",
+          "def": "A temporary key that proves what a program is allowed to do."
+        }
+      ],
+      "deep": [
+        "The read-only baseline is every registered scope starting with `read:`. Before using a credential, the runtime reloads the stored plan and checks that it is still active, and a stop request wins if it arrives before approval is recorded. A shared scope registry rejects invalid scope names while the plan is drafted.",
+        "Vercel lists the gaps itself: scopes are coarse for actions that touch several resources, and read-only access can still expose sensitive data, so plans sit alongside sandboxing, network policy, rate limits and audit logs."
+      ],
+      "why": "Any agent that touches production needs a permission model people will actually read. A plan with scopes per task is a pattern you can copy for your own automations.",
+      "forYou": "Your unattended routines hold broad keys. Copy the plan idea: let a run read freely, then write a plan file naming what it wants to change, and only then hand it a scoped key.",
+      "sources": [
+        {
+          "label": "Vercel blog",
+          "url": "https://vercel.com/blog/how-vercel-agent-accesses-production-safely"
+        }
+      ]
+    },
+    {
+      "id": "brotli-reach",
+      "format": "steps",
+      "lane": "both",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "The Brotli bug behind Node's patch reaches Python, Bun and proxies",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "A memory bug in the code that unpacks Brotli-compressed web traffic, fixed in Node this week, also sits in Python packages, Bun and popular proxies, and common audit tools do not flag it yet.",
+      "background": "Brotli is a compression format web servers and browsers use to shrink pages. Node's October 21 security release fixed it as CVE-2026-111497.",
+      "intro": "A crafted compressed stream can write past a buffer. It works both ways: a malicious server can hit a client, and a malicious client can hit a server that unpacks request bodies.",
+      "steps": [
+        {
+          "title": "Update the runtimes",
+          "text": "Node 22.23.4, 24.22.1 or 26.12.1; Bun 1.4.4, then rebuild compiled binaries; Envoy and Istio to their latest patch releases."
+        },
+        {
+          "title": "Check Python",
+          "text": "Run `pip show Brotli brotlicffi`. Brotli 1.2.0 and earlier is affected; upgrade to 1.2.1 or brotlicffi 1.2.1.0. requests, httpx, aiohttp and Scrapy load it automatically when installed."
+        },
+        {
+          "title": "Do not trust the scanner yet",
+          "text": "As of October 23, Aikido reports that pip-audit, Dependabot and Safety did not flag these versions. Check images and lockfiles by hand."
+        },
+        {
+          "title": "If you cannot upgrade",
+          "text": "Reject inbound requests with `br` in Content-Encoding at the proxy, and drop `br` from outgoing Accept-Encoding while rejecting `br` responses."
+        }
+      ],
+      "terms": [
+        {
+          "term": "Brotli",
+          "def": "A compression format that web servers and browsers use to make pages smaller to send."
+        },
+        {
+          "term": "proxies",
+          "def": "Servers that sit in front of other servers and pass traffic through, often unpacking it on the way."
+        }
+      ],
+      "why": "Compression is on by default almost everywhere, so a bug in the decoder reaches far beyond one runtime. A clean audit report is not proof here.",
+      "forYou": "Check the Python tooling and Docker images around your Node and Supabase apps, not just Node itself.",
+      "sources": [
+        {
+          "label": "Aikido analysis",
+          "url": "https://www.aikido.dev/blog/python-packages-vulnerable-node2shell-brotli-cve-2026-111497"
+        },
+        {
+          "label": "Node.js 26.12.1 release",
+          "url": "https://nodejs.org/en/blog/release/v26.12.1"
+        }
+      ]
+    },
+    {
+      "id": "kimi-k31",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Kimi K3.1 Pro nears the top agent models, with open weights promised",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Moonshot's new Kimi model scores close to the leading models on a coding-agent test, costs about half as much as Claude Opus 5.5, and its makers say the weights will be public by November 4.",
+      "intro": "Terminal-Bench 4.0, a test of agents doing tasks in a terminal. Scores are Moonshot's own, with every model at maximum thinking effort.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Opus 5.5",
+          "value": 66.4
+        },
+        {
+          "label": "Kimi K3.1 Pro",
+          "value": 65.7,
+          "highlight": true
+        },
+        {
+          "label": "GPT-6 Astra",
+          "value": 58.2
+        },
+        {
+          "label": "Fable 5.1",
+          "value": 57.9
+        },
+        {
+          "label": "DeepSeek V4.1 Flash",
+          "value": 42.3
+        },
+        {
+          "label": "GLM-5.3",
+          "value": 41.8
+        }
+      ],
+      "note": "Independent check: Artificial Analysis scores it 55, behind only Opus 5.5 at 58 (via Simon Willison). Price: $2 per million input tokens and $10 per million output; a Highspeed version runs 2 to 3 times faster at twice the price.",
+      "terms": [
+        {
+          "term": "weights",
+          "def": "The trained numbers that make up a model; open weights means anyone can download and run it."
+        }
+      ],
+      "why": "If the weights ship as promised, a near-frontier agent model becomes something you can host yourself. Until then, treat the chart as a vendor claim.",
+      "forYou": "Worth a cheap side-by-side on one of your agent tasks through an OpenAI-compatible endpoint; Vercel's AI Gateway already lists it.",
+      "sources": [
+        {
+          "label": "Kimi blog",
+          "url": "https://www.kimi.ai/blog/kimi-k3-1-pro"
+        },
+        {
+          "label": "Simon Willison",
+          "url": "https://simonwillison.net/2026/Oct/23/kimi-k31-pro"
+        }
+      ]
+    },
+    {
+      "id": "clickbench-cache",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "A database topped a benchmark by memorising its queries",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The ClickBench database benchmark removed an entry after its maintainer found it shipped hand-written code for each of the test's 43 queries and answered repeat runs from a cache.",
+      "stats": [
+        {
+          "value": "10.8 s",
+          "label": "query 20, first run"
+        },
+        {
+          "value": "11 ms",
+          "label": "same query, second run"
+        }
+      ],
+      "body": [
+        "After a restart it was back to 11.2 seconds, and a slightly changed query was refused as not served. These are the maintainer's findings in the pull request; the answers themselves were correct."
+      ],
+      "terms": [
+        {
+          "term": "benchmark",
+          "def": "A fixed set of tests used to compare the speed or quality of different systems."
+        }
+      ],
+      "why": "A benchmark measures what it can see. Change the inputs a little and rerun cold before trusting a headline number, whether a person or an agent produced the code.",
+      "forYou": "Keep this in mind when an agent reports a dramatic speedup on your own code: rerun cold and with changed inputs before you believe it.",
+      "sources": [
+        {
+          "label": "ClickBench pull request",
+          "url": "https://github.com/ClickHouse/ClickBench/pull/2165"
+        }
+      ]
+    },
+    {
+      "id": "shipped-week",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Shipped this week: monitors on every cloud, usage by client, budgets from the CLI",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Small updates to Claude Code, GitHub, Vercel and Claude Managed Agents that change daily setups, mostly around limits and visibility.",
+      "intro": "From the release notes, October 20 to 23.",
+      "items": [
+        {
+          "title": "Claude Code 2.1.310",
+          "text": "The Monitor tool now works on Bedrock, Vertex and Foundry. Windows `PreToolUse` and `PermissionRequest` hooks no longer let a call through when Git Bash is missing. `/sandbox` names Ubuntu's AppArmor restriction when the sandbox will not start.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.310"
+        },
+        {
+          "title": "Claude Code cleanup fix",
+          "text": "Background cleanup no longer deletes recent files such as pasted images when `cleanupPeriodDays` is set very high, and read prompts now show where a symlink leads.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.310"
+        },
+        {
+          "title": "GitHub usage metrics by client",
+          "text": "Copilot usage reports gain `totals_by_client`, naming tools such as `claude_code`, `codex` and `opencode` with requests, sessions and tokens. GitHub calls it best-effort grouping, not verified identity.",
+          "url": "https://github.blog/changelog/2026-10-23-usage-metrics-api-adds-usage-from-tools-like-opencode"
+        },
+        {
+          "title": "Vercel budgets from the CLI",
+          "text": "`vercel budgets set --amount <dollars> --pause` sets a spend cap that pauses production deployments at 100%. Without `--pause` it only alerts. Needs the Owner or Billing role.",
+          "url": "https://vercel.com/changelog/vercel-cli-adds-spend-management"
+        },
+        {
+          "title": "Managed Agents fetch rules",
+          "text": "`web_fetch` now obeys the organisation's domain restrictions as well as each agent's own allow and block lists, including after redirects.",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        }
+      ],
+      "terms": [
+        {
+          "term": "hooks",
+          "def": "Scripts that Claude Code runs before or after a tool call, often to block risky actions."
+        }
+      ],
+      "why": "The Windows hook fix closes a quiet gap: a guard hook that silently allowed calls. The usage and budget changes make agent spending visible before the bill does.",
+      "forYou": "Update the machines that run your routines, and put a paused budget on any Vercel team an agent can deploy to.",
+      "sources": [
+        {
+          "label": "Claude Code v2.1.310",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.310"
+        },
+        {
+          "label": "GitHub changelog",
+          "url": "https://github.blog/changelog/2026-10-23-usage-metrics-api-adds-usage-from-tools-like-opencode"
+        },
+        {
+          "label": "Vercel changelog",
+          "url": "https://vercel.com/changelog/vercel-cli-adds-spend-management"
+        },
+        {
+          "label": "Claude Platform release notes",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        }
+      ]
+    },
+    {
+      "id": "bluey-2d",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "How Gameloft made Bluey look hand-drawn in Unreal Engine 5",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The Bluey game keeps the show's flat, cartoon look in a 3D world by building each character from flat layered cards, painting them with resolution-free textures, and drawing outlines in a custom shader.",
+      "plain": "Characters are stacks of flat planes on a 3D skeleton, so animators pose them like 3D models while the camera sees clean 2D shapes.",
+      "body": [
+        "Gameloft Brisbane told 80 Level that the look took months of research and several rebuilt pipelines. Lighting is baked into the textures; there is no dynamic lighting. The outline shader and the character rigs were among the biggest performance costs on low-end consoles."
+      ],
+      "points": [
+        "SDF textures give crisp vector-like edges and save texture memory.",
+        "Eyes are drawn entirely in the shader with SDF curves.",
+        "Outlines keep the same thickness at any distance; vertex colours say where they appear.",
+        "Characters are authored at 8 angles, 45 degrees apart, animated with Control Rig."
+      ],
+      "image": {
+        "src": "img/2026-10-24/bluey.webp",
+        "alt": "A screenshot of Bluey's Happy Snaps: flat cartoon dog characters standing in a 3D bush path with layered ferns and rocks.",
+        "credit": "Gameloft Brisbane, via 80 Level",
+        "creditUrl": "https://80.lv/articles/bluey-s-simple-2d-look-required-gameloft-s-most-technically-challenging-art-pipeline",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "SDF textures",
+          "def": "Textures that store the distance to a shape's edge instead of colours, so edges stay sharp at any size."
+        },
+        {
+          "term": "shader",
+          "def": "A small program on the graphics card that decides the colour of each pixel."
+        },
+        {
+          "term": "Control Rig",
+          "def": "Unreal Engine's tool for building animation controls on a skeleton inside the editor."
+        }
+      ],
+      "deep": [
+        "Hands, feet and mouths share textures and geometry across characters, mixing geometry with SDF flip books. The SDF maps use RGBA channel masks built in Photoshop and Substance Designer and assembled in Maya, which needed a custom preview material. Outlines were tried as post-process, then as inverse-hull geometry, before a custom shading model that simulates inverse hulls in real time. The game ships on PC, PlayStation, Xbox, Switch and Switch 2."
+      ],
+      "why": "Stylised games often fight the engine to stay flat. This is a tested recipe for a 2D look in a 3D engine that still runs on Switch.",
+      "forYou": "SDF eyes and a constant-width outline are both packageable as material functions: a possible small Fab product, or a style option for your action RPG.",
+      "sources": [
+        {
+          "label": "80 Level interview",
+          "url": "https://80.lv/articles/bluey-s-simple-2d-look-required-gameloft-s-most-technically-challenging-art-pipeline"
+        }
+      ]
+    },
+    {
+      "id": "megajam-rules",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Epic's AI jam drops its AI-is-mandatory rule",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Epic's AI MegaJam first said entrants had to use AI. After a backlash on social media, Epic called that a mistake the same day: use as much or as little AI as you like.",
+      "background": "The AI MegaJam is a four-day Unreal Engine game jam with a $65,000 prize pool, first announced on October 22.",
+      "intro": "What changed and what is coming, from Game World Observer's report.",
+      "events": [
+        {
+          "when": "Oct 22",
+          "text": "Epic announces the jam; its FAQ says AI use is mandatory. Critics say it presents generative AI as required for fast development, and a six-fingered hand on the poster draws mockery."
+        },
+        {
+          "when": "Oct 22, later",
+          "text": "Epic says the wording was a mistake. AI is now optional, in any amount."
+        },
+        {
+          "when": "Nov 11",
+          "text": "Theme revealed."
+        },
+        {
+          "when": "Nov 12 to 15",
+          "text": "Online jam on itch.io, in Unreal Engine or UEFN."
+        },
+        {
+          "when": "Nov 14 to 15",
+          "text": "In-person event in San Francisco with people from Anthropic, Google and OpenAI."
+        }
+      ],
+      "terms": [
+        {
+          "term": "UEFN",
+          "def": "Unreal Editor for Fortnite: a version of Unreal for building games inside Fortnite."
+        }
+      ],
+      "why": "Jams are where many developers first meet a tool. An optional rule keeps this one open to people who want to compete without AI.",
+      "forYou": "You can enter fully AI-first or not; the rule change does not affect setting up agents and MCP servers before November 12.",
+      "sources": [
+        {
+          "label": "Game World Observer",
+          "url": "https://gameworldobserver.com/2026/10/23/epic-games-announces-ai-game-jam-faces-criticism-then-changes-rules"
+        }
+      ]
+    },
+    {
+      "id": "gmrt-free",
+      "format": "compare",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "GameMaker's new runtime goes free for commercial games in 2027",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "From January 1, 2027, you can sell games made with GameMaker's new runtime on desktop, mobile and web without buying a Professional licence. Consoles still need the Enterprise tier.",
+      "background": "GameMaker is the 2D engine behind Spelunky, Deltarune and UFO 50. GMRT is its next-generation runtime, the part that ships inside your game, still rolling out in beta.",
+      "intro": "What you need to sell a game, by runtime, as reported by PocketGamer.biz.",
+      "left": "New runtime (GMRT)",
+      "right": "Current runtime (GMS2)",
+      "rows": [
+        {
+          "aspect": "Sell on desktop, mobile, web",
+          "left": "Free from January 1, 2027",
+          "right": "Professional licence, as now"
+        },
+        {
+          "aspect": "Source code",
+          "left": "Open to every tier",
+          "right": "Professional licence holders gain access"
+        },
+        {
+          "aspect": "Consoles",
+          "left": "Enterprise licence and approved developer status",
+          "right": "Enterprise licence and approved developer status"
+        },
+        {
+          "aspect": "Licence prices",
+          "left": "Unchanged",
+          "right": "Unchanged"
+        }
+      ],
+      "verdict": "The cost of shipping a commercial 2D game on GameMaker drops to nothing outside consoles, and the engine's runtime is open to read and adapt.",
+      "terms": [
+        {
+          "term": "runtime",
+          "def": "The part of an engine that ships inside the finished game and runs it on the player's device."
+        }
+      ],
+      "why": "Engine choice for small 2D and mobile games just got cheaper, and having the source makes porting and debugging less of a black box.",
+      "forYou": "Worth a look for quick 2D mobile or web side projects, next to your three.js stack; the source access helps if you ever need a custom platform target.",
+      "sources": [
+        {
+          "label": "PocketGamer.biz",
+          "url": "https://www.pocketgamer.biz/gamemaker-makes-gmrt-free-for-commercial-use-from-2027/"
+        },
+        {
+          "label": "80 Level",
+          "url": "https://80.lv/articles/gamemaker-s-new-runtime-will-become-free-for-commercial-use"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Agents doing the chores",
+      "note": "Stale instruction files, production keys and the shape of a long-running agent.",
+      "ids": [
+        "stale-docs",
+        "actors-agents",
+        "vercel-agent"
+      ]
+    },
+    {
+      "title": "Check before you trust",
+      "note": "A patch with a long tail, vendor scores, a benchmark that memorised, the week's updates.",
+      "ids": [
+        "brotli-reach",
+        "kimi-k31",
+        "clickbench-cache",
+        "shipped-week"
+      ]
+    },
+    {
+      "title": "Looks, licences and jams",
+      "note": "A flat look in a 3D engine, a free runtime and a rule rewritten.",
+      "ids": [
+        "bluey-2d",
+        "megajam-rules",
+        "gmrt-free"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is a feature flag, and why do old ones cause trouble?",
+    "answer": "A feature flag is a switch in code that lets a team turn a feature on for some users without shipping a new version. Once the feature is fully on, the switch and its unused branch become dead code nobody dares delete.",
+    "analogy": "It is like the temporary signs and cones on a road under repair. Useful during the work, but if nobody removes them afterwards, drivers keep slowing down for nothing and one day someone moves a cone by mistake.",
+    "body": [
+      "Teams use flags to roll a feature out slowly, to run experiments that compare two versions, and as kill switches when something goes wrong. Each one adds an if-statement: one path for on, one for off.",
+      "When the experiment ends, someone has to pick the winning path, delete the other one and remove the flag. That cleanup is boring, so it piles up. Old flags make code harder to read and can quietly switch dormant code back on.",
+      "Removing a flag safely means knowing the value it really settled on in production, finding every place it is used and proving nothing broke. That checkable, repetitive work is why today's lead hands it to agents."
+    ],
+    "diagram": {
+      "layout": "cycle",
+      "nodes": [
+        {
+          "label": "Add the flag",
+          "note": "New code behind a switch"
+        },
+        {
+          "label": "Roll out",
+          "note": "Turn it on for more users"
+        },
+        {
+          "label": "Pick a winner",
+          "note": "The feature is fully on"
+        },
+        {
+          "label": "Clean up",
+          "note": "Delete the switch and the losing path",
+          "key": true
+        }
+      ],
+      "links": [
+        "then",
+        "then",
+        "then",
+        "next feature"
+      ],
+      "caption": "The step teams skip is the last one, and that is where stale flags come from."
+    },
+    "terms": [
+      {
+        "term": "kill switches",
+        "def": "Flags kept so a team can turn a feature off instantly if it causes problems."
+      },
+      {
+        "term": "dead code",
+        "def": "Code that can no longer run, or whose result is never used."
+      }
+    ],
+    "seenIn": [
+      "flag-cleanup"
+    ],
+    "sources": [
+      {
+        "label": "Martin Fowler: Feature Toggles",
+        "url": "https://martinfowler.com/articles/feature-toggles.html"
+      },
+      {
+        "label": "DoorDash paper",
+        "url": "https://arxiv.org/abs/2610.31351"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Tell your coding agent that the code wins over a stale CLAUDE.md",
+    "gist": "In fifteen minutes your agent will stop copying outdated conventions from instruction files and will tell you where those files are wrong.",
+    "time": "15 minutes",
+    "level": "everyone",
+    "needs": "Claude Code or Codex CLI, and a scratch folder.",
+    "steps": [
+      {
+        "title": "Add the sentence",
+        "text": "Paste the sentence below into your user-level file: `~/.claude/CLAUDE.md` for Claude Code, `~/.codex/AGENTS.md` for Codex. The study tested it there, not in project files."
+      },
+      {
+        "title": "Plant a conflict",
+        "text": "In a scratch project, write a CLAUDE.md that says to use `print` for output while the existing code uses the `logging` module."
+      },
+      {
+        "title": "Ask for a small feature",
+        "text": "Ask the agent to add a function that reports something, so it has to choose between the two styles."
+      },
+      {
+        "title": "Compare",
+        "text": "Run it once with the sentence and once with it commented out, and compare the new code and the final reply."
+      }
+    ],
+    "code": {
+      "lang": "markdown",
+      "code": "When a repository's documentation and its existing code disagree, follow the conventions used in the existing code, and in your final reply point out each inconsistency you found between the documentation and the code."
+    },
+    "check": "With the sentence, the new code uses `logging` like the rest of the project, and the final reply lists the mismatch between CLAUDE.md and the code. Without it, the agent usually writes `print`.",
+    "terms": [
+      {
+        "term": "user-level file",
+        "def": "An instruction file in your home folder that the agent reads in every project, on top of each project's own file."
+      }
+    ],
+    "from": "stale-docs",
+    "forYou": "Add it to your global CLAUDE.md, then watch the next few runs in older plugin repos for the inconsistency lists: they are a free audit of stale project files.",
+    "sources": [
+      {
+        "label": "The paper, section 4",
+        "url": "https://arxiv.org/html/2610.30571v1"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Railway says an attacker got into its build system on October 20 and 21; up to 1.85% of workspaces may have had variables exposed. Rotate any stored before October 21.",
+      "lane": "ai",
+      "url": "https://blog.railway.com/p/preliminary-report-october-security-incident",
+      "source": "Railway"
+    },
+    {
+      "text": "OpenAI says it will train frontier models on cached and simulated copies of the web instead of the live internet, after a model reached the internet through a misconfiguration in September.",
+      "lane": "ai",
+      "url": "https://techcrunch.com/2026/10/23/openai-says-it-will-no-longer-train-its-ai-models-on-the-live-internet-citing-significant-risks",
+      "source": "TechCrunch"
+    },
+    {
+      "text": "OpenAI's Decisions API is generally available: a fast model that picks one option with a confidence score; OpenAI says 100 to 180 ms instead of 1 to 3 seconds.",
+      "lane": "ai",
+      "url": "https://techcrunch.com/2026/10/22/openai-makes-its-jev-competitor-widely-available-as-decision-model-competition-heats-up",
+      "source": "TechCrunch"
+    },
+    {
+      "text": "AWS Lambda Web Functions run an ordinary Node HTTP server (Express, Hono, Fastify) with concurrent requests per instance and streaming, billed for CPU time actually used.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/10/aws-lambda-web-functions",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Cloudflare's Origin Range Requests make the cache chunk the unit for range requests, so large files need no range tuning; Cloudflare reports R2 p99 time to first byte roughly halved.",
+      "lane": "ai",
+      "url": "https://blog.cloudflare.com/origin-range-requests",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "Supabase unified its .NET SDK: every package now shares one version from v8.0.0, with a new dependency injection package and a migration guide.",
+      "lane": "ai",
+      "url": "https://supabase.com/blog/introducing-the-unified-supabase-net-sdk",
+      "source": "Supabase"
+    },
+    {
+      "text": "Anthropic's opt-in OSS scanner sends reports from its strongest models to enrolled maintainers without human review; some maintainers say severities run high, OpenSSL and wolfSSL were positive.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/10/anthropic-oss-security-scanner",
+      "source": "InfoQ"
+    },
+    {
+      "text": "A reality check on agent-built clones: PhotoCraft, 539,017 lines of Rust in 14 days, is about 45% ready for real work by its developer's own count, with 22 of 25 performance budgets missed.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/10/photocraft-adobe-parity",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Characterisation tests at service scale: record real traffic and outbound calls, replay with recorded dependencies, and diff everything except named noise before a refactor or upgrade.",
+      "lane": "ai",
+      "url": "https://stackoverflow.blog/2026/10/22/the-regression-tests-nobody-writes-capturing-how-software-actually-behaves",
+      "source": "Stack Overflow blog"
+    },
+    {
+      "text": "Martin Fowler summarises Cindy Sridharan's debugging method for code you no longer understand: facts before code, a working control case, and only hypotheses that fit every fact.",
+      "lane": "ai",
+      "url": "https://martinfowler.com/fragments/2026-10-21.html",
+      "source": "Martin Fowler"
+    },
+    {
+      "text": "GitHub admins of Copilot Business and Enterprise can now set one default for new features: enabled, disabled or left to each organisation; previews stay opt-in.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-10-22-global-default-for-copilot-features-generally-available",
+      "source": "GitHub Changelog"
+    },
+    {
+      "text": "Tripo pairs its P2.0 mesh model with an agent that drives Blender and Unity by script; the vendor says deformation, faces and secondary motion still need manual work.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/how-tripo-p2-0-astra-work-together-in-blender-and-unity",
+      "source": "80 Level"
+    },
+    {
+      "text": "Owlchemy Labs moves from VR headsets to phone-tethered XR glasses with Hyper Visor, a $1.99 arcade blaster for HTC's XREAL Aura.",
+      "lane": "gamedev",
+      "url": "https://www.gamedeveloper.com/extended-reality/vr-pioneer-owlchemy-labs-pivots-to-xr-for-its-next-release",
+      "source": "Game Developer"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "game-merging",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Game merging: one game hosts the world, another supplies the moves",
+      "where": "X, YouTube, Reddit",
+      "signal": "Super Mario 64 inside Elden Ring drew 2.9M views in four days; Minecraft in Elden Ring passed 308,000 likes in a week (Know Your Meme, Decrypt).",
+      "hook": "Mario runs through Elden Ring with his own physics while the host game keeps the world, menus and saves. Coding agents port the guest game's movement code in hours, not months.",
+      "borrow": "The pattern is a driver layer: the guest's physics and animation steer a hidden host character, plus a rig retarget. The open er-mario mod runs libsm64 from a Rust DLL. Every mod needs the player's own game files.",
+      "forYou": "A character driver plus bone retargeting is a clean plugin idea for UE5: let one movement model take over any skeleton.",
+      "url": "https://knowyourmeme.com/memes/ai-video-game-merging",
+      "image": {
+        "src": "img/2026-10-24/game-merge.webp",
+        "alt": "A first-person view of a scoped rifle from Call of Duty held in a blocky Minecraft world.",
+        "credit": "Decrypt (clip by DramaAlert)",
+        "creditUrl": "https://decrypt.co/380407/ai-video-game-mod-mashups-are-taking-off-here-are-the-wackiest-examples",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "playload",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Playload: a 3 KB engine where the link is the cartridge",
+      "where": "Qiita, Mastodon",
+      "signal": "Published October 23 by Takashi Kitao, the creator of Pyxel; demo games run from 1.35 KB to 2.34 KB.",
+      "hook": "The whole game is compressed into the URL, so sharing a link shares the game. A 160 by 144 screen, 8 colours, six functions, and sound written as a music string.",
+      "borrow": "Compress state into the URL fragment and you get sharing with no backend: useful for jam entries, level codes or puzzle seeds in a web game.",
+      "forYou": "Level sharing by URL would suit your browser games: no server, no accounts.",
+      "url": "https://qiita.com/kitao/items/7fac93e8a7ad6015b0b0",
+      "image": {
+        "src": "img/2026-10-24/playload.webp",
+        "alt": "The Playload editor: game code on the left, and a purple maze game called Glyph Quest running on the right.",
+        "credit": "Takashi Kitao",
+        "creditUrl": "https://kitao.dev/playload/app/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "quick-study",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "Quick Study: a photo repainted stroke by stroke in seconds",
+      "where": "Simon Willison's blog",
+      "signal": "Posted October 23 with the full prompt and chat shared; it follows his earlier watercolour experiment.",
+      "hook": "Open a photo and watch a simulated brush paint it in oils within a few seconds. Edge detection steers each stroke, all on a plain canvas element.",
+      "borrow": "A paint-in reveal is a cheap, striking effect for a loading screen or photo mode, and the shared prompt shows how little it takes to get one from a model.",
+      "url": "https://simonwillison.net/2026/Oct/23/quick-study-painter/",
+      "image": {
+        "src": "img/2026-10-24/quick-study.webp",
+        "alt": "A heron on a railing rendered as a thick, brushy oil painting.",
+        "credit": "Simon Willison",
+        "creditUrl": "https://simonwillison.net/2026/Oct/23/quick-study-painter/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "super-rope",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Super Rope: a Godot rope that wraps, whips and hauls",
+      "where": "itch.io, Bluesky, Mastodon",
+      "signal": "Shared on both Bluesky (90 likes) and Mastodon (15 favourites) this week, with a demo you can play in the browser.",
+      "hook": "Rope that wraps around posts, unwraps, reels in and out and cracks like a whip, and tells the game its strain and wrap points.",
+      "borrow": "Expose simulation results to gameplay. A rope that reports strain and wrap points can drive tug of war, leashes or grappling without extra physics code.",
+      "forYou": "Compare its gameplay outputs with rope tools on Fab: strain and wrap events are a feature list for a UE5 rope plugin.",
+      "url": "https://alfredbaudisch.itch.io/super-rope-godot",
+      "image": {
+        "src": "img/2026-10-24/super-rope.webp",
+        "alt": "Super Rope's cover: three scenes of a rope draped between posts, wrapped around a pillar and stretched along a track.",
+        "credit": "Alfred Baudisch, itch.io",
+        "creditUrl": "https://alfredbaudisch.itch.io/super-rope-godot",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "woim",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "WOIM: cut yourself in half to make a helper",
+      "where": "Steam, Bluesky",
+      "signal": "Released on Steam October 21; the developer's launch post drew 308 likes and 86 reposts on Bluesky.",
+      "hook": "A worm pushing blocks underground can split itself, and each half becomes a new friend that helps solve the puzzle.",
+      "borrow": "One verb that changes every puzzle. Splitting the player is the whole design, and each level just asks a new question about it.",
+      "url": "https://store.steampowered.com/app/4272020",
+      "image": {
+        "src": "img/2026-10-24/woim.webp",
+        "alt": "A pink worm in an underground tunnel ringed with white flowers, next to an apple and a cookie.",
+        "credit": "dogspawn, Steam",
+        "creditUrl": "https://store.steampowered.com/app/4272020",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "invokyr",
+      "lane": "gamedev",
+      "kind": "concept",
+      "title": "Invokyr: a cursed board game as co-op horror",
+      "where": "Steam, GameDiscoverCo",
+      "signal": "About 250,000 copies and $2M gross in its first 15 days, by GameDiscoverCo's estimate; about 48% of players are in China, per the developer.",
+      "hook": "Players open a haunted board game and play it for their lives. They compare it to Jumanji, though the marketing never does.",
+      "borrow": "A hook players can name for you, a long ladder of public playtests before launch, and a local co-publisher in China.",
+      "forYou": "53% of its players also own Phasmophobia: a reminder to check which audience a co-op hook already belongs to before you market it.",
+      "url": "https://newsletter.gamediscover.co/p/how-invokyr-sold-250k-copies-with",
+      "image": {
+        "src": "img/2026-10-24/invokyr.webp",
+        "alt": "Three players in a dim room lean over a glowing open board game, their names floating above them.",
+        "credit": "Ludogram, Steam",
+        "creditUrl": "https://store.steampowered.com/app/3883570",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "rcpg",
+      "lane": "gamedev",
+      "kind": "paper",
+      "title": "RCPG: Real-Time Product Path Guiding Using Radiance Cascades",
+      "headline": "Radiance cascades can steer path-traced rays toward the light that matters, with about twice the paths per pixel in real time.",
+      "authors": "Julius Ikkala, Pekka Jääskeläinen, Markku Mäkitalo (Tampere University)",
+      "where": "ACM Transactions on Graphics",
+      "date": "2026-10-09",
+      "problem": "Real-time path tracing is noisy at one or two samples per pixel, and existing real-time guiding picks directions by the light or by the material, not both, mostly from what is on screen.",
+      "idea": "Keep incoming light in a radiance cascade hierarchy in world space and sample directions by light times material in one pass. Because the probability of any direction can be computed, it combines with MIS and ReSTIR, and it can guide bounces that start off screen.",
+      "result": "The authors report better quality and speed than earlier real-time path guiding, with about twice the paths per pixel in a real-time budget compared with prior methods using multi-sample MIS.",
+      "useIt": "If your renderer already builds radiance cascades for global illumination, the same structure can guide your path tracer's samples. Watch for an implementation before planning on it.",
+      "maturity": "idea",
+      "forYou": "Engine-level research, not a plugin feature yet; worth tracking if Lumen-style GI and path tracing keep converging in UE5.",
+      "links": [
+        {
+          "label": "Paper (ACM DOI)",
+          "url": "https://doi.org/10.1145/3840291"
+        },
+        {
+          "label": "Project page",
+          "url": "https://webpages.tuni.fi/vga/publications/RCPG.html"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-24/rcpg.webp",
+        "alt": "Diagram: at two cascade levels, incoming light is multiplied by the material response, and the brightest cell of the product is followed down to the finer level.",
+        "credit": "Ikkala, Jääskeläinen and Mäkitalo",
+        "creditUrl": "https://webpages.tuni.fi/vga/publications/RCPG.html",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "rlmuscle",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "RLMuscle: Muscle-Driven Character Animation via Reinforcement Learning",
+      "headline": "A learned controller chooses which of 194 muscles to fire, and a GPU solver bulges and stretches the body to match, at 18 ms a frame.",
+      "authors": "Chunlei Li, Siyuan Yu, Yang Gao, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-10-21",
+      "problem": "Getting muscles to bulge and slide realistically means artists specify activations by hand, which is slow and not physically guaranteed.",
+      "idea": "A reinforcement learning controller finds muscle activations that track a reference motion, using a fast 1D muscle model, then a 3D volumetric simulation with the same muscle law produces the final deformation. Measured muscle signals push it toward realistic choices.",
+      "result": "A 194-muscle body runs at 18 ms per frame on one RTX 4090 across walking, kicking, swimming and squatting. The abstract gives no comparison against a baseline.",
+      "useIt": "Too slow for shipping games, but a way to bake secondary muscle motion for hero characters offline, and a reference for muscle constraints in an XPBD solver.",
+      "maturity": "prototype",
+      "forYou": "A reference if you ever add flesh or muscle secondary motion to your combat animations; bake it, do not run it live.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.30033"
+        },
+        {
+          "label": "Project page",
+          "url": "https://chunleili.github.io/project-page-rlmuscle/"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-24/rlmuscle.webp",
+        "alt": "Four renders of a full-body muscle model, labelled walk, kick, swim and squat, with active muscles highlighted in blue.",
+        "credit": "Li et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2610.30033",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "swe-verifier",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "SWE-VERIFIER: Selective Verification for Cost-Efficient Coding Agents",
+      "headline": "Double-check a coding agent only when a small judge is unsure, and you keep most of the gain for about a tenth of the extra cost.",
+      "authors": "Kaijian Zou, Vaibhav Chennareddy, Yunxiang Zhang, et al. (University of Michigan, UT Austin)",
+      "where": "arXiv preprint",
+      "date": "2026-10-21",
+      "problem": "Sampling and checking several candidate actions at every step makes coding agents better but multiplies what they cost to run.",
+      "idea": "A 4B-parameter verifier scores the agent's first proposed action. Only when the score falls below a threshold does the agent sample alternatives, which the verifier then ranks.",
+      "result": "On SWE-bench Verified with MiniMax-M2.7, the resolve rate rose from 75.47% to 77.20% at 1.09 times the cost, checking 3.43% of steps. Checking every step reached only 76.40% at 2.26 times the cost, and self-verification 75.27% at 3.35 times.",
+      "useIt": "Spend extra compute where a cheap check is unsure, not everywhere. The same gate idea works in a harness hook: run the expensive review only when a fast score flags a step.",
+      "maturity": "code",
+      "forYou": "A pattern for your subagent setups: a cheap gate that decides when to call the expensive reviewer.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.30284"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/zkjzou/SWE-Verifier"
+        }
+      ]
+    }
+  ],
+  "note": "A light Saturday for engine news: Unreal, Unity and Fab had nothing new since yesterday, so the game dev half leans on a studio interview, a licence change and new research."
+}
