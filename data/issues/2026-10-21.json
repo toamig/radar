@@ -1072,39 +1072,6 @@
         "creditUrl": "https://arxiv.org/abs/2610.27381",
         "fit": "contain"
       }
-    },
-    {
-      "id": "rcpg",
-      "lane": "gamedev",
-      "kind": "paper",
-      "title": "RCPG: Real-Time Product Path Guiding Using Radiance Cascades",
-      "headline": "Reusing radiance cascades lets a real-time path tracer aim its rays better, for about twice as many paths per pixel.",
-      "authors": "Julius Ikkala, Pekka Jääskeläinen, Markku Mäkitalo (Tampere University)",
-      "where": "ACM Transactions on Graphics",
-      "date": "2026-10-09",
-      "problem": "Real-time path tracers have to guess where light comes from. Guiding usually samples incoming light and surface reflection separately and blends them, wasting samples.",
-      "idea": "Bound the radiance stored in radiance cascades so they keep accurate light directions, then sample the product of light and surface reflection in one step. The world-space structure also guides bounces that start off screen.",
-      "result": "The authors report generally about twice as many paths per pixel at real-time rates compared with earlier real-time guiding that combines several samplers. It works alongside unbiased ReSTIR.",
-      "useIt": "A reference for anyone building a custom path-traced or global illumination pass; radiance cascades are already popular for 2D lighting.",
-      "maturity": "prototype",
-      "forYou": "Background for judging Lumen alternatives; no code to drop in.",
-      "links": [
-        {
-          "label": "ACM TOG: RCPG",
-          "url": "https://doi.org/10.1145/3840291"
-        },
-        {
-          "label": "Project page",
-          "url": "https://webpages.tuni.fi/vga/publications/RCPG.html"
-        }
-      ],
-      "image": {
-        "src": "img/2026-10-21/rcpg.webp",
-        "alt": "Diagram of two cascade levels: incoming radiance times the surface reflection term gives a product grid; the chosen cell in cascade 0 leads to a finer cell in cascade 1.",
-        "credit": "Ikkala, Jääskeläinen and Mäkitalo, Tampere University",
-        "creditUrl": "https://webpages.tuni.fi/vga/publications/RCPG.html",
-        "fit": "contain"
-      }
     }
   ],
   "note": "Valve's own Next Fest numbers arrive after the event, so the player peaks come from Output Lag's hourly chart. PHP's fixes were not out when this went to press."

@@ -11,6 +11,7 @@
 //
 //   node scripts/sweep.mjs [--date YYYY-MM-DD] [--hours 48]
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs';
+import { keysOf, issueKeys, readSeen } from './identity.mjs';
 import { join } from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
 
@@ -370,17 +371,16 @@ async function readSource(src) {
   throw new Error(`unknown kind ${src.kind}`);
 }
 
-// URLs already featured in the kept issues, so the same story is not offered again.
+// Everything already featured in the kept issues, and remembered for 90 days in data/seen.json
+// after its issue is pruned, so the same story or paper is not offered again under another link.
 const featured = new Set();
+for (const k of Object.keys(readSeen(root))) featured.add(k);
 const issueDir = join(root, 'data', 'issues');
 if (existsSync(issueDir)) {
   for (const f of readdirSync(issueDir).filter((f) => f.endsWith('.json'))) {
     try {
       const issue = JSON.parse(readFileSync(join(issueDir, f), 'utf8'));
-      for (const b of issue.blocks ?? []) for (const s of b.sources ?? []) featured.add(normalize(s.url));
-      for (const t of issue.ticker ?? []) featured.add(normalize(t.url));
-      for (const p of issue.lab ?? []) for (const l of p.links ?? []) featured.add(normalize(l.url));
-      for (const s of issue.sparks ?? []) featured.add(normalize(s.url));
+      for (const { keys } of issueKeys(issue)) for (const k of keys) featured.add(k);
     } catch {}
   }
 }
@@ -410,7 +410,7 @@ async function worker(list = queue, pause = 0) {
         if (!it.title || !it.url || Number.isNaN(ts) || ts < Date.now() - windowMs) continue;
         if (match && !match.test(`${it.title} ${it.summary ?? ''}`)) continue;
         const url = normalize(it.url);
-        if (featured.has(url)) continue;
+        if ([...keysOf(it.url, it.title)].some((k) => featured.has(k))) continue;
         kept++;
         results.push({
           section,

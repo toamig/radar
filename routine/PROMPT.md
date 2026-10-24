@@ -139,6 +139,11 @@ Put this **frontier brief** in every desk's brief, word for word:
 
 - Merge the desks' items, remove duplicates and anything already covered in the
   last 7 issues (unless there is real new information; then say what is new).
+  The sweep already drops anything whose link, DOI, arXiv id or title was featured, and `data/seen.json`
+  remembers 90 days of it after issues are pruned. Papers found by your own desks are not covered, so
+  before keeping a lab paper search `data/issues/*.json` and `data/seen.json` for its DOI, arXiv id
+  and title (`grep -l`). Validate refuses a lab paper that was featured before; a news follow-up is
+  fine only when it adds something new.
 - Rank by what this reader most needs to know today. Choose 9 to 12 blocks and up
   to 14 ticker lines. Both lanes must appear in the blocks; neither may take more
   than two thirds of them.

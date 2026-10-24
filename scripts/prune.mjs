@@ -3,6 +3,7 @@
 // and inbox files) and the newest 4 weekly summaries. Everything older is deleted.
 import { readdirSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { updateSeen } from './identity.mjs';
 
 const KEEP_DAYS = 7;
 const KEEP_WEEKS = 4;
@@ -15,6 +16,9 @@ const rm = (p) => {
   if (!dry) rmSync(p, { recursive: true, force: true });
 };
 const names = (dir, re) => (existsSync(dir) ? readdirSync(dir).filter((f) => re.test(f)).sort().reverse() : []);
+
+// Remember what was featured for 90 days, so a paper cannot come back after its issue is gone.
+if (!dry) updateSeen(root);
 
 const issueDir = join(root, 'data', 'issues');
 const dates = names(issueDir, /^\d{4}-\d{2}-\d{2}\.json$/).map((f) => f.slice(0, 10));

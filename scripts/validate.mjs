@@ -6,6 +6,7 @@
 // - layout rows pack, numbering continues, stories are not repeated within the week
 // Exit code 1 on any error; warnings print but pass.
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { issueKeys, readSeen } from './identity.mjs';
 import { join } from 'node:path';
 import { Issue, Week } from '../src/kit/schema.mjs';
 import { auditCatalog } from '../src/kit/catalog.mjs';
@@ -190,6 +191,18 @@ for (const issue of issues) {
       if (seen.has(key) && seen.get(key) !== issue.date) warn(`${issue.date}/${b.id}: source already used on ${seen.get(key)} (${key}); is this a real follow-up?`);
       else seen.set(key, issue.date);
     }
+  }
+}
+// A lab paper must not be featured twice: same DOI, arXiv id, page or title as an earlier
+// issue, or as anything remembered in data/seen.json from issues already pruned.
+const remembered = readSeen(root);
+const firstLab = new Map();
+for (const issue of issues) {
+  for (const p of issue.lab) {
+    const keys = [...issueKeys({ date: issue.date, lab: [p] })[0].keys];
+    const earlier = keys.map((k) => firstLab.get(k) ?? (remembered[k] && remembered[k] < issue.date ? { date: remembered[k] } : null)).find(Boolean);
+    if (earlier && earlier.date !== issue.date) err(`${issue.date}/${p.id}: this paper was already featured on ${earlier.date}; pick a different one`);
+    for (const k of keys) if (!firstLab.has(k)) firstLab.set(k, { date: issue.date });
   }
 }
 const last = issues.at(-1);

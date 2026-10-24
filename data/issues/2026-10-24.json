@@ -972,39 +972,6 @@
   ],
   "lab": [
     {
-      "id": "rcpg",
-      "lane": "gamedev",
-      "kind": "paper",
-      "title": "RCPG: Real-Time Product Path Guiding Using Radiance Cascades",
-      "headline": "Radiance cascades can steer path-traced rays toward the light that matters, with about twice the paths per pixel in real time.",
-      "authors": "Julius Ikkala, Pekka Jääskeläinen, Markku Mäkitalo (Tampere University)",
-      "where": "ACM Transactions on Graphics",
-      "date": "2026-10-09",
-      "problem": "Real-time path tracing is noisy at one or two samples per pixel, and existing real-time guiding picks directions by the light or by the material, not both, mostly from what is on screen.",
-      "idea": "Keep incoming light in a radiance cascade hierarchy in world space and sample directions by light times material in one pass. Because the probability of any direction can be computed, it combines with MIS and ReSTIR, and it can guide bounces that start off screen.",
-      "result": "The authors report better quality and speed than earlier real-time path guiding, with about twice the paths per pixel in a real-time budget compared with prior methods using multi-sample MIS.",
-      "useIt": "If your renderer already builds radiance cascades for global illumination, the same structure can guide your path tracer's samples. Watch for an implementation before planning on it.",
-      "maturity": "idea",
-      "forYou": "Engine-level research, not a plugin feature yet; worth tracking if Lumen-style GI and path tracing keep converging in UE5.",
-      "links": [
-        {
-          "label": "Paper (ACM DOI)",
-          "url": "https://doi.org/10.1145/3840291"
-        },
-        {
-          "label": "Project page",
-          "url": "https://webpages.tuni.fi/vga/publications/RCPG.html"
-        }
-      ],
-      "image": {
-        "src": "img/2026-10-24/rcpg.webp",
-        "alt": "Diagram: at two cascade levels, incoming light is multiplied by the material response, and the brightest cell of the product is followed down to the finer level.",
-        "credit": "Ikkala, Jääskeläinen and Mäkitalo",
-        "creditUrl": "https://webpages.tuni.fi/vga/publications/RCPG.html",
-        "fit": "contain"
-      }
-    },
-    {
       "id": "rlmuscle",
       "lane": "gamedev",
       "kind": "preprint",
