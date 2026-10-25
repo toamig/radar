@@ -1,0 +1,145 @@
+{
+  "id": "2026-W43",
+  "from": "2026-10-19",
+  "to": "2026-10-25",
+  "title": "The week agents got fences and rulebooks",
+  "dek": "Most of this week's stories were about the space around a coding agent: what it may touch, which written rules it follows, and how anyone checks what it claims. Game dev had its own thread, with playable video models and an AI-first jam.",
+  "theme": {
+    "paper": "mint",
+    "text": "hunter",
+    "inks": ["purple", "sunflower"],
+    "type": "wide",
+    "mood": "a Sunday look back at fences, rulebooks and proof"
+  },
+  "tldr": [
+    "Agent safety moved from instructions to walls: sandboxes, microVMs, per-user database access and IAM deny rules, after a study showed **one approved prompt** could switch a sandbox off.",
+    "Written rules for agents turned out to be fragile: agents followed a stale CLAUDE.md over the code **90% of the time**, and two skills for one job made them drop one.",
+    "Checking got cheaper and stricter: Cloudflare cut its AI review bill by **68%**, Claude proved 123 libraries cannot crash, and Google kept only the agent changes a hidden benchmark confirmed.",
+    "A video model you can play arrived on one consumer GPU, and a benchmark showed such models still mostly ignore mid-stream commands.",
+    "One compression bug in Brotli spread from Node to Python, Bun, Envoy and Istio over the week, and common audit tools missed it."
+  ],
+  "threads": [
+    {
+      "title": "Fences, not promises",
+      "lane": "ai",
+      "summary": [
+        "Monday's study found a booby-trapped repo got agents to ask for a broad allow rule in 58% of runs, and once a person said yes the hidden goal ran in 47 of 58 cases. By Friday the answers were structural: a Supabase template that runs every tool call as the signed-in user, NVIDIA's OpenShell, microVMs for evals and sandbox fixes in Claude Code.",
+        "Saturday Vercel showed its agent asking for production access once per plan, and Sunday Google's Data Agent Kit split guardrails into a skill that asks and an IAM rule that blocks."
+      ],
+      "days": ["2026-10-19", "2026-10-23", "2026-10-24", "2026-10-25"],
+      "sources": [
+        { "label": "Data Agent Kit (InfoQ)", "url": "https://www.infoq.com/news/2026/10/data-agent-kit-ga/" },
+        { "label": "Vercel Connect: managed Stripe keys", "url": "https://vercel.com/changelog/vercel-connect-adds-managed-stripe-api-keys" }
+      ]
+    },
+    {
+      "title": "The rulebook is the weak point",
+      "lane": "ai",
+      "summary": [
+        "Instruction files and skills now steer most agent work, and this week measured how they fail. Two skills for the same job cut rule adherence from 93 to 99% to about 61%. Agents followed an outdated CLAUDE.md over the code in 90.1% of choices, and one sentence in the user-level file flipped that to 91.4% for the code.",
+        "Nearly two thirds of agent pull requests changed code without touching any documentation, which is how those files go stale. Google's overnight run showed the positive case: a skills index of 12 guideline files turned a sloppy two-hour attempt into a reviewable pull request."
+      ],
+      "days": ["2026-10-20", "2026-10-21", "2026-10-24", "2026-10-25"],
+      "sources": [
+        { "label": "Stale instruction files (arXiv)", "url": "https://arxiv.org/abs/2610.30571" },
+        { "label": "Documentation drift (arXiv)", "url": "https://arxiv.org/abs/2610.27381" },
+        { "label": "Google for Developers: Argon on ADK", "url": "https://developers.googleblog.com/optimizing-a-200000-line-python-codebase-overnight-with-gemini-4-argon/" }
+      ]
+    },
+    {
+      "title": "Proof over promises",
+      "lane": "ai",
+      "summary": [
+        "Cloudflare's multi-agent reviewer fell to $0.77 a review, down 68%, mostly from caching and fewer tool calls. Anthropic and Theorem had Claude prove 123 libraries never crash on inputs under 64 MB. A study of 718 firms found agents add 30% more code but only 12% more finished issues, while reviews take 49% longer.",
+        "The week ended on measurement: Google kept 2 of 6 agent speedups after a benchmark the agent never saw, and a new benchmark found agents write correct code that rarely makes a system faster."
+      ],
+      "days": ["2026-10-20", "2026-10-23", "2026-10-25"],
+      "sources": [
+        { "label": "MicroPerf-Bench (arXiv)", "url": "https://arxiv.org/abs/2610.29695" },
+        { "label": "SWE-VERIFIER (arXiv)", "url": "https://arxiv.org/abs/2610.30284" }
+      ]
+    },
+    {
+      "title": "Worlds you can play from a model",
+      "lane": "gamedev",
+      "summary": [
+        "Matrix-Game 4.0 runs a playable world on one RTX 5090 by splitting the job: a small engine keeps the rules and the video model paints the pixels. A day later StreamEval showed interactive video models look good but mostly ignore what players tell them mid-stream, and new sprite research generates in-between animation frames on demand."
+      ],
+      "days": ["2026-10-22", "2026-10-23"],
+      "sources": [
+        { "label": "StreamEval (arXiv)", "url": "https://arxiv.org/abs/2610.28402" },
+        { "label": "Sprite frame generation (arXiv)", "url": "https://arxiv.org/abs/2610.27253" }
+      ]
+    },
+    {
+      "title": "Engines, stores and the AI-first jam",
+      "lane": "gamedev",
+      "summary": [
+        "Steam retired its hand-picked daily deals for a personalised feed, and about 36% of Next Fest demos now disclose generative AI. Epic's AI MegaJam drew loud criticism, then dropped its rule that AI use was mandatory. GameMaker's new runtime goes free for commercial games, and a Sunday tool showed Unreal's packaged builds may drop renamed save data the editor keeps."
+      ],
+      "days": ["2026-10-19", "2026-10-21", "2026-10-23", "2026-10-24", "2026-10-25"],
+      "sources": [
+        { "label": "Savekeeper (Unreal forums)", "url": "https://forums.unrealengine.com/t/savekeeper-tests-your-old-savegame-files-against-your-current-classes-and-shows-which-values-a-player-loses-ue-5-8/2844512" },
+        { "label": "GameMaker GMRT (Game Developer)", "url": "https://www.gamedeveloper.com/programming/gamemaker-s-gmrt-runtime-will-soon-be-free-for-all-commercial-devs" }
+      ]
+    },
+    {
+      "title": "One bug, many runtimes",
+      "lane": "both",
+      "summary": [
+        "A Brotli decoder bug patched in Node on October 21 turned out to reach Python, Bun, Envoy and Istio, and got the name HTTP2Shell. Leaked eMudhra certificate keys made the same point on Tuesday: browsers fixed it fast, servers and runtimes needed their own updates."
+      ],
+      "days": ["2026-10-21", "2026-10-24", "2026-10-25"],
+      "sources": [
+        { "label": "Aikido Security", "url": "https://www.aikido.dev/blog/python-packages-vulnerable-node2shell-brotli-cve-2026-111497" }
+      ]
+    }
+  ],
+  "numbers": [
+    { "value": "58%", "label": "of booby-trapped runs where an agent asked for a broad allow rule", "date": "2026-10-19" },
+    { "value": "$0.77", "label": "per AI code review at Cloudflare, down 68%", "date": "2026-10-20" },
+    { "value": "123", "label": "open-source libraries Claude proved cannot crash", "date": "2026-10-23" },
+    { "value": "90.1%", "label": "of agent choices that followed a stale instruction file", "date": "2026-10-24" },
+    { "value": "45 of 50", "label": "stale feature flags DoorDash's agents removed", "date": "2026-10-24" },
+    { "value": "2 of 6", "label": "agent speedups Google's maintainers kept", "date": "2026-10-25" }
+  ],
+  "watch": [
+    "Steam Next Fest ends October 26; watch which demos climbed and whether AI disclosure changed anything.",
+    "DeepSeek starts billing its hosted search and fetch tools on October 31.",
+    "Epic's AI MegaJam starts November 12, with agent and MCP setup allowed in advance.",
+    "The PAUSE authors say they will release code for all three agent harnesses; watch for the repository.",
+    "Copilot retires several older Claude and GPT models on November 16."
+  ],
+  "deepRead": {
+    "id": "pause-deep",
+    "lane": "ai",
+    "kind": "preprint",
+    "title": "PAUSE: Search-Free Steering of Coding Agents Before Their First Source-Code Edit",
+    "headline": "Pause a coding agent at its first code edit, let a stronger model write one fix plan, and it solves far more bugs for one extra call.",
+    "authors": "Viral Patel, Boyin Tan, Jason Xue, et al. (MBZUAI)",
+    "where": "arXiv preprint",
+    "date": "2026-10-21",
+    "problem": "Coding agents explore and test at length and still ship failing patches. Reviewing a run on a schedule costs a lot, and waiting for an alarm misses runs that look healthy but are heading the wrong way.",
+    "idea": "Use the first edit to a source file as the checkpoint. PAUSE blocks that edit, gives a planner model the task and the history so far, and appends one plan (likely root cause, code to change, intended fix) as a message. The same agent then resumes with its context and workspace intact.",
+    "result": "With Qwen3-Coder as the agent and a GPT-5.6 Sol planner in SWE-agent, SWE-bench Verified rose from 50.2% to 65.0% (Multilingual 28.3% to 43.0%) for $26.13 of planner calls over 500 tasks. A periodic overseer reached 67.6% for $231.71.",
+    "useIt": "Add a hook on the first source edit of a session that asks a stronger model for a short root cause and fix plan, feed it back as context, and compare solved tasks and tokens on your own bug list.",
+    "maturity": "idea",
+    "links": [
+      { "label": "Paper (arXiv)", "url": "https://arxiv.org/abs/2610.29870" },
+      { "label": "Full text (HTML)", "url": "https://arxiv.org/html/2610.29870v1" }
+    ],
+    "image": {
+      "src": "img/2026-10-25/pause.webp",
+      "alt": "Diagram of a coding run: read, edit a scratch file, run, read, think; the first source edit is blocked by PAUSE, a planner writes one repair plan from the evidence, and the same executor then edits and runs with checks passing.",
+      "credit": "Patel et al. (arXiv)",
+      "creditUrl": "https://arxiv.org/abs/2610.29870",
+      "fit": "contain"
+    },
+    "more": [
+      "Why it matters this week: the week's stories kept landing on the same question, how to check an agent without paying for a second agent to watch it all the time. PAUSE picks one moment instead. In 476 runs, agents made their first source edit at a median of 60% of the way through, after exploring and before committing to a fix. That is when a second opinion is cheapest and most useful.",
+      "How it works: the trigger is a plain rule, the first file-editor request aimed at a source file, so it needs no learned monitor and no search over checkpoints. The planner sees the task and the history before the edit but not the pending edit itself. Its plan is added as a user message, the blocked edit is not replayed, and the interceptor switches off. It also works offline: from a recorded failed run, restoring at the last thinking step before the first edit recovered 35.4% of eligible failures, using about a third fewer agent tokens than starting over.",
+      "What it found: a rule-triggered advisor at the same cost reached 61.8%, so the timing matters, not just the extra call. In OpenHands the same setup went from 45.4% to 62.2%. The authors list real limits: the planner cannot look at files or run commands, the plan is never refreshed, edits made through shell commands slip past the trigger, and possible training exposure to SWE-bench cannot be ruled out.",
+      "What to do: the idea maps onto a pre-edit hook in any agent that supports them. Track whether a session has edited source yet, and on the first edit call a stronger model once with the transcript and a request for root cause, file and intended fix in a few sentences. Run it on ten real bugs with and without the hook and compare."
+    ]
+  }
+}

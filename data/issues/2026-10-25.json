@@ -1,0 +1,986 @@
+{
+  "date": "2026-10-25",
+  "number": 12,
+  "title": "Measure where it counts",
+  "dek": "Google let an agent work overnight on a 200,000-line codebase, scored it on a benchmark it never saw, and kept two of six changes. Plus guardrails that enforce instead of ask, and Unreal tools that test what players actually load.",
+  "theme": {
+    "paper": "butter",
+    "text": "federal-blue",
+    "inks": [
+      "blue",
+      "orange"
+    ],
+    "type": "condensed",
+    "mood": "a measured Sunday about proving the speedup"
+  },
+  "tldr": [
+    {
+      "text": "Google ran Gemini 4 Argon for **11 hours** on its agent framework with a rulebook, a pinned goal and a hidden benchmark. Maintainers kept **2 of 6** changes; both were design fixes.",
+      "lane": "ai"
+    },
+    {
+      "text": "Sean Goedecke argues slow software is a design problem: if half a request waits on the database, a faster language can at best halve it.",
+      "lane": "ai"
+    },
+    {
+      "text": "Google's Data Agent Kit shows two kinds of guardrail: a skill that asks the agent to stop, and an IAM rule that blocks write tools outright.",
+      "lane": "ai"
+    },
+    {
+      "text": "Vercel now creates a separate, limited Stripe key for each agent, and Claude's SDKs moved to Apache 2.0 with breaking changes. Pin before you upgrade.",
+      "lane": "ai"
+    },
+    {
+      "text": "An Unreal tool author says packaged games ignore save-file redirects that work in the editor. Today's Try this checks your own build.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "argon-overnight",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Google left an agent alone overnight with 200,000 lines of code",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Google gave its coding agent one goal, a written rulebook and a speed test it could not see, then let it work for 11 hours on a big open-source project. It proposed six speedups; the maintainers kept two.",
+      "background": "Gemini 4 Argon is Google's coding model. ADK, the Agent Development Kit, is Google's open-source Python framework for building agents, with about 800 source files and nearly 17,000 unit tests.",
+      "takeaway": "The setup decided the result: house rules, a goal that demands numbers, a benchmark the agent cannot tune against, and a person who cuts. Both changes that shipped were design fixes, not clever code.",
+      "body": [
+        "A first try ran about two hours with a one-paragraph prompt and no guidance. The agent changed a public JSON schema, ran only 216 nearby tests and left its benchmark numbers out of the pull request.",
+        "For the second try the team added a `.agents/skills` folder with an index and 12 guideline files, and pinned one goal: an unmerged pull request with before and after numbers. Argon worked from 9:11 PM to 8:19 AM. It read the guidelines first, measured a baseline before touching code, added regression tests and ran all 16,892 unit tests.",
+        "Two of six changes shipped. Filtering session events before copying them cut the framework's time before each model request by about 40% in long sessions, and a 158-turn run fell from 65.6 to 56.1 seconds. Lazy imports cut cold import time by 21%. The figures are Google's own."
+      ],
+      "image": {
+        "src": "img/2026-10-25/argon4.webp",
+        "alt": "Six boxes in a row. Session Copy and Lazy Imports are highlighted and marked Shipped; Event Cache, OTel Gating, Contents Rewrite and Replay Index are grey and marked Cut.",
+        "credit": "Google for Developers blog",
+        "creditUrl": "https://developers.googleblog.com/optimizing-a-200000-line-python-codebase-overnight-with-gemini-4-argon/",
+        "fit": "contain"
+      },
+      "stat": {
+        "value": "2 of 6",
+        "label": "agent changes the maintainers kept"
+      },
+      "terms": [
+        {
+          "term": "unit tests",
+          "def": "Small automatic checks that each confirm one piece of code still does what it should."
+        },
+        {
+          "term": "pull request",
+          "def": "A proposed change to a codebase that people review before it is merged."
+        },
+        {
+          "term": "regression tests",
+          "def": "Tests added to catch a specific problem if it ever comes back."
+        },
+        {
+          "term": "Lazy imports",
+          "def": "Loading a code library only at the moment it is first used, instead of at startup."
+        }
+      ],
+      "deep": [
+        "Speed was judged on four workloads run 30 times each (package startup, a 200-step conversation, a 20-sub-agent handoff and a 12-node workflow), plus a holdout script, `bench_turn.py`, that the agent never saw. Round two ran in Antigravity's `/goal` mode, which keeps the goal pinned when the conversation is compacted.",
+        "The four cut changes: a multi-agent event cache that was 17% faster on a synthetic test but could return stale data across sessions; a read of a private OpenTelemetry attribute that could break on a minor upgrade; a history-formatting rewrite that was harder to read with no end-to-end gain; and a replay index that only helped synthetic tests.",
+        "Lazy loading left time to first request flat (3.07 to 3.09 s) because the import cost moves into the first turn, so Google suggests a warm-up request. Simply deleting three imports passed all 16,892 open-source tests but broke 25 internal Google test targets that patched those attributes.",
+        "Google's post is dated October 13; InfoQ covered it on October 24, which is when it reached us. The shipped commit says the changes were generated by Argon."
+      ],
+      "why": "This is a reusable recipe for long, unattended agent runs, with the failure mode shown next to the fix. The benchmark the agent never saw is what made the numbers believable.",
+      "forYou": "Copy the shape in Claude Code: a skills folder of repo rules, a benchmark script kept out of the repo, and a goal that requires before and after numbers in the PR. Try it on plugin load time or a slow Supabase query path.",
+      "sources": [
+        {
+          "label": "Google for Developers blog",
+          "url": "https://developers.googleblog.com/optimizing-a-200000-line-python-codebase-overnight-with-gemini-4-argon/"
+        },
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/google-argon-optimizes-adk/"
+        },
+        {
+          "label": "The shipped commit",
+          "url": "https://github.com/google/adk-python/commit/1754b3eeb6cdb2c16e3b30619a12066623df132e"
+        }
+      ]
+    },
+    {
+      "id": "slow-by-design",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Slow software is usually slow by design, not by language",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Sean Goedecke argues most apps are slow because of how they are built, so rewriting them in a faster language buys little. Caching, batching and skipping work buy far more.",
+      "plain": "If half of every request is spent waiting on the database, even infinitely fast code can only make it twice as fast.",
+      "body": [
+        "His examples: a tokenizer rewritten in assembly won largely by avoiding regular expressions, and a naive Rust port of a C program ran about 30% faster because it used B-trees. Both were design changes riding along with the rewrite."
+      ],
+      "points": [
+        "Cache what you compute twice.",
+        "Move slow work out of the request.",
+        "Run independent work in parallel.",
+        "Fix N+1 queries.",
+        "Rewrite only hot spots that are truly CPU-bound."
+      ],
+      "terms": [
+        {
+          "term": "B-trees",
+          "def": "A way of organising sorted data so that finding, adding and removing items stays fast as it grows."
+        },
+        {
+          "term": "N+1 queries",
+          "def": "Asking the database once for a list, then once more for every item in it, instead of fetching everything in one go."
+        },
+        {
+          "term": "CPU-bound",
+          "def": "Limited by how fast the processor computes, rather than by waiting on disks, networks or databases."
+        }
+      ],
+      "deep": [
+        "Commenters pushed back that a typical query takes about 5 ms against a 500 ms response, so the database is not always the culprit; Goedecke says his view comes from profiling at a few companies. His advice for the agent era is to have agents profile and redesign first."
+      ],
+      "why": "Agents make rewrites cheap, which makes the wrong rewrite tempting. Today's lead agrees: both changes Google kept were about doing less work, not faster work.",
+      "forYou": "Before porting any Node hot path to Rust, profile it. In your SaaS apps the time is most likely Postgres round trips, which a rewrite would not touch.",
+      "sources": [
+        {
+          "label": "Sean Goedecke",
+          "url": "https://www.seangoedecke.com/software-is-slow-because-of-bad-design-not-slow-languages/"
+        }
+      ]
+    },
+    {
+      "id": "thinkingcap",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A Gemma fine-tune that thinks 39% less",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "BottleCap AI released free weights for a version of Google's Gemma 4 model that writes far less hidden reasoning before answering, at almost the same accuracy on its own tests.",
+      "terms": [
+        {
+          "term": "thinking tokens",
+          "def": "The hidden reasoning text a model writes before its answer; you pay for it and wait for it."
+        },
+        {
+          "term": "fine-tune",
+          "def": "A copy of a model trained a little further to change how it behaves."
+        }
+      ],
+      "deep": [
+        "The model is `bottlecapai/ThinkingCap-gemma-4-26B-A4B-it` on Hugging Face, with GGUF builds, meant as a drop-in on the same vLLM setup and sampling settings. Accuracy changes ranged from -4.00 points on AA-LCR and -0.96 on GPQA Diamond to +1.83 on IFBench and +1.45 on LongBench v2. A paid version claims larger cuts, with no evaluation shown."
+      ],
+      "why": "For a self-hosted model, thinking tokens are most of the cost and the wait. Check the tail before switching: long-context work lost the most.",
+      "forYou": "Worth a test if you run a local model for grading or classification in a pipeline; run it on your own long inputs first.",
+      "sources": [
+        {
+          "label": "BottleCap AI",
+          "url": "https://bottlecapai.com/post/thinkingcap-gemma-4-26b"
+        }
+      ],
+      "intro": "Cut in hidden reasoning, per benchmark (vendor-reported). Average across 12: 38.9%, with accuracy down 0.15 points on average.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "LongBench v2",
+          "value": 69.1
+        },
+        {
+          "label": "AA-LCR (long context)",
+          "value": 59.3,
+          "highlight": true
+        },
+        {
+          "label": "MMLU-Pro",
+          "value": 49.1
+        },
+        {
+          "label": "GPQA Diamond",
+          "value": 44.4
+        },
+        {
+          "label": "AIME 2026",
+          "value": 39.3
+        },
+        {
+          "label": "LiveCodeBench",
+          "value": 27.6
+        },
+        {
+          "label": "tau2-bench",
+          "value": 20.8
+        },
+        {
+          "label": "IFBench",
+          "value": 13.7
+        }
+      ],
+      "note": "Highlighted: the biggest accuracy loss, 4 points on AA-LCR. Stuck, looping answers fell from 3.64% to 0.76%."
+    },
+    {
+      "id": "data-agent-kit",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A skill asks the agent to stop. A deny rule makes it",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Google's free Data Agent Kit, now generally available, protects databases two ways: a written skill that tells the agent to ask before deleting, and an access rule that blocks write tools no matter what the agent decides.",
+      "background": "Data Agent Kit connects coding agents such as Claude Code, Codex and Cursor to more than 15 Google Cloud data services through MCP, with 37 skills, under Apache 2.0.",
+      "intro": "The two layers, side by side.",
+      "left": "The skill",
+      "right": "The deny rule",
+      "rows": [
+        {
+          "aspect": "What it is",
+          "left": "`accidental-data-loss-prevention`, written guidance the agent reads",
+          "right": "An IAM deny policy on the `mcp.googleapis.com/tools.call` permission"
+        },
+        {
+          "aspect": "What it covers",
+          "left": "DROP TABLE, TRUNCATE, DELETE without WHERE, production bucket deletes, project deletion, key destruction",
+          "right": "Every MCP tool not marked read-only"
+        },
+        {
+          "aspect": "Enforced?",
+          "left": "No. The agent is asked to stop, explain and wait for consent",
+          "right": "Yes, at organisation, folder or project level"
+        },
+        {
+          "aspect": "Blind spot",
+          "left": "An agent that ignores or never loads the skill",
+          "right": "Blocked tools still show in the tool list, and it covers Google Cloud MCP servers only"
+        }
+      ],
+      "verdict": "Use the skill for judgment and the deny rule for anything you cannot undo. Neither tells an agent whether a timed-out write actually happened.",
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way for AI agents to discover and call tools and data sources."
+        },
+        {
+          "term": "IAM",
+          "def": "Identity and access management: the cloud's rules for who may do what."
+        },
+        {
+          "term": "skill",
+          "def": "A folder of instructions an agent loads when a task calls for it."
+        }
+      ],
+      "deep": [
+        "The documented condition is `api.getAttribute('mcp.googleapis.com/tool.isReadOnly', false) == false`. The companion attributes `resource.service` and `tool.name` work only through gcloud, not the console. The alternative is running the agent as a read-only service account through impersonation.",
+        "Ankit Dongre (viaSocket), quoted by InfoQ, argues tool results should carry an idempotency key, commit status and whether the action can be rolled back, which the kit's results lack."
+      ],
+      "why": "Most agent safety today is written as instructions. This is a clear case of the difference between asking and enforcing, and the same split applies to any database an agent can reach.",
+      "forYou": "Same split for Supabase: keep the 'ask before destructive SQL' line in CLAUDE.md, but give the agent's MCP connection a read-only role so the rule cannot be talked around.",
+      "sources": [
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/data-agent-kit-ga/"
+        },
+        {
+          "label": "Google Cloud docs: block read-write tools",
+          "url": "https://docs.cloud.google.com/mcp/prevent-read-write-tool-use"
+        },
+        {
+          "label": "Plugin repository",
+          "url": "https://github.com/GoogleCloudPlatform/data-agent-kit-plugin"
+        }
+      ]
+    },
+    {
+      "id": "stripe-keys",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "One payment key per agent, made for you",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Vercel can now create a separate, limited Stripe key for each agent or task, so a reporting agent can read charges while an onboarding agent can only edit customers.",
+      "terms": [
+        {
+          "term": "restricted key",
+          "def": "A Stripe key that can only perform the actions you selected, such as reading charges."
+        },
+        {
+          "term": "Rotate",
+          "def": "Replace a secret key with a new one, so an old copy stops working."
+        }
+      ],
+      "why": "Scoped, per-task credentials are the enforced half of agent safety: when one key leaks or an agent misbehaves, the damage stops at that key's permissions.",
+      "forYou": "If any of your SaaS agents touch Stripe, give each its own read-only or narrow key this way rather than sharing the secret key.",
+      "sources": [
+        {
+          "label": "Vercel changelog",
+          "url": "https://vercel.com/changelog/vercel-connect-adds-managed-stripe-api-keys"
+        }
+      ],
+      "layout": "flow",
+      "intro": "Vercel creates a restricted key in your Stripe account for each agent or task and stores it, so there is no secret to paste. The existing MCP and bring-your-own-key options are unchanged.",
+      "nodes": [
+        {
+          "label": "Stripe connector",
+          "note": "Create one from the connectors directory"
+        },
+        {
+          "label": "Managed API Key",
+          "note": "Pick this connection method"
+        },
+        {
+          "label": "Pick permissions",
+          "note": "Read charges for a report agent, write customers for onboarding"
+        },
+        {
+          "label": "One key per agent",
+          "note": "Vercel creates and stores it in your Stripe account",
+          "key": true
+        },
+        {
+          "label": "Rotate any time",
+          "note": "In settings, no redeploy; the old key works up to 24 hours"
+        }
+      ],
+      "caption": "A leaked or misused key can only do what its own permissions allow.",
+      "links": [
+        "choose",
+        "then",
+        "creates",
+        "later"
+      ]
+    },
+    {
+      "id": "agent-shipped",
+      "format": "list",
+      "lane": "ai",
+      "importance": 4,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Shipped for agent builders this week",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "Smaller releases for people building with Claude and other agents: a new way to buy the Claude API, SDK licence changes, docs written for agents, and a dashboard for many agents at once.",
+      "intro": "From the release notes and changelogs, October 22 to 24.",
+      "items": [
+        {
+          "title": "Claude on Google Cloud, run by Anthropic",
+          "text": "The Claude API operated by Anthropic, reached from your Google Cloud project with IAM access and Marketplace billing. Fast mode for Claude Opus 5.5 is available there.",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        },
+        {
+          "title": "Claude SDKs move to Apache 2.0",
+          "text": "The new SDK majors switch from the MIT licence and carry breaking changes of their own, apart from the API version. Pin versions before upgrading.",
+          "url": "https://platform.claude.com/docs/en/api/migration-2026-10-21"
+        },
+        {
+          "title": "Supabase Knowledge Base",
+          "text": "Troubleshooting and migration guides at supabase.com/kb, in public beta, written for developers and their agents.",
+          "url": "https://supabase.com/changelog"
+        },
+        {
+          "title": "Corgi",
+          "text": "A terminal multiplexer that shows whether each coding agent is working, waiting on you or done, with a token view and git worktrees. The page does not state a licence.",
+          "url": "https://corgi.computer"
+        }
+      ],
+      "terms": [
+        {
+          "term": "SDK",
+          "def": "Software development kit: the official library for calling a service from your code."
+        },
+        {
+          "term": "multiplexer",
+          "def": "A program that runs several terminal sessions in one window and lets you switch between them."
+        }
+      ],
+      "why": "Licence and breaking changes in an SDK are easy to miss in an automatic dependency bump.",
+      "forYou": "Pin the Anthropic SDK in your Node SaaS repos before Dependabot proposes the new major; read the migration guide first.",
+      "sources": [
+        {
+          "label": "Supabase changelog",
+          "url": "https://supabase.com/changelog"
+        },
+        {
+          "label": "Corgi",
+          "url": "https://corgi.computer"
+        }
+      ]
+    },
+    {
+      "id": "savekeeper",
+      "format": "steps",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "A renamed variable can survive in the editor and vanish in the shipped game",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "An Unreal Engine tool maker says that when you rename a saved variable, the editor carries old values across but a packaged game using the standard loader does not, so players can lose progress with no error.",
+      "background": "CoreRedirects are lines in an Unreal config file that tell the engine an old name now means a new one, so data saved under the old name still loads.",
+      "intro": "Savekeeper, a new $14.99 tool for Unreal Engine 5.8, turns that into a test. Its author bases the editor versus packaged claim on reading engine source; the tool's own tests run in the editor.",
+      "steps": [
+        {
+          "title": "Keep real saves",
+          "text": "Before release, capture the save files a build writes into a fixtures folder: `-run=Savekeeper -Capture=1.0.0`."
+        },
+        {
+          "title": "Test each new build",
+          "text": "Run `-run=Savekeeper` against the new classes. It reports, per stored value, whether a player keeps it in the editor, in a packaged game with the stock loader, and with its own loader."
+        },
+        {
+          "title": "Fail the build",
+          "text": "It writes an HTML report and JUnit output, and exits with code 2 when a value is lost, so CI can stop the release."
+        },
+        {
+          "title": "Write proven fixes",
+          "text": "For a renamed field it proposes a redirect, replays the save through it and checks the value arrives. `-Apply` writes the proven lines to DefaultEngine.ini."
+        }
+      ],
+      "terms": [
+        {
+          "term": "packaged game",
+          "def": "The cooked, shippable build players run, as opposed to the game running inside the editor."
+        },
+        {
+          "term": "JUnit output",
+          "def": "A standard test-result file format that CI systems can read."
+        },
+        {
+          "term": "CI",
+          "def": "Continuous integration: servers that build and test every change automatically."
+        }
+      ],
+      "deep": [
+        "The author points to the condition `!RequiresCookedData() || IsSaveGame()` in Class.cpp (lines 1621 to 1622 in 5.8) and says `LoadGameFromMemory` never marks its archive as a save game, so property redirects and Blueprint property GUIDs are skipped in cooked builds. Its own load node applies redirects to the bytes before the stock load. It reads saves from 5.4 on, only 5.8 saves were tested, and custom Serialize overrides and third-party save plugins are not covered. The author says the code was written with AI tools."
+      ],
+      "why": "Lost saves are among the most damaging bugs a game can ship, and this one hides from editor testing. The test pattern (real old saves as fixtures, checked on every build) works with or without the tool.",
+      "forYou": "Your inventory and progression plugins persist state that buyers ship in their games. A save-compat fixture test in CI would be a selling point on Fab; see Try this.",
+      "sources": [
+        {
+          "label": "Unreal Engine forums",
+          "url": "https://forums.unrealengine.com/t/savekeeper-tests-your-old-savegame-files-against-your-current-classes-and-shows-which-values-a-player-loses-ue-5-8/2844512"
+        }
+      ]
+    },
+    {
+      "id": "bt-to-statetree",
+      "format": "diagram",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A converter that moves Unreal AI from behavior trees to StateTree",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A new paid tool converts Unreal behavior trees into StateTree, Epic's newer AI system, keeps the original, and lists every node it could not translate instead of guessing.",
+      "terms": [
+        {
+          "term": "behavior trees",
+          "def": "A common way to script game AI as a tree of choices and actions."
+        },
+        {
+          "term": "StateTree",
+          "def": "Unreal's newer system for game AI and logic, built around states and transitions."
+        },
+        {
+          "term": "blackboard",
+          "def": "The shared memory an Unreal AI reads and writes, such as its current target."
+        },
+        {
+          "term": "EQS",
+          "def": "Environment Query System: Unreal's tool for asking questions like 'where is the best cover nearby'."
+        }
+      ],
+      "why": "Naming what it cannot do, and failing safe there, is the right design for any migration tool, human-written or AI-built.",
+      "forYou": "If your combat or interaction plugins ship behavior tree examples, this shows buyers will start asking for StateTree versions; the fail-safe conversion sheet is a pattern to copy in your own tools.",
+      "sources": [
+        {
+          "label": "Unreal Engine forums",
+          "url": "https://forums.unrealengine.com/t/behavior-tree-to-statetree-converter-keeps-your-blackboard-and-names-every-node-it-cant-translate-ue-5-8/2844144"
+        }
+      ],
+      "layout": "flow",
+      "intro": "A $19.99 tool for Unreal Engine 5.8 on itch.io. It converts a behavior tree into a StateTree that shares the same blackboard, leaves the original untouched, and names every node it cannot translate.",
+      "nodes": [
+        {
+          "label": "Behavior tree",
+          "note": "Selectors, sequences, conditions, cooldowns, loops, EQS, services, subtrees"
+        },
+        {
+          "label": "Converter",
+          "note": "Preview first; the original asset stays as it is"
+        },
+        {
+          "label": "StateTree",
+          "note": "Same blackboard, same names",
+          "key": true
+        },
+        {
+          "label": "Conversion sheet",
+          "note": "Untranslated nodes fail safe: the task fails or the branch is blocked"
+        }
+      ],
+      "links": [
+        "read by",
+        "builds",
+        "and lists"
+      ],
+      "caption": "A CI switch, FailOnUnconverted, stops a build when anything was left untranslated.",
+      "deep": [
+        "Blueprint tasks, decorators and services cannot be translated and go on the sheet; an unconverted task fails, and an unconverted decorator blocks its branch. Cooldowns are timed per AI controller. It is one of several small, AI-built Unreal 5.8 command-line tools posted to the forums this week, each made to run in CI."
+      ]
+    },
+    {
+      "id": "obs-33",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 4,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "OBS Studio 33 moves plugins and its browser",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The free recording and streaming app most developers use for devlogs and trailers has a big update that changes where plugins live and upgrades its built-in browser.",
+      "stats": [
+        {
+          "value": "150",
+          "label": "browser engine version, up from 127"
+        }
+      ],
+      "body": [
+        "Third-party plugins get a new install location; old locations still load until OBS 34. Ubuntu 24.04 and FFmpeg 6 and 7 are no longer supported."
+      ],
+      "terms": [
+        {
+          "term": "browser engine",
+          "def": "The built-in Chromium that draws web-based overlays and docks inside OBS."
+        }
+      ],
+      "deep": [
+        "The browser engine is CEF (Chromium Embedded Framework). First-party plugins move to a core folder, preview snapping works along a whole axis, and NVENC encoding now runs on Arm64. Qt 6.4 to 6.9 support was also dropped."
+      ],
+      "why": "Browser overlays and third-party plugins are what usually break; check them on a spare profile before a recording session.",
+      "sources": [
+        {
+          "label": "OBS Studio 33.0.0 release",
+          "url": "https://github.com/obsproject/obs-studio/releases/tag/33.0.0"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Prove the speedup",
+      "note": "Design beats language, and a cheaper model needs its weak spot checked.",
+      "ids": [
+        "slow-by-design",
+        "thinkingcap"
+      ]
+    },
+    {
+      "title": "A rule asks, a wall enforces",
+      "note": "Guardrails that block, keys scoped to one job, and the week's agent tools.",
+      "ids": [
+        "data-agent-kit",
+        "stripe-keys",
+        "agent-shipped"
+      ]
+    },
+    {
+      "title": "Test what players actually run",
+      "note": "Saves, AI trees and the recorder you make trailers with.",
+      "ids": [
+        "savekeeper",
+        "bt-to-statetree",
+        "obs-33"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is Amdahl's law?",
+    "answer": "Amdahl's law says that speeding up one part of a job can only save the time that part took. If the part you improve is half the job, the whole job can at best get twice as fast.",
+    "analogy": "A trip is a 20-minute walk to the station and a 20-minute train ride. A train twice as fast saves 10 minutes; even a teleporting train saves only 20, because you still have to walk.",
+    "body": [
+      "Computer architect Gene Amdahl described it in 1967 for parallel computers: adding processors only speeds up the work that can be split between them. The rest sets a hard floor.",
+      "It applies to any software. A web request that spends half its time waiting on the database cannot get more than twice as fast from faster code. That is why profiling, which measures where time actually goes, comes before optimising.",
+      "Today it shows up three times: Goedecke's case against language rewrites, Google's lazy imports that left time to first request flat because the cost moved elsewhere, and a benchmark where agents wrote correct code that did not make the system faster."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Whole job: 100 ms",
+          "note": "50 ms waiting on the database, 50 ms in your code"
+        },
+        {
+          "label": "Make your code 10x faster",
+          "note": "50 ms becomes 5 ms"
+        },
+        {
+          "label": "New total: 55 ms",
+          "note": "Not 10 ms: the database wait is untouched",
+          "key": true
+        },
+        {
+          "label": "Best possible: 50 ms",
+          "note": "At most twice as fast, however fast the code gets"
+        }
+      ],
+      "links": [
+        "then",
+        "gives",
+        "limit"
+      ],
+      "caption": "The part you do not speed up decides how fast the whole thing can get."
+    },
+    "terms": [
+      {
+        "term": "profiling",
+        "def": "Measuring where a program actually spends its time, function by function."
+      },
+      {
+        "term": "parallel computers",
+        "def": "Machines that split one job across many processors working at once."
+      }
+    ],
+    "seenIn": [
+      "slow-by-design",
+      "argon-overnight"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia: Amdahl's law",
+        "url": "https://en.wikipedia.org/wiki/Amdahl%27s_law"
+      },
+      {
+        "label": "Sean Goedecke",
+        "url": "https://www.seangoedecke.com/software-is-slow-because-of-bad-design-not-slow-languages/"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Load an old save in a packaged build after renaming a field",
+    "gist": "In under an hour you will know whether a renamed save-game variable survives in the game players actually run, not just in the editor.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "An Unreal Engine 5 project that saves with a SaveGame class and the standard Save/Load Game to Slot nodes.",
+    "steps": [
+      {
+        "title": "Make an old save",
+        "text": "Package the current build, play it, and save a game with a distinctive value in one SaveGame property, for example a score of 1234. Copy the .sav file somewhere safe."
+      },
+      {
+        "title": "Rename the property",
+        "text": "Rename that property in your SaveGame class and add a property redirect from the old name to the new one under `[CoreRedirects]` in DefaultEngine.ini."
+      },
+      {
+        "title": "Check in the editor",
+        "text": "Put the old .sav back in the project's SaveGames folder, load it in Play In Editor, and print the renamed property."
+      },
+      {
+        "title": "Check in a packaged build",
+        "text": "Package again, put the old .sav in the packaged game's SaveGames folder, load it, and print the same property."
+      }
+    ],
+    "code": {
+      "lang": "ini",
+      "code": "[CoreRedirects]\n+PropertyRedirects=(OldName=\"/Script/MyGame.MySaveGame.OldScore\",NewName=\"/Script/MyGame.MySaveGame.Score\")"
+    },
+    "check": "If the editor prints 1234 and the packaged build prints 0, you have reproduced the gap the Savekeeper author describes, and you need a migration step or a loader that applies redirects before you ship the rename.",
+    "terms": [
+      {
+        "term": "Play In Editor",
+        "def": "Running the game inside the Unreal editor window instead of as a packaged build."
+      },
+      {
+        "term": "property redirect",
+        "def": "A config line telling Unreal that data saved under an old property name belongs to a new one."
+      }
+    ],
+    "from": "savekeeper",
+    "forYou": "Run it on your inventory plugin's save class before the next Fab update; if the gap is real, document it for buyers and ship a migration helper.",
+    "sources": [
+      {
+        "label": "Savekeeper post (the claim)",
+        "url": "https://forums.unrealengine.com/t/savekeeper-tests-your-old-savegame-files-against-your-current-classes-and-shows-which-values-a-player-loses-ue-5-8/2844512"
+      },
+      {
+        "label": "Unreal docs: Core Redirects",
+        "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/core-redirects-in-unreal-engine"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "The Brotli bug now has a name, HTTP2Shell. New: Express 5 with body-parser 2.0.0 to 2.3.0 unpacks `br` request bodies by default, and Node 20, 23 and 25 get no fix.",
+      "lane": "both",
+      "url": "https://strobes.co/blog/http2shell-brotli-rce-cve-2026-111497/",
+      "source": "Strobes"
+    },
+    {
+      "text": "Dan Luu argues teams should build more ambitious software now; in his eval a model passed every zstd test over 99% of the time at about $1 per implementation.",
+      "lane": "ai",
+      "url": "https://danluu.com/ambitious/",
+      "source": "Dan Luu"
+    },
+    {
+      "text": "Vercel can deploy without an account: the CLI publishes to a temporary URL, and you must claim the project within an hour or it is removed.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog",
+      "source": "Vercel"
+    },
+    {
+      "text": "`uv check` previews uv and ty working together: it sets up the environment, installs dependencies and type-checks in one command.",
+      "lane": "ai",
+      "url": "https://astral.sh/blog/uv-ty-integration",
+      "source": "Astral"
+    },
+    {
+      "text": "Geoffrey Huntley had an agent patch a NixOS fleet for the eMudhra keys, then write an AGENTS.md reminder to remove the workaround once upstream ships the fix.",
+      "lane": "ai",
+      "url": "https://ghuntley.com/patch",
+      "source": "Geoffrey Huntley"
+    },
+    {
+      "text": "Wild 0.11, a fast Rust linker, turns on WebAssembly output by default and can now link Linux kernel modules.",
+      "lane": "ai",
+      "url": "https://github.com/wild-linker/wild/releases/tag/0.11.0",
+      "source": "GitHub"
+    },
+    {
+      "text": "GitHub pull requests now remember your whitespace preference and get an improved split view.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/",
+      "source": "GitHub Changelog"
+    },
+    {
+      "text": "HezFX, a muscle simulation plug-in for 3ds Max and Maya in the spirit of the discontinued Ziva VFX, is in beta with no release date.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/artist-shows-ziva-vfx-inspired-muscle-simulation-plug-in-for-3ds-max-maya",
+      "source": "80 Level"
+    },
+    {
+      "text": "MT Hair Taper is a free Blender 4 add-on that narrows the ends of hair card meshes without changing their length or shape.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/get-this-free-blender-add-on-that-makes-hair-meshes-thinner-at-the-ends",
+      "source": "80 Level"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "godot-gridmap",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "A pixel art 2.5D world from two built-in Godot nodes",
+      "where": "Bluesky",
+      "signal": "497 likes and 48 reposts in three days, the top Godot post in the sweep (Bluesky).",
+      "hook": "Flat pixel art tiles and sprites placed in a real 3D grid, so walls cast shadows and the camera can tilt, with no custom renderer.",
+      "borrow": "GridMap lays out 3D tiles like a tilemap and Sprite3D shows 2D sprites in 3D space. Together they give a 2.5D look from stock nodes.",
+      "forYou": "A cheap look for a browser or mobile side project: try the same split in three.js with instanced tiles and billboard sprites.",
+      "url": "https://bsky.app/profile/heartbeast.bsky.social/post/3myigns7wks2w",
+      "image": {
+        "src": "img/2026-10-25/gridmap.webp",
+        "alt": "A pixel art character on a dirt path between grass, plants and a tree, with brick walls casting soft 3D shadows.",
+        "credit": "Heartbeast (Bluesky)",
+        "creditUrl": "https://bsky.app/profile/heartbeast.bsky.social/post/3myigns7wks2w",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "dear-passengers",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Dear Passengers: co-op chaos on the world's worst airline",
+      "where": "Steam",
+      "signal": "#3 most wishlisted upcoming game on Steam (Steam).",
+      "hook": "One player flies while the others serve the cabin, feed passengers and chase escaped animals in the hold, in physics comedy built to be clipped.",
+      "borrow": "Design for the clip: a co-op loop where a 15-second failure is funny on its own does the marketing for you.",
+      "forYou": "A reminder that physics-driven interaction systems sell when the failures are watchable; worth a look for interaction plugin demo scenes.",
+      "url": "https://store.steampowered.com/app/4534960",
+      "image": {
+        "src": "img/2026-10-25/dear-passengers.webp",
+        "alt": "Cockpit view with the player's hands on the yoke while a cartoon pilot named Pedro points out of the window and another character stands nearby.",
+        "credit": "FLEXUS (Steam)",
+        "creditUrl": "https://store.steampowered.com/app/4534960",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "factory-go",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Factory Go: the board game Go, but stones are factories that explode",
+      "where": "itch.io",
+      "signal": "On itch.io's new and popular list within a day of release.",
+      "hook": "Capture becomes explosion: a factory blows up when all its vents are blocked, and two connected chimneys merge into a large factory that cannot explode.",
+      "borrow": "One rule twist on a solved game, plus CPU levels, online matchmaking, password rooms and replays: a jam-sized scope with a full feature set.",
+      "url": "https://hirazi.itch.io/factory-go",
+      "image": {
+        "src": "img/2026-10-25/factory-go.webp",
+        "alt": "A steampunk game board with copper and teal factory pieces connected by pipes on a lettered grid.",
+        "credit": "hirazi (itch.io)",
+        "creditUrl": "https://hirazi.itch.io/factory-go",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "gameboy-tv",
+      "lane": "gamedev",
+      "kind": "concept",
+      "title": "A TV home screen turned into a Pokemon town",
+      "where": "X, Hacker News",
+      "signal": "70 points on Hacker News from the creator's own X post (Hacker News).",
+      "hook": "Apps become buildings in a Game Boy style town; one joke setting makes you beat a level 100 Mewtwo with a level 5 Pikachu.",
+      "borrow": "Skinning a dull utility as a game world gets attention, but commenters counted six presses to open YouTube: keep the shortcut path fast.",
+      "url": "https://news.ycombinator.com/item?id=50212668"
+    },
+    {
+      "id": "local-wiki",
+      "lane": "both",
+      "kind": "tool",
+      "title": "Local Wikipedia: only what is a half hour walk away",
+      "where": "Hacker News",
+      "signal": "1,561 points and 245 comments, the top Hacker News story of the last three days.",
+      "hook": "Your location stays in the browser and you get the geotagged articles within a walk; with fewer than 25 nearby it widens to the closest 25.",
+      "borrow": "The rule 'within a radius, else the nearest N' is a cheap content source for location-based games and walking quests.",
+      "url": "https://edjefferson.com/localwiki/"
+    },
+    {
+      "id": "enron-brain",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "An AI wiki of the Enron emails where every fact quotes its source",
+      "where": "Show HN",
+      "signal": "65 points on Hacker News; 49,401 facts across 214 pages built from 45,047 emails (the project's own figures).",
+      "hook": "Any fact whose supporting sentence could not be matched word for word in an email was thrown away, and facts expire when later mail shows them untrue.",
+      "borrow": "Quote-or-discard: make an agent cite a verbatim sentence for every claim and check it with a plain string match. The project reports 93% of sampled facts fully supported, judged by a second AI.",
+      "forYou": "The same check would keep agent-written docs or game lore wikis honest: verbatim quote or it does not ship.",
+      "url": "https://www.thisandthat.chat/enron/"
+    }
+  ],
+  "lab": [
+    {
+      "id": "pause",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "PAUSE: Search-Free Steering of Coding Agents Before Their First Source-Code Edit",
+      "headline": "Pause a coding agent at its first code edit, let a stronger model write one fix plan, and it solves far more bugs for one extra call.",
+      "authors": "Viral Patel, Boyin Tan, Jason Xue, et al. (MBZUAI)",
+      "where": "arXiv preprint",
+      "date": "2026-10-21",
+      "problem": "Agents explore and test for a long time and still ship failing patches. Reviewing them on a schedule is expensive, and waiting for an alarm misses runs that look fine but are wrong.",
+      "idea": "The first edit to a source file is a natural checkpoint: by then the agent has explored, but not yet committed. PAUSE blocks that edit, gives a planner model the task and the history so far, and appends its single plan (root cause, code to change, intended fix) to the conversation. The agent then carries on with its context and workspace intact.",
+      "result": "With a small open coding model as the agent, SWE-bench Verified went from 50.2% to 65.0% solved, for $26 of planner calls across 500 tasks. A planner reviewing on a schedule reached 67.6% but cost $232. In OpenHands the gain was 45.4% to 62.2%.",
+      "useIt": "Try it as a hook: on a session's first file edit, ask a stronger model for a short root cause and fix plan, and feed it back as context. Measure solved tasks and tokens on your own bug list.",
+      "maturity": "idea",
+      "forYou": "A first-edit PreToolUse hook that calls a stronger model once is about 30 lines; worth testing on plugin bug fixes where the agent tends to patch symptoms.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.29870"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2610.29870v1"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-25/pause.webp",
+        "alt": "Diagram of a coding run: read, edit a scratch file, run, read, think; the first source edit is blocked by PAUSE, a planner writes one repair plan from the evidence, and the same executor then edits and runs with checks passing.",
+        "credit": "Patel et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2610.29870",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "microperf",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Benchmarking Coding Agents for System-Level Performance Optimization",
+      "headline": "Coding agents write correct code that does not make the system faster: the best setup undid only 42% of a planted slowdown.",
+      "authors": "Yanze Zhang, Maggie Yongqi Guan, Shudong Liu, et al. (University of Macau)",
+      "where": "arXiv preprint",
+      "date": "2026-10-21",
+      "problem": "Agent benchmarks test single functions or repos, but real performance problems in services come from how the services talk to each other.",
+      "idea": "MicroPerf-Bench plants 9 kinds of known performance mistakes, such as chatty services and long call chains, into 7 real open-source microservice systems without breaking them: 65 tasks, each with tests and a load check.",
+      "result": "Over 1,755 runs and 9 agent and model setups, the best (OpenHands with GLM-5.2) scored 42.0 out of 100. The usual failure: changes that pass the tests and break no rules but do not speed the system up, because the agent picked the wrong bottleneck.",
+      "useIt": "Before asking an agent to optimise, hand it a profile or trace and make a before and after load-test number the definition of done. A green test run is not evidence of a speedup.",
+      "maturity": "code",
+      "forYou": "Same rule for your SaaS work: give the agent the slow query log or p95 per endpoint, not just 'make it faster'.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.29695"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/zyzcjnb/microperf"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-25/microperf.webp",
+        "alt": "Four-stage process figure: 58 anti-patterns narrowed to 9, 28 repositories narrowed to 7 systems, anti-patterns injected and reviewed by experts, and contamination checks.",
+        "credit": "Zhang et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2610.29695",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "energy-contact",
+      "lane": "gamedev",
+      "kind": "paper",
+      "title": "Energy-Controllable Time Integration for Elastodynamic Contact",
+      "headline": "A small change to the standard stable solver lets soft bodies keep their bounce at big time steps, instead of slowly going dead.",
+      "authors": "Kevin You, Juntian Zheng, Minchen Li (Carnegie Mellon University)",
+      "where": "ACM Transactions on Graphics",
+      "date": "2026-10-09",
+      "problem": "Solvers that stay stable at large time steps, such as implicit Euler, quietly drain energy, so jelly and cloth lose their life. Solvers that conserve energy tend to blow up on stiff contact.",
+      "idea": "A modified implicit Euler step that aims at an energy target you choose, keeping energy in the large, visible motions. It works with barrier-style contact, so it keeps the guarantees of no inverted elements and no interpenetration.",
+      "result": "In a soft collision test at 1/30 s steps, the method ended closer to the reference speed (0.819 m/s against 0.864) than BDF2 (0.776). Most other results are visual comparisons; no code was found.",
+      "useIt": "If you write your own soft-body, cloth or jelly solver, add an energy target to the step so bouncy objects stay bouncy at game frame rates.",
+      "maturity": "idea",
+      "forYou": "Only relevant if a world-tools plugin ever ships its own soft-body solver; Chaos users can skip it.",
+      "links": [
+        {
+          "label": "Paper (ACM TOG)",
+          "url": "https://doi.org/10.1145/3840297"
+        },
+        {
+          "label": "Preprint (arXiv)",
+          "url": "https://arxiv.org/abs/2602.08094"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-25/energy.webp",
+        "alt": "Five panels of a soft armadillo figure falling and bouncing on a checkered floor over frames 0 to 260, with ghosted trails showing its motion.",
+        "credit": "You, Zheng and Li (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2602.08094",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "A quiet Sunday for engines: Unreal, Unity, Godot and Steam had nothing new confirmed in three days, and Reddit and several news feeds refused the sweep. The lead is a two-week-old Google post that most coverage missed."
+}
