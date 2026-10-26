@@ -1,0 +1,1048 @@
+{
+  "date": "2026-10-26",
+  "number": 13,
+  "title": "Cheaper tokens, bigger bills",
+  "dek": "OpenAI and Anthropic cut prices by up to 80% since June, and agents read most of their tokens from cache. Plus six ways to manage context, tests that skip the hard inputs, and a 1989 trick for doing less every frame.",
+  "theme": {
+    "paper": "mint",
+    "text": "hunter",
+    "inks": [
+      "purple",
+      "sunflower"
+    ],
+    "type": "wide",
+    "mood": "a frugal Monday about paying for less work"
+  },
+  "tldr": [
+    {
+      "text": "Price per token on Vercel's AI gateway fell to **43%** of April's level, yet usage grew about eightfold, so spend still rose.",
+      "lane": "ai"
+    },
+    {
+      "text": "Max Woolf estimates cache reads are 96 to 99% of an agent's tokens. The cache-read price, not the headline price, sets the bill.",
+      "lane": "ai"
+    },
+    {
+      "text": "Drew Breunig maps six ways to manage an agent's context and treats **200,000 tokens** as his warning point.",
+      "lane": "ai"
+    },
+    {
+      "text": "A study of 14,320 AI-written unit tests found only about a third try null or empty inputs.",
+      "lane": "ai"
+    },
+    {
+      "text": "RocketWerkz opened its C# framework BRUTAL royalty free, and SimCity's 16-frame trick still teaches how to do less per frame.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "llm-prices",
+      "format": "hero",
+      "variant": "split",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Token prices fell by more than half",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "OpenAI and Anthropic have cut model prices again and again since June, by up to 80%. People now pay well under half as much per token as in April, but they use so much more that total spend keeps climbing.",
+      "background": "AI models are billed per token, a chunk of text of about three quarters of a word, with separate prices for text sent in, text written out, and text read back from a cache.",
+      "body": [
+        "Max Woolf listed every price change the two labs made since June. GPT-5.6 Luna fell 80% on July 30, from $1 in and $6 out per million tokens to $0.20 and $1.20. Claude Opus 5.5 arrived on September 22 at $4 and $20, down from Opus 5's $5 and $25. Fable 5.1 kept its $10 and $50 but cut its cache-read price by 75%.",
+        "That last cut is the one to watch. In agent coding, the same instructions and files are sent on every turn and mostly read back from the cache. Woolf estimates cache reads make up 96% to 99% of the tokens an agent spends, so the cache-read price sets the bill more than the headline price.",
+        "Vercel's gateway data, charted in his post, shows price per token at 43.3% of April's level while usage grew almost eightfold and spend about 3.4 times. His explanations: models that are close substitutes, cheap open-weight models served by many hosts, the two labs answering each other, and cheaper serving."
+      ],
+      "image": {
+        "src": "img/2026-10-26/llm-vercel.webp",
+        "alt": "Line chart from April to September 2026, indexed to April as 100. Usage climbs to 790.8, spend rises to 342.7, and price per token falls to 43.3.",
+        "credit": "Max Woolf, from Vercel AI Gateway data",
+        "creditUrl": "https://minimaxir.com/2026/10/cheap-llms/",
+        "fit": "contain"
+      },
+      "stat": {
+        "value": "43%",
+        "label": "of April's price per token, on Vercel's gateway"
+      },
+      "terms": [
+        {
+          "term": "token",
+          "def": "A chunk of text, about three quarters of a word, that AI models read and write and are billed by."
+        },
+        {
+          "term": "cache-read price",
+          "def": "The lower price for text the provider already processed in an earlier request and can reuse."
+        },
+        {
+          "term": "open-weight models",
+          "def": "Models whose trained files are published, so any company can host them and sell access."
+        }
+      ],
+      "deep": [
+        "Prices per million tokens (input, output, cache read) from Woolf's list: GPT-6 Sol $2, $10, $0.20 and GPT-6 Luna $0.10, $0.50, $0.01 (September 22); GPT-6.1 Sol halved its cache read to $0.10 (September 29); Claude Sonnet 5's launch price of $2, $10, $0.20 became permanent on August 10; Fable 5.1 cache reads went from $1 to $0.25 on September 1.",
+        "Anthropic's docs put cache reads at 0.1 times the input price on most models, 0.05 times on Opus 5.5 and Sonnet 5.5, and 0.025 times on Fable 5.1. Writing to the cache costs 1.25 times input for the default five-minute lifetime.",
+        "The 96 to 99% share is Woolf's own estimate, not a measured industry figure. He also notes that 29 hosts now serve DeepSeek V4.1 Flash on OpenRouter, and says he does not expect sharp price rises."
+      ],
+      "why": "Model choice for agents is now mostly a cache question: compare cache-read prices and cache hit rates, not the price on the launch slide. And cheaper tokens have not made AI bills smaller, because teams run far more of them.",
+      "forYou": "Pull a week of Claude Code usage and check what share is cache reads. If it is near Woolf's figure, the subagent model choice matters less than keeping CLAUDE.md, skills and tool lists stable so the cache keeps hitting.",
+      "sources": [
+        {
+          "label": "Max Woolf",
+          "url": "https://minimaxir.com/2026/10/cheap-llms/"
+        },
+        {
+          "label": "Anthropic docs: prompt caching",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
+      ]
+    },
+    {
+      "id": "context-tactics",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "Six ways to keep an agent's memory clean",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Drew Breunig sums up what teams have learned about feeding AI agents the right information: add what helps, hide what does not, and reset more often than feels natural.",
+      "body": [
+        "His point: the job is deciding what plain code should assemble and what the model should decide. One company loaded 600 skills for every engineer at startup and made things worse. He starts watching at about 200,000 tokens and resets before big jobs.",
+        "Two new failure modes: fighting the weights, when a request runs against how the model was trained, and context inertia, when an agent clings to an old idea for hours. In a Berkeley study, four agents that periodically forgot scored 1,144,695 on a planning task, against 1,007,073 for four that never did."
+      ],
+      "points": [
+        "Augment: bring in the docs or skills the task needs.",
+        "Load out: expose only the tools this task uses.",
+        "Quarantine: hand subtasks to a subagent with a fresh history.",
+        "Prune, offload and summarize: drop, file away or compress the rest."
+      ],
+      "image": {
+        "src": "img/2026-10-26/context-tactics.webp",
+        "alt": "A talk slide titled Tactics for Context Engineering listing six tactics: augmentation, tool loadout, quarantine, pruning, summarization and offloading, each with a one-line definition.",
+        "credit": "Drew Breunig",
+        "creditUrl": "https://www.dbreunig.com/2026/10/24/the-state-of-context-engineering.html",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "skills",
+          "def": "Packaged instructions an agent can load for a particular kind of task."
+        },
+        {
+          "term": "subagent",
+          "def": "A second agent started for one subtask, with its own short history, that reports back."
+        },
+        {
+          "term": "fighting the weights",
+          "def": "Asking a model to behave against habits it learned in training, so it keeps slipping back."
+        },
+        {
+          "term": "context inertia",
+          "def": "An agent sticking with an early idea long after the evidence says to drop it."
+        }
+      ],
+      "deep": [
+        "On fighting the weights, Breunig counts how often Claude Code's system prompt repeats its parallel-tool instructions: one phrasing seven times, another four, others twice and three times. He reads this as a sign the models were trained mostly in serial environments.",
+        "On inertia he cites Anthropic's Memento setup (a note and a context clear every 90 minutes) and Microsoft Research's Fork-and-Flush, where eight runs plateaued between 68.3 and 100 as agents made ever smaller changes. A single agent in the Berkeley study scored 961,136."
+      ],
+      "why": "Most agent failures in long sessions are context failures, and every fix here is something you control in the harness, not the model.",
+      "forYou": "Audit how many skills and MCP tools load at session start in your Claude Code setup; the 600-skills story is the extreme version of a slow drift. Try a hard reset at 200,000 tokens on long routine runs.",
+      "sources": [
+        {
+          "label": "Drew Breunig",
+          "url": "https://www.dbreunig.com/2026/10/24/the-state-of-context-engineering.html"
+        }
+      ]
+    },
+    {
+      "id": "thinkrail",
+      "format": "spotlight",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "JetBrains builds an agent workbench around worktrees and specs",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "JetBrains released ThinkRail, a free app where several coding agents work in parallel copies of a project, each on its own branch, and keep a set of spec files that record what the code is meant to do.",
+      "name": "ThinkRail",
+      "what": "A desktop or browser workbench wrapped around the open-source pi coding agent, from JetBrains' incubator.",
+      "body": [
+        "Each workspace is a git worktree, so parallel agents never touch your own checkout; you merge the good branch and delete the rest. Several chats can run per workspace, each with its own model and a live cost counter.",
+        "Its distinctive idea is living specs: a linked set of `SPEC.md` files beside the code that the agent reads, searches and updates through its own tools, so intent outlasts the session."
+      ],
+      "facts": [
+        {
+          "k": "Licence",
+          "v": "Apache 2.0"
+        },
+        {
+          "k": "Agent",
+          "v": "pi, with your own model provider or JetBrains AI"
+        },
+        {
+          "k": "Reuses",
+          "v": "Agent Skills folders and MCP servers you already have"
+        },
+        {
+          "k": "Traction",
+          "v": "About 2,000 GitHub stars; 196 points on Hacker News"
+        }
+      ],
+      "tryIt": "github.com/JetBrains/thinkrail (install script in the README; macOS, Linux and Windows)",
+      "image": {
+        "src": "img/2026-10-26/thinkrail.webp",
+        "alt": "The ThinkRail window: a list of worktree workspaces on the left, an agent chat in the middle, the resulting code diff beside it, and a tree of specs on the right.",
+        "credit": "JetBrains (ThinkRail README)",
+        "creditUrl": "https://github.com/JetBrains/thinkrail",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "git worktree",
+          "def": "A second working folder of the same repository, checked out on its own branch."
+        },
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way for AI agents to discover and call tools and data sources."
+        }
+      ],
+      "deep": [
+        "MCP calls that a server does not mark read-only ask in the chat first, and servers defined by a repository stay off until approved. Pull requests can be opened, checked and merged from the app through your own `gh`. The README gives no release date; it reached the Hacker News front page on October 25."
+      ],
+      "why": "Worktree isolation plus a spec file per area is a pattern any team can copy without this app: it gives parallel agents room and gives every session the same picture of intent.",
+      "forYou": "The SPEC.md graph is close to your nested CLAUDE.md files, but maintained by tools rather than by hand. Worth an hour on one plugin repo to see whether agent-maintained specs stay accurate.",
+      "sources": [
+        {
+          "label": "JetBrains on GitHub",
+          "url": "https://github.com/JetBrains/thinkrail"
+        },
+        {
+          "label": "Hacker News discussion",
+          "url": "https://news.ycombinator.com/item?id=50233294"
+        }
+      ]
+    },
+    {
+      "id": "cache-prices",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The price that decides an agent's bill",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "When an agent rereads the same files and instructions every turn, it pays the cache-read price for most of them. Here is that price for today's main models.",
+      "intro": "Cache-read price per million tokens, as of late October.",
+      "unit": "$",
+      "series": [
+        {
+          "label": "Fable 5.1",
+          "value": 0.25
+        },
+        {
+          "label": "Opus 5.5",
+          "value": 0.2,
+          "highlight": true
+        },
+        {
+          "label": "Sonnet 5",
+          "value": 0.2
+        },
+        {
+          "label": "GPT-6 Sol",
+          "value": 0.2
+        },
+        {
+          "label": "GPT-6.1 Sol",
+          "value": 0.1
+        },
+        {
+          "label": "GPT-6 Luna",
+          "value": 0.01
+        }
+      ],
+      "note": "Highlighted: Opus 5.5 went from Opus 5's $0.50 to $0.20, a 60% cut. Fable 5.1 lists $50 per million output tokens but only $0.25 for cache reads.",
+      "terms": [
+        {
+          "term": "cache-read price",
+          "def": "What a provider charges for text it already processed and kept, when a later request repeats it."
+        }
+      ],
+      "why": "Two models with the same headline price can differ several times over on a long agent run. Check this column first.",
+      "forYou": "Your routines resend the same repo context every turn; at these prices, Opus 5.5 cache reads cost the same as Sonnet 5's, which weakens the case for downgrading subagents just to save money.",
+      "sources": [
+        {
+          "label": "Max Woolf",
+          "url": "https://minimaxir.com/2026/10/cheap-llms/"
+        },
+        {
+          "label": "Anthropic docs: prompt caching",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
+      ]
+    },
+    {
+      "id": "test-blind-spots",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "AI-written tests skip the awkward inputs",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Researchers checked 14,320 unit tests written by four AI models and found they test the normal path well but rarely try empty, negative or missing values, which is where bugs hide.",
+      "intro": "Share of AI-written tests that exercise each kind of argument (Java functions, four models, four prompting styles).",
+      "unit": "%",
+      "series": [
+        {
+          "label": "True or false",
+          "value": 93
+        },
+        {
+          "label": "Empty values",
+          "value": 38.8
+        },
+        {
+          "label": "Null values",
+          "value": 34.8
+        },
+        {
+          "label": "Negative numbers",
+          "value": 23.8,
+          "highlight": true
+        }
+      ],
+      "note": "Booleans averaged above 93%. Catch blocks scored 0.10 on the paper's control-flow measure, and 15.6% of test failures came from wrong assertions. Human-written tests showed the same happy-path bias.",
+      "terms": [
+        {
+          "term": "unit tests",
+          "def": "Small automatic checks that each confirm one piece of code still does what it should."
+        },
+        {
+          "term": "happy-path",
+          "def": "The normal, expected flow through code, with ordinary inputs and no errors."
+        },
+        {
+          "term": "assertions",
+          "def": "The lines in a test that state what the result must be."
+        },
+        {
+          "term": "Catch blocks",
+          "def": "Code that runs only when something throws an error."
+        }
+      ],
+      "deep": [
+        "The paper is Beyond Coverage and Mutation: A Blind-Spot Analysis of LLM-Generated Unit Tests (Shi, Luo, Yang and Tian, arXiv, October 23). Its BlindSpotEval scores tests on boundary values, control flow and oracle strength against obligations annotated in 895 complex and 700 simple functions. The blind spots appeared in simple functions too, so complexity does not explain them."
+      ],
+      "why": "Coverage numbers can look fine while edge cases go untested. When an agent writes tests, ask for the empty, null, negative and error cases by name, and read the assertions.",
+      "forYou": "Add a line to your test-writing skill that lists the boundary cases to cover; inventory stack sizes and damage values are exactly the negative and zero cases this paper says get skipped.",
+      "sources": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.32548"
+        }
+      ]
+    },
+    {
+      "id": "claude-code-2-1-310",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Claude Code 2.1.310 fixes five things that bite unattended runs",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The latest Claude Code update is mostly about sessions nobody is watching: background monitoring works on more clouds, timeouts no longer cause retry loops, and a Windows hook hole is closed.",
+      "intro": "Released October 23. The changes that alter behaviour:",
+      "items": [
+        {
+          "title": "Monitor works on Bedrock, Vertex and Foundry",
+          "text": "The Monitor tool and plugin monitors now run there and when telemetry is off; long foreground sleeps are blocked there too.",
+          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        },
+        {
+          "title": "No more retry loops on unanswered MCP prompts",
+          "text": "In a non-interactive session, an MCP call that times out waiting on an unanswered question now tells Claude no answer came and not to repeat the call.",
+          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        },
+        {
+          "title": "Windows hooks no longer fail open",
+          "text": "PreToolUse and PermissionRequest hooks let a tool call through when Git Bash was missing and the hook command was only quoted strings. Fixed.",
+          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        },
+        {
+          "title": "Pasted images survive a big cleanup setting",
+          "text": "A very large `cleanupPeriodDays` value no longer makes background cleanup delete recent files such as pasted images.",
+          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        },
+        {
+          "title": "Gateways that reject beta values",
+          "text": "Requests behind gateways that refuse the `effort-2025-11-24` beta value or mid-conversation system messages now retry without them.",
+          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        }
+      ],
+      "terms": [
+        {
+          "term": "non-interactive session",
+          "def": "A run started from a script or schedule, with nobody at the keyboard to answer questions."
+        },
+        {
+          "term": "hooks",
+          "def": "Your own commands that Claude Code runs at set moments, for example before a tool runs, to allow or block it."
+        },
+        {
+          "term": "fail open",
+          "def": "When a safety check breaks, letting the action through instead of blocking it."
+        }
+      ],
+      "why": "If you run agents on a schedule or guard them with hooks, these are the fixes that change what happens when nobody is watching.",
+      "forYou": "Update the routine environments first; the MCP elicitation fix removes a known way for an unattended run to burn turns retrying.",
+      "sources": [
+        {
+          "label": "Claude Code changelog",
+          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        }
+      ]
+    },
+    {
+      "id": "cloudflare-ram",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "Cloudflare freed 100 TB of RAM by measuring first",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Cloudflare found its load balancer stored far more routing points than it needed, cut them by 90%, and repacked the rest into fewer bytes.",
+      "stats": [
+        {
+          "value": "100 TB",
+          "label": "RAM reclaimed across the fleet"
+        },
+        {
+          "value": "8 to 6",
+          "label": "bytes per routing point"
+        }
+      ],
+      "body": [
+        "With 160 points per server, load spread within about 8%; tens of thousands more bought almost nothing. Shrinking one field from 32 to 16 bits saved nothing, because Rust pads the struct; a packed 6-byte array did."
+      ],
+      "terms": [
+        {
+          "term": "pads the struct",
+          "def": "Adds unused bytes so each field sits at an address the processor reads quickly."
+        }
+      ],
+      "deep": [
+        "The library is pingora-ketama, Cloudflare's open-source consistent hashing in Rust, used to route cacheable requests by URL. Some instances used 6 GB for it. The fix stored each point as `struct Point([u8; 6])` with getters, a 25% cut on that structure. The rollout kept old and new rings side by side and chose per request, so it could roll back without a redeploy. Published September 18; InfoQ covered it this month."
+      ],
+      "why": "Two habits worth copying: measure how much accuracy each extra unit buys before you tune, and check the real memory layout before shrinking a field.",
+      "forYou": "The padding lesson applies to Unreal USTRUCTs too: reorder or pack fields in large arrays (inventory slots, spatial grids) and check the size with sizeof before and after.",
+      "sources": [
+        {
+          "label": "Cloudflare blog",
+          "url": "https://blog.cloudflare.com/saving-100-tb-of-ram-with-math/"
+        },
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/cloudflare-hashing-optimization/"
+        }
+      ]
+    },
+    {
+      "id": "brutal",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "The framework behind Kitten Space Agency is now free to all",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Dean Hall's studio RocketWerkz released BRUTAL, the C# framework it uses to build Kitten Space Agency, for anyone to use in commercial games without royalties.",
+      "background": "Dean Hall made DayZ. Kitten Space Agency is a spaceflight game from his studio, with Kerbal Space Program's creator Felipe Falanghe on the team.",
+      "name": "BRUTAL",
+      "what": "An open-source C# and .NET game framework over C++ libraries, with low-level graphics access, from RocketWerkz and Ahwoo.",
+      "body": [
+        "It is a base to build your own engine or a game from scratch, not a ready editor like Unity or Godot, and it expects comfort with C#. Game Developer reports that RimWorld's new in-house engine, Waylith, is built on it.",
+        "Hall and Falanghe have said AI models helped them work with it by answering questions about C# libraries and Vulkan documentation, which they distinguish from vibe coding."
+      ],
+      "facts": [
+        {
+          "k": "Price",
+          "v": "Free for commercial games, no royalties"
+        },
+        {
+          "k": "Licence asks",
+          "v": "Attribution and a BRUTAL logo shown before gameplay"
+        },
+        {
+          "k": "Language",
+          "v": "C# and .NET"
+        },
+        {
+          "k": "Used by",
+          "v": "Kitten Space Agency; RimWorld's Waylith engine, per Game Developer"
+        }
+      ],
+      "tryIt": "ahwoo.com/brutal",
+      "image": {
+        "src": "img/2026-10-26/brutal-ksa.webp",
+        "alt": "A white cylindrical spacecraft with a checkered band and an orange engine bell, orbiting above a cloud-covered Earth.",
+        "credit": "RocketWerkz, via Game Developer",
+        "creditUrl": "https://www.gamedeveloper.com/programming/rocketwerkz-c-framework-brutal-is-now-available-for-all-developers",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "framework",
+          "def": "A set of code libraries you build a game on, without the full editor and tools of an engine."
+        },
+        {
+          "term": "Vulkan",
+          "def": "A low-level graphics interface for talking directly to the graphics card."
+        },
+        {
+          "term": "vibe coding",
+          "def": "Letting an AI write code from loose prompts without reading it closely."
+        }
+      ],
+      "deep": [
+        "Announced October 19. Hall's own line: you are only as independent as your tools are. He has also said he would rather people build their own simple frameworks. Read the licence text before shipping: the logo requirement is the main cost."
+      ],
+      "why": "A second well-known studio now ships on a thin framework it controls instead of a big commercial engine. It is a real option for simulation-heavy games, if you can live without an editor.",
+      "forYou": "Not a fit for the plugin business, which depends on Unreal, but a useful benchmark for the browser and mobile side: a thin C# core plus AI help for docs is the same bet as three.js plus your own tools.",
+      "sources": [
+        {
+          "label": "Game Developer",
+          "url": "https://www.gamedeveloper.com/programming/rocketwerkz-c-framework-brutal-is-now-available-for-all-developers"
+        },
+        {
+          "label": "Ahwoo: BRUTAL",
+          "url": "https://ahwoo.com/brutal"
+        }
+      ]
+    },
+    {
+      "id": "unreal-58-switches",
+      "format": "steps",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Two Unreal 5.8 switches to try on a slow scene",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Unreal Engine 5.8 added a cheaper lighting mode and a tool that captures exactly what happened during a stutter. Both take minutes to try.",
+      "intro": "From Tom Looman's notes on the 5.8 release. Speed claims are Epic's.",
+      "steps": [
+        {
+          "title": "Switch to Lumen Lite",
+          "text": "In a packaged or standalone build, run `sg.globalilluminationquality 1` and `sg.reflectionquality 1`. Medium global illumination now uses Lumen Lite, which Epic says is twice as fast as high-quality Lumen. It is still Beta."
+        },
+        {
+          "title": "Compare at a fixed camera",
+          "text": "Stand at the same spot and compare `stat gpu` and screenshots at Medium and High. Look for lost bounce light in dark interiors."
+        },
+        {
+          "title": "Catch a hitch",
+          "text": "Turn on a stat group such as `stat default`, then run `snapshothitches -start`. Each hitch saves a trace and a screenshot to `Saved/Profiling/Hitches`. Stop with `snapshothitches -stop`."
+        }
+      ],
+      "terms": [
+        {
+          "term": "global illumination",
+          "def": "Light that bounces off surfaces onto other surfaces, not just straight from lamps."
+        },
+        {
+          "term": "hitch",
+          "def": "A single frame that takes much longer than the rest, felt as a stutter."
+        }
+      ],
+      "deep": [
+        "Other 5.8 numbers from the same notes: HLOD visibility updates while moving the editor camera fell from 25.1 ms to 0.18 ms in CitySample and from 144 ms to 1.06 ms in a 32,161-actor test scene; MegaLights saves about 0.3 to 1 ms on console by skipping redundant rays. Unreal 5.8 shipped in June; Looman's page was last updated August 27."
+      ],
+      "why": "Lighting is often the largest single cost in an Unreal frame, and a stutter you can replay is far easier to fix than one you only felt.",
+      "forYou": "Run both on the action RPG's heaviest level, and mention Lumen Lite compatibility in plugin docs if any of your world tools assume high-quality Lumen.",
+      "sources": [
+        {
+          "label": "Tom Looman",
+          "url": "https://tomlooman.com/unreal-engine-5-8-performance-highlights/"
+        },
+        {
+          "label": "Epic: 5.8 release notes",
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-release-notes?lang=en-US"
+        }
+      ]
+    },
+    {
+      "id": "frame-slicing",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "SimCity ran a whole city on a 16 MHz PC by taking turns",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The 1989 SimCity did not update traffic, fire, power and crime every frame. A counter from 0 to 15 picked which system ran each frame, so each one ran about once every 16.",
+      "body": [
+        "Lars Thießen walks through the open-sourced code: `Simulate()` takes a counter that loops from 0 to 15 and runs one slice of the simulation per frame. A change reaches the player about 8 frames later on average, 15 at worst, which a city builder can afford.",
+        "The idea is still everywhere. Assetto Corsa updates only some faces of its car reflection maps each frame, and Unreal's Lumen spreads lighting updates over frames, which is why its reflections can briefly lag."
+      ],
+      "points": [
+        "List what runs every frame.",
+        "For each, ask how stale it can be before a player notices.",
+        "Give slow-changing systems their own frame slot.",
+        "Measure the frame cost before and after."
+      ],
+      "terms": [
+        {
+          "term": "MHz",
+          "def": "Millions of processor cycles per second; a 16 MHz chip is roughly a thousand times slower than a modern core."
+        },
+        {
+          "term": "reflection maps",
+          "def": "Pictures of the surroundings, captured in six directions, that shiny surfaces use to fake reflections."
+        },
+        {
+          "term": "Lumen",
+          "def": "Unreal Engine's system for real-time bounced light and reflections."
+        }
+      ],
+      "deep": [
+        "The target machine was an Intel 386SX at 16 MHz (an earlier version of the post said 12.5 MHz). The source is Micropolis, the GPL release of SimCity's code; the post shows a simplified `s_sim.c`. Assetto Corsa's setting is `FACES_PER_FRAME` in its .ini file. The post is from November 2025 and resurfaced on lobste.rs this weekend."
+      ],
+      "why": "Most per-frame budgets are spent on work nobody would miss for a few frames. Time slicing is the cheapest optimisation you can make, and it needs no new tech.",
+      "forYou": "Look at your AI perception and interaction scans in the action RPG: if they tick every frame, a slot counter or a TickInterval could cut their cost by most of the frame budget they use now.",
+      "sources": [
+        {
+          "label": "Lars Thießen",
+          "url": "https://larstofus.com/2025/11/16/how-to-run-a-city-builder-on-12-5-mhz/"
+        }
+      ]
+    },
+    {
+      "id": "gilbert-tests",
+      "format": "quote",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A thousand tests at every launch",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Ron Gilbert, the designer behind Monkey Island, runs his whole scripting language test suite each time his game starts in development.",
+      "quote": "It take about 1 sec to run them all, so I run them every time the game starts.",
+      "speaker": "Ron Gilbert",
+      "role": "Game designer, on Mastodon",
+      "context": "He has just over 1,000 unit tests for Dinky, his game's scripting language, written in Dinky itself. He strips them from the release build: players cannot fix a failure, and a failing test that far along means trouble anyway.",
+      "terms": [
+        {
+          "term": "scripting language",
+          "def": "A small language a game uses for its story, puzzles and events, run by the engine."
+        }
+      ],
+      "why": "If tests are fast enough, running them at startup means a broken rule shows up the moment you launch, not an hour into a play session.",
+      "forYou": "Your plugins' pure logic (inventory math, damage formulas) could run a sub-second check at editor or PIE start. Today's Try this walks through it.",
+      "sources": [
+        {
+          "label": "Ron Gilbert on Mastodon",
+          "url": "https://mastodon.gamedev.place/@grumpygamer/117505143638391173"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Cheaper tokens, sharper agents",
+      "note": "How to send an agent less, a workbench for parallel agents, the price that sets the bill, and tests with blind spots.",
+      "ids": [
+        "context-tactics",
+        "thinkrail",
+        "cache-prices",
+        "test-blind-spots"
+      ]
+    },
+    {
+      "title": "Under the hood",
+      "note": "Fixes for agents nobody is watching, and a lesson in memory layout.",
+      "ids": [
+        "claude-code-2-1-310",
+        "cloudflare-ram"
+      ]
+    },
+    {
+      "title": "Do less every frame",
+      "note": "A thin framework, two new Unreal switches, an old scheduling trick and tests at launch.",
+      "ids": [
+        "brutal",
+        "unreal-58-switches",
+        "frame-slicing",
+        "gilbert-tests"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is prompt caching, and why is it most of an agent's bill?",
+    "answer": "Prompt caching lets an AI provider keep the processed start of a request for a few minutes. If the next request begins the same way, it reuses that work and charges a small fraction of the normal price for it.",
+    "analogy": "A barista who remembers your usual order only needs to hear what is different today. You pay full price for the new part and a token amount for the rest.",
+    "body": [
+      "A coding agent resends the same opening on every turn: its instructions, tool list, project notes and the conversation so far. Only the newest message changes. The provider stores the processed opening, called the prefix, and when a request matches it, those tokens count as cache reads.",
+      "On Anthropic's models a cache read costs a tenth of the input price, or less on the newest ones, and writing to the cache costs a little more than input. The cache lasts five minutes by default, renewed each time it is used.",
+      "That is why Max Woolf estimates cache reads at 96 to 99% of an agent's tokens. Anything that changes the start of the request, like editing instructions mid-session or reordering tools, breaks the match and is billed again at full price."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Turn 1",
+          "note": "Instructions, tools and files sent in full; the provider stores the processed prefix"
+        },
+        {
+          "label": "Turn 2 starts the same",
+          "note": "Same instructions, same tools, same files, one new message"
+        },
+        {
+          "label": "Prefix read from cache",
+          "note": "Billed at about a tenth of the input price, or less",
+          "key": true
+        },
+        {
+          "label": "Only the new part at full price",
+          "note": "Change the start and the whole prefix is billed again"
+        }
+      ],
+      "links": [
+        "next turn",
+        "match found",
+        "plus"
+      ],
+      "caption": "Keep the start of every request identical and most of an agent's tokens become cheap cache reads."
+    },
+    "terms": [
+      {
+        "term": "prefix",
+        "def": "The opening part of a request that stays the same from one turn to the next."
+      },
+      {
+        "term": "cache reads",
+        "def": "Tokens the provider reuses from its cache instead of processing again."
+      }
+    ],
+    "seenIn": [
+      "llm-prices",
+      "cache-prices",
+      "context-tactics"
+    ],
+    "sources": [
+      {
+        "label": "Anthropic docs: prompt caching",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+      },
+      {
+        "label": "Max Woolf",
+        "url": "https://minimaxir.com/2026/10/cheap-llms/"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Run your fastest tests every time your dev build starts",
+    "gist": "In under an hour, a broken rule in your game logic will announce itself the moment you press play, instead of surfacing mid-session.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A game project with some pure logic (rules, math, parsing) that you can call without loading a level.",
+    "steps": [
+      {
+        "title": "Pick the pure logic",
+        "text": "Choose checks that need no level, assets or network: damage formulas, inventory stacking, save-field rules, dialogue parsing. Ron Gilbert's are tests of his scripting language."
+      },
+      {
+        "title": "Run them at startup in dev builds only",
+        "text": "Call them from your game's startup path behind a development-only flag (in Unreal, code guarded by `#if !UE_BUILD_SHIPPING`; in Godot, `OS.is_debug_build()`)."
+      },
+      {
+        "title": "Fail loudly",
+        "text": "Print every failure in red to the console or on screen, with the test name. A failure nobody sees is worse than no test."
+      },
+      {
+        "title": "Keep it under a second",
+        "text": "Time the whole run. Gilbert's 1,000 tests take about one second; move anything slow to your normal test runner."
+      },
+      {
+        "title": "Strip them from release",
+        "text": "Confirm a shipping build does not run or contain them, as Gilbert does."
+      }
+    ],
+    "check": "Break one rule on purpose, for example make a stack limit off by one, and launch the dev build. You should see the failure before the first frame of play; a shipping build should start without it.",
+    "terms": [
+      {
+        "term": "pure logic",
+        "def": "Code whose result depends only on its inputs, with no files, levels or network involved."
+      }
+    ],
+    "from": "gilbert-tests",
+    "forYou": "Start with the inventory plugin's stacking and weight rules; run them from a module startup in non-shipping builds so every PIE session checks them.",
+    "sources": [
+      {
+        "label": "Ron Gilbert on Mastodon",
+        "url": "https://mastodon.gamedev.place/@grumpygamer/117505143638391173"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Moonshot says Kimi K3.1 Pro's open weights will ship by November 4; until then it is API only, at $2 in and $10 out per million tokens.",
+      "lane": "ai",
+      "url": "https://www.kimi.ai/blog/kimi-k3-1-pro",
+      "source": "Moonshot AI"
+    },
+    {
+      "text": "Cerebras explains how a model of about 3 trillion parameters runs across 59 wafer-sized chips: weights stay put, only activations hop between them.",
+      "lane": "ai",
+      "url": "https://www.cerebras.ai/blog/how-we-deploy-trillion-parameter-frontier-models-on-cerebras",
+      "source": "Cerebras"
+    },
+    {
+      "text": "Brotli decoder bug, new: Cloudflare's emergency WAF rules for it default to Log, not Block. Switch them to Block if you sit behind Cloudflare.",
+      "lane": "both",
+      "url": "https://developers.cloudflare.com/changelog/",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "Google open-sourced ML Drift, the GPU engine behind LiteRT, with a WebGPU path via Dawn; Google reports 12% less memory than llama.cpp in its Gemma tests.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/10/google-ml-drift/",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Anthropic now runs the Claude API inside Google Cloud projects, billed through the Marketplace, with fast mode for Opus 5.5.",
+      "lane": "ai",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "source": "Anthropic"
+    },
+    {
+      "text": "Charles Miller argues prompt tricks and agent workflow hacks get folded into the tools within months, so they make poor long-term skills.",
+      "lane": "ai",
+      "url": "https://fishbowl.pastiche.org/2026/10/26/ai-skills",
+      "source": "Charles Miller"
+    },
+    {
+      "text": "Godot's sixth XR community jam drew 85 people and 28 games; Wavemaker by Unit327 won, and the next jam is planned for April 2027.",
+      "lane": "gamedev",
+      "url": "https://godotengine.org/article/godot-xr-update-oct2026/",
+      "source": "Godot"
+    },
+    {
+      "text": "fheroes2, a hand-built open-source remake of the Heroes of Might and Magic II engine, reached the Hacker News front page; its editor now has an Auto Playtest feature.",
+      "lane": "gamedev",
+      "url": "https://github.com/ihhub/fheroes2",
+      "source": "GitHub"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "godot-card-hand",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "A fanned card hand that works with any Godot Control node",
+      "where": "Bluesky",
+      "signal": "294 likes and 29 reposts in two days, the top Godot post in the sweep; the same developer then won Godot Wild Jam 98.",
+      "hook": "A hand of overlapping cards that fans and rescales to fit its box, built from stock Control nodes in under 100 lines.",
+      "borrow": "Work out overlap and angle from the container's width, so the same container holds cards, inventory slots or a hotbar. The developer says controller navigation takes about 20 more lines.",
+      "forYou": "A drop-in fanned layout is a small, sellable UI piece; the same width-driven overlap would suit a hotbar widget in UMG.",
+      "url": "https://bsky.app/profile/qaqelol.bsky.social/post/3myn76rjl5c2k",
+      "image": {
+        "src": "img/2026-10-26/cards.webp",
+        "alt": "Five overlapping dark cards fanned in an arc, each showing GDScript code for a DeckContainer class with angle and offset settings.",
+        "credit": "qaqelol (Bluesky)",
+        "creditUrl": "https://bsky.app/profile/qaqelol.bsky.social/post/3myn76rjl5c2k",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "impossible-machines",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "Say what a machine should do, and a solver builds the linkage",
+      "where": "Hacker News",
+      "signal": "81 points and 20 comments on Show HN.",
+      "hook": "You state a goal like ring this bell with this crank, drag obstacles in, and a constraint solver finds a mechanism that routes around them, shown with real physics.",
+      "borrow": "What sees: the scene you edit. What decides: a constraint solver. What acts: a three.js render with Rapier physics. A variant of known linkage research with a playful front end, by the poster himself; no AI model involved.",
+      "forYou": "Three.js plus Rapier is your browser stack; a solver-driven contraption puzzle is a cheap, novel web game idea.",
+      "url": "https://www.impossiblemachines.xyz/"
+    },
+    {
+      "id": "troll-the-king",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Troll the King: forge letters to start a royal feud",
+      "where": "itch.io",
+      "signal": "4.7 of 5 from 50 ratings in its first week, in itch.io's new and popular list.",
+      "hook": "Robots took every job, so you shoot down robot pigeons, steal the kings' letters and scramble the words to make them furious with each other.",
+      "borrow": "Four short verbs (chop, shoot, dodge, rewrite), each shown in its own GIF on the page, make the pitch readable in seconds. Made by Sheepolution, known for LÖVE tutorials.",
+      "url": "https://sheepolution.itch.io/troll-the-king",
+      "image": {
+        "src": "img/2026-10-26/troll.webp",
+        "alt": "Pixel art forest scene: an archer in green aims at a crosshair between two castles, each with a 0% meter.",
+        "credit": "Sheepolution, Shores and Lazarus Richardson (itch.io)",
+        "creditUrl": "https://sheepolution.itch.io/troll-the-king",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "von-neumann",
+      "lane": "both",
+      "kind": "game",
+      "title": "Von Neumann: you are a space probe that prints copies of itself",
+      "where": "itch.io",
+      "signal": "4.5 of 5 from 46 ratings and about 50 comments, in itch.io's popular list this week.",
+      "hook": "A browser incremental game where the upgrade tree is self-replication: repair, mine, print helper probes, spread across a galaxy. The developer says it is AI-assisted, code included.",
+      "borrow": "Make copying yourself the progression loop. And a warning in its comments: players lost saves after an update, so version your save format from day one.",
+      "url": "https://veltes.itch.io/von-neumann",
+      "image": {
+        "src": "img/2026-10-26/von-neumann.webp",
+        "alt": "A dark star map of hexagons with relays, settlements and outbound probes linked to a home system, with resource counters along the top.",
+        "credit": "veltes (itch.io)",
+        "creditUrl": "https://veltes.itch.io/von-neumann",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "loeffelholz-codex",
+      "lane": "both",
+      "kind": "concept",
+      "title": "A knight's 1505 tool book, page by page, with AI drafts marked",
+      "where": "Hacker News",
+      "signal": "162 points and 83 comments on Hacker News; 128 of the codex's 154 pages already reviewed.",
+      "hook": "Every page of a Nuremberg knight's manuscript gets a scan, a transcription, a modern English reading and notes, with crossbows, multitools and a mystery page of the month.",
+      "borrow": "Label every page raw AI draft or reviewed, and colour uncertain readings. That honesty about AI output is worth copying in any wiki, codex or in-game lore browser.",
+      "url": "https://loeffelholz-codex.org/en/",
+      "image": {
+        "src": "img/2026-10-26/codex.webp",
+        "alt": "An illuminated manuscript page from 1505: a coat of arms with a lamb on a red crest, a steel helmet and a red library stamp.",
+        "credit": "Löffelholz-Codex.org",
+        "creditUrl": "https://loeffelholz-codex.org/en/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "shared-ledger",
+      "lane": "ai",
+      "kind": "technique",
+      "title": "Copies of one small model share a plan file and beat their solo score",
+      "where": "GitHub",
+      "signal": "183 points on Hacker News and about 1,000 GitHub stars in a day. All results are self-reported.",
+      "hook": "Fresh instances of the same model split a hard coding problem and coordinate through files holding a plan, notes and the current solution. No training.",
+      "borrow": "The author reports a local Qwen3.8-27B going from 66.8% to 92.4% on 100 hard LiveCodeBench problems, though some models got worse. Try the plan, notes and solution files with your own subagents before trusting the headline.",
+      "forYou": "Your routines already hand off through files; a shared notes file that each subagent appends to is a cheap experiment on one hard bug.",
+      "url": "https://github.com/slee-persis/GVS5H"
+    }
+  ],
+  "lab": [
+    {
+      "id": "mcp-faults",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Tool-Calling LLM Agents Under Realistic MCP Faults: Scale Does Not Purchase Fault Tolerance",
+      "headline": "When an agent's tools misbehave, its score drops by more than half, and a model six times bigger copes no better.",
+      "authors": "Antonio Ken Iannillo, Joshua Segun Owotogbe, Roberto Natella, et al.",
+      "where": "arXiv preprint; accepted as a NeurIPS 2026 poster",
+      "date": "2026-10-23",
+      "problem": "Agent benchmarks assume every tool answers correctly and on time. Real MCP servers return errors, wrong types, garbled text, or hang.",
+      "idea": "MCP-Injector sits between the agent and a real MCP server and injects six kinds of fault (small text edits, wrong types, explicit errors, a 30 second delay, a silent hang), permanent, transient or intermittent, with seeds so runs repeat. The fault mix was calibrated by mining 57,240 issue and pull request threads from 1,774 open-source MCP repositories.",
+      "result": "Across 1,350 runs on MCP-Bench, task score fell from 8.08 to 3.23 out of 10 under faults, with tool choice down 59% and planning 67%. The 120B model completed 91.1% of tasks against 95.6% for the 20B model; size made no measurable difference.",
+      "useIt": "Put a fault proxy in front of your own MCP server in staging and watch what your agent does on an error, a hang and a malformed reply. Spend effort on the harness (timeouts, retries, telling the model what failed) before paying for a bigger model.",
+      "maturity": "code",
+      "forYou": "Your custom MCP servers have never been tested against hangs; one afternoon with this proxy shows whether routines stall, retry forever or invent an answer.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.32555"
+        },
+        {
+          "label": "Code (GitLab)",
+          "url": "https://gitlab.com/uniluxembourg/snt/sedan/papers/mcp-injector"
+        }
+      ]
+    },
+    {
+      "id": "evidence-action-gap",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Knowing When to Stop: The Evidence-Action Gap in Coding Agents",
+      "headline": "Coding agents can tell they are stuck within a few steps, then keep trying for dozens more; an ask-a-human tool fixes most of it.",
+      "authors": "Tianyu Chen, Xinran Zhao, Vijay Viswanathan, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-10-22",
+      "problem": "When the environment makes a task impossible (a read-only folder, a full disk, a missing dependency), agents keep retrying, try workarounds nobody wanted, or claim success.",
+      "idea": "ImpasseBench takes solvable repair tasks and injects one of 12 realistic blockers, then measures how long an agent carries on after it already has enough evidence that it is blocked. It then tests an explicit escalate-to-human tool, and a rule-based monitor for models that ignore it.",
+      "result": "In 19,371 runs from 8 model setups, 98.6% of blocked runs had enough evidence to stop, yet 34.0% ran to the 80-step limit. With an escalation tool, that fell to 6.7%, wasted calls after the evidence point fell from 38.9 to 17.5, and unsafe requests from 3.89% to 0.68%.",
+      "useIt": "Give your agent an explicit way to say it is blocked, and require the handoff to list what it tried, what passed and what a person must fix. Watch for the side effect the paper found: some models hand off too early on faults they could have fixed.",
+      "maturity": "idea",
+      "forYou": "Unattended routines are exactly where a blocked agent burns 40 calls; a blocked-handoff rule in the routine prompt, tested with a read-only folder, is a quick win.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.31895"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-26/impasse.webp",
+        "alt": "Figure: an original repair task, the same task with a read-only source folder injected, and a timeline marking when the agent first hits the barrier, when it has enough evidence, and when it should escalate.",
+        "credit": "Chen et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.31895",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "radiant",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "RADIANT: Object-Centric Feed-Forward Global Illumination",
+      "headline": "A neural renderer works out light bouncing between objects in one pass, with cost tied to the number of objects, not triangles.",
+      "authors": "Sarah Zhang, Zhiyang Dou, Minghao Guo, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-10-23",
+      "problem": "Neural renderers that read every triangle get expensive as scenes grow, and path tracing is too slow for interactive use.",
+      "idea": "Each object becomes 2,048 surface points pooled into 32 patch tokens. A transformer models how light passes between objects, using their distance and facing, and a second stage renders any view from that shared scene description. No per-scene training and no mesh connectivity needed.",
+      "result": "At 512 by 512 pixels it reached 32.2 dB image quality against 28.95 dB for the RenderFormer baseline at the same size, and got to 25 dB in a fifth of the training steps. A 500-object scene takes 0.83 seconds per pass, 8.5 times faster than RenderFormer; quality drops on crowded scenes it was not trained on.",
+      "useIt": "Not a runtime tool yet: 0.83 seconds is far from a frame. Watch it as a direction for fast lighting previews in editors, where cost per object rather than per triangle would let dense scenes preview quickly.",
+      "maturity": "idea",
+      "forYou": "Relevant only as a signal for world-building tools: object-level lighting previews could one day replace slow bakes in level design.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.32075"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-26/radiant.webp",
+        "alt": "Architecture figure: point inputs for each object feed a point encoder and a scene transformer, then a predictor transformer renders a view, shown beside a reference and a rendered image of two objects in a box.",
+        "credit": "Zhang et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.32075",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "A quiet weekend for engine news, so the game dev half leans on lessons. Reddit and some press feeds were blocked for the sweep, and X and TikTok could not be searched; sparks come from Bluesky, itch.io and Hacker News."
+}
