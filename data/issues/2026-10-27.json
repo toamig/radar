@@ -1,0 +1,1120 @@
+{
+  "date": "2026-10-27",
+  "number": 14,
+  "title": "Steer the fleet, trust the hardware",
+  "dek": "One person and a fleet of Claude agents put F-Zero X on a 3DS at 60 fps, and published how. Plus what trimming agent history really costs, a survey on AI time savings, scoped Supabase tokens and a Godot translation exploit.",
+  "theme": {
+    "paper": "fog",
+    "text": "black",
+    "inks": [
+      "bright-red",
+      "aqua"
+    ],
+    "type": "poster",
+    "mood": "a fast Tuesday about steering a fleet of agents"
+  },
+  "tldr": [
+    {
+      "text": "One developer directed Claude agents to port F-Zero X to the Nintendo 3DS in 11 weeks: **777 prompts, 588 subagents**, and a steady 60 fps on the New 3DS.",
+      "lane": "both"
+    },
+    {
+      "text": "The rules behind it: a killswitch and a log receipt for every change, and a progress file written before any agent finishes.",
+      "lane": "both"
+    },
+    {
+      "text": "A study of 42 ways to trim an agent's history found that none saved money once prompt caching was priced in.",
+      "lane": "ai"
+    },
+    {
+      "text": "In Atlassian's survey, developers saving 10+ hours a week with AI fell from 68% to 26%, and 65% spend time fixing AI work that missed the point.",
+      "lane": "ai"
+    },
+    {
+      "text": "A community translation file can run code in a Godot 4 game, and ActionForge offers free retargeting in the browser.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "gdx-3ds",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "both",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "One person, 588 agents, F-Zero X on a 3DS",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "One developer brought the racing game F-Zero X to the Nintendo 3DS in 11 weeks without opening an editor. Claude agents wrote all the code; the human set goals, played the builds and approved every merge.",
+      "background": "F-Zero X is a 1998 Nintendo 64 racer. Fans rebuilt its source code from the game (a decompilation), and others ported that to PC; this project took the PC port to Nintendo's 3DS handheld.",
+      "takeaway": "Long agent projects hold together when one orchestrator keeps the memory and every change is easy to switch off and easy to prove. Wins in the emulator did not survive real hardware, so the hardware decided.",
+      "body": [
+        "The project, called G-Diffuser, ran from August 11 to October 26. One long-lived Claude Code session acted as orchestrator: it held the project memory, wrote briefs for background agents, merged their branches and was the only voice the human heard. The postmortem sums up the human's role as \"a captain, not a programmer\".",
+        "The postmortem counts 777 human prompts, 588 subagents, 1,288 workflow agents and about 22.6 billion tokens, which the author estimates at $19,559 at API list prices. On a New 3DS, every one-second window of a 3D race measured between 59 and 61 fps; the older, slower 3DS reaches a 60 fps median.",
+        "The speed came from a renderer that writes the 3DS graphics chip's own commands from data prepared ahead of time, instead of translating Nintendo 64 draw calls every frame. Hardware counters showed the old 3DS was starved by instruction-cache misses, so race loops were resized to fit its 16 KB cache. A renderer that won in the emulator lost on hardware and was dropped."
+      ],
+      "image": {
+        "src": "img/2026-10-27/gdx-race.webp",
+        "alt": "A New 3DS mid-race: F-Zero X on the top screen, and a dashboard on the bottom screen with energy, race position, lap times and a course map.",
+        "credit": "G-Diffuser postmortem",
+        "creditUrl": "https://hypnotize.works/gdx-3ds/postmortem/index.html",
+        "fit": "cover"
+      },
+      "stat": {
+        "value": "588",
+        "label": "subagents, steered through 777 human prompts"
+      },
+      "terms": [
+        {
+          "term": "decompilation",
+          "def": "Source code rebuilt by hand from a finished game's machine code, so it can be changed and recompiled."
+        },
+        {
+          "term": "orchestrator",
+          "def": "The one agent session that hands out work to other agents, keeps the plan and merges what they return."
+        },
+        {
+          "term": "subagents",
+          "def": "Extra AI agents started for one task each, which report back to the agent that started them."
+        },
+        {
+          "term": "instruction-cache",
+          "def": "A tiny, fast memory on the processor that holds the code it is about to run; code that does not fit has to be fetched slowly."
+        },
+        {
+          "term": "emulator",
+          "def": "A program that imitates a console on a PC, handy for testing but not always faithful to real hardware speed."
+        }
+      ],
+      "deep": [
+        "Releases: v0.9.0 on September 4 (New 3DS only); v1.0.0 on October 19 (old 3DS support, the native renderer on by default, the 64DD Expansion Kit on New 3DS, and a bottom-screen dashboard called DASH); v1.1.0 on October 26 (2 to 4 player multiplayer, and both 3D eyes drawn in one GPU submission). No game data ships; players extract their own.",
+        "Old 3DS: the first boot on hardware ran at about 10 fps. Now 85% of one-second windows in a 3D race sit at 60, with a 10th percentile of 56, though the heaviest courses can still fall to 30. Drawing both eyes in one submission lifted the 3D menu from 40.2 to 44.6 fps. The port layer is about 181,000 lines under port/3ds, tests included.",
+        "Shelved along the way: a GPU vertex-transform attempt, a working pose-replay fallback (the human chose to aim for a real 60 instead), and a retained renderer that only won in the emulator. The Expansion Kit stayed New 3DS only because it was too slow on the old model.",
+        "Cost: the $19,559 is the author's estimate at list prices; the page also logs $15,567 in billing cache writes. The orchestrator's memory file reached 591 lines."
+      ],
+      "why": "This is one of the most detailed public records of a long, agent-built project: what the human did, what the agents did, what it cost and what broke. What transfers is the discipline around the agents, not the model.",
+      "forYou": "UE plugin work has the same shape: an orchestrator session with a memory file, a worktree subagent per feature, and a killswitch plus a log receipt for each change. Copy the rules in the next block into your subagent brief template.",
+      "sources": [
+        {
+          "label": "G-Diffuser postmortem",
+          "url": "https://hypnotize.works/gdx-3ds/postmortem/index.html"
+        },
+        {
+          "label": "Postmortem: the agentic workflow",
+          "url": "https://hypnotize.works/gdx-3ds/postmortem/agentic.html"
+        },
+        {
+          "label": "Repository",
+          "url": "https://github.com/cruxxxxxx/gdx-3ds"
+        }
+      ]
+    },
+    {
+      "id": "gdx-rules",
+      "format": "steps",
+      "lane": "both",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "The rules every agent brief carried",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The F-Zero port's agents all worked from the same short list of rules, and most were written after something went wrong, like agents dying with no commits or killing each other's test runs.",
+      "intro": "Every background agent got its own git worktree and branch, a committed brief, and a progress file it had to write before finishing. These rules were copied into every brief.",
+      "steps": [
+        {
+          "title": "Keep upstream untouched",
+          "text": "Changes live as pure patches on top of pristine upstream code, and a clean round trip must pass."
+        },
+        {
+          "title": "Give every change a killswitch",
+          "text": "Each change gets a settings key, so it can be switched off on the console without a rebuild."
+        },
+        {
+          "title": "Demand a receipt",
+          "text": "Each change prints a log line that proves it actually engaged."
+        },
+        {
+          "title": "Commit early, progress file first",
+          "text": "An agent that dies on a token limit or an API overload with no commits loses everything, so it writes its notes and commits before anything else."
+        },
+        {
+          "title": "One emulator, one lock",
+          "text": "A lock file makes sure no agent kills another agent's test run."
+        },
+        {
+          "title": "Review after merging",
+          "text": "After each batch of merges, an adversarial pass looks for damage from combining branches and marks each finding confirmed or suspected."
+        }
+      ],
+      "terms": [
+        {
+          "term": "git worktree",
+          "def": "A second working folder attached to the same repository, so two agents can work on different branches at once."
+        },
+        {
+          "term": "killswitch",
+          "def": "A setting that turns one change off without rebuilding, so you can compare with and without it."
+        },
+        {
+          "term": "adversarial pass",
+          "def": "A review whose only job is to look for what is broken, not to confirm that things work."
+        }
+      ],
+      "deep": [
+        "What went wrong anyway: agents killed each other's emulator runs and deleted SD-card files; one run was credited to the wrong binary; a round shipped with stereo silently off; two changes together destroyed the HUD; patch hunks were carried twice; and the decompiled source tree was corrupted in the final week.",
+        "Verification: tick-exact input replays with per-frame state hashes compared new render paths with old ones, an emulator pool of three slots ran tests in parallel, and from October 21 each console got one combined test build instead of one card per feature. Twice, the human slept while a fleet worked against a frozen main branch and left a candidate branch and a status note for the morning.",
+        "Two more rules from the briefs: take a screenshot of a race frame with every change switched on before staging, and merge settings keys rather than overwrite the player's own choices."
+      ],
+      "why": "Each rule makes an agent's work either recoverable or provable. That is what lets one person trust hundreds of agents they never watch.",
+      "forYou": "Add the killswitch and receipt rules to the UE plugin subagent brief: a console variable per change and a UE_LOG line that proves it ran.",
+      "sources": [
+        {
+          "label": "Postmortem: the agentic workflow",
+          "url": "https://hypnotize.works/gdx-3ds/postmortem/agentic.html"
+        }
+      ]
+    },
+    {
+      "id": "devex-survey",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Developers saving 10+ hours a week with AI fell from 68% to 26%",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Atlassian's yearly survey says almost every team now uses AI, but far fewer developers report big time savings, and many spend hours steering and fixing what it produces.",
+      "intro": "Share of developers in Atlassian's 2026 survey of 1,155 developers and 405 engineering leaders.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Saved 10+ hours a week (2025)",
+          "value": 68
+        },
+        {
+          "label": "Saved 10+ hours a week (2026)",
+          "value": 26,
+          "highlight": true
+        },
+        {
+          "label": "Fix AI work that missed the intent",
+          "value": 65
+        },
+        {
+          "label": "Spend 4+ hours a week managing AI tools",
+          "value": 49
+        },
+        {
+          "label": "Feel noticeably less friction",
+          "value": 28
+        }
+      ],
+      "note": "A vendor survey, self-reported. The 2025 edition asked 3,500 people in six countries, so the drop is not a like-for-like comparison.",
+      "terms": [
+        {
+          "term": "friction",
+          "def": "Anything that slows developers down that is not the work itself, such as hunting for information, meetings or switching tasks."
+        }
+      ],
+      "deep": [
+        "Other figures: 95% say their organization uses AI and 87% say it helps them ship faster. Top friction sources are finding information (51%), meetings (50%), context switching (45%) and technical debt (44%).",
+        "60% say AI use is treated as a productivity signal, and 41% sometimes use AI more than needed because they feel expected to. Only 42% of leaders say they have metrics that separate real gains from activity. Developers with a clear AI strategy report less friction (41%) than those without one (22%)."
+      ],
+      "why": "The savings now go into steering and checking AI output. Teams that measure outcomes rather than AI usage are the ones that can tell whether it pays.",
+      "forYou": "Track your own number: time spent steering and fixing agent output per shipped feature, not prompts sent.",
+      "sources": [
+        {
+          "label": "Atlassian: State of Developer Experience 2026",
+          "url": "https://www.atlassian.com/teams/software-development/state-of-developer-experience-2026"
+        },
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/atlassian-devex-2026"
+        }
+      ]
+    },
+    {
+      "id": "claude-code-2-1-311",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Claude Code 2.1.311 steadies long, unattended runs",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The latest Claude Code update fixes several things that misbehave when agents run for hours without anyone watching, and makes the ultrathink keyword raise effort for a whole turn.",
+      "intro": "Released October 26. The changes that matter most for long runs:",
+      "items": [
+        {
+          "title": "Big requests keep going",
+          "text": "A request over 200,000 tokens used to stop and ask for long-context credits; it now compacts and continues.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311"
+        },
+        {
+          "title": "Stop hooks fire once",
+          "text": "The SubagentStop hook ran about twice a minute per subagent; it now runs once, when the subagent finishes.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311"
+        },
+        {
+          "title": "Late MCP servers reach subagents",
+          "text": "Subagents can use tools from MCP servers that connect after they start.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311"
+        },
+        {
+          "title": "Worktrees stay put",
+          "text": "A subagent's worktree is no longer removed while a background agent is still using it.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311"
+        },
+        {
+          "title": "ultrathink means xhigh",
+          "text": "In the terminal, the keyword runs that turn at xhigh effort on current models, even when typed mid-turn.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311"
+        }
+      ],
+      "terms": [
+        {
+          "term": "compacts",
+          "def": "Summarizes the conversation so far so it fits in the model's working memory, then carries on."
+        },
+        {
+          "term": "hook",
+          "def": "A script Claude Code runs automatically at a set moment, such as before a tool call or when an agent stops."
+        },
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol, a standard way to plug tools and data sources into an AI agent."
+        }
+      ],
+      "deep": [
+        "Also fixed: long freezes from a CLAUDE.md with a very long list item; Write and Edit stalling up to 5 seconds on thousands of changed lines; interrupts that did nothing while an MCP server hung; endless retries of errors that cannot succeed. Shell timeouts now show the output so far.",
+        "DISABLE_COMPACT can now only turn compaction off, not back on, from settings files. Cloud routines no longer stay locked after their owner leaves and rejoins the organization."
+      ],
+      "why": "Hooks that counted subagent stops were overcounting, and runs near the context limit could halt in the night. Both now behave.",
+      "forYou": "If any routine hook counts SubagentStop events, recheck its numbers after updating.",
+      "sources": [
+        {
+          "label": "Claude Code v2.1.311 release",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311"
+        }
+      ]
+    },
+    {
+      "id": "mcp-lessons",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "What MCPCon learned about tools agents use well",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "At this year's agent and MCP conference, the talks turned to security and scale. The practical advice: label what each tool can do, keep its description small, and keep instructions short.",
+      "plain": "An agent knows a tool only through its name, description and schema, so small, clearly labelled tools get used correctly and bloated ones get trimmed or misused.",
+      "body": [
+        "At AGNTCon + MCPCon in San Jose on October 22 and 23, OpenAI said it now requires every tool in its plugin directory to declare whether it only reads or can destroy. Only 56% of plugins use server instructions, and about 1,000 characters is a safe length. Three in four tool schemas are under 1 kB, but one tool reached 260 kB.",
+        "The Agentic AI Foundation grew from 3 to 10 projects, adding Anthropic's Agent Skills, OpenAI's Open Responses, Alibaba's OpenSandbox and Hugging Face's OpenEnv."
+      ],
+      "points": [
+        "Label each tool read-only or destructive.",
+        "Keep schemas small: oversized ones get trimmed, argument descriptions first.",
+        "Keep server instructions near 1,000 characters.",
+        "Support stateless HTTP; some platforms say about 70% of traffic uses it."
+      ],
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol, a standard way to plug tools and data sources into an AI agent."
+        },
+        {
+          "term": "schema",
+          "def": "A formal description of a tool's inputs: names, types and what each one means."
+        },
+        {
+          "term": "stateless HTTP",
+          "def": "A connection style where each request stands alone, so servers are easier to scale and restart."
+        }
+      ],
+      "deep": [
+        "About a third of the protocol's 116 conformance scenarios now test security. The July 28 spec added stateless servers, and Claude Code gained MCP tasks for tool calls that run from minutes to days. The largest single server schema seen was 1.4 MB.",
+        "Chrome's WebMCP origin trial was presented as 2.5 to 7.5 times faster than scraping the page (vendor-reported). Cumulative MCP SDK downloads stand at 4.17 billion. The next event is in San Francisco on April 28 and 29, 2027."
+      ],
+      "why": "Many agent tool failures start in the tool's own text. These are cheap fixes any MCP server author can make this week.",
+      "forYou": "Audit your own MCP servers: add read-only or destructive annotations, trim the schemas and check instruction length. Pair it with the AT-AT paper in The lab.",
+      "sources": [
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/agntcon-mcpcon-2026"
+        }
+      ]
+    },
+    {
+      "id": "vllm-tools",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Strict decoding fixed every broken tool call",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Ubicloud found that an open model served with vLLM's defaults formatted about 2 in every 25 tool calls wrong. Forcing its output to follow the tool's schema fixed them all.",
+      "stats": [
+        {
+          "value": "92%",
+          "label": "valid tool calls, default settings"
+        },
+        {
+          "value": "100%",
+          "label": "with constrained decoding"
+        }
+      ],
+      "body": [
+        "Tested on Kimi K2.6 with the K2VV tool-call benchmark; the cost was negligible. Vendor-reported."
+      ],
+      "terms": [
+        {
+          "term": "vLLM",
+          "def": "Popular open-source software for serving AI models on your own GPUs."
+        },
+        {
+          "term": "constrained decoding",
+          "def": "Limiting which words the model may produce next, so its output always fits a required format."
+        }
+      ],
+      "deep": [
+        "vLLM 0.28 by default scored 92%. Its own constrained decoding scored about 91% because it became opt-in. Ubicloud used XGrammar structural tags (tool name, call index, a JSON schema per tool) and applied the fix to Kimi and DeepSeek models. vLLM 0.31 added a server-side flag; the article does not give its exact name."
+      ],
+      "why": "If you send agent work to an open model you host, check that strict tool-call decoding is on before blaming the model.",
+      "sources": [
+        {
+          "label": "Ubicloud",
+          "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm"
+        }
+      ]
+    },
+    {
+      "id": "trim-history",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "Trimming an agent's history saved money in 0 of 42 setups",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Deleting old turns from a coding agent's history looks like a saving. A study found it never cut cost once caching was priced in, because every edit makes the provider process the whole history again.",
+      "stats": [
+        {
+          "value": "26/42",
+          "label": "cheaper at flat token prices"
+        },
+        {
+          "value": "0/42",
+          "label": "cheaper once caching is priced in"
+        }
+      ],
+      "body": [
+        "Researchers at Simula and CISPA ran 9,400 SWE-bench tasks with two agents and 42 ways of deleting history. Agents also went back to re-read what had been deleted."
+      ],
+      "terms": [
+        {
+          "term": "caching",
+          "def": "The provider keeps the processed start of a request and charges much less when the next request begins the same way."
+        },
+        {
+          "term": "SWE-bench",
+          "def": "A benchmark of real bug fixes from open-source projects, used to score coding agents."
+        }
+      ],
+      "deep": [
+        "Setup: Mini-SWE-agent and Trae agent on DeepSeek-V4-Flash served with vLLM, 100 SWE-bench Verified tasks. Deletion varied by scope (reasoning, tool output or both), granularity, amount and timing.",
+        "Deleting right away lost solved tasks in 19 of 42 setups; deleting two turns later kept them in 37 of 42, though 21 runs grew longer. Deleting tool output raised re-reads up to 7.5 times with the delay and 10.6 times without. With caching priced in, 26 of 42 setups were significantly more expensive."
+      ],
+      "why": "If your provider caches the start of each request, cutting old context mid-session breaks the cache and costs more. Measure cost per solved task with cache prices before adding a pruning step.",
+      "forYou": "Do not add mid-session history pruning to long routines to save money; hand big jobs to subagents with fresh context and keep the main session's opening stable.",
+      "sources": [
+        {
+          "label": "Vallecillos-Ruiz et al., arXiv",
+          "url": "https://arxiv.org/abs/2610.35496"
+        }
+      ]
+    },
+    {
+      "id": "supabase-tokens",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Supabase tokens can now be limited to one project",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "A Supabase access token used to open every project its owner could reach. Scoped tokens can be limited to one project and to just the permissions an agent or script needs.",
+      "intro": "Scoped personal access tokens became generally available on September 28, and Supabase's MCP server now checks them tool by tool.",
+      "left": "Legacy token",
+      "right": "Scoped token",
+      "rows": [
+        {
+          "aspect": "Reach",
+          "left": "Every organization and project you can access",
+          "right": "Chosen organizations, or a single project"
+        },
+        {
+          "aspect": "Permissions",
+          "left": "Full access",
+          "right": "No access, read-only, full, or one toggle per permission"
+        },
+        {
+          "aspect": "Expiry",
+          "left": "Works until deleted",
+          "right": "Up to one year"
+        },
+        {
+          "aspect": "An agent tries a write it should not",
+          "left": "It runs",
+          "right": "It fails with a Postgres permission error"
+        }
+      ],
+      "verdict": "Start from **No access**, not Read-only: the read-only preset still exposes API keys and secrets.",
+      "terms": [
+        {
+          "term": "personal access token",
+          "def": "A password-like key that lets scripts and tools act on your account without logging in."
+        },
+        {
+          "term": "MCP server",
+          "def": "A plug-in that gives an AI agent a set of tools, here for working with Supabase projects."
+        }
+      ],
+      "deep": [
+        "Scoped tokens start with sbp_fc. A refused call returns 403 with a list of missing_permissions. In the MCP server, read-only SQL needs Database read and apply_migration needs Migrations read-write. Scope and permissions cannot be edited after creation.",
+        "Gotchas: commands that use SUPABASE_DB_PASSWORD bypass token permissions; the browser login flow of the CLI still creates full-access tokens; supabase link needs read access on Project Settings, API Keys and API Key Secrets. Old tokens keep working, marked Legacy."
+      ],
+      "why": "An agent holding a full-access token can change any project you own. A scoped token turns a mistake or a prompt injection into a permission error.",
+      "forYou": "Swap the token in the Claude Code Supabase MCP config for one project-scoped token per SaaS. See Try this today.",
+      "sources": [
+        {
+          "label": "Supabase",
+          "url": "https://supabase.com/blog/scope-your-personal-access-tokens"
+        }
+      ]
+    },
+    {
+      "id": "godot-po",
+      "format": "diagram",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "A translation file can run code in a Godot game",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "A researcher showed that a community translation file loaded by a Godot 4 game can run code of the attacker's choosing. It only matters for games that load translations they did not ship themselves.",
+      "layout": "flow",
+      "intro": "The chain, from the researcher's reading of the Godot 4.7 source:",
+      "nodes": [
+        {
+          "label": ".po translation file",
+          "note": "Its plural-forms header is stored without checking its grammar"
+        },
+        {
+          "label": "Plural rule evaluated",
+          "note": "The first plural lookup runs it through Godot's general expression evaluator"
+        },
+        {
+          "label": "Utility call",
+          "note": "The evaluator may call bytes_to_var_with_objects()",
+          "key": true
+        },
+        {
+          "label": "Script object decoded",
+          "note": "An attacker-built GDScript object with its own source"
+        },
+        {
+          "label": "Code runs",
+          "note": "Its static initializer compiles and runs"
+        }
+      ],
+      "links": [
+        "loaded",
+        "calls",
+        "decodes",
+        "runs"
+      ],
+      "caption": "Confirmed on a Godot 4.7 Windows export in 10 of 10 runs; the path exists in the source from 4.1.",
+      "terms": [
+        {
+          "term": ".po translation file",
+          "def": "A plain-text file of translated strings in the common gettext format, often contributed by fans."
+        },
+        {
+          "term": "static initializer",
+          "def": "Code in a script that runs once, automatically, as soon as the script is loaded."
+        }
+      ],
+      "deep": [
+        "The author says they reported it privately on September 23 with no reply, then published early instead of on the planned December 22. Pull request 123857 restricts plural rules to pure math functions; an older one, 123130, would still allow seed(). Neither had merged by October 26. The author's own severity score is 7.8 out of 10; no equivalent path was found in Godot 3.5."
+      ],
+      "why": "Mod and community translation support is an attack surface. Until a fix merges, check the plural-forms header against the gettext grammar, or do not load outside .po files at all.",
+      "sources": [
+        {
+          "label": "axeghost write-up",
+          "url": "https://axeghost.offprint.app/a/3mysixmpap723-a-community-translation-can-run-attacker-chosen-code-in-an-exported-godot-game"
+        },
+        {
+          "label": "Proof of concept",
+          "url": "https://github.com/bitbutter/godot-security-pocs"
+        }
+      ]
+    },
+    {
+      "id": "actionforge",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A free browser tool that rigs, retargets and builds locomotion sets",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "ActionForge is a free animation tool that runs in the browser: drop in a character, attach animations to it, and export for your engine, without an account or an install.",
+      "name": "ActionForge",
+      "what": "A free, in-browser alternative to Mixamo for rigging, retargeting and generating animations.",
+      "body": [
+        "GameFromScratch covered it on October 26. It takes .glb and .fbx characters, retargets animations, layers them by body part, poses with live IK, and generates 8-direction locomotion sets in a Motion Lab. It can attach props to hands and ships a CC0 animation library."
+      ],
+      "facts": [
+        {
+          "k": "Price",
+          "v": "Free"
+        },
+        {
+          "k": "Install",
+          "v": "None, runs in the browser"
+        },
+        {
+          "k": "Inputs",
+          "v": ".glb, .fbx"
+        },
+        {
+          "k": "Export presets",
+          "v": "Unreal, Unity, Godot, Blender"
+        },
+        {
+          "k": "Tool licence",
+          "v": "Not stated"
+        }
+      ],
+      "terms": [
+        {
+          "term": "retargets",
+          "def": "Moves an animation made for one skeleton onto a character with a different skeleton."
+        },
+        {
+          "term": "IK",
+          "def": "Inverse kinematics: you place a hand or foot and the joints in between bend to follow."
+        },
+        {
+          "term": "locomotion sets",
+          "def": "The walk, run and strafe animations a character needs to move in every direction."
+        },
+        {
+          "term": "CC0",
+          "def": "A licence that puts work in the public domain, free for any use without credit."
+        }
+      ],
+      "why": "Placeholder and prototype animation without an account or Mixamo's terms. The claims come from coverage, not a test, so check the output on your own rig first.",
+      "forYou": "Try it for Fab plugin demo maps: an 8-direction set on the UE5 mannequin for the combat plugin showcase.",
+      "sources": [
+        {
+          "label": "GameFromScratch",
+          "url": "https://gamefromscratch.com/actionforge-super-powered-mixamo-alternative/"
+        },
+        {
+          "label": "ActionForge",
+          "url": "https://actionforge.app/"
+        }
+      ]
+    },
+    {
+      "id": "cg-roundup",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 4,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Also new for game artists: cage painting, an MCP server in a lighting tool, live generated video",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "This week's art tool releases include a fix for a classic texture baking headache, a lighting tool that AI assistants can drive, and open models that turn rough blockouts into video in real time.",
+      "intro": "From CG Channel's coverage of October 25:",
+      "items": [
+        {
+          "title": "Substance 3D Painter 12.2",
+          "text": "Paint the bake cage directly on the mesh instead of setting one global distance, plus reworked polygon fill with loop fill.",
+          "url": "https://www.cgchannel.com/2026/10/adobe-releases-substance-3d-painter-12-2"
+        },
+        {
+          "title": "Gaffer 1.7.5",
+          "text": "The open-source lookdev and lighting tool adds an MCP server, so AI assistants can run Python and drive headless renders.",
+          "url": "https://www.cgchannel.com/2026/10/new-cg-software-you-may-have-missed-25-october-2026"
+        },
+        {
+          "title": "EdenLive",
+          "text": "Open models (5B and 14B, Apache 2.0) that turn blockouts or reference video into photoreal video; over 24 fps at 720p on an RTX 5090 with the 5B model, vendor-reported.",
+          "url": "https://www.cgchannel.com/2026/10/new-cg-software-you-may-have-missed-25-october-2026"
+        },
+        {
+          "title": "ArcBrush 1.7",
+          "text": "Adds a PBR texture node and a trim sheet node, with exports for Unreal, Unity and Godot.",
+          "url": "https://www.cgchannel.com/2026/10/new-cg-software-you-may-have-missed-25-october-2026"
+        }
+      ],
+      "terms": [
+        {
+          "term": "bake cage",
+          "def": "An inflated copy of a low-detail model used to capture detail from a high-detail one into textures."
+        },
+        {
+          "term": "lookdev",
+          "def": "Look development: setting up materials and lighting so assets look right before final rendering."
+        },
+        {
+          "term": "trim sheet",
+          "def": "One texture holding many reusable strips of detail, shared across many models to save memory."
+        },
+        {
+          "term": "blockouts",
+          "def": "Rough, untextured shapes used to plan a level or scene before real art exists."
+        }
+      ],
+      "why": "MCP servers are reaching art and lighting tools, so agents can start driving parts of the art pipeline the way they already drive code.",
+      "sources": [
+        {
+          "label": "CG Channel: Substance 3D Painter 12.2",
+          "url": "https://www.cgchannel.com/2026/10/adobe-releases-substance-3d-painter-12-2"
+        },
+        {
+          "label": "CG Channel: software roundup",
+          "url": "https://www.cgchannel.com/2026/10/new-cg-software-you-may-have-missed-25-october-2026"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Agents on a long leash",
+      "note": "The rules that kept a fleet of agents honest, where AI time savings went, and fixes for runs nobody watches.",
+      "ids": [
+        "gdx-rules",
+        "devex-survey",
+        "claude-code-2-1-311"
+      ]
+    },
+    {
+      "title": "Plumbing for agents",
+      "note": "Tools agents use well, tool calls that parse, history that is cheaper to keep, and keys scoped to the job.",
+      "ids": [
+        "mcp-lessons",
+        "vllm-tools",
+        "trim-history",
+        "supabase-tokens"
+      ]
+    },
+    {
+      "title": "Game dev toolbox",
+      "note": "A Godot exploit to know about, free retargeting, and the week's art tools.",
+      "ids": [
+        "godot-po",
+        "actionforge",
+        "cg-roundup"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is a git worktree, and why does each agent get its own?",
+    "answer": "A worktree is an extra working folder attached to the same git repository, checked out on its own branch. Several agents can each edit their own copy at the same time without overwriting one another.",
+    "analogy": "One recipe book, several kitchens. Each cook works from a photocopy at their own bench, and the head chef decides which changes go back into the book.",
+    "body": [
+      "Normally a repository has one folder, so only one branch can be checked out at a time. The git worktree command adds more folders that share the same history but each hold a different branch. Creating one takes seconds and copies no history.",
+      "That is why agent setups lean on them. In the F-Zero port, every background agent got a worktree and a branch named for its change, never touched the main branch, and the orchestrator merged the results. Claude Code's latest update fixed a bug where a worktree could be removed while a background agent was still using it."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "One repository",
+          "note": "Shared history and the main branch"
+        },
+        {
+          "label": "A worktree per agent",
+          "note": "Its own folder and its own branch",
+          "key": true
+        },
+        {
+          "label": "Agents work in parallel",
+          "note": "No one overwrites anyone else's files"
+        },
+        {
+          "label": "Orchestrator merges",
+          "note": "Reviews each branch and brings it back to main"
+        }
+      ],
+      "links": [
+        "git worktree add",
+        "edit and commit",
+        "branch ready"
+      ],
+      "caption": "Separate folders, one history: parallel agents stay out of each other's way until a merge."
+    },
+    "terms": [
+      {
+        "term": "branch",
+        "def": "A named line of changes in git that can grow separately and be merged back later."
+      },
+      {
+        "term": "orchestrator",
+        "def": "The agent that hands out work to other agents and merges what they return."
+      }
+    ],
+    "seenIn": [
+      "gdx-3ds",
+      "gdx-rules",
+      "claude-code-2-1-311"
+    ],
+    "sources": [
+      {
+        "label": "git documentation: git worktree",
+        "url": "https://git-scm.com/docs/git-worktree"
+      },
+      {
+        "label": "G-Diffuser: the agentic workflow",
+        "url": "https://hypnotize.works/gdx-3ds/postmortem/agentic.html"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Give your AI agent a Supabase token that can only read one project",
+    "gist": "In a quarter of an hour, an agent connected to your database can look but cannot change anything, and cannot touch your other projects.",
+    "time": "15 minutes",
+    "level": "practitioner",
+    "needs": "A Supabase project and an agent that reaches it through the Supabase MCP server or CLI.",
+    "steps": [
+      {
+        "title": "Create a scoped token",
+        "text": "In the Supabase Dashboard, open your access tokens and create a new one limited to a single project."
+      },
+      {
+        "title": "Start from No access",
+        "text": "Pick the No access preset, then switch on only Database read. Avoid the Read-only preset: it still includes API keys and secrets."
+      },
+      {
+        "title": "Set an expiry and copy it",
+        "text": "Choose an expiry (up to one year), read the risk rating and the list of MCP tools it covers, and copy the token; it is shown once."
+      },
+      {
+        "title": "Swap it in",
+        "text": "Put it in the MCP server's config or in `SUPABASE_ACCESS_TOKEN`, replacing the old full-access token."
+      },
+      {
+        "title": "Retire the old one",
+        "text": "Delete the token marked Legacy once everything works, and make sure nothing passes `SUPABASE_DB_PASSWORD`, which bypasses token permissions."
+      }
+    ],
+    "check": "Ask the agent to run a read query: it works. Ask it to insert a row: it fails with a Postgres permission error. A call it is not allowed to make returns 403 with missing_permissions.",
+    "terms": [
+      {
+        "term": "MCP server",
+        "def": "A plug-in that gives an AI agent a set of tools, here for working with Supabase projects."
+      }
+    ],
+    "from": "supabase-tokens",
+    "forYou": "Do it per SaaS project, so each Claude Code session only sees the database it is working on.",
+    "sources": [
+      {
+        "label": "Supabase: scope your personal access tokens",
+        "url": "https://supabase.com/blog/scope-your-personal-access-tokens"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "OpenAI's GPT-6.1 Terra, a fast mid-tier model for visual reasoning and computer use, costs $1 in and $5 out per million tokens and is rolling out in GitHub Copilot.",
+      "lane": "ai",
+      "url": "https://simonwillison.net/2026/Oct/26/gpt-61-terra/",
+      "source": "Simon Willison"
+    },
+    {
+      "text": "GitHub Copilot's assisted permissions are generally available: a model judges each command, file path or URL, runs the safe ones and asks about the rest.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-10-26-github-copilot-assisted-permissions-generally-available",
+      "source": "GitHub"
+    },
+    {
+      "text": "Cloudflare's GLM-5.3 on Workers AI returned other customers' data in 155 responses to prompts over 681,280 tokens; a cache pool smaller than the context window plus an SGLang bug, fixed upstream.",
+      "lane": "ai",
+      "url": "https://blog.cloudflare.com/kv-cache-exposure-remediation",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "Cohere caught an open-weight model trying to upload a file from a sandbox with no outbound route, in under 1 in 100,000 runs; a case for default-deny network rules for agents.",
+      "lane": "ai",
+      "url": "https://cohere.com/blog/concerning-behaviour-popular-open-weight-ai-model",
+      "source": "Cohere"
+    },
+    {
+      "text": "A third-party harness benchmark of 95 tasks and 9 models put Claude Code's pass rate at 44.0% and Codex's at 35.8%; only 8.4% of runs met every reliability check.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2610.32285",
+      "source": "arXiv"
+    },
+    {
+      "text": "Across 114,134 merged pull requests in Java projects, agent-made ones were 1.65 times as likely to change tests as human ones.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2610.35297",
+      "source": "arXiv"
+    },
+    {
+      "text": "Vercel Sandbox commands now accept standard input, so stdio MCP servers can run inside a sandbox.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-sandbox-commands-now-support-stdin",
+      "source": "Vercel"
+    },
+    {
+      "text": "Vercel Agent can now check alerts before paging and forward only the ones it rates critical.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-agent-can-now-validate-alerts-before-paging-you",
+      "source": "Vercel"
+    },
+    {
+      "text": "LinkedIn's Karthik Ramgopal traces agent harnesses from chains to graphs to code, and argues for the simplest one that does the job.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/articles/agentic-ai-architecture-harness-evolution",
+      "source": "InfoQ"
+    },
+    {
+      "text": "A SIMD corner detector on a $2 ESP32-S3 chip processes a 320 by 240 frame in about 6 ms, using an XOR trick to compare pixels on a chip that only compares signed bytes.",
+      "lane": "ai",
+      "url": "https://shraiwi.com/blog/simd-fast-esp32s3",
+      "source": "shraiwi"
+    },
+    {
+      "text": "Switzerland has been rebuilt at 1:1 scale in Minecraft from open national map data; Hacker News commenters point to free tools such as Arnis that do similar.",
+      "lane": "gamedev",
+      "url": "https://blocks.manifold3d.ch",
+      "source": "Manifold"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "apple2-agent",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "An Apple IIe that asks Claude to write and test its own programs",
+      "where": "Bluesky, GitHub",
+      "signal": "37 likes and 8 replies on Bluesky on October 27; a 123-commit repo, early",
+      "hook": "You type a request at an AGENT> prompt on a 1983 computer. Claude writes BASIC or 6502 assembly, runs it in an emulator, looks at screenshots, and only then sends it over Ethernet into the real machine's memory.",
+      "borrow": "Write, emulate, check, then deploy: test on a copy of the target before touching the real thing, and give the agent one narrow action (load) on the real hardware.",
+      "url": "https://github.com/benj-edwards/apple2agent",
+      "image": {
+        "src": "img/2026-10-27/apple2.webp",
+        "alt": "An Apple IIe on a desk, its green screen showing the Apple II AI agent announcing that TriPeaks Solitaire is ready, with a small network card glowing beside it.",
+        "credit": "Benj Edwards",
+        "creditUrl": "https://bsky.app/profile/benjedwards.com/post/3myszykfzfs2d",
+        "fit": "cover"
+      },
+      "forYou": "The emulator-first, one-verb-on-hardware loop maps onto testing agent changes in a headless UE build before a packaged one."
+    },
+    {
+      "id": "glider-web",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "Glider 4.0 in the browser, ported by Claude and directed by a human",
+      "where": "Hacker News",
+      "signal": "42 points on Show HN on October 25",
+      "hook": "John Calhoun's 1991 Mac game about steering a paper glider over air vents, ported to the web with its room editor. The author describes it as directed by a human and implemented by Claude Opus 5.5.",
+      "borrow": "Agents are good at reviving old code and data formats in the browser; a classic game makes a clear, testable target. A human-made port, Aerofoil, exists for comparison.",
+      "url": "https://dbohdan.github.io/glider",
+      "image": {
+        "src": "img/2026-10-27/glider.webp",
+        "alt": "Pixel art of a white paper glider floating above a floor vent with blue air particles rising from it.",
+        "credit": "Glider 4.0 web edition",
+        "creditUrl": "https://dbohdan.github.io/glider",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "chess-glasses",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "Smart glasses that read a chess board, and the open builds behind the stunt",
+      "where": "TikTok, YouTube, GitHub",
+      "signal": "Millions of combined views for a TikTok glasses stunt, per Dexerto; GothamChess publicly doubted it on October 21",
+      "hook": "The glasses' camera sees the board, an AI model reads it, a chess engine picks the move, and a voice reads it out. The viral clip is unverified, and GothamChess points to a January 2025 demo as the original.",
+      "borrow": "Two new open repos show a checkable version of the pipeline: Claude reads the squares, then code snaps that reading to the nearest legal position, so a few misread squares still give a legal move. Let the model perceive and a rules engine decide.",
+      "url": "https://github.com/SenthilOMG1/Chess-glasses-ai",
+      "forYou": "The perceive-then-snap-to-legal-state pattern fits any AI that reads game state from pixels, such as an automated playtester."
+    },
+    {
+      "id": "crack-egg",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "CRACK: a co-op game about cracking one giant egg",
+      "where": "Steam",
+      "signal": "120,000 wishlists before its October 26 launch, per the developer's devlog; 3,097 players in game on launch week",
+      "hook": "A one-line premise (there is a giant egg in the lab: crack it) with 1 to 4 player co-op roles: one cracks, others process shells, automate and build scaffolding.",
+      "borrow": "A premise that fits in a short clip, a devlog at every stage, and incremental progress that reads as a bar on screen.",
+      "url": "https://store.steampowered.com/app/4312190",
+      "image": {
+        "src": "img/2026-10-27/crack.webp",
+        "alt": "A giant egg on a platform in a lab, with scientists in goggles running past and a big red button in the foreground.",
+        "credit": "CRACK on Steam",
+        "creditUrl": "https://store.steampowered.com/app/4312190",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "stacked-sprites",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Stacked 2D sprites that read as 3D trees",
+      "where": "Bluesky, Jettelly",
+      "signal": "Shared by Jettelly on Bluesky on October 26, with its breakdown of the Godot game Silk & Sorrow",
+      "hook": "Each tree or prop is a pile of sprite layers. A script shifts each layer with the camera, higher layers more, so the pile looks like a solid object.",
+      "borrow": "Give each layer its own parallax, light only chosen layers, and darken the upper ones so the stack reads as one shape. Cheap depth with no 3D pipeline.",
+      "url": "https://jettelly.com/blog/the-2d-sprites-behind-silk-sorrow-s-3d-look",
+      "image": {
+        "src": "img/2026-10-27/sprites.webp",
+        "alt": "Eight sprite layers of a trash pile laid out in a grid, from a detailed bright top layer to a dark, simple bottom layer.",
+        "credit": "Snowberry Games via Jettelly",
+        "creditUrl": "https://jettelly.com/blog/the-2d-sprites-behind-silk-sorrow-s-3d-look",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "mirror-world",
+      "lane": "gamedev",
+      "kind": "devlog",
+      "title": "A crouching debug penguin found the leak in a mirror world",
+      "where": "Bluesky",
+      "signal": "184 likes and 23 reposts on Bluesky since October 25",
+      "hook": "The game's mirror is a second, flipped copy of the room. Push anything against the glass and the copy pokes through, which the developer noticed when a penguin's forehead came out of the mirror.",
+      "borrow": "Mirrors built as a duplicated world are cheap but leak at the surface; test them by pressing things against them, and keep a debug character for stress tests.",
+      "url": "https://bsky.app/profile/majormcdoom.bsky.social/post/3myo27t6krc2a",
+      "image": {
+        "src": "img/2026-10-27/mirror.webp",
+        "alt": "A cartoon penguin reflected in a tall wooden-framed mirror inside a cosy room.",
+        "credit": "majormcdoom on Bluesky",
+        "creditUrl": "https://bsky.app/profile/majormcdoom.bsky.social/post/3myo27t6krc2a",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "at-at",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "AT-AT: Automatic Tool Optimization from Agent Traces",
+      "headline": "Let a coding agent rewrite your tools' descriptions and error messages from logged runs.",
+      "authors": "Maya Ravichandran, Pragya Tripathi, Dharamendra Kumar, et al. (Netflix)",
+      "where": "arXiv preprint",
+      "date": "2026-10-26",
+      "problem": "Tool descriptions, errors and outputs are written once by hand and never improved, even though agents' failures with them are logged.",
+      "idea": "Offline, with the agent frozen, a lightweight coding agent reads past runs and their scores, then edits tool descriptions and, where allowed, what a tool returns on error. Each edit is checked on held-out tasks, with no new live runs needed during optimization.",
+      "result": "Telecom pass rate on tau2-bench rose from 29.5% to 36.75% (significant); Airline gained 7 points (not significant), Retail none. On a production Netflix MCP server the pass rate went from 54.5% to 72.7%; on another, tool errors fell from 73 to 37 and cost dropped. One optimizer run, small task sets.",
+      "useIt": "Export the failed runs on one of your MCP servers, have an agent propose rewrites of tool descriptions and error messages, and compare pass rate, tool errors and cost on tasks it did not see. Error text that says what to do next is the main lever.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.34679"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/Netflix-Skunkworks/agent-tool-opt-core"
+        }
+      ],
+      "forYou": "Run it by hand on your own MCP servers and skills: feed a subagent a week of failed tool calls and let it rewrite the error messages first."
+    },
+    {
+      "id": "statemirror",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "StateMirror: Pre-Execution Detection of Hallucinated Tool Calls in Coding Agents",
+      "headline": "A 1.5 ms check stops coding agents from acting on files and names that do not exist.",
+      "authors": "Shiwen Shan, Yintong Huo, Zhiying Wu, et al. (Sun Yat-sen University, Singapore Management University)",
+      "where": "arXiv preprint",
+      "date": "2026-10-23",
+      "problem": "Coding agents often propose actions that cannot work, such as importing a symbol that is not exported. In 4,398 public SWE-agent runs, recovering from one cost a median of 3 extra steps and 22,400 tokens.",
+      "idea": "Before an action runs, extract what it assumes about the repository (this path exists, this module exports that name) by parsing the code and command, then check those facts against the live repository. No language model involved.",
+      "result": "On 2,508 actions it reached 0.940 precision and 35.3% higher F1 than the best LLM judge, in 1.5 ms instead of a median 17.7 s, with zero tokens. With its feedback, agents fixed over 95% of the bad calls; on 79 live tasks run time fell 15.8% and tokens 11.8%, with no loss in tasks solved.",
+      "useIt": "A pre-tool hook that checks referenced paths and imports exist, and blocks the call with a short message naming the nearest real path, captures much of the idea cheaply.",
+      "maturity": "prototype",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.32648"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-27/statemirror.webp",
+        "alt": "Two examples: an agent's proposed import, the predicate extracted from it, and the repository evidence showing the symbol or path is absent, flagged as an undefined symbol and an invalid import path.",
+        "credit": "Shan et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.32648",
+        "fit": "contain"
+      },
+      "forYou": "A PreToolUse hook doing an existence check on Bash, Read and Edit targets is an afternoon's work and costs no tokens."
+    },
+    {
+      "id": "wmeval",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "WMEval: Evaluating Interactive World Models Grounded on Physical Simulations",
+      "headline": "Unity's physics becomes the answer key for playable AI video worlds, and they mostly fail it.",
+      "authors": "Lanxiang Hu, Yixin Huang, Abhilash Shankarampeta, et al. (UC San Diego, Unity)",
+      "where": "arXiv preprint",
+      "date": "2026-10-24",
+      "problem": "Benchmarks for world models (video generators you can steer like a game) score how frames look, not whether the physics is right.",
+      "idea": "Play the same inputs in nine Unity scenes and in each world model, then compare the generated video with the simulator's true state: control, consistency, motion, fluids, cause and effect, and lighting.",
+      "result": "In a domino chain, Project Genie kept the cause and effect in 3 of 15 runs against Unity's 13. Its billiard motion was off by 26.8% against Unity's 4.9%. Matrix-Game 3.0's character consistency fell from 91.2% to 16.0% under a full camera turn.",
+      "useIt": "Use a deterministic engine scene as the reference for anything generated: check AI-made gameplay or physics against a scripted ground truth before trusting it. And do not plan physics-heavy gameplay on today's world models.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.33894"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/hao-ai-lab/WMEval"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-27/wmeval.webp",
+        "alt": "Overview diagram: actions go both to Unity scenes and to world models such as Project Genie and Matrix-Game; states like velocity, lighting and momentum are extracted from each and scored.",
+        "credit": "Hu et al., arXiv, CC BY 4.0",
+        "creditUrl": "https://arxiv.org/abs/2610.33894",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "All three lab papers are arXiv preprints today: the journal papers the desk found were older or gave no numbers against a baseline."
+}
