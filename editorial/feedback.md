@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #6 More like: The most played demos, by peak players (2026-10-28)
+  direction: more
+  issue: 2026-10-28
+  block: fest-peaks
+  format: chart
+  lane: gamedev
+  
+  Optional note (what exactly, and why):
+
 ## Folded in
 
 - #5 More like: A video model you can play (2026-10-22)
