@@ -1,0 +1,1055 @@
+{
+  "date": "2026-10-28",
+  "number": 15,
+  "title": "More demos, fewer wishlists",
+  "dek": "Steam's October Next Fest had two thirds more demos than June's, and the winners earned far less. Plus how Anthropic rebuilt source control for 30,000 merges a day, Epic loosening its AI training rule, and the plumbing under hosted agents.",
+  "theme": {
+    "paper": "blush",
+    "text": "burgundy",
+    "inks": [
+      "medium-blue",
+      "orange"
+    ],
+    "type": "wide",
+    "mood": "a crowded Wednesday about stores and pipes under strain"
+  },
+  "tldr": [
+    {
+      "text": "Steam Next Fest grew to **over 7,300 demos**, and a top-ten demo's wishlist gain fell to about +80k from +143k in June.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Anthropic went from about 2,500 to over 30,000 merges a day and replaced git servers with its own system, Scion, built by seven people in five months.",
+      "lane": "ai"
+    },
+    {
+      "text": "Tim Sweeney says Epic is working to drop the EULA rule against training AI on Unreal Engine and MetaHuman output; a crawler signed as Roblox pulled 145 GB from 3D model sites.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Hosted agents are splitting the loop from the sandbox, and MCP servers are going stateless so any server can answer any call.",
+      "lane": "ai"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "next-fest-oct",
+      "format": "hero",
+      "variant": "split",
+      "lane": "gamedev",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Next Fest doubled in size, and the winners earned less",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Steam's October demo festival had about 7,300 games, up from 4,400 in June. With that many, even the most successful demos gained far fewer wishlists and followers than the top demos did a few months ago.",
+      "background": "Steam Next Fest is Valve's week-long event, held a few times a year, where unreleased games offer free demos on the store front page. Wishlists are the main signal of how well a game will launch.",
+      "takeaway": "Next Fest now amplifies interest a game already has more than it creates new interest. Build momentum before the fest, off Steam, and plan for smaller gains during it.",
+      "body": [
+        "GameDiscoverCo counted over 7,300 demos, 66.6% more than June's roughly 4,400 and well above the just over 5,000 it expected. Its estimate for the typical top-ten wishlist gain during the week is about +80k, down 44% from +143k in June. Games ranked 11 to 30 added roughly 30k to 50k, against 40k to 78k in June.",
+        "Followers, a smaller signal, fell harder. A game in the top 10% gained about 63 followers, against 121 in June and 173 in October 2025. Making the top 20 by peak concurrent players took only about 1,500 players at once.",
+        "GameDiscoverCo's reading: bigger studios moved their big reveals away from a crowded event, October was slower overall, and most of the week's hits already had momentum from earlier demos. The festival amplified attention more than it created it."
+      ],
+      "image": {
+        "src": "img/2026-10-28/nextfest-top10.webp",
+        "alt": "Bar chart of the ten biggest wishlist gains during Steam Next Fest October 2026: Probably Stolen +160.9k, Abyssal Lapidary +121.4k, ArcheAge Chronicles +93.2k, Emberville +79.2k, then six games between +64.2k and +51.9k.",
+        "credit": "GameDiscoverCo",
+        "creditUrl": "https://newsletter.gamediscover.co/p/who-won-october-2026s-steam-next",
+        "fit": "contain"
+      },
+      "stat": {
+        "value": "7,300+",
+        "label": "demos in October, up from about 4,400 in June"
+      },
+      "terms": [
+        {
+          "term": "wishlist",
+          "def": "A player's request to be told when a Steam game launches or goes on sale; studios use the count to predict first-week sales."
+        },
+        {
+          "term": "followers",
+          "def": "Players who follow a game's Steam page to see its news in their feed, a smaller and stronger sign of interest than a wishlist."
+        },
+        {
+          "term": "concurrent players",
+          "def": "How many people are playing at the same moment, as opposed to how many played over a day or a week."
+        }
+      ],
+      "deep": [
+        "GameDiscoverCo's own ranking by unique players put Worst Class Ever first with about 600,000 players, followed by Probably Stolen, Find The Needle, Fart Together and ArcheAge Chronicles. Find The Needle and similar idle or desktop companion games run in the background, which inflates play counts.",
+        "The +80k and +143k figures are GameDiscoverCo's estimates for a typical top-ten game, from its own wishlist tracking; Valve does not publish wishlist numbers. The chart shows the ten largest gains for individual games."
+      ],
+      "why": "A Next Fest slot is no longer a launch plan by itself. Teams that arrive with a demo already played, streamed and talked about elsewhere are the ones that rise; the rest are one of 7,300.",
+      "forYou": "Plan the action RPG's demo around an earlier, smaller showcase or a creator push weeks before a Next Fest, and treat the fest as the second push, not the first. Budget for a +30k to +50k week, not +100k.",
+      "sources": [
+        {
+          "label": "GameDiscoverCo: Who won October 2026's Steam Next Fest?",
+          "url": "https://newsletter.gamediscover.co/p/who-won-october-2026s-steam-next"
+        },
+        {
+          "label": "Output Lag: the most played demos by the numbers",
+          "url": "https://outputlag.com/news/steam-next-fest-october-2026-the-most-played-demos-by-the-numbers/"
+        }
+      ]
+    },
+    {
+      "id": "fest-peaks",
+      "format": "chart",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The most played demos, by peak players",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "One site tracked the live player count of every Next Fest demo each hour. A shopkeeper sim, a hide-and-seek school game and an MMO led, and a simple volleyball game beat most big productions.",
+      "intro": "Highest number of people playing at once during the October 2026 Next Fest, read hourly from Steam's public player counts across 7,310 demos.",
+      "unit": "players",
+      "series": [
+        {
+          "label": "Probably Stolen",
+          "value": 39696,
+          "highlight": true
+        },
+        {
+          "label": "Worst Class Ever",
+          "value": 27684
+        },
+        {
+          "label": "ArcheAge Chronicles",
+          "value": 19855
+        },
+        {
+          "label": "just volleyball",
+          "value": 9598,
+          "highlight": true
+        },
+        {
+          "label": "Frostrail",
+          "value": 8834
+        },
+        {
+          "label": "Loftia",
+          "value": 7427
+        },
+        {
+          "label": "Abyssal Lapidary",
+          "value": 4766
+        },
+        {
+          "label": "Fart Together",
+          "value": 4405
+        }
+      ],
+      "note": "Output Lag left out idle and desktop companion games such as Find The Needle, because they count players while running in the background. A third-party count, not Valve's.",
+      "why": "Peak players show which demos people actually sat down to play, which is a different list from the wishlist winners. Small games with one clear, social hook sit right next to big productions.",
+      "sources": [
+        {
+          "label": "Output Lag",
+          "url": "https://outputlag.com/news/steam-next-fest-october-2026-the-most-played-demos-by-the-numbers/"
+        }
+      ]
+    },
+    {
+      "id": "material-maker-18",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A free node-based texture tool adds trim sheets",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Material Maker, a free and open-source tool for building game textures from node graphs, now makes trim sheets and can re-export textures every time you change the graph.",
+      "name": "Material Maker 1.8",
+      "what": "Open-source procedural material authoring, an alternative to Substance Designer, built on Godot.",
+      "body": [
+        "A new Trimsheet node builds trim sheets, and an Auto Export node rewrites the textures whenever the graph changes, so an engine watching the folder picks them up. Also new: a Crop node, a better Gaussian blur and search inside sub-nodes."
+      ],
+      "facts": [
+        {
+          "k": "Price",
+          "v": "Free, MIT licence"
+        },
+        {
+          "k": "Exports",
+          "v": "Templates for Unity, Unreal Engine and Godot"
+        },
+        {
+          "k": "Released",
+          "v": "October 26, 2026"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-28/materialmaker.webp",
+        "alt": "Two material previews on spheres: a polished silver metal with embossed scroll ornaments, and a trim-sheet brick and concrete pattern.",
+        "credit": "Material Maker via CG Channel",
+        "creditUrl": "https://www.cgchannel.com/2026/10/open-source-material-authoring-software-material-maker-1-8-is-out/",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "trim sheets",
+          "def": "One texture made of horizontal strips of detail (edges, panels, bolts) that many models reuse, which saves memory and keeps a style consistent."
+        },
+        {
+          "term": "node graphs",
+          "def": "A way of building something by wiring small boxes together, each doing one operation, instead of painting or writing code."
+        }
+      ],
+      "why": "Trim sheets and live export are the two features that make a procedural texture tool fit a modular game art pipeline, and this one costs nothing.",
+      "forYou": "Try a trim sheet for the modular world-tool kits on Fab: Auto Export into a watched folder makes iteration inside Unreal quick.",
+      "sources": [
+        {
+          "label": "CG Channel",
+          "url": "https://www.cgchannel.com/2026/10/open-source-material-authoring-software-material-maker-1-8-is-out/"
+        }
+      ]
+    },
+    {
+      "id": "epic-eula-ai",
+      "format": "quote",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "third",
+      "ink": "b",
+      "texture": "overprint",
+      "title": "Epic plans to let AI train on what Unreal makes",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Epic's license forbids training AI on anything made with Unreal Engine or MetaHuman. Its CEO says Epic is working to remove that rule, leaving each game's own terms to decide.",
+      "quote": "Yes currently but we are working to remove this restriction from EULA terms",
+      "speaker": "Tim Sweeney",
+      "role": "Epic Games CEO, on X, October 27",
+      "context": "He was answering whether Epic restricts AI training on Unreal Engine and MetaHuman output, and added that each game ships under terms its developer chooses. No date yet; Epic had not answered Game Developer.",
+      "terms": [
+        {
+          "term": "EULA",
+          "def": "End user license agreement: the contract that sets what you may do with software and with what you make using it."
+        },
+        {
+          "term": "MetaHuman",
+          "def": "Epic's tool for making realistic digital human characters for Unreal Engine."
+        }
+      ],
+      "why": "If the engine-level ban goes, protecting your game's output from training becomes your job, in your own license terms.",
+      "forYou": "Check whether the Fab seller terms change to match, and decide whether the plugin licenses should say anything about training on their output.",
+      "sources": [
+        {
+          "label": "Game Developer",
+          "url": "https://www.gamedeveloper.com/programming/epic-is-updating-the-eula-to-allow-ai-training-on-outputs-from-unreal-engine-and-metahuman"
+        }
+      ]
+    },
+    {
+      "id": "roblox-crawl",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A crawler signed as Roblox took 145 GB of 3D models",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Three free 3D model sites say a crawler that named itself as Roblox research downloaded 1,027 files over two weekends, ignoring their rules and their emails. Most of the projects were licensed for non-commercial use only.",
+      "stats": [
+        {
+          "value": "145.5 GB",
+          "label": "downloaded from Open3DLab, SFMLab and SmutBase"
+        },
+        {
+          "value": "423 of 712",
+          "label": "projects carried a non-commercial-only licence"
+        },
+        {
+          "value": "34 hours",
+          "label": "of crawling, 26,429 requests from one AWS address"
+        }
+      ],
+      "body": [
+        "Its user agent read `trellis2-data-sourcing/1.0 (3D foundation model research)` with a roblox.com address. It ignored robots.txt and the sites' terms, ran on October 15 and 16 and again on October 19 and 20, and kept trying after being blocked. These are the sites' own claims; Roblox has not replied, and the link to its 3D model work is the sites' belief."
+      ],
+      "terms": [
+        {
+          "term": "crawler",
+          "def": "A program that visits web pages automatically and downloads what it finds."
+        },
+        {
+          "term": "robots.txt",
+          "def": "A file where a site states which automated visitors may read which pages; following it is voluntary."
+        },
+        {
+          "term": "user agent",
+          "def": "The name a program gives itself when it requests a web page."
+        }
+      ],
+      "why": "3D assets are now training data that crawlers go looking for. Licence terms only help if sites can block and log crawlers, and stores can show who downloaded what.",
+      "forYou": "Assets and sample projects hosted outside Fab are reachable the same way; keep downloadable demo content behind the store where possible.",
+      "sources": [
+        {
+          "label": "Open3DLab",
+          "url": "https://open3dlab.com/news/roblox-downloaded-145-gb-of-models-from-our-sites/"
+        }
+      ]
+    },
+    {
+      "id": "scion",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Anthropic outgrew git when agents merged 30,000 changes a day",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "As Claude agents wrote more of Anthropic's code, merges into its main repository rose more than tenfold in four months. Git servers could not keep up, so a team of seven built a replacement in five months.",
+      "body": [
+        "Merges into Anthropic's monorepo went from about 2,500 a day in May to over 30,000 by September. The history is nearly 100 GB, and CI checks out code about 25 million times a day, which needed several hundred git mirrors at peak.",
+        "Scion keeps the server in charge. Clients are always online and fetch only the files they need; commits, merges and rebases happen on the server; and moving a branch is one atomic database write, so there is no global lock. Instead of a merge queue, changes are tested after merging and before deploy, and Claude usually fixes conflicts quickly.",
+        "Against the old git mirrors, Scion cut the CPU and memory footprint about 200 times, made CI checkouts about 100 times faster (minutes to seconds) and freed 25% more CI capacity. Anthropic-reported."
+      ],
+      "points": [
+        "Most refs are discouraged: only main and release branches.",
+        "Sparse checkouts: many CI jobs read a diff from the API and never check out at all.",
+        "One Claude agent per component watches its telemetry and logs and catches what alerts miss.",
+        "Engineers review the intent of each change and often tell agents no."
+      ],
+      "image": {
+        "src": "img/2026-10-28/scion-merges.webp",
+        "alt": "Bar chart of changes merged per day in Anthropic's monorepo, January to September 2026, climbing from under 1,000 to a peak of 30,401 on September 9, with pull requests giving way to the new review tool's change requests from June.",
+        "credit": "Anthropic",
+        "creditUrl": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "monorepo",
+          "def": "One repository that holds the code for many projects, instead of one repository per project."
+        },
+        {
+          "term": "merge queue",
+          "def": "A line where approved changes wait to be tested on top of each other and merged one by one, so the main branch never breaks."
+        },
+        {
+          "term": "CI",
+          "def": "Continuous integration: machines that build and test every change automatically."
+        },
+        {
+          "term": "refs",
+          "def": "Git's named pointers to commits, such as branches and tags."
+        }
+      ],
+      "deep": [
+        "Changesets live in a write-ahead log, stored relative to their first parent with content-addressed pointers to file blobs. Blame, path history and commit-graph skip lists are derived data computed from parents. Ref moves are compare-and-swap writes on one Spanner row.",
+        "Reads go through a per-node scion-daemon, then regional scion-cache servers, then the authoritative servers; each tier reports over 99% cache hits. The code review tool is called Antique. Neither is open source; the post credits Google's Piper and Meta's Sapling as influences and suggests git servers adopt richer RPCs rather than replacing the git client.",
+        "A rewrite of one ingestion path by Claude used 20 times less memory and ran 4 times faster than the hand-written prototype. The post is from October 13; InfoQ and Latent Space covered it on October 27."
+      ],
+      "why": "Agents multiply merges long before they multiply features. The parts that break first are checkout cost and the global lock on the main branch, and both have fixes smaller teams can borrow.",
+      "forYou": "When several worktree agents land changes on one plugin repo, the same pinch appears in miniature: keep CI checkouts sparse and test after merge on a staging branch instead of serializing every merge.",
+      "sources": [
+        {
+          "label": "Anthropic: Redesigning source control",
+          "url": "https://www.anthropic.com/engineering/redesigning-source-control"
+        },
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/anthropic-source-control/"
+        }
+      ]
+    },
+    {
+      "id": "brain-hands",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Keep the agent loop out of the sandbox",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Anthropic's hosted agents now run their thinking loop on a durable server and start a sandbox only when code must run. A crashed sandbox no longer kills the agent, and the sandbox never holds real keys.",
+      "layout": "flow",
+      "intro": "How Claude Managed Agents split the brain from the hands, as Anthropic's platform leads described it on Latent Space:",
+      "nodes": [
+        {
+          "label": "Harness on a durable server",
+          "note": "The loop and session state; answers start without waiting for a container"
+        },
+        {
+          "label": "Sandbox on demand",
+          "note": "Started only to run code; if it dies, the agent survives"
+        },
+        {
+          "label": "Placeholder keys",
+          "note": "The sandbox only sees stand-ins for credentials",
+          "key": true
+        },
+        {
+          "label": "Egress proxy",
+          "note": "Swaps in the real key from a vault, for allowed domains only"
+        }
+      ],
+      "links": [
+        "needs to run code",
+        "calls a service",
+        "leaves the box"
+      ],
+      "caption": "Built for latency and reliability first; keeping secrets out of the sandbox turned out to be the bigger security win. Vercel made the same split in its fx harness adapter on October 27.",
+      "terms": [
+        {
+          "term": "harness",
+          "def": "The program around a model that runs the agent loop: sends prompts, calls tools and keeps state."
+        },
+        {
+          "term": "sandbox",
+          "def": "An isolated container where an agent can run code without touching the rest of the system."
+        },
+        {
+          "term": "egress proxy",
+          "def": "A gateway that all outgoing network traffic passes through, where it can be filtered or changed."
+        }
+      ],
+      "why": "A prompt-injected agent can only leak what its sandbox holds. If the sandbox holds placeholders, a leak gives away nothing usable.",
+      "forYou": "For the SaaS agents on Cloudflare: run the loop in a Worker, the code in a container, and put real Supabase keys behind a small proxy Worker on an allow list.",
+      "sources": [
+        {
+          "label": "Latent Space: the Claude Platform team",
+          "url": "https://latent.space/p/opus55"
+        },
+        {
+          "label": "Vercel: fx adapter separates host and sandbox",
+          "url": "https://vercel.com/changelog/fx-harness-adapter-now-separates-host-and-sandbox"
+        }
+      ]
+    },
+    {
+      "id": "aws-kernel-cves",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "AWS sorts kernel bug reports with a script, an agent and two people",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Linux now publishes about 16 security reports a day. AWS filters most with a plain script, lets an agent judge the rest against each platform, and keeps two engineers reviewing every result.",
+      "intro": "From an AWS talk at Linux Plumbers 2026, reported by InfoQ:",
+      "steps": [
+        {
+          "title": "Filter without AI",
+          "text": "A script drops about 70% of reports: the affected version is out of range, or the vulnerable files are not built for that platform."
+        },
+        {
+          "title": "Let the agent judge the rest",
+          "text": "The agent gets the kernel source, each platform's build config, a threat model and a severity rubric, and fills in a table: subsystem, kind of bug, how it could be attacked. It ignores the generic CVSS score. About 3.4 seconds per report."
+        },
+        {
+          "title": "Two people review every table",
+          "text": "Engineers estimate 5 to 10% of the agent's calls are wrong, with no formal evaluation yet, and AWS does not plan to remove the review."
+        }
+      ],
+      "terms": [
+        {
+          "term": "CVSS",
+          "def": "A standard 0 to 10 severity score for security bugs, often too generic to say how much one bug matters on your system."
+        },
+        {
+          "term": "threat model",
+          "def": "A written account of who might attack a system, how, and what matters most to protect."
+        }
+      ],
+      "why": "The pattern transfers to any flood of alerts: throw away what a rule can decide, give the agent your own context instead of generic scores, and keep a human gate where mistakes are costly.",
+      "forYou": "Use the same three stages for dependency alerts across the Node and Flutter projects: a version-range script first, then an agent with each app's real dependency tree.",
+      "sources": [
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/aws-ai-agents-linux-kernel-cves/"
+        },
+        {
+          "label": "Slides (Linux Plumbers 2026)",
+          "url": "https://lpc.events/event/20/contributions/2373/attachments/2171/4838/LPC_2026___Kernel_CVEs_at_AWS_Scale.pdf"
+        }
+      ]
+    },
+    {
+      "id": "claude-code-2-1-312",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Claude Code 2.1.312 stops overwriting big files it half read",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The latest Claude Code update fixes a case where the agent could replace a very large instructions file after reading only its start, and caps how many hooks run at once.",
+      "intro": "Released October 27. The changes most likely to affect you:",
+      "items": [
+        {
+          "title": "Big files are safe",
+          "text": "Claude could overwrite a very large CLAUDE.md, rules file or included file after reading only the beginning. Writing now asks it to read the whole file or edit in place.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312"
+        },
+        {
+          "title": "Skills found after cd",
+          "text": "Per-directory skills and skills limited by `paths:` were missed after a shell `cd` deeper into a repository.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312"
+        },
+        {
+          "title": "Hooks are capped",
+          "text": "Prompt and agent hooks run at most 24 at a time per session, plus 12 that have waited past their timeout. A timeout under one second counts as one second.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312"
+        },
+        {
+          "title": "Effort for cloud routines",
+          "text": "Scheduled cloud routines can now set an effort level in the model picker, and the setup script box gained a Bash editor.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312"
+        }
+      ],
+      "terms": [
+        {
+          "term": "hooks",
+          "def": "Your own scripts or prompts that Claude Code runs automatically at set moments, such as before a tool call or when an agent stops."
+        },
+        {
+          "term": "CLAUDE.md",
+          "def": "A file of standing instructions that Claude Code reads at the start of every session in a project."
+        }
+      ],
+      "deep": [
+        "Also changed: Bedrock, Vertex, Foundry and Mantle fall back to the shorter system prompt for unrecognized model names (set `CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT=0` to keep the full one); the automatic model switch after a flagged message also covers unrecognized names (`CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK=1` turns it off); the `claude_code.safety_event` OpenTelemetry event is gone; `oidc.user_id_claim` for the apps gateway."
+      ],
+      "why": "Long instruction files are where teams keep their hard-won rules. A silent overwrite would cost more than any other single bug in an agent tool.",
+      "forYou": "Update before the next unattended run, and check that the hook set stays under the new concurrency cap.",
+      "sources": [
+        {
+          "label": "Claude Code releases",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312"
+        }
+      ]
+    },
+    {
+      "id": "tsrs-measured",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "The Rust TypeScript checker: about 3x, and agent-written",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "New details on tsrs, the Rust port of TypeScript's type checker: one developer directed AI agents to write it, and an independent benchmark puts it about 3 times faster than today's compiler, not 8.",
+      "background": "Cloudflare announced tsrs on October 20 (covered here on October 21). It is now incubated in the Oxc project with VoidZero.",
+      "intro": "A cautious way to try it, taken from an independent review: keep the official compiler as the gate and run tsrs beside it.",
+      "lang": "sh",
+      "code": "# The gate stays official\nnpm install -D typescript@7\n\n# Tune the current compiler first\nnpx tsc --noEmit --checkers 8\n\n# Try tsrs as a non-blocking job\npnpm add -D tsrs\npnpm exec tsrs --noEmit --checkerAssignment go --noLazyMembers",
+      "explain": [
+        "Cloudflare reports up to 8x faster and about 70% less memory than TypeScript 7.0. Against the 7.1 nightly on the vscode repository the reviewer measured 5.28 s versus 1.73 s, about 3x. Its own benchmark compared different thread counts.",
+        "InfoQ reports Max Schwenk of Owner.com wrote none of the code himself: agents translated Microsoft's Go compiler function by function, with TypeScript's conformance suite as the spec. Native builds are macOS on Arm and Linux only, and there is no watch mode or language server yet."
+      ],
+      "terms": [
+        {
+          "term": "type checker",
+          "def": "The part of the TypeScript compiler that finds type errors without running the code."
+        },
+        {
+          "term": "conformance suite",
+          "def": "The official set of thousands of test programs a TypeScript implementation must handle exactly like the original."
+        }
+      ],
+      "why": "A faithful port of a big compiler, written by agents and held to the original's test suite, is a template for agent work on any large codebase with good tests.",
+      "forYou": "Run it as a side job on the biggest React and Node repo; adopt it as a pre-check only if the error lists match for a few weeks.",
+      "sources": [
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/cloudflare-tsrs-ai-typescript/"
+        },
+        {
+          "label": "DEV: the 8x claim is closer to 3x",
+          "url": "https://dev.to/alanwest/cloudflares-rust-typescript-tsrs-vs-tsgo-the-8x-claim-is-closer-to-3x-37o4"
+        },
+        {
+          "label": "Cloudflare",
+          "url": "https://blog.cloudflare.com/typescript-rust-port/"
+        }
+      ]
+    },
+    {
+      "id": "mcp-stateless",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "MCP servers drop the handshake, so any server can answer",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The official C# toolkit for MCP, the protocol that connects AI agents to tools, now follows a spec change that makes each request self-contained. That lets tool servers run on serverless platforms and behind ordinary load balancers.",
+      "intro": "Version 2.0 of the MCP C# SDK makes stateless HTTP the default, following the MCP spec dated 2026-07-28. SDKs in other languages follow the same spec.",
+      "left": "Before (session)",
+      "right": "Now (stateless)",
+      "rows": [
+        {
+          "aspect": "Starting a conversation",
+          "left": "An initialize handshake, then a session ID on every call",
+          "right": "No handshake: each request carries its protocol version and capabilities"
+        },
+        {
+          "aspect": "Scaling out",
+          "left": "Calls must reach the server that holds the session",
+          "right": "Any instance can answer any request"
+        },
+        {
+          "aspect": "Routing at a gateway",
+          "left": "The gateway has to read the request body",
+          "right": "Headers name the method and tool, so gateways route without parsing"
+        },
+        {
+          "aspect": "Asking the user mid-call",
+          "left": "The server sends a request back over the open session",
+          "right": "The tool returns what it needs plus an opaque state; the client answers and calls again"
+        }
+      ],
+      "verdict": "Stateless is what makes an MCP server fit a serverless function. Check that the client probes for it and falls back to the old handshake.",
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: an open standard for connecting AI agents to tools and data."
+        },
+        {
+          "term": "SDK",
+          "def": "Software development kit: a library that does the protocol work so you only write your own logic."
+        },
+        {
+          "term": "stateless",
+          "def": "Each request carries everything needed to answer it, so the server keeps no memory between requests."
+        }
+      ],
+      "deep": [
+        "In the C# SDK, `HttpServerTransportOptions.Stateless` defaults to true; clients probe `server/discover` and fall back to the legacy handshake. `tools/call` carries `Mcp-Method` and `Mcp-Name` headers, and `[McpHeader]` promotes a parameter to an `Mcp-Param-*` header.",
+        "Multi round-trip requests: a tool throws `InputRequiredException` with its input requests and a `requestState`; the client reissues the call with `inputResponses`. Roots, sampling and logging APIs are deprecated, tasks moved to an opt-in package, and OAuth now requires PKCE S256 and issuer validation."
+      ],
+      "why": "Most agent tool servers will be redeployed on this model over the coming months. Building new servers stateless now avoids a rewrite.",
+      "forYou": "The TypeScript MCP servers on Cloudflare Workers are the case this was made for; move them to stateless when the TS SDK release lands.",
+      "sources": [
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/10/MCP-CSharp-SDK-Stateless/"
+        },
+        {
+          "label": "Microsoft .NET blog",
+          "url": "https://devblogs.microsoft.com/dotnet/announcing-v20-of-the-official-mcp-csharp-sdk/"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "After the fest",
+      "note": "Who people actually played, and a free texture tool for modular kits.",
+      "ids": [
+        "fest-peaks",
+        "material-maker-18"
+      ]
+    },
+    {
+      "title": "Who trains on your work",
+      "note": "Epic loosens its rule, and a crawler shows what is already being taken.",
+      "ids": [
+        "epic-eula-ai",
+        "roblox-crawl"
+      ]
+    },
+    {
+      "title": "Built for a thousand agents",
+      "note": "Source control, sandboxes and triage, redesigned for the volume agents create.",
+      "ids": [
+        "scion",
+        "brain-hands",
+        "aws-kernel-cves"
+      ]
+    },
+    {
+      "title": "Shipped in your tools",
+      "note": "A safer Claude Code, a faster TypeScript checker to test, and stateless MCP.",
+      "ids": [
+        "claude-code-2-1-312",
+        "tsrs-measured",
+        "mcp-stateless"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is a merge queue, and why do agents strain it?",
+    "answer": "A merge queue is a line that approved changes wait in. Each one is tested on top of the changes ahead of it and merged in order, so the main branch always passes its tests.",
+    "analogy": "A single checkout lane where the cashier re-adds up the whole basket after each new item. It is always correct, but the line only moves as fast as one cashier.",
+    "body": [
+      "Two changes can each pass their tests alone and still break each other once both are merged. A merge queue prevents that: it builds a temporary branch with the next change on top of everything already queued, runs the tests, and merges only if they pass. GitHub, GitLab and most large teams use one.",
+      "The cost is that the queue works in order, so it caps how many changes can land in a day. That is fine for a team of people. It stops being fine when agents open thousands of changes a day: Anthropic dropped its global merge lock entirely, tests after merging and again before deploy, and lets Claude fix conflicts as they appear."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Change approved",
+          "note": "Review is done, but it has not merged"
+        },
+        {
+          "label": "Joins the queue",
+          "note": "Placed behind the changes already waiting"
+        },
+        {
+          "label": "Tested on top",
+          "note": "Built with every change ahead of it",
+          "key": true
+        },
+        {
+          "label": "Merged in order",
+          "note": "Main always passes; a failure drops out"
+        }
+      ],
+      "links": [
+        "enqueue",
+        "rebuild",
+        "tests pass"
+      ],
+      "caption": "Correct by construction, but one lane: throughput is limited by how fast each test run finishes."
+    },
+    "terms": [
+      {
+        "term": "main branch",
+        "def": "The shared line of code that everyone builds on and that ships."
+      },
+      {
+        "term": "merge lock",
+        "def": "A rule that only one change may merge at a time, which keeps order but makes everyone wait."
+      }
+    ],
+    "seenIn": [
+      "scion"
+    ],
+    "sources": [
+      {
+        "label": "GitHub Docs: managing a merge queue",
+        "url": "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue"
+      },
+      {
+        "label": "Anthropic: Redesigning source control",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Check whether your coding agent stops when it says it is done",
+    "gist": "In half an hour you find out whether your agent keeps rewriting code after claiming a refactor is finished, and how much.",
+    "time": "half an hour",
+    "level": "practitioner",
+    "needs": "A coding agent (Claude Code, Codex or similar), a git repository with passing tests, and one module worth tidying.",
+    "steps": [
+      {
+        "title": "Branch and pick a target",
+        "text": "Create a scratch branch and choose one small module with good test coverage."
+      },
+      {
+        "title": "Ask for a refactor",
+        "text": "Ask the agent to refactor the module for readability, without a stopping rule. Let it finish and note whether it says the work is done."
+      },
+      {
+        "title": "Ask again, twice",
+        "text": "Send the same request two more times, as the study did for ten turns. Commit after each turn."
+      },
+      {
+        "title": "Measure the extra turns",
+        "text": "Run `git diff --stat` for each turn after the agent first said it was done, and check whether it reintroduced code it had deleted."
+      },
+      {
+        "title": "Add a stop rule",
+        "text": "If it kept editing, add a line to your instructions: refactor once, run the tests, and reply that no further change is needed when nothing clearly improves. Repeat and compare."
+      }
+    ],
+    "check": "With tests already green, a well-behaved agent makes no edits after saying it is done. Edits in those turns, or deleted code coming back, are the over-compliance the study measured.",
+    "terms": [
+      {
+        "term": "refactor",
+        "def": "Changing how code is written without changing what it does."
+      }
+    ],
+    "from": "wish-commit",
+    "forYou": "Run it on one UE plugin module with Claude Code, then put the stop rule in the shared subagent brief.",
+    "sources": [
+      {
+        "label": "Your Wish Is My Commit (arXiv)",
+        "url": "https://arxiv.org/abs/2610.36346"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Google DeepMind's Genie 4 world model adds generated sound and live steering by text and keys; it is a trusted-tester preview, with Gemini API early access promised.",
+      "lane": "both",
+      "url": "https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/",
+      "source": "Google DeepMind"
+    },
+    {
+      "text": "OpenAI posted a model-found claim that the Exponential Time Hypothesis is false, and Anthropic posted its own hours later. Ryan Williams is organizing review; nothing is confirmed yet.",
+      "lane": "ai",
+      "url": "https://techcrunch.com/2026/10/27/frontier-ai-labs-say-their-models-refuted-the-exponential-time-hypothesis-what-does-that-mean/",
+      "source": "TechCrunch"
+    },
+    {
+      "text": "Liquid AI's LFM3 family: six open-weight models around 2B parameters for text, vision, audio and all at once; the text model is about 1 GB at 4-bit with a 256K context.",
+      "lane": "ai",
+      "url": "https://huggingface.co/blog/LiquidAI/lfm3",
+      "source": "Hugging Face"
+    },
+    {
+      "text": "GitHub Apps can now call Copilot without a signed-in user (preview), billed to the organization, so headless agents can use the Copilot SDK.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-10-27-github-copilot-supports-server-to-server-authentication",
+      "source": "GitHub"
+    },
+    {
+      "text": "Codex CLI 0.165.0 adds a built-in Google Cloud Vertex AI provider, lets you change reasoning effort mid-conversation, and closes a marketplace URL check that could reach the wrong host.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "Cloudflare Workflows can now be pinned to the EU, US or FedRAMP jurisdiction at creation (Wrangler 4.152.0 or later); it cannot be changed later.",
+      "lane": "ai",
+      "url": "https://developers.cloudflare.com/changelog/post/2026-10-27-workflow-jurisdictions/",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "Vercel says Agent sessions cost 67% less on average, and a project with only a Dockerfile now deploys as a container.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-agent-sessions-now-cost-67-percent-less",
+      "source": "Vercel"
+    },
+    {
+      "text": "The Pragmatic Engineer on AI SRE: fully autonomous on-call agents are not real yet, but triage works, and an investigator, verifier and communicator split was the most reliable setup.",
+      "lane": "ai",
+      "url": "https://newsletter.pragmaticengineer.com/p/ai-sre",
+      "source": "The Pragmatic Engineer"
+    },
+    {
+      "text": "Ghostty 1.4 compresses scrollback to cut its memory by 70 to 90%, raises the default scrollback to 50 MB, and fixes ten security advisories.",
+      "lane": "ai",
+      "url": "https://ghostty.org/docs/install/release-notes/1-4-0",
+      "source": "Ghostty"
+    },
+    {
+      "text": "CPython's experimental JIT is being removed after the steering council found the proposal short on long-term support and performance evidence.",
+      "lane": "ai",
+      "url": "https://www.infoworld.com/article/4241003/python-jettisons-the-native-jit-at-least-for-now.html",
+      "source": "InfoWorld"
+    },
+    {
+      "text": "Sonic Racing: CrossWorlds' lead programmer profiled each Unreal Engine feature per platform and edited engine source to remove overhead from systems that cost time just by being on.",
+      "lane": "gamedev",
+      "url": "https://sonic-city.net/2026/10/26/sonic-racing-crossworlds-unreal-engine-code-optimization-shigeki-watanabe/",
+      "source": "Sonic City"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "gbc-badge",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "A Game Boy Color emulator in MicroPython, on a conference badge",
+      "where": "Blog, GitHub",
+      "signal": "Linked by Simon Willison on October 27; per-frame timings and source published by its author, Steve Francia",
+      "hook": "The GitHub Universe badge, a microcontroller overclocked to 230 MHz, runs Link's Awakening and Pokemon Crystal from Python: CPU work under 12 ms and drawing under 3 ms per frame, by the author's measure.",
+      "borrow": "The recipe for a fast interpreter in a slow language: keep state in one flat typed array, decode instructions with bit fields, and replace range checks with a small lookup table. Pushing the chip to 300 MHz locked the badge.",
+      "url": "https://spf13.com/p/game-boy-color-on-my-conference-badge/",
+      "image": {
+        "src": "img/2026-10-28/gbc-badge.webp",
+        "alt": "A purple GitHub Universe badge with a small color screen running The Legend of Zelda: Link's Awakening DX, with a performance readout and button map beside the game.",
+        "credit": "Simon Willison",
+        "creditUrl": "https://simonwillison.net/2026/Oct/27/game-boy-color-on-my-conference-badge/",
+        "fit": "cover"
+      },
+      "forYou": "The flat-array and lookup-table tricks apply to any per-tick interpreter, such as an ability or dialogue scripting VM in a plugin."
+    },
+    {
+      "id": "just-volleyball",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "just volleyball: aim with the cursor, move by hand",
+      "where": "Steam",
+      "signal": "9,598 peak players during Next Fest, fourth of 7,310 demos (Output Lag's hourly count)",
+      "hook": "Arcade volleyball from 1v1 to 6v6, with no stats screen: you steer every jump and aim every hit, and a replay mode cuts highlights.",
+      "borrow": "A familiar sport, fully manual controls and a built-in highlight reel gave a small game more demo players than most big productions. Highlights double as free clips for players to share.",
+      "url": "https://store.steampowered.com/app/5037200/",
+      "image": {
+        "src": "img/2026-10-28/volleyball.webp",
+        "alt": "A cartoon volleyball match on grass: one player leaps at the net while a glowing ball streaks toward the camera and a teammate dives.",
+        "credit": "temkosoft via Steam",
+        "creditUrl": "https://store.steampowered.com/app/5037200/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "abyssal-lapidary",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Abyssal Lapidary: appraise gems until they stare back",
+      "where": "Steam",
+      "signal": "Second-largest wishlist gain of the fest at +121.4k (GameDiscoverCo); 4,766 peak players (Output Lag)",
+      "hook": "A job sim where you appraise ore, cut gems and make jewelry for strange clients, and the longer you work, the more the stones start to hallucinate back.",
+      "borrow": "A calm, tactile craft loop with a slow horror drift: the mundane work is the hook, and the dread rides on it.",
+      "url": "https://store.steampowered.com/app/3797790/",
+      "image": {
+        "src": "img/2026-10-28/lapidary.webp",
+        "alt": "A dim appraisal desk with rough ores, a brass monocle magnifying a stone, and panels listing gem grade, hardness and value for a superb diamond.",
+        "credit": "Light Worm via Steam",
+        "creditUrl": "https://store.steampowered.com/app/3797790/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "survival-llm",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "Survival LLM: an offline library and a local model that cites its page",
+      "where": "Hacker News",
+      "signal": "255 points and 120 comments on Hacker News; versions 0.3.0 and 0.3.4 shipped October 26 and 27",
+      "hook": "A 9 GB offline library (Wikipedia, medical and survival manuals, repair guides) plus a model picked for your RAM. Every answer opens the exact passage it came from, highlighted.",
+      "borrow": "Show the source passage next to every answer, and publish a score for each hardware tier: the author's 22-question test ranges from 14 to 21 correct depending on the machine.",
+      "url": "https://www.brangus.io/survival-llm",
+      "image": {
+        "src": "img/2026-10-28/survival-llm.webp",
+        "alt": "The Survival LLM app answering how long fridge food stays safe in a power cut, with the Ready.gov passage it used highlighted in a side panel.",
+        "credit": "Survival LLM",
+        "creditUrl": "https://www.brangus.io/survival-llm",
+        "fit": "cover"
+      },
+      "forYou": "The highlighted-passage pattern fits any SaaS feature that answers from a customer's own documents."
+    },
+    {
+      "id": "unibuilder",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Unibuilder: ProBuilder-style level modeling inside Godot",
+      "where": "itch.io",
+      "signal": "4.8 of 5 from 21 ratings on itch.io; version 1.0.1 this week, featured by GameFromScratch on October 27",
+      "hook": "Draw cubes, stairs, arches and doors in the viewport, then extrude, bevel and bridge faces, paint vertex colors and edit UVs, all in plain GDScript without leaving the editor.",
+      "borrow": "Blocking out levels where the game runs removes the round trip to a modeling app. A free demo with every modeling feature, and baking and export in the paid version, is a clean way to sell an editor tool.",
+      "url": "https://calinleafshade.itch.io/unibuilder",
+      "image": {
+        "src": "img/2026-10-28/unibuilder.webp",
+        "alt": "Grey blockout buildings, a house with a porch, a long hall and a carport, modeled in the Godot editor viewport.",
+        "credit": "Calin Leafshade",
+        "creditUrl": "https://calinleafshade.itch.io/unibuilder",
+        "fit": "cover"
+      },
+      "forYou": "The demo-has-everything, export-is-paid split is a pricing model worth comparing with the Fab plugin tiers."
+    },
+    {
+      "id": "genie-4",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "Genie 4: a world you steer with keys and sentences, now with sound",
+      "where": "Google DeepMind, Hacker News",
+      "signal": "804 points and 489 comments, second on the Hacker News front page on October 27",
+      "hook": "Walk and look with the keyboard while typing changes into the scene, such as new weather or a new person, and the model generates the world, music and dialogue as you go.",
+      "borrow": "Editing a live world with a sentence is a design pattern to prototype now with ordinary tools. DeepMind lists the limits: details and objects drift over long sessions, and text comes out illegible.",
+      "url": "https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/"
+    }
+  ],
+  "lab": [
+    {
+      "id": "unitybench",
+      "lane": "both",
+      "kind": "preprint",
+      "title": "UnityBench-Mini3D: Evaluating LLM Agents for 3D Game Development in Unity",
+      "headline": "Coding agents pass 4 in 5 easy Unity tasks, but only 1 in 3 hard ones.",
+      "authors": "Yijun Zhou, Minghao Shao, Ke Zhang, et al. (Unity China, NYU, Columbia, Peking University and others)",
+      "where": "arXiv preprint",
+      "date": "2026-10-26",
+      "problem": "Benchmarks for agents that build games mostly use Godot and grade with another model's opinion, so it is hard to tell what an agent actually got working in a real engine.",
+      "idea": "77 project-level Unity tasks across seven skills (scene, animation, particles, physics, UI, editor and more) and three difficulty tiers, each graded inside the engine by hidden, human-written milestone tests of scene structure, components and runtime behavior. Partial credit, no judge model.",
+      "result": "Across 21 models and 9 harnesses the average pass rate was 57.7%: 80.9% on easy, 55.6% on medium, 35.2% on hard. GPT 5.6 Sol in Codex led at 72.5%, Claude Opus 5 in Claude Code 71.8%. The same model moved up to 23 points between harnesses (DeepSeek V4 Flash 61.7% vs 38.7%). Computer-use agents scored about 22%.",
+      "useIt": "Copy the grading idea for agent-written gameplay code: assert scene structure, component setup and runtime behavior in engine tests, not by eye. Compare harnesses before blaming the model.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.35980"
+        },
+        {
+          "label": "Benchmark",
+          "url": "https://github.com/Unity-China/UnityBench-Mini3D"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-28/unitybench.webp",
+        "alt": "Six example tasks: paint the Shanghai circuit on terrain, synchronize weapon and hand poses, create a firework explosion, implement vehicle wheel physics, implement a circular minimap, configure the render pipeline.",
+        "credit": "Zhou et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.35980",
+        "fit": "contain"
+      },
+      "forYou": "Use the milestone-test idea for the UE plugins: functional tests that check components and runtime behavior after an agent edit, run headless in CI."
+    },
+    {
+      "id": "probe",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "PROBE: Frontier Coding Agents Find Different Bugs Than Maintainers Fix",
+      "headline": "Agents find real bugs, mostly not the ones maintainers fix.",
+      "authors": "Marco Paina, Mark Niklas Mueller, Niels Muendler-Sasahara, et al. (LogicStar.ai, ETH Zurich)",
+      "where": "arXiv preprint",
+      "date": "2026-10-26",
+      "problem": "Scoring agents as bug hunters is hard because any list of known bugs is incomplete.",
+      "idea": "Freeze 20 Python, JavaScript and TypeScript repositories on January 1, 2025, collect the 2,457 bugs maintainers fixed over the next 18 months, then let agents search file by file in 740 sandboxed passes and match what they report to that list with a checked model judge.",
+      "result": "Best recall was 20.8% (GPT-5.6 Sol at high effort, 8,285 findings, $1,185), and no model passed 8.1% precision. Recall tracked the number of findings almost exactly (r = 0.94). A cheaper model at medium effort found 7.6% for $15. Judges rated about 85% of all findings valid, so many 'misses' are real bugs nobody had fixed yet.",
+      "useIt": "For a nightly bug-hunting run, split the work per file, set a budget, and expect most findings to be real but low priority. Triage against what users actually hit.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.35987"
+        },
+        {
+          "label": "Dataset",
+          "url": "https://huggingface.co/datasets/LogicStar/probe"
+        }
+      ],
+      "forYou": "A file-by-file bug hunt over a plugin's source is affordable at the cheap end; rank its findings by which code paths players hit."
+    },
+    {
+      "id": "wish-commit",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Your Wish Is My Commit: Over-Compliant Refactoring in AI Coding Agents",
+      "headline": "Ask an agent to keep refactoring and it never says enough.",
+      "authors": "Haocong Jiang, Sadra Sabouri, Sepand Haghighi, et al. (University of Southern California, Open Science Lab)",
+      "where": "arXiv preprint",
+      "date": "2026-10-26",
+      "problem": "When told to refactor with no stopping point, do coding agents ever decide the code is good enough?",
+      "idea": "Ask Codex and Claude Code to refactor 60 Java codebases for ten turns each (3,000 turns), and measure six signals of over-compliance, such as edits after the agent says it is done and code that is deleted and later put back.",
+      "result": "Only 454 of 3,000 turns produced no edit. Code grew up to about 31 times its original size (GPT-5.4 on algorithm tasks); Claude Sonnet 4.6 grew least, at about 8 times. Claude Opus 4.8 stopped earliest on algorithm tasks, around turn 3, but 24% to 72% of turns where models said they were done still changed code.",
+      "useIt": "Cap refactor passes in agent instructions, and flag in review any commit made after the agent said it was finished, or code that was removed and restored. See Try this today.",
+      "maturity": "idea",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.36346"
+        }
+      ],
+      "forYou": "Add a 'refactor once, then stop' rule to the subagent brief and a check for edits after a done message."
+    }
+  ],
+  "note": "Reddit and a few news feeds were blocked to the sweep today, so Sparks lean on Steam, itch.io and Hacker News. All three lab papers are arXiv preprints: the journal papers found were older than the window. Unreal's Mutable sample news page could not be read and was left out."
+}
