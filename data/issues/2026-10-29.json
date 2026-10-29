@@ -1,0 +1,909 @@
+{
+  "date": "2026-10-29",
+  "number": 16,
+  "title": "Games got fun to vibe code",
+  "dek": "A veteran developer says AI-made browser games crossed from game-shaped to fun this month, while Valve tells studios it will not police AI clones. Plus GitHub's week of agent features, and a hidden line item in agent bills.",
+  "theme": {
+    "paper": "fog",
+    "text": "black",
+    "inks": ["purple", "orange"],
+    "type": "grotesk",
+    "mood": "a Halloween-eve Thursday about games that are suddenly easy to make, and to copy"
+  },
+  "tldr": [
+    {
+      "text": "Simon Willison built four browser games with Claude Opus 5.5 in four hours or less of his own time each, and says asking it to **make it a LOT more fun** now works.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Valve told developers it will not act as a gatekeeper on AI tools and sees game cloning as a legal matter; Epic says Claude and Codex fixed cooking bugs it chased for about ten years.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "GitHub shipped Agentic Workflows to everyone, a model router called Copilot Fusion, and memory that carries across its agents; its Octoverse report says agents now open over 40% of pull requests.",
+      "lane": "ai"
+    },
+    {
+      "text": "One team measured that Claude Code's background status summaries took **16.4%** of its estimated spend, more than the main conversation.",
+      "lane": "ai"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "vibe-games",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "gamedev",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Four browser games, no code read, and they are fun",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Simon Willison, a well-known developer who writes about AI tools, built four 3D browser games this month without reading their code. He says the newest model finally makes games that are fun to play, not just games that look right.",
+      "background": "Vibe coding means building software by describing it to an AI model and judging the result by using it, without reading the code the model writes.",
+      "takeaway": "Building a playable, fun prototype in a browser has become cheap. The scarce part is now the idea: a concept worth making, and the taste to judge when it is fun.",
+      "body": [
+        "Willison compares October 2026 for games to November 2025 for coding agents: the month the tools went from interesting to dependable. He credits Claude Opus 5.5 with better 3D modeling, music and, above all, game design. Earlier models produced things shaped like games that were not fun to play.",
+        "The four games are all HTML and JavaScript, three of them in three.js. Tree Appreciator, a spot-the-difference game with generated trees, came from a single prompt in a chat window. Emberwick grew over 11 versions into a top-down fantasy RPG with a story of about 15 minutes. Battle Drones is a real-time strategy game, and Pumpkin Farmer, pictured, is a cozy farming sim built from a spec file over nearly two days of unattended agent time.",
+        "None took more than four hours of his own time. His most useful prompt was \"make it a LOT more fun\". He gave the same starting prompts to GPT-6 Pro, which made a game he says looks great but plays worse; he expects OpenAI to catch up by the end of the year."
+      ],
+      "image": {
+        "src": "img/2026-10-29/pumpkin-farmer.webp",
+        "alt": "An isometric low-poly farm: a red barn, a farm stand, rows of pumpkin vines with orange pumpkins, a giant pumpkin in the corner, and a side panel showing one row's ripeness, health, water and a button to cut seven pumpkins to the barn.",
+        "credit": "Simon Willison",
+        "creditUrl": "https://simonwillison.net/2026/Oct/28/vibe-game-development/",
+        "fit": "contain"
+      },
+      "stat": {
+        "value": "4 hrs",
+        "label": "most of his own time spent on any one of the four games"
+      },
+      "terms": [
+        {
+          "term": "three.js",
+          "def": "A free JavaScript library for drawing 3D scenes in a web page."
+        },
+        {
+          "term": "spec file",
+          "def": "A written description of what to build, which the agent works from instead of a chat conversation."
+        },
+        {
+          "term": "game jam",
+          "def": "A short contest where people make a game from scratch in a few days."
+        }
+      ],
+      "deep": [
+        "Tree Appreciator and Emberwick were built in the regular Claude chat interface. Pumpkin Farmer used Opus 5.5's Ultracode mode in Claude Code, which he says burned millions of tokens. He told it to \"surprise and delight the user frequently\", which produced many small easter eggs, though he is not yet convinced by its mechanics.",
+        "Later versions of Emberwick needed long playtesting sessions to fix bugs such as story events that blocked each other. Battle Drones ran first as a 2D game built with Claude Fable 5 in July; Opus 5.5 rebuilt it after the fun prompt and a request to port it to three.js.",
+        "His suggested path: start with a prompt such as \"Build a mobile-friendly three.js game where...\" in a chat app, then move to a coding agent once the prototype is worth keeping. He says he will not enter these games in traditional game jams, and that many players will reject AI-made art, music and writing."
+      ],
+      "why": "If a fun 3D prototype now costs an afternoon, testing a game idea is cheap enough to try several a week. It also means anyone can copy a mechanic quickly, which the next stories show studios already feel.",
+      "forYou": "Prototype the action RPG's next combat or traversal idea as a throwaway three.js build in an afternoon before committing UE time to it, and use the same loop for browser game concepts.",
+      "sources": [
+        {
+          "label": "Simon Willison: The October inflection point for vibe game development",
+          "url": "https://simonwillison.net/2026/Oct/28/vibe-game-development/"
+        },
+        {
+          "label": "Play Tree Appreciator",
+          "url": "https://tools.simonwillison.net/tree-appreciator"
+        }
+      ]
+    },
+    {
+      "id": "valve-clones",
+      "format": "quote",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Valve will not police AI clones",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Asked what Steam will do about games cloned with AI tools, two Valve staff said the store will not ban tools and that copying is a matter for the law.",
+      "quote": "We don't want to be gatekeepers telling developers which tools they should or shouldn't use.",
+      "speaker": "Valve",
+      "role": "Tom Giardino and Marc Wilkinson, at the Busan Indie Connect Festival",
+      "context": "A developer cited an email threatening to clone their game and release it first. Valve's advice was to build a community and make games harder to copy; it will commit only its existing resources. The account comes from a Korean report, translated.",
+      "why": "Public demos and early builds are now easy to copy, and the store will not step in. A loyal community and a design that is hard to reproduce are the protection.",
+      "forYou": "Before the action RPG's first public demo, decide what stays private (systems depth, content) and grow the community first.",
+      "sources": [
+        {
+          "label": "Game Developer: Valve weighs in on Next Fest AI cloning",
+          "url": "https://www.gamedeveloper.com/pc/valve-addresses-steam-ai-cloning-problem"
+        },
+        {
+          "label": "Time Extension: Next Fest under fire",
+          "url": "https://www.timeextension.com/news/2026/10/thin-end-of-the-wedge-steam-next-fest-under-fire-as-demo-festival-drowns-in-a-flood-of-ai-slop"
+        }
+      ]
+    },
+    {
+      "id": "xreal-aura",
+      "format": "compare",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "Godot and Unity launch on Android XR glasses",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "XREAL AURA, the first see-through glasses on Google's Android XR platform, launched with both Godot and Unity ready to build for it. Godot even runs its editor on the glasses.",
+      "background": "Android XR is Google's operating system for headsets and glasses. See-through glasses show virtual objects over the real room instead of replacing it.",
+      "intro": "How each engine arrives for the launch, from their own posts. Unreal is not mentioned in either.",
+      "left": "Godot",
+      "right": "Unity",
+      "rows": [
+        {
+          "aspect": "Where you build",
+          "left": "The Godot editor itself runs on the glasses, in a multi-window workspace, from Google Play",
+          "right": "On your computer, with the Android XR package"
+        },
+        {
+          "aspect": "At launch",
+          "left": "Spatial containers, hand tracking, apps anchored to a table",
+          "right": "Seven games made with Unity, five live, including Demeo and Hyper Visor"
+        },
+        {
+          "aspect": "Coming",
+          "left": "A spatial port of DOGWALK by Blender Studio and W4 Games, later this year",
+          "right": "Fallout: Factions and SwarmFleet"
+        },
+        {
+          "aspect": "Versions named",
+          "left": "None stated",
+          "right": "Unity 6.6, then 6.7 LTS; Android XR package 1.5"
+        }
+      ],
+      "verdict": "A new store and device where the smaller engines are first in line. Worth a test build if your game already runs on Android.",
+      "terms": [
+        {
+          "term": "spatial containers",
+          "def": "Boxes in the room that the system manages, where an app shows its 3D content, much like windows on a desktop."
+        },
+        {
+          "term": "LTS",
+          "def": "Long-term support: an engine version that gets fixes for years, meant for shipping games."
+        }
+      ],
+      "deep": [
+        "Godot also needs a companion app from Google Play to export and publish on the glasses. The spatial containers are the OpenXR Spatial Containers extension. Unity lists XR Interaction Toolkit 3.5.1 or later, XR Hands 1.9.0 or later, AR Foundation 6.2.0 or later and OpenXR Plugin 1.18 or later."
+      ],
+      "why": "New hardware stores reward early, small games, and this one launched with engines many indies already use. Unreal developers would be waiting on Epic.",
+      "forYou": "No Unreal path yet, so this is a Godot or Unity side bet; note it for a small browser or mobile game rather than the plugins.",
+      "sources": [
+        {
+          "label": "Godot: Ready for XREAL AURA",
+          "url": "https://godotengine.org/article/godot-xreal-aura-launch"
+        },
+        {
+          "label": "Unity: XREAL AURA is here",
+          "url": "https://unity.com/blog/xreal-aura-games-made-with-unity"
+        }
+      ]
+    },
+    {
+      "id": "epic-ai-unreal",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Epic says AI found Unreal bugs it chased for a decade",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "An Epic executive says the company writes Unreal Engine code with AI tools, and that Claude and Codex fixed long-standing, non-deterministic bugs in how the engine prepares game files.",
+      "stats": [
+        { "value": "~10 yrs", "label": "how long Epic had chased the bugs AI tools removed" },
+        { "value": "5.9", "label": "a possible, \"relatively modest\" next update" }
+      ],
+      "body": [
+        "Marcus Wassmer, Epic's EVP of development, said most work now goes into Fortnite, UEFN and Unreal Engine 6. A 5.9 release would be small and include changes developed with AI. Epic also says it rebuilt its launcher with vibe coding, without giving numbers."
+      ],
+      "terms": [
+        {
+          "term": "cooking",
+          "def": "Unreal's step that converts a project's assets into the compact format a finished game loads."
+        },
+        {
+          "term": "non-deterministic",
+          "def": "Giving different results from the same input, which makes a bug hard to reproduce."
+        }
+      ],
+      "why": "Cooking bugs that only appear sometimes are among the hardest to fix by hand. If AI tools can find them, the same approach works on any flaky build pipeline.",
+      "forYou": "Plan plugin updates around a small 5.9 rather than a big feature drop, and try an agent on any intermittent packaging failure in the plugin builds.",
+      "sources": [
+        {
+          "label": "Game Developer: Epic VP on AI code tools in Unreal",
+          "url": "https://www.gamedeveloper.com/programming/unreal-engine-will-be-developed-with-ai-code-confirms-epic"
+        }
+      ]
+    },
+    {
+      "id": "engine-tools",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Small tools for engines and art",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A paid block-out modeler for Godot, a free kit that makes Blender behave like Maya, and a patch for the Rust engine Bevy.",
+      "intro": "Released October 27 and 28.",
+      "items": [
+        {
+          "title": "Unibuilder for Godot",
+          "text": "ProBuilder-style modeling inside the Godot viewport: shape tools, extrude, bevel, booleans, UV editing and collision generation, written in GDScript. $24.99 once, with a near-complete demo.",
+          "url": "https://gamefromscratch.com/unibuilder-probuilder-for-godot/"
+        },
+        {
+          "title": "Maya Workflow Toolkit for Blender",
+          "text": "A free, open-source extension that adds Maya's hotkeys, hotbox, Channel Box and shelves, with a switch back to Blender. The author calls it still rough.",
+          "url": "https://github.com/5hyuns/maya-workflow-kit-for-blender"
+        },
+        {
+          "title": "Bevy 0.20.1",
+          "text": "Ten fixes, including fog volumes that vanished near the camera and a parallel query bug.",
+          "url": "https://github.com/bevyengine/bevy/releases/tag/v0.20.1"
+        }
+      ],
+      "terms": [
+        {
+          "term": "ProBuilder",
+          "def": "Unity's tool for quickly modeling level shapes inside the editor, used to block out a level before final art."
+        },
+        {
+          "term": "hotbox",
+          "def": "Maya's pop-up menu of every command, opened by holding a key."
+        }
+      ],
+      "why": "Block-out tools and familiar controls cut the time from idea to playable level, and make it easier for artists to move between tools.",
+      "forYou": "Unibuilder's $24.99 one-time price with a free demo is a pricing reference for a paid editor tool.",
+      "sources": [
+        {
+          "label": "GameFromScratch: Unibuilder",
+          "url": "https://gamefromscratch.com/unibuilder-probuilder-for-godot/"
+        },
+        {
+          "label": "GameFromScratch: Maya Workflow Toolkit for Blender",
+          "url": "https://gamefromscratch.com/maya-workflow-toolkit-for-blender/"
+        }
+      ]
+    },
+    {
+      "id": "copilot-fusion",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Copilot Fusion lets a cheap model try first and a strong one step in",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "GitHub added an option that sends each request through more than one AI model: a cheaper one drafts, another checks, and a stronger one is called only when needed.",
+      "plain": "Instead of picking one model, you pick a routing pattern, and Copilot decides which models handle each prompt.",
+      "body": [
+        "Fusion has three patterns. Single uses one model. Cascade lets a primary model answer, has a second model judge the answer, and escalates to a stronger model only when the judge rejects it. Critique has a second model review the draft without editing it, and sends it back for revision if needed.",
+        "It is available on all Copilot plans in VS Code, the Copilot app, the CLI and JetBrains, with Standard, High and Max effort levels. You pay each model's normal rate; paid plans get 30% off while Fusion is new. GitHub reports that Fusion Max came within two points of Claude Code with Opus 5.5 on a public coding index at about half the cost per task; that is GitHub's own claim."
+      ],
+      "points": [
+        "Cascade: escalate only when a judge rejects the first answer",
+        "Critique: a read-only reviewer, then one revision",
+        "Experimental: route between a local model and cloud models"
+      ],
+      "image": {
+        "src": "img/2026-10-29/fusion.webp",
+        "alt": "Diagram of three patterns. Single: one model answers. Cascade: a judge accepts the first answer or escalates to a repair model. Critique: a read-only critic approves the draft or sends it back for revision.",
+        "credit": "GitHub",
+        "creditUrl": "https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "escalate",
+          "def": "Hand the task to a stronger, more expensive model because the first answer was not good enough."
+        },
+        {
+          "term": "local model",
+          "def": "An AI model that runs on your own computer instead of a provider's servers."
+        }
+      ],
+      "deep": [
+        "The local-model preview works in the Copilot CLI, app and VS Code. Managed setup is Windows only (MAI Code 1.1 Flash); on Windows, macOS and Linux the CLI can route to a model you serve yourself behind an OpenAI-compatible server. Routing decisions still happen in the cloud, so it does not work offline."
+      ],
+      "why": "Most agent prompts do not need the most expensive model. A cheap draft with a check catches the hard cases while paying less for the easy ones, and you can build the same pattern yourself.",
+      "forYou": "Copy the cascade idea into routines: run a cheaper model first and have a check decide when Opus is worth it.",
+      "sources": [
+        {
+          "label": "GitHub Changelog: Copilot Fusion",
+          "url": "https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion"
+        },
+        {
+          "label": "GitHub Changelog: Fusion with local models",
+          "url": "https://github.blog/changelog/2026-10-28-github-copilot-fusion-now-supports-selection-of-local-models"
+        }
+      ]
+    },
+    {
+      "id": "gh-aw",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "GitHub Agentic Workflows: automation written in plain Markdown",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "GitHub made its agent workflows generally available: you describe a repeated repository chore in a Markdown file, and a tool turns it into a locked-down automation that an AI agent runs on GitHub's servers.",
+      "intro": "The example from the docs: a daily summary of new issues. Save it as `.github/workflows/daily-issue-summary.md`, then run `gh aw compile`.",
+      "lang": "markdown",
+      "code": "---\non: daily\nsafe-outputs:\n  create-issue:\n---\nSummarise yesterday's issues. Flag\nanything that needs a reply.",
+      "explain": [
+        "The top block says when it runs and the only thing it may produce (here, one new issue). The text below is the instruction for the agent.",
+        "They compile to ordinary GitHub Actions files. Workflows start read-only, run in a sandbox behind a firewall, and a separate job checks proposed changes before they apply. `gh aw forecast` estimates the AI credits a workflow will use.",
+        "The default agent is the Copilot CLI and needs a Copilot license; you can bring another coding agent and choose the model per workflow."
+      ],
+      "terms": [
+        {
+          "term": "GitHub Actions",
+          "def": "GitHub's service that runs scripts automatically when something happens in a repository, such as a push or a new issue."
+        },
+        {
+          "term": "safe-outputs",
+          "def": "The list of actions a workflow may take, so the agent cannot do anything else."
+        }
+      ],
+      "why": "Triage, failure summaries and docs updates are chores every repository has. Writing them as a short instruction with a narrow permission list is quicker than scripting them, and safer than giving an agent the keys.",
+      "forYou": "A candidate home for the daily triage chores on the plugin repos; compare its cost forecast with running the same job as a Claude Code routine.",
+      "sources": [
+        {
+          "label": "GitHub Changelog: Agentic Workflows GA",
+          "url": "https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available"
+        },
+        {
+          "label": "GitHub Agentic Workflows docs",
+          "url": "https://github.github.com/gh-aw/"
+        }
+      ]
+    },
+    {
+      "id": "gh-universe",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The rest of GitHub's agent week",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Agents that watch a pull request and fix what blocks it, automations with spending caps, memory that follows you between GitHub's tools, and pinned versions for workflow dependencies.",
+      "intro": "Announced October 28 at GitHub Universe.",
+      "items": [
+        {
+          "title": "Watch and fix",
+          "text": "A button on a pull request makes Copilot fix failing checks or merge conflicts as they appear. Pair it with auto-merge. Paid plans.",
+          "url": "https://github.blog/changelog/2026-10-28-agent-merge-watches-and-fixes-pull-requests-in-the-cloud"
+        },
+        {
+          "title": "Automations with caps",
+          "text": "Shared team automations, triggers from outside tools, your own MCP servers as tools, and AI-credit limits per run, day, week or month.",
+          "url": "https://github.blog/changelog/2026-10-28-new-tools-triggers-and-cost-controls-for-copilot-automations"
+        },
+        {
+          "title": "Memory and Dreaming",
+          "text": "Memory of your preferences is out for paid plans. Dreaming, in preview, reviews past work and opens pull requests to update skills and instruction files.",
+          "url": "https://github.blog/changelog/2026-10-28-github-intelligence-puts-your-code-context-and-history-to-work"
+        },
+        {
+          "title": "Workflow lockfiles",
+          "text": "`gh actions-lock` pins every action and its dependencies to exact commits in `.github/workflows/actions.lock`; Dependabot updates it with each bump.",
+          "url": "https://github.blog/changelog/2026-10-28-github-actions-workflow-lockfiles-are-generally-available"
+        }
+      ],
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools and data sources into an AI agent."
+        },
+        {
+          "term": "auto-merge",
+          "def": "A setting that merges a pull request by itself once its checks and reviews pass."
+        }
+      ],
+      "why": "Agents fixing their own blocked pull requests, and a learning loop that rewrites instruction files, are now product features rather than custom setups. The lockfile closes a common supply-chain hole in CI.",
+      "forYou": "Dreaming is the vendor version of a notebook that rewrites its own rules; compare its proposals with the routine's notebook. Add the Actions lockfile to the plugin repos.",
+      "sources": [
+        {
+          "label": "GitHub Changelog, October 28",
+          "url": "https://github.blog/changelog/2026-10-28-github-intelligence-puts-your-code-context-and-history-to-work"
+        },
+        {
+          "label": "GitHub Changelog: workflow lockfiles",
+          "url": "https://github.blog/changelog/2026-10-28-github-actions-workflow-lockfiles-are-generally-available"
+        }
+      ]
+    },
+    {
+      "id": "octoverse",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Agents now open four in ten pull requests on GitHub",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "GitHub's yearly report says AI agents started more than 40% of pull requests in September, up from 17% in March, and TypeScript is the most used language.",
+      "stats": [
+        { "value": "40%+", "label": "of pull requests started by an agent in September" },
+        { "value": "90%", "label": "of agent-involved pull requests merged within two weeks" }
+      ],
+      "body": [
+        "Agent-started pull requests reached 110 million in September, about six times March. Repositories with an agent configuration file logged eight times the commits of new ones without. TypeScript was the main language in 35% of repositories with an agent signal, against 24% elsewhere."
+      ],
+      "terms": [
+        {
+          "term": "pull request",
+          "def": "A proposed change to a codebase, sent for review before it is merged."
+        }
+      ],
+      "why": "The volume of proposed changes is growing faster than people can review them, and typed languages are where agents are used most.",
+      "sources": [
+        {
+          "label": "GitHub: Octoverse 2026",
+          "url": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/"
+        },
+        {
+          "label": "Simon Willison: notes on Octoverse 2026",
+          "url": "https://simonwillison.net/2026/Oct/28/github-octoverse-2026"
+        }
+      ]
+    },
+    {
+      "id": "supabase-compute",
+      "format": "spotlight",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Supabase lets you run services next to your database",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Supabase, a popular hosted Postgres database with extras, is testing a way to run your own Node, Deno or container services, such as agents, inside the same project as your data.",
+      "name": "Supabase Compute",
+      "what": "Long-running services beside your database, in private alpha.",
+      "body": [
+        "You turn it on in the project's config, then create and push a service with the CLI. It is for evaluation only: services can restart at any time, so work must be saved to Postgres, and every service sees all of the project's secrets."
+      ],
+      "facts": [
+        { "k": "Sizes", "v": "1 vCPU, 2 GB or 2 vCPU, 4 GB" },
+        { "k": "Region", "v": "us-west-2 only" },
+        { "k": "Access", "v": "Waitlist" },
+        { "k": "Not yet", "v": "Autoscaling, GPUs, disks, agent sandboxes" }
+      ],
+      "tryIt": "supabase compute new",
+      "terms": [
+        {
+          "term": "Postgres",
+          "def": "A widely used open-source database."
+        },
+        {
+          "term": "container",
+          "def": "A packaged program with everything it needs to run, so it behaves the same on any server."
+        }
+      ],
+      "deep": [
+        "Setup: set `compute = true` under `[experimental]` in `supabase/config.toml` with CLI 2.120.0 or later, then `supabase compute new` and `supabase compute push`. The same week Supabase opened OrioleDB, a Postgres storage engine for update-heavy tables, as a public beta; its vendor benchmark shows up to about 1.8 times the throughput when data does not fit in memory."
+      ],
+      "why": "Agents need somewhere to run that is close to the data they work on. Having it inside the database project removes a server to manage, though the alpha's limits rule out production use.",
+      "forYou": "Join the waitlist for the SaaS backends; the shared-secrets rule means keeping agent services in a separate project for now.",
+      "sources": [
+        {
+          "label": "Supabase: Compute private alpha",
+          "url": "https://supabase.com/blog/supabase-compute-private-alpha"
+        },
+        {
+          "label": "Supabase: OrioleDB public beta",
+          "url": "https://supabase.com/blog/orioledb-public-beta"
+        }
+      ]
+    },
+    {
+      "id": "agent-summary",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A status line that costs more than the chat",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "One developer measured that Claude Code's short status lines for background agents used more of their estimated spend than the main conversation did.",
+      "stats": [
+        { "value": "16.4%", "label": "of estimated spend on agent status summaries" },
+        { "value": "1 in 5", "label": "API requests were summaries" }
+      ],
+      "body": [
+        "The summarizer resends each background agent's transcript about every 30 seconds to write a three to five word status. These are one team's numbers from Claude Code's own cost estimates; there is no official setting to turn it off."
+      ],
+      "terms": [
+        {
+          "term": "background agent",
+          "def": "A helper agent that works on a task while you keep using the main session."
+        }
+      ],
+      "deep": [
+        "Measured by grouping the `claude_code.api_request` OpenTelemetry event by its `query_source` attribute, where the summarizer shows as `agent_summary`. Tested on versions 2.1.257 to 2.1.312 on Linux; 96% of the summary spend ran on Opus. The author's workaround is an unofficial preload script that can silently stop working after an update."
+      ],
+      "why": "If you run many background agents, part of your bill or rate limit pays for a status label. Measure it before you trust any fix.",
+      "forYou": "The routines lean on background subagents; measure the summary share this week (see Try this).",
+      "sources": [
+        {
+          "label": "Flamerix: agent summary measurement (gist)",
+          "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce"
+        }
+      ]
+    },
+    {
+      "id": "dayjob-tax",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The best agent passes one tax job in ten",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "A new test gives AI agents 50 real tax assignments, with the messy folders of documents a tax professional gets. The best model fully passed about one in ten.",
+      "intro": "Share of 50 tax assignments passed on the first try, where passing means meeting 95% of an expert grading rubric. Surge AI's Dayjob: Tax leaderboard.",
+      "unit": "%",
+      "series": [
+        { "label": "Claude Sonnet 5.5", "value": 10.8, "highlight": true },
+        { "label": "Claude Fable 5.1", "value": 9.6 },
+        { "label": "Claude Opus 5.5", "value": 9.2 },
+        { "label": "Muse Wonder 1.0", "value": 6.0 },
+        { "label": "Grok 4.7", "value": 5.0 },
+        { "label": "GPT-6 Astra", "value": 4.8 },
+        { "label": "GPT-6.1 Sol", "value": 4.0 },
+        { "label": "Gemini 4 Argon", "value": 3.2 }
+      ],
+      "note": "Each assignment comes with a median of 30 files: PDFs, spreadsheets, emails and images. The failures were mostly about noticing: one model never flagged a sale deadline in five tries, another assumed the clients were unmarried in all five.",
+      "terms": [
+        {
+          "term": "rubric",
+          "def": "A checklist an expert uses to grade the work, point by point."
+        }
+      ],
+      "why": "Long jobs that need judgment, not coding skill, are where agents still fail. The misses are about spotting a missing fact or a wrong assumption, which no amount of tool access fixes.",
+      "sources": [
+        {
+          "label": "Surge AI: Dayjob: Tax",
+          "url": "https://surgehq.ai/blog/dayjob-tax"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Easy to make, easy to copy",
+      "note": "Valve's answer to clones, engines on new glasses, and AI inside Unreal itself.",
+      "ids": ["valve-clones", "xreal-aura", "epic-ai-unreal", "engine-tools"]
+    },
+    {
+      "title": "Agents move into the repo",
+      "note": "GitHub's week of agent features, the numbers behind them, and agents beside your database.",
+      "ids": ["copilot-fusion", "gh-aw", "gh-universe", "octoverse", "supabase-compute"]
+    },
+    {
+      "title": "What agents cost, and miss",
+      "note": "A hidden line item in the bill, and the judgment calls agents still get wrong.",
+      "ids": ["agent-summary", "dayjob-tax"]
+    }
+  ],
+  "learn": {
+    "question": "What is a model cascade?",
+    "answer": "A model cascade sends each request to a cheap AI model first and passes it to a stronger, more expensive model only when a check says the first answer is not good enough.",
+    "analogy": "A help desk: the front-line agent answers most calls, and only the hard ones get passed to the specialist.",
+    "body": [
+      "Most requests are easy, so a smaller model handles them well. A check, which can be another model acting as a judge, a test suite or a simple rule, decides whether to accept the answer. Only rejected answers go to the strong model, so you pay its price only on the hard cases.",
+      "The trade-off is the quality of the check. A lax judge lets bad answers through; a strict one escalates everything and saves nothing. GitHub's Copilot Fusion now offers a cascade as a product setting, and the same pattern works in any agent pipeline where you can test the result."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        { "label": "Request", "note": "A prompt or a task" },
+        { "label": "Cheap model", "note": "Makes the first attempt" },
+        { "label": "Check", "note": "A judge model, tests or a rule", "key": true },
+        { "label": "Strong model", "note": "Only if the check rejects it" }
+      ],
+      "links": ["first try", "judge", "escalate"],
+      "caption": "Accepted answers stop at the check; you pay for the strong model only on the hard cases."
+    },
+    "terms": [
+      {
+        "term": "judge",
+        "def": "A model asked only to grade another model's answer, not to write one."
+      }
+    ],
+    "seenIn": ["copilot-fusion"],
+    "sources": [
+      {
+        "label": "GitHub Docs: Copilot Fusion",
+        "url": "https://docs.github.com/copilot/concepts/models/copilot-fusion"
+      },
+      {
+        "label": "GitHub Changelog: Copilot Fusion",
+        "url": "https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "See what share of your Claude Code spend goes to each subsystem",
+    "gist": "In half an hour you learn how much of your agent spend goes to background work such as status summaries and compaction, instead of the work you asked for.",
+    "time": "half an hour",
+    "level": "practitioner",
+    "needs": "Claude Code, and a task that starts at least one background agent.",
+    "steps": [
+      {
+        "title": "Turn on telemetry",
+        "text": "In a scratch terminal, set the variables below so Claude Code exports its events. Use `otlp` instead of `console` if you already run an OpenTelemetry collector."
+      },
+      {
+        "title": "Run a normal task",
+        "text": "Start a session and give it a task that launches a background agent, the kind of work you do every day. Let it run a few minutes."
+      },
+      {
+        "title": "Find the request events",
+        "text": "Collect the `claude_code.api_request` events. Each one has a `query_source` (which part of Claude Code made the call), a `model` and an estimated `cost_usd`."
+      },
+      {
+        "title": "Add up by source",
+        "text": "Sum `cost_usd` and count requests per `query_source`. Compare `agent_summary` with your main thread and with subagents."
+      }
+    ],
+    "code": {
+      "lang": "bash",
+      "code": "export CLAUDE_CODE_ENABLE_TELEMETRY=1\nexport OTEL_LOGS_EXPORTER=console\nexport OTEL_LOGS_EXPORT_INTERVAL=5000\nclaude"
+    },
+    "check": "You get a table of spend by source. If `agent_summary` is a large share, as the 16.4% one team measured, you have a number to weigh against fewer background agents or a workaround.",
+    "terms": [
+      {
+        "term": "OpenTelemetry",
+        "def": "A standard format for programs to report what they are doing, such as requests and their cost, to monitoring tools."
+      },
+      {
+        "term": "compaction",
+        "def": "When an agent summarizes its own conversation to free room in its working memory."
+      }
+    ],
+    "from": "agent-summary",
+    "forYou": "Run it during a morning routine run with its desks, where background agents are the bulk of the work.",
+    "sources": [
+      {
+        "label": "Claude Code docs: monitoring usage",
+        "url": "https://code.claude.com/docs/en/monitoring-usage"
+      },
+      {
+        "label": "Flamerix: agent summary measurement",
+        "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Roblox confirmed an AI agent of its own downloaded 145.5 GB from Open3DLab, says nothing was used for training, and has shut the agent down.",
+      "lane": "gamedev",
+      "url": "https://www.gamedeveloper.com/business/roblox-confirms-no-adult-content-used-in-ai-training-after-scraping-open3dlab-data",
+      "source": "Game Developer"
+    },
+    {
+      "text": "Vercel CI is in beta: tag Turborepo tasks with `ci` and only the tasks your change affects run on each push; Vercel reports 2 to 6 times faster push-to-green internally.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-ci-is-now-in-beta",
+      "source": "Vercel"
+    },
+    {
+      "text": "Vercel's AI Gateway adds virtual models: one name that stores the real model, fallbacks and data-retention rules, so you can swap models without a redeploy.",
+      "lane": "ai",
+      "url": "https://vercel.com/blog/ai-gateway-virtual-models",
+      "source": "Vercel"
+    },
+    {
+      "text": "Cloudflare is testing Workers KV Instant: reads at 1.62 ms at the 99th percentile against 287 ms for classic KV, but capped at 1 MB and one write a second per namespace.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/10/workers-kv-instant",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Meta's Python typing survey: 38.4% now type their code partly to make AI-written code more reliable, up from 18.5%; Stack Overflow as a learning source fell to 22.9%.",
+      "lane": "ai",
+      "url": "https://engineering.fb.com/2026/10/27/developer-tools/python-typing-survey-2026-ai-tools-checker-landscape",
+      "source": "Meta Engineering"
+    },
+    {
+      "text": "Google's Gemini 4 Carbon is going first to vetted cyber defenders; developers get it later, at $2 and $10 per million input and output tokens at launch.",
+      "lane": "ai",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon",
+      "source": "Google"
+    },
+    {
+      "text": "Codex CLI 0.165.0 adds a built-in Vertex AI provider, lets you change reasoning effort mid-conversation, and turns on its new memory by default for fresh profiles.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "Astral's new Rust tar parser is now uv's default, about twice as fast and stricter against archives that different tools read differently.",
+      "lane": "ai",
+      "url": "https://astral.sh/blog/tar-codec",
+      "source": "Astral"
+    },
+    {
+      "text": "Paper: on 610 seeded one-line bugs, frontier models found the fault from source alone 96.7% to 99.9% of the time; a debugger helped only weaker models, at many times the tokens.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2610.36015",
+      "source": "arXiv"
+    },
+    {
+      "text": "Foundry's Nuke 18.0 open beta adds a Griptape node for AI image and video steps inside the node graph, and Gaussian splat viewport controls.",
+      "lane": "gamedev",
+      "url": "https://www.cgchannel.com/2026/10/foundry-releases-nuke-18-0-in-open-beta/",
+      "source": "CG Channel"
+    },
+    {
+      "text": "Atari named Crossy Road creator Matt Hall its EVP of mobile, after buying stakes in Hipster Whale and Early Morning Studios.",
+      "lane": "gamedev",
+      "url": "https://www.gamedeveloper.com/mobile/crossy-road-creator-matt-hall-named-atari-s-evp-of-mobile",
+      "source": "Game Developer"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "qwenputer",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "Qwenputer: a working CPU compiled into a language model's weights",
+      "where": "Blog, Hacker News",
+      "signal": "241 points and 54 comments on Hacker News; the author reports about 230,000 CPU steps checked against a reference machine with no mismatches",
+      "hook": "No training: a 32-bit RISC-V processor is written directly into 11 layers of a small Qwen model, which calls it like a tool and runs C and MicroPython inside its own forward pass. Long-number arithmetic goes from 48.6% right to 100%.",
+      "borrow": "The absurd-payoff build: if a model can host an exact CPU, a rules engine or game VM could live inside one too. The cost is real (an 18.8 GB checkpoint, twice the base model, and a custom driver), so treat it as a demo, not a tool.",
+      "url": "https://divagr.com/blog/qwenputer",
+      "image": {
+        "src": "img/2026-10-29/qwenputer.webp",
+        "alt": "Bar chart of arithmetic accuracy on five tests. Base Qwen3.5-4B scores 48.6 to 90%; Qwenputer scores 97.5 to 100%, matching the base model with a Python tool.",
+        "credit": "Divyansh Agrawal",
+        "creditUrl": "https://divagr.com/blog/qwenputer",
+        "fit": "contain"
+      },
+      "forYou": "A fun reference for deterministic logic inside a model; not something to build on yet."
+    },
+    {
+      "id": "nosferatooth",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "NOSFER-A-TOOTH: a vampire autobattler where your teeth are your build",
+      "where": "itch.io",
+      "signal": "4.7 out of 5 from 29 ratings, in itch.io's new and popular list two days after release; made in about a week",
+      "hook": "A toothless vampire collects teeth, and each tooth is an item with its own damage and health bonus, so your mouth is your inventory.",
+      "borrow": "Tie the inventory to the body of the character. One odd, physical rule makes a crowded genre easy to pitch in a sentence and gives a seasonal hook for free.",
+      "url": "https://gregs-games.itch.io/nosferatooth",
+      "image": {
+        "src": "img/2026-10-29/nosferatooth.webp",
+        "alt": "A scroll titled Devouring over a gothic graveyard at dusk, listing the best teeth collected, such as Ember Canine and Hungry Tooth, with their crit damage and health bonuses.",
+        "credit": "gregs-games",
+        "creditUrl": "https://gregs-games.itch.io/nosferatooth",
+        "fit": "cover"
+      },
+      "forYou": "The body-as-inventory idea could theme a loot or socket system in an inventory plugin demo."
+    },
+    {
+      "id": "lsd-revamped",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "LSD: Revamped turns the PS1 look into player settings",
+      "where": "itch.io",
+      "signal": "4.8 out of 5 from 265 ratings; back in itch.io's new and popular list after an update five days ago",
+      "hook": "A fan remake of the 1998 PlayStation dream-walking game LSD: Dream Emulator, where you wander, get teleported and never get a goal. Its video settings let players dial the retro look up or down.",
+      "borrow": "Expose the retro effects as sliders: pixelation, the PS1 frame rate cap and the wobbly affine texture mapping are each a toggle, so players pick between authentic and clean.",
+      "url": "https://figglewatts.itch.io/lsd-revamped",
+      "image": {
+        "src": "img/2026-10-29/lsd-revamped.webp",
+        "alt": "The game's video settings menu with checkboxes for classic shaders, a pixelation shader and a PSX frame rate limit, plus sliders for field of view and affine texture mapping intensity.",
+        "credit": "Figglewatts",
+        "creditUrl": "https://figglewatts.itch.io/lsd-revamped",
+        "fit": "cover"
+      },
+      "forYou": "Retro-look toggles are a cheap selling point for a stylized render feature or a browser game's settings menu."
+    }
+  ],
+  "lab": [
+    {
+      "id": "simple-harness-rca",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Free to Look, Free to Reason: Simple LLM Harnesses Outdiagnose Hand-Crafted Root Cause Analysis Agents",
+      "headline": "A plain coding agent beats purpose-built outage detectives",
+      "authors": "Tingzhu Bi, Xun Zhang, Ping Wang, et al. (Peking University; Beijing University of Posts and Telecommunications)",
+      "where": "arXiv preprint",
+      "date": "2026-10-26",
+      "problem": "Published AI agents that find the cause of a service outage use elaborate, hand-built pipelines and tools. Nobody had checked whether that scaffolding beats a general agent simply given the data.",
+      "idea": "Compare three minimal setups with five published diagnosis agents on 90 checked incidents from 8 public microservice datasets. The simplest strong one drops Codex CLI into the incident folder with six rules: read only this folder, no network, do not change data, one hour at most. It writes its own shell and Python.",
+      "result": "Simple setups named the right root cause first 65% to 77% of the time on mid-tier models; the published agents managed 16% to 53%, non-AI methods 6% to 39%. Codex reached 77.2% against 53.3% for the best published agent. A cheap model with Codex got 68.9% for under one cent per case.",
+      "useIt": "For an incident, export the logs, metrics and traces into a folder, give a general coding agent read-only access with a time limit, and ask for the five likeliest culprits with evidence. Skip building a custom diagnosis bot.",
+      "maturity": "prototype",
+      "links": [
+        { "label": "Paper", "url": "https://arxiv.org/abs/2610.35767" }
+      ],
+      "forYou": "Try it on the next SaaS incident: dump Supabase and Vercel logs into a folder and let Claude Code rank the causes, read only."
+    },
+    {
+      "id": "memory-tax",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Memory Tax: Dissecting the Net Value of Agent Memory",
+      "headline": "Fancy agent memory systems lose to plain search over old chats",
+      "authors": "Xuan He, Sining Zhoubian, Ruozhen Yang, et al. (UIUC, Tsinghua, Renmin University, Verdent.ai, Waterloo)",
+      "where": "arXiv preprint",
+      "date": "2026-10-25",
+      "problem": "Agent memory layers summarize and restructure past sessions, and are assumed to beat simply searching the raw history. Few tests compare them with a well-tuned plain search.",
+      "idea": "Count what memory fixes that plain search missed, minus what memory breaks that plain search got right: the memory tax. Then trace where the tax comes from: facts lost when memory is written, facts that are hard to reach, and drift from the original wording.",
+      "result": "Eleven memory systems on the LongMemEval benchmark with three models: every one scored below plain retrieval. With Qwen3.6-27B, retrieval scored 81.4 and memory systems ran about 2 to 40 points lower. One system had no memory entry at all for 38% of sampled facts.",
+      "useIt": "Before adopting a memory layer for an agent, test it against plain search over the raw transcripts or notes, and keep a path back to the raw history. The systems tested were chat memory, not code-repository memory.",
+      "maturity": "code",
+      "links": [
+        { "label": "Paper", "url": "https://arxiv.org/abs/2610.34073" },
+        { "label": "Project page", "url": "https://hexuan21.github.io/MemoryTax/" }
+      ],
+      "image": {
+        "src": "img/2026-10-29/memory-tax.webp",
+        "alt": "Scatter plot of accuracy against token cost per corpus on a log scale. Two plain retrieval baselines sit at the top left, cheap and accurate; eleven memory systems sit lower and to the right, with OpenViking lowest near 59.",
+        "credit": "He et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.34073",
+        "fit": "contain"
+      },
+      "forYou": "Check whether the routine's notebook and memory files beat a plain grep over past runs before adding more memory machinery."
+    },
+    {
+      "id": "hy-nomas",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "Hy-Nomas: Towards Free-form Interactive World Generation",
+      "headline": "An open world model you steer with words, on one gaming GPU",
+      "authors": "Qiaoling Chen, Jiaxiang Cheng, Xueqing Deng, et al. (Tencent Hy Visual Generation Team)",
+      "where": "arXiv preprint",
+      "date": "2026-10-27",
+      "problem": "Interactive world models, which generate video you can move through, are mostly closed or need large GPU clusters, and usually accept only a fixed set of moves.",
+      "idea": "An 8-billion-parameter video model generates the world in segments. Each turn takes free text (\"open a portal\"), camera moves and the history so far; scene descriptions persist while action text applies only to its own segment. A helper model rewrites requests into structured prompts.",
+      "result": "With 8-bit weights and offloading it fits one RTX 4090: 20.53 GB peak memory for a 100-second video at 1280 by 704 and 24 frames a second (authors' figures). The authors report people preferred it over Genie 3 and two other systems on their 280-case benchmark. Weights and code are released.",
+      "useIt": "A prototyping tool, not a runtime: generate fly-throughs and concept footage of a level from text, and adapt it to a game's art style with about 100 sample clips.",
+      "maturity": "code",
+      "links": [
+        { "label": "Paper", "url": "https://arxiv.org/abs/2610.36729" }
+      ],
+      "image": {
+        "src": "img/2026-10-29/hy-nomas.webp",
+        "alt": "Generated scenes from a castle and harbour to a desert town and a blocky world, with commands such as fly under bridge or open a portal, above the pipeline: prompt enhancer, video model, cache of past segments.",
+        "credit": "Tencent Hy Visual Generation Team, arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.36729",
+        "fit": "contain"
+      },
+      "forYou": "Worth a local test on a 4090 to make mood footage for the action RPG's areas before blocking them out."
+    }
+  ],
+  "note": "The lab is all arXiv preprints today: the journal paper found (a hybrid imitation controller in ACM TOG) first appeared in 2025. Sparks lean on itch.io and Hacker News; X, TikTok and Reddit gave nothing confirmable, and Reddit was blocked to the sweep."
+}

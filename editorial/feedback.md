@@ -8,6 +8,8 @@ entries under "Folded in".
 
 ## New
 
+## Folded in
+
 - #6 More like: The most played demos, by peak players (2026-10-28)
   direction: more
   issue: 2026-10-28
@@ -16,8 +18,7 @@ entries under "Folded in".
   lane: gamedev
   
   Optional note (what exactly, and why):
-
-## Folded in
+  Lesson (2026-10-29): hard store and player numbers from a named tracker earn their own chart. Added to taste.md.
 
 - #5 More like: A video model you can play (2026-10-22)
   direction: more

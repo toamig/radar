@@ -111,6 +111,9 @@ look for one AI-plays-or-makes-games experiment in Sparks most days.
 - It teaches something reusable: a pattern, a postmortem, a benchmark with method.
 - Primary sources and people who show their work beat commentary.
 - Numbers with context beat adjectives.
+- Store and player data the reader can compare at a glance (peak players per demo, wishlist
+  gains, rank moves) earns a chart of its own: hard counts from a named tracker, with a note on
+  what the counts leave out.
 
 ## What does not
 
