@@ -1,0 +1,948 @@
+{
+  "date": "2026-10-30",
+  "number": 17,
+  "title": "Who checks the agents' work",
+  "dek": "Meta catches bugs with tests written for one change and then thrown away. A team that let agents write everything got an app that runs but a build that stays red. And a game engine lets its agents play-test their own work.",
+  "theme": {
+    "paper": "sky",
+    "text": "hunter",
+    "inks": [
+      "blue",
+      "coral"
+    ],
+    "type": "condensed",
+    "mood": "a Friday about checking the work, not just making more of it"
+  },
+  "tldr": [
+    {
+      "text": "Meta now runs AI-written tests overnight on yesterday's risky code changes; they caught 74 serious privacy bugs before release in the first half of 2026.",
+      "lane": "ai"
+    },
+    {
+      "text": "Thoughtworks let agents write all the code for a week: about 80% done, a build often red, and two thirds of the time spent at the whiteboard.",
+      "lane": "ai"
+    },
+    {
+      "text": "A research game engine lets agents pause, step and play the game they are building; dropping it cut quality more than dropping the reviewers.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "The top coding agent setups now sit within three points of each other; cost per task is where they differ.",
+      "lane": "ai"
+    },
+    {
+      "text": "South Korea fined Google and Apple $47.6m and ordered them to let apps link to outside payment options.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "jit-tests",
+      "format": "hero",
+      "variant": "split",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Meta writes a test for each risky change, then throws it away",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Every night, Meta has AI models write fresh tests aimed at the previous day's riskiest code changes. A test that fails on the change is evidence of a bug, and only the strongest cases reach an engineer.",
+      "background": "Most AI code review leaves comments for a person to judge. Meta's approach produces a failing test instead, which shows the behaviour change directly.",
+      "takeaway": "Instead of asking a model whether a change looks wrong, ask it for a test that proves it. People then judge a short, ranked list of evidence, not every output.",
+      "body": [
+        "Meta calls them Catching JiTTests, for just-in-time tests. They run overnight on spare machines, against changes submitted the day before that a risk model marks as risky. The tests are written for that one change and are not kept in the test suite.",
+        "There are two ways in. One treats the change itself as a possible bug and looks for any behaviour that differs from the code before it. The other has a model guess what the change is meant to do, list how it could go wrong, plant those mistakes as small variants of the code, and write tests that tell them apart. Tests that fail on the real change become candidates.",
+        "Most candidates are false alarms, so a panel of AI models judges each one, and a rule-based checker gives a second, deterministic verdict. Only the highest ranked go to the engineer who wrote the change, who mostly answers one question: did you mean the behaviour to change?",
+        "Meta reports 589 engineers engaged with the alerts (64% of those contacted), a 60% true-positive rate by their judgment, and 74 serious privacy bugs caught before release in the first half of 2026, when privacy incidents fell 20%. The paper was presented at FSE 2026."
+      ],
+      "image": {
+        "src": "img/2026-10-30/jit-arch.webp",
+        "alt": "Meta pipeline diagram. Top: code under test, mutants, an LLM writes extra tests, tests that pass on the parent and fail on mutants and the diff become weak catches. Below: the dodgy diff and intent-aware workflows that make mutants.",
+        "credit": "Meta Engineering",
+        "creditUrl": "https://engineering.fb.com/2026/10/29/security/catching-bugs-before-they-land-jittestings-human-on-the-loop-approach-at-full-scale",
+        "fit": "contain"
+      },
+      "stat": {
+        "value": "74",
+        "label": "serious privacy bugs caught before release, first half of 2026 (Meta-reported)"
+      },
+      "terms": [
+        {
+          "term": "mutants",
+          "def": "Copies of the code with a small deliberate mistake planted in them, used to check whether tests notice."
+        },
+        {
+          "term": "true-positive rate",
+          "def": "The share of alerts that turned out to be real problems."
+        },
+        {
+          "term": "FSE",
+          "def": "The ACM conference on the Foundations of Software Engineering, a major research venue."
+        }
+      ],
+      "deep": [
+        "The two workflows are called dodgy diff and intent-aware. The intent-aware one reads the diff, its title and summary, describes the risks in text, and turns each risk into a mutant that still passes the existing tests. Tests that kill those mutants and fail on the real diff are called weak catches.",
+        "Risky diffs are picked with a model similar to Meta's Diff Risk Score, trained on past changes. The false-positive filter pairs an ensemble of LLM judges, which is not deterministic, with RubFake, a rule-based environment that is.",
+        "Meta frames this as human on the loop rather than in the loop: engineers set the criteria and review results in aggregate, and rarely read the generated test code."
+      ],
+      "why": "It turns AI review from opinions into evidence a person can check in seconds. The parts (pick risky changes, generate tests, filter hard, show only the best) work at any team size.",
+      "forYou": "Copy the shape for agent-written PRs in the SaaS repos: a nightly job where Claude Code writes throwaway tests against yesterday's riskiest diffs and reports only tests that fail on the change. Start with the intent-aware prompt.",
+      "sources": [
+        {
+          "label": "Meta Engineering: Catching bugs before they land",
+          "url": "https://engineering.fb.com/2026/10/29/security/catching-bugs-before-they-land-jittestings-human-on-the-loop-approach-at-full-scale"
+        }
+      ]
+    },
+    {
+      "id": "red-build",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "No human code for a week: the app ran, the build stayed red",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Thoughtworks had agents write every line of an app for a week, twice, with different teams. They got most of the way, but the checks kept failing.",
+      "stats": [
+        {
+          "value": "80%",
+          "label": "of the app done after a week"
+        },
+        {
+          "value": "2/3",
+          "label": "of the team's time spent at the whiteboard, not building"
+        }
+      ],
+      "body": [
+        "Rachel Laycock, Thoughtworks' CTO, says the build was often red. Possible causes: too many agents in parallel, code not modular enough, and changes arriving faster than checks could finish. \"Built is not the same as working in production.\""
+      ],
+      "why": "The design work did not shrink; it became most of the job. And agents can outrun your checks, which is exactly where bugs get through.",
+      "forYou": "When running several agents on one repo, cap parallelism to what CI can keep green; a red main branch should stop the routine.",
+      "sources": [
+        {
+          "label": "Rachel Laycock: Why are good developers so wary of agentic development?",
+          "url": "https://martinfowler.com/rachels-ramblings/good-devs-wary.html"
+        }
+      ]
+    },
+    {
+      "id": "big-change",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "How a dozen people changed 250 million lines, before AI",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "In 2010 a volunteer team of about twelve changed code across Google's codebase of close to 250 million lines, used by about 10,000 engineers. Titus Winters says the recipe still applies when agents make the edits.",
+      "background": "Titus Winters led C++ libraries at Google and co-wrote Software Engineering at Google.",
+      "intro": "The sequence, as Winters describes it on The Pragmatic Engineer. No language models were involved; the edits were generated by tools.",
+      "steps": [
+        {
+          "title": "Parse everything",
+          "text": "A batch job read every build target into a syntax tree, so the code could be searched by structure, not text."
+        },
+        {
+          "title": "Find the exact patterns",
+          "text": "Match the precise calls that need to change, and generate the edits by machine."
+        },
+        {
+          "title": "Run old and new side by side",
+          "text": "Both versions of the API work at once, so nothing breaks while the change is under way."
+        },
+        {
+          "title": "Ship in shards",
+          "text": "Split the edits by directory and send them out in batches that owners can review."
+        },
+        {
+          "title": "Block the old way",
+          "text": "Stop new code from bringing the old pattern back in."
+        },
+        {
+          "title": "Delete",
+          "text": "Remove the old API once nothing uses it."
+        }
+      ],
+      "terms": [
+        {
+          "term": "syntax tree",
+          "def": "A structured map of source code that tools can search and edit safely, unlike plain text."
+        },
+        {
+          "term": "API",
+          "def": "The set of functions other code calls to use a library."
+        }
+      ],
+      "deep": [
+        "The batch job was a MapReduce whose mappers parsed each build target; the clang-format toolkit came out of this work. Winters also says, from conversations rather than measured data, that at other companies code output is up hugely, outages are up about 30%, and features shipped are roughly flat."
+      ],
+      "why": "Agents make large edits cheap, but a big change still lands safely only in this order. Steps 3 and 5 are the ones agent migrations tend to skip.",
+      "forYou": "Use this order for the next cross-plugin API change: keep the old function alive, let agents migrate one plugin at a time, then add a lint or hook that blocks the old call before deleting it.",
+      "sources": [
+        {
+          "label": "The Pragmatic Engineer: Software engineering at Google with Titus Winters",
+          "url": "https://newsletter.pragmaticengineer.com/p/software-engineering-at-google-and"
+        }
+      ]
+    },
+    {
+      "id": "vibegame",
+      "format": "diagram",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "A game engine built for agents to play-test their own work",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Researchers built a 2D web engine that agents can read, pause and play, plus a team of agents where builders are checked by a separate auditor, player and reviewer. The engine mattered more than the reviewers.",
+      "layout": "flow",
+      "intro": "VibeGame's loop, from the paper. The game is stored as checked text files, and agents can step the running game frame by frame and press buttons in it.",
+      "nodes": [
+        {
+          "label": "Designer",
+          "note": "Turns the prompt into a design document"
+        },
+        {
+          "label": "Builders",
+          "note": "An architect plans, a programmer writes the code"
+        },
+        {
+          "label": "Auditor",
+          "note": "Checks the code against the design"
+        },
+        {
+          "label": "Player",
+          "note": "Pauses, steps and presses buttons in the running game",
+          "key": true
+        },
+        {
+          "label": "Reviewer",
+          "note": "Accepts the game or sends it back"
+        }
+      ],
+      "links": [
+        "plan",
+        "build",
+        "check",
+        "play-test"
+      ],
+      "caption": "Without the agent-readable engine, the score fell from 53.45 to 43.12; without the reviewing roles, to 48.82.",
+      "terms": [
+        {
+          "term": "play-test",
+          "def": "Running the game and playing it to find problems, rather than only reading the code."
+        }
+      ],
+      "deep": [
+        "Eight agents in all: orchestrator, designer, artist, architect, programmer, auditor, player and reviewer. The engine is built on Phaser, a web 2D framework; scenes, nodes, assets and scripts are schema-checked text with explicit references. Agents can pause, advance a set number of frames, read and change properties such as positions and velocities, send actions like \"press jump\", and take screenshots.",
+        "On a 30-task subset of GameCraft-Bench, scored by a model judge, it beat the best baseline by 11.70 points with a smaller model and Codex by 4.19 with a stronger one. In a blind study, 30 people preferred its games 72.7% of the time on average. Limits: 2D only, and saved lessons from past games sometimes hurt when the next game was a different type."
+      ],
+      "why": "Agents find many game bugs only by playing. Giving them a way to pause, step and press buttons is a smaller job than building an agent team, and it helped more.",
+      "forYou": "Add a debug hook to the three.js games (pause, advance N frames, inject input, dump state as JSON) and a console command set in UE, so Claude Code can play-test a change instead of only compiling it.",
+      "sources": [
+        {
+          "label": "arXiv: VibeGame",
+          "url": "https://arxiv.org/abs/2610.33106"
+        },
+        {
+          "label": "Project page",
+          "url": "https://vibegame.tettet.org"
+        }
+      ]
+    },
+    {
+      "id": "korea-fines",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Korea fines Google and Apple over in-app payments",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "South Korea's regulator fined both stores and ordered them to let apps link to outside payment options.",
+      "stats": [
+        {
+          "value": "$32m",
+          "label": "Google (KRW 42.9 billion)"
+        },
+        {
+          "value": "$15.6m",
+          "label": "Apple (KRW 20.81 billion)"
+        }
+      ],
+      "body": [
+        "The regulator objected to forced store payments, a 26% fee on third-party payments and unexplained review delays. Apple disagrees and is reviewing its options."
+      ],
+      "why": "If the orders stick, mobile games sold in Korea could send players to cheaper payment pages.",
+      "forYou": "Not urgent for the Flutter apps; watch how each store implements external links before planning a Korea pricing change.",
+      "sources": [
+        {
+          "label": "PocketGamer.biz: South Korea fines Google and Apple",
+          "url": "https://www.pocketgamer.biz/south-korea-fines-google-and-apple-476m-over-app-payments"
+        }
+      ]
+    },
+    {
+      "id": "metawrap",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Turn any head sculpt or scan into a real MetaHuman, in Blender",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A new Blender add-on wraps your own character onto Epic's MetaHuman face layout and sends it to Unreal with the real MetaHuman rig.",
+      "background": "MetaHuman is Epic's system for realistic digital humans with a ready-made facial rig.",
+      "name": "MetaWrap",
+      "what": "Fits a sculpt, scan or generated model to MetaHuman topology and moves its skin textures across.",
+      "body": [
+        "Elvis Morelli's suite works on a whole head, skin only, or a full character, automatically or guided by matching landmark points. MetaSculpt adds scan detail and wrinkle maps; MetaGroom moves hair between Unreal and Blender."
+      ],
+      "facts": [
+        {
+          "k": "Price",
+          "v": "$158"
+        },
+        {
+          "k": "Needs",
+          "v": "Blender 5.0+, Unreal 5.6+"
+        },
+        {
+          "k": "Runs on",
+          "v": "Windows only"
+        }
+      ],
+      "terms": [
+        {
+          "term": "topology",
+          "def": "The layout of a 3D model's polygons; a rig only works on the layout it was built for."
+        }
+      ],
+      "why": "Custom faces on the standard rig mean animation, lip sync and tools built for MetaHumans work on your own characters.",
+      "forYou": "A cheap route to distinct NPC faces for the action RPG without hand-rigging; test one head before buying it for a crowd.",
+      "sources": [
+        {
+          "label": "CG Channel: MetaWrap",
+          "url": "https://www.cgchannel.com/2026/10/metawrap-turns-your-3d-characters-into-metahumans-in-blender"
+        }
+      ]
+    },
+    {
+      "id": "godot-48b2",
+      "format": "steps",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Godot 4.8 is feature-complete: what to check before it ships",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Godot 4.8's second beta adds no new features, only fixes, and asks people to test their projects now. Two changes can break existing games.",
+      "background": "Godot is a free, open-source game engine.",
+      "intro": "From the beta 2 notes: 144 fixes from 59 contributors in two weeks.",
+      "steps": [
+        {
+          "title": "Install .NET 10 if you use C#",
+          "text": "The C# build of 4.8 now needs .NET 10 or newer, up from .NET 8."
+        },
+        {
+          "title": "Open a copy of your project",
+          "text": "Never the original: beta builds can change saved files."
+        },
+        {
+          "title": "Check your particles",
+          "text": "The default range of the particle angle curve changed to -1 to 1, so some effects may look different."
+        },
+        {
+          "title": "Report what broke",
+          "text": "Regressions found now get fixed before the final release."
+        }
+      ],
+      "deep": [
+        "Also in beta 2: building the engine from source needs Python 3.10, the Compatibility renderer no longer draws multiply blending too dark, buttons check the visible viewport area for touch input, and Unicode data moves to 18.0.0. Beta 1 brought the game view embedded in the editor by default, a Trail3D node, mip-level texture streaming and screen-space contact shadows."
+      ],
+      "why": "Testing a beta costs an hour now; finding a break after the release costs a patch.",
+      "forYou": "Only relevant to Godot side projects; skip unless one is active.",
+      "sources": [
+        {
+          "label": "Godot: Dev snapshot 4.8 beta 2",
+          "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-2"
+        },
+        {
+          "label": "GameFromScratch: Godot 4.8 beta 1",
+          "url": "https://gamefromscratch.com/godot-4-8-beta1-released/"
+        }
+      ]
+    },
+    {
+      "id": "copilot-auto",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "GitHub's automations get spending caps and learn from results",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "GitHub's Copilot Automations, agents that run on triggers, can now stop at a credit limit, start each other, and suggest changes to their own prompts based on what people did with their work.",
+      "plain": "An automation is a standing agent job: an event starts it, it uses the tools you allow, and now it has a budget.",
+      "body": [
+        "A run stops when it hits its per-run limit; daily, weekly and monthly limits make new runs wait for the reset. Automations can be started from outside systems through an API, by 24 more GitHub events, or by another automation finishing or failing."
+      ],
+      "points": [
+        "Custom MCP servers, with only the tools you pick switched on",
+        "Proposes prompt, tool or trigger changes from signals such as merged PRs and changed labels; you accept or reject each",
+        "On Pro, Pro+, Max, Business and Enterprise plans"
+      ],
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools and data sources into an AI agent."
+        }
+      ],
+      "why": "A per-run cap is the cheapest guard against an unattended agent burning money in a loop, whichever tool runs it.",
+      "forYou": "Copy two ideas into the morning routines: a hard spend cap per run, and a weekly job that proposes prompt edits from what got merged or reverted.",
+      "sources": [
+        {
+          "label": "GitHub: tools, triggers and cost controls",
+          "url": "https://github.blog/changelog/2026-10-28-new-tools-triggers-and-cost-controls-for-copilot-automations"
+        },
+        {
+          "label": "GitHub: automations that self-improve",
+          "url": "https://github.blog/changelog/2026-10-28-copilot-automations-now-learn-from-outcomes-and-self-improve"
+        }
+      ]
+    },
+    {
+      "id": "agent-index",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "The top coding agents sit within three points",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "On one independent score for coding agents, the leading setups are close together. Cost per task now separates them more than skill.",
+      "background": "Artificial Analysis is an independent company that benchmarks AI models; its Coding Agent Index scores a model and its agent tool together.",
+      "intro": "Coding Agent Index, model plus agent tool. Gemini 4 Carbon also costs about 23% less per task than Claude Opus 5.5 on the firm's main index.",
+      "unit": "pts",
+      "series": [
+        {
+          "label": "Claude Code, Opus 5.5",
+          "value": 62,
+          "highlight": true
+        },
+        {
+          "label": "Copilot Fusion Max",
+          "value": 60
+        },
+        {
+          "label": "Antigravity, Gemini 4 Carbon",
+          "value": 59
+        },
+        {
+          "label": "Mistral Large 4",
+          "value": 48
+        }
+      ],
+      "note": "Claude and Gemini scores are from Artificial Analysis. Fusion's is reported by GitHub and Mistral's by Mistral. Nathan Lambert argues the firm's v5 index is flawed but useful, and that a coding-only index would help.",
+      "deep": [
+        "Artificial Analysis puts cost per Intelligence Index task at $7.76 for Gemini 4 Carbon, $10.04 for Claude Opus 5.5 at max effort and $6.25 for GPT-6 Astra, with Carbon using 123k output tokens per task against Opus's 173k. Carbon is listed at $4 in and $20 out per million tokens, with a 50% launch discount and no end date. Mistral Large 4 is an open-weight model at $0.70 in and $2.10 out on Mistral's API."
+      ],
+      "why": "When the top tools score alike, pick on price, speed and how well they fit your workflow, and rerun your own tasks rather than trusting one number.",
+      "forYou": "No reason to switch from Claude Code; worth a monthly check of cost per task for the routine's heavy desks.",
+      "sources": [
+        {
+          "label": "Artificial Analysis: Gemini 4 Carbon is the new #1",
+          "url": "https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1"
+        },
+        {
+          "label": "Interconnects: the benchmarker's dilemma",
+          "url": "https://www.interconnects.ai/p/artificial-analysis-v5-and-the-benchmarkers"
+        },
+        {
+          "label": "Mistral: Large 4 open weights",
+          "url": "https://mistral.ai/news/mistral-large-4-oss"
+        },
+        {
+          "label": "GitHub: Copilot Fusion",
+          "url": "https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion"
+        }
+      ]
+    },
+    {
+      "id": "cc-2-1-314",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Claude Code 2.1.314 fences unattended agents in",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "The latest Claude Code release adds a setting that stops the agent writing files outside its project, and fixes several ways long unattended runs failed quietly.",
+      "intro": "The four changes that matter most for agents left running on their own, from the release notes.",
+      "items": [
+        {
+          "title": "No writes outside the project",
+          "text": "The new `permissions.blockWritesOutsideWorkingDirectories` setting makes Write, Edit and NotebookEdit refuse paths outside the working directories, in every permission mode."
+        },
+        {
+          "title": "Headless failures now fail loudly",
+          "text": "`claude -p` used to exit with code 0 and no output when startup failed. It now prints the error and exits with 1, so scripts and schedulers notice."
+        },
+        {
+          "title": "Hooks see Monitor commands",
+          "text": "Hooks that match Bash now also run on shell commands started by the Monitor tool. They can block or ask, but not approve or rewrite them."
+        },
+        {
+          "title": "Leaner long runs",
+          "text": "In long headless and SDK turns with many subagents, the parent no longer keeps each subagent's tool results until the turn ends. PreCompact hook output is cut at 10,000 characters."
+        }
+      ],
+      "terms": [
+        {
+          "term": "headless",
+          "def": "Running a tool from a script with no person watching its screen."
+        },
+        {
+          "term": "hooks",
+          "def": "Your own scripts that Claude Code runs before or after its actions, which can allow or block them."
+        },
+        {
+          "term": "subagents",
+          "def": "Helper agents a main agent starts for parts of a task."
+        }
+      ],
+      "why": "Unattended agents fail in quiet ways: a wrong exit code, a write in the wrong folder, a hook that never fired. This release closes four of them.",
+      "forYou": "Turn on the write fence in the routine's settings and make the scheduler treat a non-zero exit as a failed run worth a notification.",
+      "sources": [
+        {
+          "label": "Claude Code v2.1.314 release notes",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Checking the work",
+      "note": "When agents write most of the code, the checks are the job.",
+      "ids": [
+        "red-build",
+        "big-change"
+      ]
+    },
+    {
+      "title": "Game tech to borrow",
+      "note": "An engine agents can play, faces on a standard rig, and store and engine changes.",
+      "ids": [
+        "vibegame",
+        "korea-fines",
+        "metawrap",
+        "godot-48b2"
+      ]
+    },
+    {
+      "title": "Budgets and fences",
+      "note": "Limits for agents that run on their own, and what the top ones cost.",
+      "ids": [
+        "copilot-auto",
+        "agent-index",
+        "cc-2-1-314"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is mutation testing?",
+    "answer": "Mutation testing checks your tests by planting small deliberate bugs in the code and seeing whether the tests notice. A test suite that misses a planted bug would probably miss a real one too.",
+    "analogy": "A fire drill with a fake alarm: you learn whether people respond before a real fire does.",
+    "body": [
+      "A tool makes many copies of the code, each with one small change: a plus turned into a minus, a less-than turned into less-or-equal, a line removed. Each copy is a mutant. Run the tests on every mutant; if a test fails, the mutant is killed. Mutants that survive show behaviour your tests never pin down.",
+      "It used to be too slow and noisy for most teams, because tools made thousands of trivial mutants. Language models change that: they can plant a few realistic mistakes based on what a change is meant to do, then write the tests that catch them. That is how Meta's catching tests work."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Code",
+          "note": "The function or change under test"
+        },
+        {
+          "label": "Mutants",
+          "note": "Copies with one small planted bug each"
+        },
+        {
+          "label": "Run tests",
+          "note": "On every mutant",
+          "key": true
+        },
+        {
+          "label": "Survivors",
+          "note": "Bugs the tests missed: write a test for each"
+        }
+      ],
+      "links": [
+        "plant bugs",
+        "test",
+        "keep misses"
+      ],
+      "caption": "Killed mutants mean your tests would notice that kind of mistake; survivors are the gaps."
+    },
+    "terms": [
+      {
+        "term": "test suite",
+        "def": "All the automated tests for a project, run together."
+      }
+    ],
+    "seenIn": [
+      "jit-tests"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia: Mutation testing",
+        "url": "https://en.wikipedia.org/wiki/Mutation_testing"
+      },
+      {
+        "label": "Meta Engineering: Catching JiTTests",
+        "url": "https://engineering.fb.com/2026/10/29/security/catching-bugs-before-they-land-jittestings-human-on-the-loop-approach-at-full-scale"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Write the migration rule down instead of hoping examples win",
+    "gist": "In twenty minutes you find out whether your coding agent follows the new pattern you want or copies the old code around it, and fix it with one line.",
+    "time": "20 minutes",
+    "level": "practitioner",
+    "needs": "A repo mid-migration (old and new patterns both present) and a coding agent that reads CLAUDE.md or AGENTS.md.",
+    "steps": [
+      {
+        "title": "Pick a pattern in flux",
+        "text": "Something the old code does one way and new code should do another: ID types, field casing, an old helper you are replacing."
+      },
+      {
+        "title": "Run a task without a rule",
+        "text": "Ask the agent for a small addition next to old-style files, five times in fresh sessions. Count how often it copies the old pattern."
+      },
+      {
+        "title": "Add an explicit priority rule",
+        "text": "Put one line in CLAUDE.md or AGENTS.md naming the new pattern and saying it overrides what existing files do."
+      },
+      {
+        "title": "Run the same task again",
+        "text": "Five more fresh sessions, same prompt. Count again."
+      }
+    ],
+    "code": {
+      "lang": "markdown",
+      "code": "## Patterns in migration\n- New code uses string IDs, not integer IDs.\n  This overrides the older pattern you will see in existing files."
+    },
+    "check": "Without the rule, most runs copy the old pattern; with it, nearly all follow the new one. In the paper, existing code beat the agent's own default in 359 of 360 trials, and a rule in the instruction file worked as well as one in the prompt.",
+    "terms": [
+      {
+        "term": "CLAUDE.md",
+        "def": "A file of standing instructions that Claude Code reads at the start of every session; AGENTS.md plays the same role for other agents."
+      }
+    ],
+    "from": "precedent-intent",
+    "forYou": "Try it on the plugin repos where newer modules use a different naming or interface style than the first ones.",
+    "sources": [
+      {
+        "label": "arXiv: Precedent or Intent?",
+        "url": "https://arxiv.org/abs/2610.38244"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Claude API requests can now be up to 128 MB, up from 32 MB, and a beta Usage and Cost Analytics API groups spend by model, workspace, API key and service account.",
+      "lane": "ai",
+      "url": "https://platform.claude.com/docs/en/release-notes/api",
+      "source": "Claude Platform"
+    },
+    {
+      "text": "GitHub Actions workflow lockfiles are generally available: `gh actions-lock` pins your actions and their dependencies to exact commits, and Dependabot updates the lockfile in the same PR.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-10-28-github-actions-workflow-lockfiles-are-generally-available",
+      "source": "GitHub"
+    },
+    {
+      "text": "Copilot Agent Merge adds \"Watch and fix\" to the PR merge box: Copilot fixes failing workflows or merge conflicts in the cloud, and works with auto-merge.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-10-28-agent-merge-watches-and-fixes-pull-requests-in-the-cloud",
+      "source": "GitHub"
+    },
+    {
+      "text": "Codex CLI 0.166.0 adds `codex doctor --network-only` and `codex queue --resume`, and fixes approval settings being lost when a thread is resumed or forked.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.166.0",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "Mistral released the weights of Mistral Large 4, a 1 trillion parameter model, under a modified MIT licence; companies selling it as a hosted model need a separate licence.",
+      "lane": "ai",
+      "url": "https://mistral.ai/news/mistral-large-4-oss",
+      "source": "Mistral"
+    },
+    {
+      "text": "Supabase opened a private alpha of Multigres: three Postgres nodes across zones with automatic failover and no lost acknowledged writes; not for production yet, East US only.",
+      "lane": "ai",
+      "url": "https://supabase.com/blog/multigres-private-alpha",
+      "source": "Supabase"
+    },
+    {
+      "text": "One developer cut an MCP server from 15 tools to 4 outcome-level ones: tool text fell 88% and the same question took 2 tool calls instead of 7.",
+      "lane": "ai",
+      "url": "https://dev.to/aws-builders/mcp-token-cost-i-cut-my-mcp-server-from-15-tools-to-4-cek",
+      "source": "DEV"
+    },
+    {
+      "text": "Bug0's QA agent turns plain-English Playwright steps into cached browser actions after the first run, and calls the model again only when a replay fails.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/10/bug0-agent-testing-cached-replay",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Paper: giving coding agents a code skeleton (types, signatures and contracts) cut mean test error by 48.4% against the best tests-only specs, across four models.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2610.38214",
+      "source": "arXiv"
+    },
+    {
+      "text": "Studio Atelico opened early access to an engine that runs language, image and speech models on the player's device for Unity, Unreal and Godot; it names no models or prices.",
+      "lane": "gamedev",
+      "url": "https://www.pocketgamer.biz/studio-atelico-launches-on-device-ai-engine-for-game-developers",
+      "source": "PocketGamer.biz"
+    },
+    {
+      "text": "Unity and PvX now offer studios non-equity marketing funding repaid from performance; PvX reports over $1.3 billion committed across 17 markets.",
+      "lane": "gamedev",
+      "url": "https://www.pocketgamer.biz/unity-partners-with-pvx-to-offer-funding-for-game-developers",
+      "source": "PocketGamer.biz"
+    },
+    {
+      "text": "Second Life adds Lua scripting alongside its old language, with live editing from VS Code; Linden Lab says creators keep about 85% of sales.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/second-life-wants-its-23-year-old-world-to-be-a-modern-game-platform",
+      "source": "80 Level"
+    },
+    {
+      "text": "Brutal, a free C# game framework bundling Vulkan, Jolt, Box2D and FMOD, gets docs aimed at experienced programmers.",
+      "lane": "gamedev",
+      "url": "https://gamefromscratch.com/brutal-gets-a-bit-less-brutal",
+      "source": "GameFromScratch"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "civ50",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "Fifty agents in Minecraft invent bureaucracy; Claude and GPT play differently",
+      "where": "YC Labs, Hacker News",
+      "signal": "228 points and 73 comments on Hacker News",
+      "hook": "Left alone to build a civilization, 50 GPT agents made one agent their hub (616 messages, no vote). In Mindustry, GPT agents read the game source when stuck and won 6 to 1; Claude agents never looked and voted on every plan.",
+      "borrow": "Ready material for NPC societies and agent playtesters: early deaths made agents cautious for good, and letting agents read the game's code changed who won. The environments are open source.",
+      "url": "https://labs.ycombinator.com/projects/games/index.html",
+      "forYou": "Worth a look before building AI playtesters for the action RPG: give them read access to the design data."
+    },
+    {
+      "id": "spawn",
+      "lane": "both",
+      "kind": "concept",
+      "title": "Spawn: a multiplayer world that agents build and ship every hour",
+      "where": "Simon Willison's blog, X",
+      "signal": "Linked by Simon Willison on 29 October; the founder reports over $3 million a month in tokens, 30 times payroll",
+      "hook": "Players ask an in-game character to add a castle or a dragon, and it happens. Behind it, agents fix live code and ship hourly; an hour with no release counts as the worst kind of incident, and any change rolls back in 30 seconds.",
+      "borrow": "The loop, not the budget: about 60% of work starts from an error, a bug report the in-game character files itself, or a request. Fast rollback is what makes hourly shipping survivable. All figures are the founder's.",
+      "url": "https://simonwillison.net/2026/Oct/29/how-i-built-the-most-ai-pilled-company-in-the-world",
+      "image": {
+        "src": "img/2026-10-30/spawn.webp",
+        "alt": "Two phone screenshots of a voxel 3D game: a view from a small teal dragon's saddle flying toward a lit castle on a lake island, and the same scene with a chat panel where the in-game character agrees to shrink the dragon and land it nearby.",
+        "credit": "Spawn, via Simon Willison",
+        "creditUrl": "https://simonwillison.net/2026/Oct/29/how-i-built-the-most-ai-pilled-company-in-the-world",
+        "fit": "cover"
+      },
+      "forYou": "Borrow the 30-second rollback and error-driven backlog for the browser games, not the spend."
+    },
+    {
+      "id": "tinyworldformer",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "A playable world model and its player, both on a Raspberry Pi Pico",
+      "where": "GitHub, Hacker News",
+      "signal": "168 points on Hacker News; the author reports Breakout frames predicted exactly 99.99% of the time with 26k parameters",
+      "hook": "A tiny looped transformer dreams the next frame of Breakout, Pong or Flappy Bird, and a small network learns to play inside the dream, all on a Raspberry Pi Pico 2 W. The player exploited the dream until the author added noise.",
+      "borrow": "A game as a grid of tokens plus a world model of a few hundred kilobytes: an offline playable dream that fits in a browser toy or mobile mini-game.",
+      "url": "https://github.com/SheepSeb/tinyworldformer",
+      "image": {
+        "src": "img/2026-10-30/tinyworld.webp",
+        "alt": "Diagram titled 'The dream and the actor': network 1, a looped int8 transformer of 26k parameters, predicts a Breakout frame; network 2, a 14k-parameter policy network, picks stay, left or right and feeds the move back.",
+        "credit": "SheepSeb",
+        "creditUrl": "https://sheepseb.github.io/stealth/posts/tinyworldformer.html",
+        "fit": "contain"
+      },
+      "forYou": "A fun reference for a tiny generative mini-game; not a production tool."
+    },
+    {
+      "id": "doomformer",
+      "lane": "gamedev",
+      "kind": "experiment",
+      "title": "Doomformer: a neural network built out of Doom maps",
+      "where": "Hacker News, GitHub",
+      "signal": "61 points on Hacker News; reads handwritten digits at 97.16%, matching its reference on all 10,000 test digits",
+      "hook": "Doom is not running on the computer; Doom is the computer. Crowds of player copies do the arithmetic, sector light levels and floor heights store the sums, and scripts read out the answer. About 23,000 times slower than NumPy.",
+      "borrow": "Level geometry can carry logic: a puzzle level where players wire the world into a calculator is a ready mechanic, and checking an engine hack against a plain reference implementation is how to trust it.",
+      "url": "https://github.com/mottopanikeiku/doomformer",
+      "image": {
+        "src": "img/2026-10-30/doomformer.webp",
+        "alt": "A Doom level: a corridor whose wall is tiled with hundreds of blue sprites while a line of green-armoured marines rides a conveyor; caption reads tile L0.score, 224 voodoo dolls, tic 272.",
+        "credit": "mottopanikeiku",
+        "creditUrl": "https://github.com/mottopanikeiku/doomformer",
+        "fit": "cover"
+      },
+      "forYou": "Pure inspiration for a logic-puzzle level; nothing to build on."
+    },
+    {
+      "id": "chipwits-worlds",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "ChipWits Worlds: write 65C02 assembly to run a robot colony",
+      "where": "Mastodon, Steam",
+      "signal": "8 favourites and 8 boosts on Mastodon #gamedev; coming soon on Steam, sequel to a 1984 game whose code was open-sourced in 2024",
+      "hook": "Each robot carries a real, cycle-accurate 1980s CPU with 64 KB, and every clock cycle costs power. You tweak starter code, write your own robot OS, or swap boot disks.",
+      "borrow": "Make code the economy: an energy cost per instruction turns programming into the game loop, and works for any in-game scripting or modding layer.",
+      "url": "https://store.steampowered.com/app/4960100",
+      "image": {
+        "src": "img/2026-10-30/chipwits.webp",
+        "alt": "ChipWits Worlds: a code editor with 65C02 assembly for a crystal miner beside a 3D colony of small robots, conveyor belts, solar panels and crystals.",
+        "credit": "ChipWits, via Steam",
+        "creditUrl": "https://store.steampowered.com/app/4960100",
+        "fit": "cover"
+      },
+      "forYou": "An idea for a gameplay plugin: scripted NPC behaviour with a per-tick energy budget."
+    },
+    {
+      "id": "repo",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "R.E.P.O. climbs: co-op horror where every bump costs money",
+      "where": "Steam",
+      "signal": "up 28 places to #30 in Steam's most played, peak 51,169 players",
+      "hook": "Up to six players haul fully physics-driven valuables out of haunted places; every bump lowers the payout, so the physics makes both the comedy and the fear.",
+      "borrow": "Score damage on carried objects: per-object fragility with impact thresholds is a small system that makes plain physics into a game.",
+      "url": "https://store.steampowered.com/app/3241660",
+      "image": {
+        "src": "img/2026-10-30/repo.webp",
+        "alt": "A dark R.E.P.O. scene: a robot player's yellow body in the foreground and a large screaming mask face with glowing eyes, with a money counter reading $12,797.",
+        "credit": "R.E.P.O., via Steam",
+        "creditUrl": "https://store.steampowered.com/app/3241660",
+        "fit": "cover"
+      },
+      "forYou": "A fragility component (impact threshold, value loss) is a neat small plugin idea for the interaction set."
+    }
+  ],
+  "lab": [
+    {
+      "id": "precedent-intent",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Precedent or Intent? What Coding Agents Follow When Evolving Existing Code",
+      "headline": "Agents copy what your repo already does; only a written rule reliably changes that",
+      "authors": "Haichao Zhu, Geyang Xu, Zhaorui Yang, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-10-28",
+      "problem": "When a task wants a different pattern from the existing code, nobody knew which a coding agent would follow: the code around it, its own habits, or the instruction.",
+      "idea": "5,625 controlled trials with four coding agents and six pairs of interchangeable choices, such as integer or string IDs and field casing, with hidden tests holding the task fixed. They varied the agents' defaults, how many existing examples there were and where they sat, and explicit rules. Then they checked on four real open-source repos.",
+      "result": "Existing code beat the agent's own default in 359 of 360 trials. Three supporting files nearby gave 96% adoption; examples in sibling folders, 4%. A written priority rule got 59 of 60 joint successes against 38 of 60 for a code example alone, and worked as well in CLAUDE.md or AGENTS.md as in the prompt.",
+      "useIt": "When moving a codebase to a new pattern, write the rule into the agent's instruction file. A few new-style examples lose to the old files nearby.",
+      "maturity": "idea",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.38244"
+        }
+      ],
+      "forYou": "Add explicit pattern rules to each plugin repo's CLAUDE.md where newer modules differ from the first ones."
+    },
+    {
+      "id": "hairdeck",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "HairDeck: Animation-Ready Stylized Hair Cards from a Single Image",
+      "headline": "One picture becomes game-ready hair cards with spring bones, in about a second",
+      "authors": "Yuze He, Yixiang Wei, Wang Zhao, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-10-29",
+      "problem": "Stylized game characters use hair made of flat cards moved by spring bones, placed by hand. Image-to-3D tools make one fused mesh, and the one earlier card generator is slow.",
+      "idea": "Treat a hairstyle as an unordered set of cards, each one a single token, and generate them all at once with a diffusion model; a flag per slot decides how many cards exist. The same recipe generates the spring-bone chains.",
+      "result": "On a 100-hairstyle test set it beats the earlier card method: shape error 0.0117 to 0.0066, card orientation error 40.0 to 16.8 degrees, and 33.7 seconds to 1.01 seconds per hairstyle. Limits: trained on stylized anime hair, and it makes card geometry and UVs, not textures.",
+      "useIt": "Use it for a first pass on stylized character hair, then retarget the chains to your engine's spring-bone system, such as Kawaii Physics in Unreal. Watch for texture generation.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.40599"
+        },
+        {
+          "label": "Project page",
+          "url": "https://hyzcluster.github.io/HairDeck"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/hyz317/HairDeck"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-30/hairdeck.webp",
+        "alt": "HairDeck pipeline: a hairstyle as a set of cards where one card is one token; a set diffusion transformer conditioned on a point cloud or image denoises card tokens; a decoder outputs cards, and a chain model adds spring-bone chains.",
+        "credit": "He et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.40599",
+        "fit": "contain"
+      },
+      "forYou": "Relevant only if the action RPG goes stylized; otherwise note it."
+    },
+    {
+      "id": "isekai3d",
+      "lane": "gamedev",
+      "kind": "report",
+      "title": "Isekai3D SDG: A Platform for Diverse Synthetic Gameplay Visual Data",
+      "headline": "Record gameplay once in Unreal, then replay it to render any camera or pass",
+      "authors": "Rafal Karp, Gene Liu, Shih-Hsin Li, et al. (NVIDIA)",
+      "where": "NVIDIA Research technical report",
+      "date": "2026-10-26",
+      "problem": "World models and game agents need gameplay video paired with camera, character and input data. Re-simulating for every camera or render pass, and copying huge datasets per experiment, is slow.",
+      "idea": "Unreal plugins record a session once (the engine's replay system plus a file of positions, camera poses and inputs, which can run without rendering), then replay it to capture any camera or projection and passes such as depth, normals and object IDs. A packaged build runs without the editor.",
+      "result": "No accuracy benchmark; it is a systems report. Recording several characters in one shared world gave about 1.3 to 2 times the throughput. Building a 10,000-hour dataset as references to stored video took 3 minutes, against 16 hours to copy the footage.",
+      "useIt": "Borrow the pattern for your own Unreal tools: record deterministic gameplay once, then re-render it for trailers, regression screenshots or training data. No code release is mentioned.",
+      "maturity": "prototype",
+      "links": [
+        {
+          "label": "NVIDIA Research",
+          "url": "https://research.nvidia.com/publication/2026-10_isekai3d-sdg-platform-diverse-synthetic-gameplay-visual-data"
+        }
+      ],
+      "forYou": "Record and replay is a fit for a regression-screenshot tool across the UE plugins' demo maps."
+    }
+  ],
+  "note": "Reddit and three news feeds were blocked to the sweep, and searches of X and TikTok found nothing confirmable this week. The ACM journals were unreadable from here, so The lab has no journal paper today."
+}
