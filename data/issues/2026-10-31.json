@@ -1,0 +1,1008 @@
+{
+  "date": "2026-10-31",
+  "number": 18,
+  "title": "The rules you never see",
+  "dek": "Claude Code got two new sentences against cloning games, and a study shows how much hidden text sits in front of every prompt. Meanwhile a faked copy of its editor extension planted a backdoor for 11 hours.",
+  "theme": {
+    "paper": "lilac",
+    "text": "black",
+    "inks": [
+      "bright-red",
+      "sunflower"
+    ],
+    "type": "poster",
+    "mood": "a Halloween Saturday about the instructions hiding behind the tools"
+  },
+  "tldr": [
+    {
+      "text": "Anthropic added two sentences to Claude Code's prompt telling it not to recreate a specific existing game; original and genre games are meant to keep working.",
+      "lane": "both"
+    },
+    {
+      "text": "A study of 1,886 coding agent releases found your own prompt can be 0.03% of what the agent sends to the model.",
+      "lane": "ai"
+    },
+    {
+      "text": "A tampered Claude Code extension sat in Cursor's marketplace for 11 hours on October 29; uninstalling it does not remove what it planted.",
+      "lane": "ai"
+    },
+    {
+      "text": "In October's Steam Next Fest, demos with no detectable engine rose to 17.7%, likely vibe-coded web games, but only 7% of the top 100.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Firefox now ships every week and keeps regression tests secret until the fix is out, because cheap models can turn a public fix into an attack.",
+      "lane": "ai"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "clone-rule",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "both",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code now declines to remake a specific game",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Anthropic quietly added a rule to Claude Code: build original games, genre games and games from your own designs, but not a copy of a specific existing game, even renamed. Users cannot switch it off.",
+      "background": "Over the past weeks, AI tools have made it quick to clone a game from its demo, and some studios have cancelled public playtests for fear of fast copies.",
+      "takeaway": "The behaviour of a coding agent is shaped by instructions you never see, and they change between releases. This one is aimed at cloners, but anyone building games with an agent now works under it.",
+      "body": [
+        "An X user called Chasm spotted the new rule in Claude Code's instructions, pushed around October 27. It reads: do build original games, games in a genre and games from the user's own designs and assets; do not build a recreation of a specific existing game, even if it is renamed or called original.",
+        "Anthropic confirmed it to Game Developer through a post by Addy Osmani, who said the two sentences were added for Opus 5.5 because using Claude to infringe intellectual property is against its usage policy. Osmani said the team will keep adjusting the balance and asked developers to send him cases where Claude refuses their own work.",
+        "Game Developer notes the limits: rules like this are often talked around, it is unclear how a model can tell whether you own an idea or an asset, and cloners can switch to open-weight models with no such rule."
+      ],
+      "diagram": {
+        "layout": "layers",
+        "nodes": [
+          {
+            "label": "System message",
+            "note": "Anthropic's rules, where the new game sentences live; 5,935 characters in one capture",
+            "key": true
+          },
+          {
+            "label": "Tool definitions",
+            "note": "20 tools, 57,346 characters"
+          },
+          {
+            "label": "Context",
+            "note": "Working folder, date, project instruction files"
+          },
+          {
+            "label": "Your prompt",
+            "note": "One sentence: 0.03% of the request"
+          }
+        ],
+        "caption": "What one Claude Code release (2.1.243) sent to the model before any reply, as captured in the Hidden in Plain Sight study. The new rule sits in the top layer."
+      },
+      "terms": [
+        {
+          "term": "Opus 5.5",
+          "def": "Anthropic's current top model, the one Claude Code uses by default."
+        },
+        {
+          "term": "open-weight models",
+          "def": "AI models whose files are published, so anyone can run them without the maker's rules."
+        },
+        {
+          "term": "System message",
+          "def": "Standing instructions the tool sends to the model ahead of what you type."
+        }
+      ],
+      "deep": [
+        "The rule appears under the flag name tengu_heron_brook. It only steers the model; it is not a filter on output, so results will vary by wording and context.",
+        "The layer sizes come from arXiv 2610.37332, which captured the first model request of 1,886 releases of Claude Code, Codex, Gemini CLI, Qwen Code and OpenCode. Stacks can exceed 120,000 characters before the user's prompt."
+      ],
+      "why": "If you prototype games with an agent, expect refusals near famous titles and expect the line to move. Keep your own design docs and assets in the repo: the rule explicitly allows building from them.",
+      "forYou": "Keep a short design doc in each game repo (ElementalBlades included) so requests read as building from your own designs; if a remake of one of your older prototypes is refused, that is the case Osmani asked to hear about.",
+      "sources": [
+        {
+          "label": "Game Developer: Anthropic tells Claude to stop remaking video games",
+          "url": "https://www.gamedeveloper.com/programming/anthropic-appears-to-have-ordered-ai-tool-claude-to-stop-remaking-video-games"
+        },
+        {
+          "label": "arXiv: Hidden in Plain Sight, the instruction stacks of coding agents",
+          "url": "https://arxiv.org/abs/2610.37332"
+        }
+      ]
+    },
+    {
+      "id": "ext-backdoor",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "A fake Claude Code extension planted a backdoor: check your machine",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "For about 11 hours on October 29, Cursor's extension store served a tampered Claude Code extension that tried to give an attacker remote access. Anthropic did not build it. Removing the extension is not enough.",
+      "background": "Cursor and similar editors run their own extension stores, separate from Microsoft's. Anthropic says its own systems and official channels were not compromised.",
+      "intro": "Who is affected: anyone who installed or updated Anthropic.claude-code 2.1.312 or 2.1.313 from the Cursor marketplace on macOS or Windows between 2:27am and 1:35pm Pacific on October 29. Cursor's steps:",
+      "steps": [
+        {
+          "title": "Look for the key",
+          "text": "The payload adds an SSH key labelled svc-telemetry. On macOS, search ~/.ssh/authorized_keys for that word; Cursor gives a one-line check for each platform."
+        },
+        {
+          "title": "No key, you are clear",
+          "text": "If the label is not there, Cursor says the machine was not impacted."
+        },
+        {
+          "title": "Found it? Run the cleanup",
+          "text": "Cursor's remediate scripts remove the extension, the startup entries, the tunnel processes and the key, and exit with an error if anything remains."
+        },
+        {
+          "title": "Rotate from a clean machine",
+          "text": "Change tokens and passwords the machine could reach: source control, CI, cloud, package registries. Consider rebuilding it."
+        },
+        {
+          "title": "Update the extension",
+          "text": "Install 2.1.314 or later, published after the incident."
+        }
+      ],
+      "terms": [
+        {
+          "term": "SSH key",
+          "def": "A file that lets someone log in to a computer without a password; adding one to authorized_keys grants that access."
+        },
+        {
+          "term": "backdoor",
+          "def": "A hidden way into a machine that bypasses normal login."
+        },
+        {
+          "term": "rotate",
+          "def": "Replace a password or token with a new one so the old one stops working."
+        }
+      ],
+      "deep": [
+        "The injected code runs when the extension loads, before any user action. It reports the hostname, username, OS, public IP and environment variable names (not values), adds the key, tries to enable SSH and opens a reverse tunnel to 134.209.82.225, retrying every 60 seconds. Persistence: a LaunchAgent named com.apple.sysmond on macOS, a scheduled task or Startup script on Windows.",
+        "Enabling the SSH service needs admin rights, so on most machines the login step failed. Cursor took the attacker's server offline with its host, shut and rebuilt the marketplace, and rotated its keys. StepSecurity, relaying Anthropic, says only 2.1.313 was tampered with and it never reached Open VSX or Microsoft's store; Cursor's notice lists both 2.1.312 and 2.1.313."
+      ],
+      "why": "Editor extensions run with your full user rights, and a store you trust can still serve a bad copy. Know which store each of your editors installs from.",
+      "forYou": "Run the svc-telemetry check on any machine where Cursor has the Claude Code extension, then rotate the Supabase and GitHub tokens on it if the key turns up.",
+      "sources": [
+        {
+          "label": "Cursor: security notice",
+          "url": "https://cursor.com/blog/claude-code-extension-security-notice"
+        },
+        {
+          "label": "Phorion: analysis of the backdoor",
+          "url": "https://phorion.io/blog/offical-claude-code-vsx-compromise"
+        },
+        {
+          "label": "StepSecurity: trojanized extension",
+          "url": "https://www.stepsecurity.io/blog/claude-code-extension-trojanized"
+        }
+      ]
+    },
+    {
+      "id": "cc-2-1-316",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code 2.1.316: cheaper subagents, and a deadline for fast mode",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The new Claude Code release lets helper agents run at a lower effort than the main session, and the fast option for the older Opus 4.8 model stops working on November 30.",
+      "intro": "The changes most people will notice, from the release notes.",
+      "items": [
+        {
+          "title": "Subagent effort",
+          "text": "`CLAUDE_CODE_SUBAGENT_EFFORT` sets the effort level subagents use when nothing else names one, instead of inheriting the session's.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316"
+        },
+        {
+          "title": "Opus 4.8 fast mode ends",
+          "text": "Deprecated October 30, removed November 30. After that, fast requests to Opus 4.8 return an error rather than falling back. Move to Opus 5.5.",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        },
+        {
+          "title": "Ultrathink switch",
+          "text": "`CLAUDE_CODE_DISABLE_ULTRATHINK` turns the ultrathink keyword off; in VS Code the keyword now runs its turn at xhigh effort.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316"
+        },
+        {
+          "title": "Fixes worth knowing",
+          "text": "Subagents no longer jump to the main model when a background job wakes them, and shell commands are no longer left running after Claude Code exits.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316"
+        }
+      ],
+      "terms": [
+        {
+          "term": "subagents",
+          "def": "Helper agents the main session starts for side tasks, each with its own context."
+        },
+        {
+          "term": "effort",
+          "def": "How much reasoning the model spends on a turn; higher costs more and takes longer."
+        },
+        {
+          "term": "ultrathink",
+          "def": "A keyword you can type in a prompt to ask for maximum reasoning on that turn."
+        }
+      ],
+      "deep": [
+        "Also new: `pooled_budget` on the Claude apps gateway spend-limits admin API gives a group one shared monthly budget on top of each member's limit; `managed.policy_mode: layered` makes every matching policy apply. PowerShell hooks now block on exit code 2 when the command starts with a type cast, `param`, `using` or an attribute.",
+        "The `sonnet`, `opus` and `haiku` aliases on Vertex and Bedrock now fall back to an older model instead of erroring when the newest is not available in the account or region."
+      ],
+      "why": "Subagents often do the bulk of the reading in an agent run; letting them run lower while the main session thinks harder is a direct cost lever.",
+      "forYou": "Set CLAUDE_CODE_SUBAGENT_EFFORT for the routines that fan out reading desks, and grep scripts for Opus 4.8 with fast mode before November 30.",
+      "sources": [
+        {
+          "label": "Claude Code v2.1.316 release notes",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316"
+        },
+        {
+          "label": "Claude Platform release notes",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        }
+      ]
+    },
+    {
+      "id": "ai-spend",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "One startup cut its AI bill per developer by almost two thirds",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "incident.io, a company that makes on-call and incident tools, spent about $4,500 per developer per month on AI in August. It now spends about $1,600.",
+      "stats": [
+        {
+          "value": "$4,500",
+          "label": "AI spend per developer per month, August"
+        },
+        {
+          "value": "$1,600",
+          "label": "the same, now"
+        }
+      ],
+      "body": [
+        "The figures come from The Pragmatic Engineer, whose full breakdown of how they did it is for paid subscribers."
+      ],
+      "why": "It is a rare real number for what heavy agent use costs a team, and a sign that the first months of spend have a lot of slack in them.",
+      "sources": [
+        {
+          "label": "The Pragmatic Engineer: The Pulse",
+          "url": "https://newsletter.pragmaticengineer.com/p/the-pulse-anthropic-kills-the-coding"
+        }
+      ]
+    },
+    {
+      "id": "fest-engines",
+      "format": "compare",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Vibe-coded demos flooded Next Fest, but not its top 100",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "GameDiscoverCo scanned the files of almost every demo in October's Steam Next Fest. Games with no recognisable engine, often web-tech projects made with AI, jumped to second place overall but barely show among the most played.",
+      "background": "Steam's AI disclosures miss code written with AI help, so the newsletter looked at which engine each demo was built with instead.",
+      "intro": "Engine share of demos, by GameDiscoverCo's file scan. Top 100 is ranked by peak concurrent players.",
+      "left": "All demos",
+      "right": "Top 100 demos",
+      "rows": [
+        {
+          "aspect": "Unity",
+          "left": "45.9%",
+          "right": "53%"
+        },
+        {
+          "aspect": "Unreal",
+          "left": "12.3%",
+          "right": "28%"
+        },
+        {
+          "aspect": "No engine detected",
+          "left": "17.7% (12.9% in June)",
+          "right": "7%"
+        },
+        {
+          "aspect": "Godot",
+          "left": "17.4% (12.6% in June)",
+          "right": "6%"
+        }
+      ],
+      "verdict": "Quick AI-assisted games are filling the long tail; the games people actually play still mostly come from established engines. The real threat, the newsletter argues, is skilled small teams using AI to ship good games faster.",
+      "terms": [
+        {
+          "term": "vibe-coded",
+          "def": "Built mostly by describing what you want to an AI and accepting the code it writes."
+        },
+        {
+          "term": "concurrent players",
+          "def": "How many people are playing at the same moment."
+        },
+        {
+          "term": "Next Fest",
+          "def": "Steam's recurring festival of free demos for upcoming games."
+        }
+      ],
+      "deep": [
+        "The festival had over 7,000 demos against about 5,000 expected. Further down the list the share grows: in the top 1,000, no engine detected is 14% and Godot 12%. Readers suggested two reasons: web frameworks like three.js are not picked up by the scanner, and Godot is open source and has an MCP interface for agents.",
+        "Steam releases are climbing too: September was up 76% year on year to 2,875 games, October 53% so far to 3,114. At those rates the newsletter projects about 35,000 games on Steam in 2027, against 21,000 in 2025."
+      ],
+      "why": "The middle of Steam is getting more crowded with very cheap games; standing out now depends even more on craft, wishlists and a demo people stay with.",
+      "forYou": "Browser and three.js games land in the no-engine bucket that is filling fastest with low-effort entries; a Steam release of one needs a clearly crafted hook to escape that crowd.",
+      "sources": [
+        {
+          "label": "GameDiscoverCo: The hidden AI signifier in Next Fest",
+          "url": "https://newsletter.gamediscover.co/p/the-hidden-ai-signifier-in-next-fest"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-31/fest-engines.webp",
+        "alt": "Stacked bars of engines in October 2026 Next Fest demos for the top 100, 500, 1,000 and all. Unity leads; Unreal is 28% of the top 100 but 12% of all; no engine and Godot grow down the list.",
+        "credit": "GameDiscoverCo",
+        "creditUrl": "https://newsletter.gamediscover.co/p/the-hidden-ai-signifier-in-next-fest",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "roblox-q3",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Roblox players dipped while its creators leaned on AI",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Roblox missed its player target this quarter, and says most of its biggest games are now made with help from AI tools.",
+      "stats": [
+        {
+          "value": "138M",
+          "label": "daily players, down 9% on a year ago"
+        },
+        {
+          "value": "80%+",
+          "label": "of the quarter's top 100 games used AI tools (Roblox-reported)"
+        }
+      ],
+      "body": [
+        "Analysts expected 145 million daily users. Payouts to creators fell 6% to $403 million, while revenue rose 16% to $1.57 billion. The company's chief executive called AI a step change in how fast content gets made."
+      ],
+      "why": "On the biggest user-generated platform, AI help is already the norm among top creators, and it has not stopped engagement from falling.",
+      "sources": [
+        {
+          "label": "Game Developer: Roblox growth slumps",
+          "url": "https://www.gamedeveloper.com/business/roblox-growth-slumps-but-the-company-is-betting-big-on-ai-to-compensate"
+        },
+        {
+          "label": "GameDiscoverCo: weekly roundup",
+          "url": "https://newsletter.gamediscover.co/p/the-hidden-ai-signifier-in-next-fest"
+        }
+      ]
+    },
+    {
+      "id": "ucupaint-3",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A free Blender add-on for layered texture painting reaches 3.0",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Ucupaint lets you paint game textures in layers inside Blender, the way paid tools like Substance Painter do. Version 3.0 adds separate height channels, smarter adjustment layers and automatic bake targets.",
+      "name": "Ucupaint 3.0",
+      "what": "Layer-based texture painting add-on for Blender, free and open source",
+      "body": [
+        "The developer skipped 2.5 after about a year of work. Height and vector displacement get their own channels, adjustment layers can reuse the layer below, decals gain spherical and cylindrical shapes, and bakes can now target packed ORM maps. Older files convert on load."
+      ],
+      "facts": [
+        {
+          "k": "Price",
+          "v": "Free"
+        },
+        {
+          "k": "Blender",
+          "v": "Tested on 2.76 to 5.3"
+        },
+        {
+          "k": "Released",
+          "v": "October 23"
+        }
+      ],
+      "terms": [
+        {
+          "term": "ORM maps",
+          "def": "One texture that packs ambient occlusion, roughness and metalness into its three color channels, the layout Unreal uses."
+        },
+        {
+          "term": "bake",
+          "def": "Render a material's look into an image file a game engine can load."
+        }
+      ],
+      "why": "A no-cost route to layered PBR texturing for small teams, now with output that drops into common engine texture layouts.",
+      "forYou": "Worth testing for Fab asset textures: ORM bake targets map straight onto Unreal's packed texture slots.",
+      "sources": [
+        {
+          "label": "Ucupaint 3.0.0 release",
+          "url": "https://github.com/ucupumar/ucupaint/releases/tag/3.0.0"
+        },
+        {
+          "label": "80 Level: Ucupaint 3.0",
+          "url": "https://80.lv/articles/free-blender-texture-painting-add-on-ucupaint-3-0-is-now-available"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-31/ucupaint.webp",
+        "alt": "Two models painted in Blender: a cluster of spiky red mushrooms on a rock, and a cartoon elf head with yellow hair.",
+        "credit": "80 Level, Ucupaint",
+        "creditUrl": "https://80.lv/articles/free-blender-texture-painting-add-on-ucupaint-3-0-is-now-available",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "patch-gap",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Firefox races cheap models through the patch gap",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "When a security fix appears in public code, attackers can work backwards to the bug and hit users who have not updated yet. Mozilla says cheap AI models now make that easy, so Firefox changed how it ships.",
+      "layout": "flow",
+      "intro": "Since February, Firefox has used early access to frontier models to find bugs and shipped over seven times the security fixes of the same period in 2025 (Mozilla-reported). But it has seen GLM 5.3, a cheaper open model, turn some of those public fixes into working attacks.",
+      "nodes": [
+        {
+          "label": "Bug found",
+          "note": "A frontier model spots it in Firefox"
+        },
+        {
+          "label": "Fix goes public",
+          "note": "The change is visible in the open code"
+        },
+        {
+          "label": "The gap",
+          "note": "Attackers work back from the fix to the bug and hit old versions",
+          "key": true
+        },
+        {
+          "label": "Users updated",
+          "note": "Most people run the new build; the window closes"
+        }
+      ],
+      "links": [
+        "fixed",
+        "visible",
+        "shipped"
+      ],
+      "caption": "Mozilla shrinks the gap: weekly releases (the cycle was halved), regression tests kept private until the fix ships, and a scan of every new commit. Next, fixes for different defence layers are timed so their gaps never overlap.",
+      "terms": [
+        {
+          "term": "regression tests",
+          "def": "Tests added with a fix that fail if the bug ever comes back; they also point straight at the bug."
+        },
+        {
+          "term": "frontier models",
+          "def": "The most capable AI models from the leading labs."
+        },
+        {
+          "term": "GLM 5.3",
+          "def": "An open-weight model from the Chinese lab Zhipu AI."
+        }
+      ],
+      "why": "Any project that publishes fixes before users update has this gap. Shorter release cycles and holding back the test that reveals the bug are moves any team can copy.",
+      "forYou": "For SaaS security fixes, merge the regression test after the deploy rather than with the fix when the repo is public.",
+      "sources": [
+        {
+          "label": "Mozilla: Defending the patch gap against automated attackers",
+          "url": "https://blog.mozilla.org/en/firefox/privacy-security/defending-patch-gap"
+        }
+      ]
+    },
+    {
+      "id": "no-coding-test",
+      "format": "quote",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "An Anthropic hiring manager drops the coding interview",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Felix Rieseberg, who hires engineers at Anthropic, has stopped giving candidates coding tests, saying they no longer predict who does well.",
+      "quote": "Our most impactful builders are successful regardless of how good they are at these tests.",
+      "speaker": "Felix Rieseberg",
+      "role": "Hiring manager, Anthropic",
+      "context": "He says Claude is now better than candidates at small React or assembly exercises. It is his team's change, not a company-wide policy.",
+      "why": "If small coding exercises stop telling candidates apart, hiring has to look at judgement, initiative and shipped work instead.",
+      "sources": [
+        {
+          "label": "Felix Rieseberg: Hunger beats tenure",
+          "url": "https://felixrieseberg.com/hunger-beats-tenure-advice-for-junior-engineers/"
+        },
+        {
+          "label": "The Pragmatic Engineer: Anthropic kills the coding interview",
+          "url": "https://newsletter.pragmaticengineer.com/p/the-pulse-anthropic-kills-the-coding"
+        }
+      ]
+    },
+    {
+      "id": "whitespace",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "JavaScript and Python disagree on what counts as a space",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A short investigation shows there is no single answer to whether a character is whitespace: Unicode lists 25, Python accepts 29, and Java and JavaScript each draw the line somewhere else.",
+      "intro": "Sergey Tselovalnikov's examples. Same characters, different answers:",
+      "lang": "text",
+      "code": "/\\s/.test(\"\\u00A0\");   // true   (JavaScript)\n/\\s/.test(\"\\u0085\");   // false\n/\\s/.test(\"\\uFEFF\");   // true\n\n\"\\u00A0\".isspace()      # True    (Python)\n\"\\u0085\".isspace()      # True\n\"\\uFEFF\".isspace()      # False\n\nCharacter.isWhitespace('\\u00A0'); // false (Java)",
+      "explain": [
+        "U+00A0 is the no-break space, U+0085 is next line, U+FEFF is the invisible byte-order mark. Java leaves out the non-breaking spaces on purpose; JavaScript counts U+FEFF, which Unicode does not.",
+        "If a TypeScript front end trims input and a Python service validates it, the two can disagree on the same string."
+      ],
+      "terms": [
+        {
+          "term": "Unicode",
+          "def": "The standard that gives every character in every writing system a number."
+        }
+      ],
+      "why": "Validation, trimming and search behave differently across languages; a username or tag that looks empty in one service can pass in another.",
+      "sources": [
+        {
+          "label": "SerCe: How hard is it to check for whitespace?",
+          "url": "https://serce.me/posts/2026-10-30-how-hard-is-it-to-check-for-whitespace"
+        }
+      ]
+    },
+    {
+      "id": "llm-voice",
+      "format": "quote",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "Do not let the model write your first draft",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Martin Fowler argues that text drafted by an AI keeps a recognisable voice even after a person edits it, and readers lose trust when they hear it.",
+      "quote": "Authors should fill the prose themselves.",
+      "speaker": "Martin Fowler",
+      "role": "Chief scientist, Thoughtworks",
+      "context": "He allows AI for outlines, search and translation, and for writing nobody will read closely. He calls writing a tool for thinking.",
+      "why": "Docs, store pages and release notes are read by people deciding whether to trust you. A drafting shortcut can cost more than it saves.",
+      "sources": [
+        {
+          "label": "Martin Fowler: LLM Voice",
+          "url": "https://martinfowler.com/bliki/LLM-Voice.html"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Inside your tools",
+      "note": "What your agent and editor run that you never typed.",
+      "ids": [
+        "ext-backdoor",
+        "cc-2-1-316",
+        "ai-spend"
+      ]
+    },
+    {
+      "title": "Who is making games now",
+      "note": "AI-built games fill the long tail, and the tools for small teams get better.",
+      "ids": [
+        "fest-engines",
+        "roblox-q3",
+        "ucupaint-3"
+      ]
+    },
+    {
+      "title": "Old habits, new pressure",
+      "note": "Shipping, hiring, writing and even string checks get rethought.",
+      "ids": [
+        "patch-gap",
+        "no-coding-test",
+        "whitespace",
+        "llm-voice"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is a system prompt?",
+    "answer": "A system prompt is the set of instructions an AI tool sends to the model before your message, telling it how to behave. You usually never see it, but it shapes every answer.",
+    "analogy": "A briefing a manager gives a new hire before the first customer walks in: the customer only hears the conversation, not the briefing.",
+    "body": [
+      "When you type into a chat app or a coding agent, the tool wraps your words in a bigger request. On top sits the system prompt: who the assistant is, what it may and may not do, how to format answers. Coding agents add descriptions of every tool they can call and facts about your project.",
+      "Because the model reads all of it, a sentence added there changes behaviour everywhere at once, without a new model. That is how Anthropic steered Claude Code away from cloning specific games, and why a study found Claude Code's hidden text can dwarf the user's own prompt.",
+      "The same idea is yours to use: files like CLAUDE.md or AGENTS.md are added to the context of every session, so a rule written there acts on every task."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "System prompt",
+          "note": "The maker's rules",
+          "key": true
+        },
+        {
+          "label": "Tools and context",
+          "note": "What the agent can do, where it is"
+        },
+        {
+          "label": "Your message",
+          "note": "What you typed"
+        },
+        {
+          "label": "Model",
+          "note": "Reads it all, top to bottom"
+        }
+      ],
+      "links": [
+        "then",
+        "then",
+        "sent to"
+      ],
+      "caption": "One request, three layers of text. Only the third is yours."
+    },
+    "terms": [
+      {
+        "term": "CLAUDE.md",
+        "def": "A file of standing project instructions that Claude Code reads at the start of every session; AGENTS.md does the same for other agents."
+      }
+    ],
+    "seenIn": [
+      "clone-rule",
+      "cc-2-1-316"
+    ],
+    "sources": [
+      {
+        "label": "Anthropic docs: giving Claude a role with a system prompt",
+        "url": "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/system-prompts"
+      },
+      {
+        "label": "arXiv: Hidden in Plain Sight",
+        "url": "https://arxiv.org/abs/2610.37332"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "See what your coding agent sends before your prompt",
+    "gist": "In half an hour you see the hidden instructions and tool descriptions your agent sends with every request, and how small your own words are next to them.",
+    "time": "30 minutes",
+    "level": "practitioner",
+    "needs": "Node 18 or later and Claude Code (other agents with a configurable API address work the same way).",
+    "steps": [
+      {
+        "title": "Start a local listener",
+        "text": "Save the script below and run it with node. It saves each request body it receives and answers with an error, so nothing reaches the real API."
+      },
+      {
+        "title": "Point the agent at it",
+        "text": "In a scratch folder, run Claude Code with ANTHROPIC_BASE_URL set to the listener, and a one-line prompt."
+      },
+      {
+        "title": "Measure the layers",
+        "text": "The script prints the size of the system text, the tool definitions and the messages for each request. Open the saved JSON to read them."
+      },
+      {
+        "title": "Repeat after updates",
+        "text": "Keep the files and diff them after the next release to see what changed in the instructions."
+      }
+    ],
+    "code": {
+      "lang": "js",
+      "code": "// listen.mjs: node listen.mjs, then in another shell:\n// ANTHROPIC_BASE_URL=http://localhost:8787 claude -p \"say hi\"\nimport { createServer } from 'node:http';\nimport { writeFileSync } from 'node:fs';\nlet n = 0;\ncreateServer((req, res) => {\n  let body = '';\n  req.on('data', (c) => (body += c));\n  req.on('end', () => {\n    writeFileSync(`request-${++n}.json`, body);\n    const r = JSON.parse(body || '{}');\n    const len = (x) => JSON.stringify(x ?? '').length;\n    console.log(n, r.model, { system: len(r.system), tools: len(r.tools), messages: len(r.messages) });\n    res.writeHead(400).end();\n  });\n}).listen(8787);"
+    },
+    "check": "The tools and system numbers run to tens of thousands of characters while messages is a few hundred. In the study's capture of Claude Code 2.1.243, tool definitions were 57,346 characters and the prompt 0.03% of the request.",
+    "terms": [
+      {
+        "term": "ANTHROPIC_BASE_URL",
+        "def": "An environment variable that tells Claude Code which address to send its model requests to."
+      }
+    ],
+    "from": "instruction-stacks",
+    "forYou": "Capture the first request in the radar repo and in a plugin repo to see how much of each CLAUDE.md lands in context, then trim what the agent never needs.",
+    "sources": [
+      {
+        "label": "arXiv: Hidden in Plain Sight",
+        "url": "https://arxiv.org/abs/2610.37332"
+      },
+      {
+        "label": "Claude Code docs: environment variables",
+        "url": "https://docs.claude.com/en/docs/claude-code/settings"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Go security team: a Linux kernel TCP bug is exploitable on servers with an MPTCP listener, on by default in Go since 1.24. Patch the kernel; GODEBUG=multipathtcp=0 is a stopgap.",
+      "lane": "ai",
+      "url": "https://groups.google.com/g/golang-announce/c/PCoQcdxoScw",
+      "source": "golang-announce"
+    },
+    {
+      "text": "OpenAI now gives ChatGPT plans at $100, $200 and $500 a month API credits equal to the plan price, close to the deal Anthropic offered earlier in October.",
+      "lane": "ai",
+      "url": "https://simonwillison.net/2026/Oct/29/api-credits",
+      "source": "Simon Willison"
+    },
+    {
+      "text": "Vercel folded Data Cache into Runtime Cache: one cache for fetch, `unstable_cache` and `'use cache: remote'`, no code changes, but previously free reads and writes now bill as Runtime Cache.",
+      "lane": "ai",
+      "url": "https://vercel.com/blog/simplifying-runtime-caching-on-vercel",
+      "source": "Vercel"
+    },
+    {
+      "text": "Supabase's DBArena benchmark (vendor-run) puts its OrioleDB engine first on transactions per dollar when data exceeds memory, against RDS and Cloud SQL; results and harness are public.",
+      "lane": "ai",
+      "url": "https://supabase.com/blog/introducing-dbarena",
+      "source": "Supabase"
+    },
+    {
+      "text": "Cloudflare's AI Gateway adds a Web Search API in beta, routing to Exa, Linkup or Ceramic with your own keys and no markup.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/10/cloudflare-web-search-api",
+      "source": "InfoQ"
+    },
+    {
+      "text": "GitHub Actions, Pages and webhooks were degraded for 1 hour 33 minutes on October 30; a root cause write-up is promised.",
+      "lane": "ai",
+      "url": "https://www.githubstatus.com/incidents/pwxsjgnvrk6b",
+      "source": "GitHub Status"
+    },
+    {
+      "text": "Armin Ronacher blends Qwen3-TTS speaker embeddings, averaging the 2,048-number voice vectors, to give a kids' dungeon crawler a narrator that does not sound like stock AI.",
+      "lane": "gamedev",
+      "url": "https://lucumr.pocoo.org/2026/10/29/qwen3-custom-voices",
+      "source": "Armin Ronacher"
+    },
+    {
+      "text": "Godot Dialogue Manager 4.2 is out with fixes and a project setting for your own dialogue macros.",
+      "lane": "gamedev",
+      "url": "https://bsky.app/profile/nathanhoad.net/post/3mz2iknm6322j",
+      "source": "Nathan Hoad"
+    },
+    {
+      "text": "Tangled, a code forge on the AT Protocol, keeps issues and pull requests inside the git repo itself and ships a Rust rewrite of its git servers.",
+      "lane": "ai",
+      "url": "https://tangled.org/blog/forge",
+      "source": "Tangled"
+    },
+    {
+      "text": "Herdr, a terminal workspace for coding agents, ships a desktop app with a sidebar showing which agents are working, blocked or done, and panes that survive closing the window.",
+      "lane": "ai",
+      "url": "https://github.com/herdrdev/herdr-app",
+      "source": "GitHub"
+    },
+    {
+      "text": "SigNoz argues AI is deskilling on-call engineers, citing a study where unaided detection fell from 28% to 22% after doctors used AI help; it suggests leaving some incidents to humans.",
+      "lane": "ai",
+      "url": "https://newsletter.signoz.io/p/ai-isnt-replacing-sres-its-deskilling",
+      "source": "SigNoz"
+    },
+    {
+      "text": "Nathan Lambert retracts calling a recent open-weight release fine for security, after a month of AI-found exploits he calls Black October.",
+      "lane": "ai",
+      "url": "https://www.interconnects.ai/p/was-i-wrong-about-open-models-and",
+      "source": "Interconnects"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "nesformer",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "Super Mario runs inside a language model's weights",
+      "where": "GitHub, Hacker News",
+      "signal": "220 points and 118 comments on Show HN; covered by Simon Willison",
+      "hook": "Drew Breunig compiled a NES processor into a 4B-parameter Qwen-shaped model with no training. It predicts the CPU trace token by token, and Super Mario Bros plays at 1 to 6 seconds a frame. New since the CHIP-8 version: a real console.",
+      "borrow": "Compile, do not train, and test against a known-good trace: he used the standard nestest log as the oracle, and had Opus 5.5 do much of the build.",
+      "url": "https://github.com/dbreunig/nesformer",
+      "image": {
+        "src": "img/2026-10-31/nes.webp",
+        "alt": "Super Mario Bros world 1-1, Mario next to a Goomba, rendered by the emulator running inside the model.",
+        "credit": "Drew Breunig, nesformer",
+        "creditUrl": "https://github.com/dbreunig/nesformer",
+        "fit": "contain"
+      },
+      "forYou": "A fun reference for the deterministic-core idea; the nestest-style golden log is the part worth copying for gameplay plugin tests."
+    },
+    {
+      "id": "sketch-stadium",
+      "lane": "ai",
+      "kind": "game",
+      "title": "Pictionary for AI agents, played over MCP",
+      "where": "Show HN, the web",
+      "signal": "31 points on Show HN on October 30, with a public leaderboard",
+      "hook": "Up to eight agents per room: one gets a secret word and draws it stroke by stroke on a 100 by 100 canvas, the rest race to guess. Any agent that speaks MCP can join, and you can watch rooms live.",
+      "borrow": "An MCP server as the whole game interface: what the agent sees (the word or canvas), what it decides (strokes or a guess) and how it acts (tool calls) are all one small API.",
+      "url": "https://sketch.wakeshift.ai/",
+      "image": {
+        "src": "img/2026-10-31/sketch.webp",
+        "alt": "Sketch Stadium home page with an agent's drawing of a sailboat and three guesses: raft, pirate ship, and sailboat marked correct.",
+        "credit": "Sketch Stadium",
+        "creditUrl": "https://sketch.wakeshift.ai/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "florilegium",
+      "lane": "both",
+      "kind": "technique",
+      "title": "A LaTeX package that grows procedural flower margins",
+      "where": "GitHub, Hacker News",
+      "signal": "235 points on Hacker News; 726 stars on GitHub",
+      "hook": "Every petal and stem is a parametric curve computed in Lua and written straight into the PDF, colored from one ink by a perceptual ramp. A grow mode keeps finding the largest empty gap and sends a branch into it.",
+      "borrow": "Seed by page number so every page is different but repeatable, and fill space greedily by largest gap: a ready recipe for foliage, decals or level dressing.",
+      "url": "https://github.com/kevinraymond/florilegium",
+      "image": {
+        "src": "img/2026-10-31/flori.webp",
+        "alt": "A typeset page with a dense blue and white flower vine growing down the left margin.",
+        "credit": "Kevin Raymond, Florilegium (MIT)",
+        "creditUrl": "https://github.com/kevinraymond/florilegium",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "catcopter",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Catcopter: flying cats with paw rotors, in the browser",
+      "where": "Show HN, the web",
+      "signal": "80 points and 40 comments on Show HN on October 30",
+      "hook": "A multiplayer arena you join in seconds: pick a cat class (striker, gunship, flak, bomber, mechanic) and a mode like Steal the Chicken. The author says they held the domain for 13 years before building it.",
+      "borrow": "One silly premise, five readable classes with stat bars, and play in one click with no install: a tight front page for any web multiplayer game.",
+      "url": "https://catcopter.com",
+      "image": {
+        "src": "img/2026-10-31/cat.webp",
+        "alt": "Catcopter lobby: game modes, five cartoon cat classes and the gunship's speed, health and battery stats.",
+        "credit": "Catcopter",
+        "creditUrl": "https://catcopter.com",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "godot-workbench",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Blender's solid view, inside Godot's 3D editor",
+      "where": "Bluesky, Godot Asset Library",
+      "signal": "109 likes and 23 reposts on Bluesky in two days",
+      "hook": "Godot Workbench adds studio lighting, matcaps, cavity shading, outlines and x-ray to the editor viewport without touching the scene. Open source.",
+      "borrow": "A viewport mode that reads shape over final lighting makes blockouts and collision easier to judge; every engine's level tools could use one.",
+      "url": "https://github.com/reidhannaford/godot-workbench",
+      "image": {
+        "src": "img/2026-10-31/workbench.webp",
+        "alt": "Godot editor with simple shapes shown in a soft studio-lit solid view.",
+        "credit": "Reid Hannaford",
+        "creditUrl": "https://bsky.app/profile/reid.work/post/3myzuyro5oc2y",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "wii-mac",
+      "lane": "gamedev",
+      "kind": "experiment",
+      "title": "Classic Mac OS 9 boots on a Nintendo Wii",
+      "where": "Virtually Fun, Hacker News",
+      "signal": "271 points and 77 comments on Hacker News",
+      "hook": "Rairii ported Apple's 1990s system to the GameCube and Wii chipsets, patching its boot loader's assumptions about memory and devices one by one, and reached the desktop. No coding agent was used, by choice.",
+      "borrow": "Test against an emulator you can instrument first: the port's disk driver targets the author's own Dolphin build, so low-level debugging happens before real hardware.",
+      "url": "https://virtuallyfun.com/2026/10/29/my-favourite-powermac-is-a-nintendo-wii",
+      "image": {
+        "src": "img/2026-10-31/wii.webp",
+        "alt": "Mac OS 9.2.2 About This Computer window showing 74 MB of memory, running on a Wii.",
+        "credit": "Rairii, Virtually Fun",
+        "creditUrl": "https://virtuallyfun.com/2026/10/29/my-favourite-powermac-is-a-nintendo-wii",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "l3g-world",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "L3G-World: Real-Time Infinite World Generation with Latent 3D Gaussian Memory",
+      "headline": "AI-generated worlds you can walk through that remember the map",
+      "authors": "Jinhyeok Choi, JoungBin Lee, Jongmin Lee, et al. (KAIST, Ewha Womans University)",
+      "where": "arXiv preprint",
+      "date": "2026-10-29",
+      "problem": "Video world models that generate a scene as you move forget what they showed earlier, so walking back reveals a different place. Fixes so far either keep every past frame or re-render a 3D memory to images, which grows without limit or is too slow for real time.",
+      "idea": "Keep a compact 3D memory of blobs (Gaussians) that only grows where the camera sees something new, and store in each blob the video model's own internal features, so the memory feeds the generator directly without rendering pictures first.",
+      "result": "Against the leanest earlier 3D-memory method on each measure: up to 38.6 times fewer primitives, 3.2 times faster memory updates and 359 times faster memory rendering. A distilled version generates at 9 frames per second on one H100, with steady memory where Yume 1.5 used 66.7 GB at 1.4 fps. Static scenes only.",
+      "useIt": "Watch this design for generated levels and previs: a persistent spatial memory beats replaying frame history. Code is released; expect a data-center GPU for real time.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.40614"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/cvlab-kaist/L3G-World"
+        },
+        {
+          "label": "Project page",
+          "url": "https://cvlab-kaist.github.io/L3G-World/"
+        }
+      ],
+      "image": {
+        "src": "img/2026-10-31/l3g.webp",
+        "alt": "Overview figure: a single image and camera path feed a latent 3D Gaussian memory that alternates with a generator to produce an endless walk, with charts of flat memory use and steady frame rate against other methods.",
+        "credit": "Choi et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.40614",
+        "fit": "contain"
+      },
+      "forYou": "Not usable in a UE5 pipeline yet, but the memory-as-latent-3D design is the one to track for the playable world models you follow."
+    },
+    {
+      "id": "instruction-stacks",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Hidden in Plain Sight: an Empirical Study about The Instruction Stacks of Coding Agents",
+      "headline": "Your prompt is a rounding error in what coding agents send",
+      "authors": "Felipe de Sant'Anna Paixao, Dhyego Tavares, Eduardo Almeida, et al. (Federal University of Bahia, UC Irvine)",
+      "where": "arXiv preprint",
+      "date": "2026-10-27",
+      "problem": "Coding agents wrap your prompt in system instructions, tool definitions and context, and change that wrapping every release, but nobody documents it.",
+      "idea": "Install every stable release of five agents, send the same one-sentence prompt in a fresh sandbox, catch the first request with a local server, and classify every sentence of the hidden text. For the open-source agents, trace each change back to its commit.",
+      "result": "First requests captured for 1,886 releases of five agents. Stacks can pass 120,000 characters before the prompt; in one Claude Code capture the user sentence was 0.03%. Changes come in bursts that alter tool use, attribution and style rules, and only 48% say why. Two agents put instructions in user messages and insert an assistant line the model never wrote.",
+      "useIt": "Record the agent version next to the model name in any eval or bug report; behaviour can shift between releases with no model change.",
+      "maturity": "idea",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.37332"
+        }
+      ],
+      "forYou": "When a routine starts behaving differently, check the Claude Code version before blaming the prompt or the model."
+    },
+    {
+      "id": "memory-files",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Security Impact of Coding Agent's Memory Files",
+      "headline": "A hostile CLAUDE.md barely moved security, which is not safety",
+      "authors": "Thiago Santos de Moura, Selma Guler, Yannic Noller (Ruhr University Bochum)",
+      "where": "arXiv preprint",
+      "date": "2026-10-28",
+      "problem": "Files like CLAUDE.md are loaded as trusted guidance, so anyone who can edit one, for example through a pull request, can steer an agent without touching the prompt.",
+      "idea": "Write two malicious memory files per weakness class, one polite and one forceful, telling the agent to drop safety checks, and run 36 C and C++ tasks across 12 weakness classes with Claude Code (Sonnet 5.5) and OpenCode (Qwen 3.8 and DeepSeek V4.1 Flash).",
+      "result": "Secure completions moved between minus 8 and plus 6 points with no consistent direction, inside the range chance alone explains. Claude Code named the file in about two thirds of its final messages; OpenCode mostly mentioned it only in its hidden reasoning. Spotting the file as an attack did not reliably keep the code secure. One run per task, so this shows no measurable effect, not safety.",
+      "useIt": "Review changes to CLAUDE.md and AGENTS.md in pull requests the way you review CI config, and read the agent's final message for mentions of them.",
+      "maturity": "idea",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2610.38521"
+        }
+      ],
+      "forYou": "Treat CLAUDE.md edits in the plugin repos as security-relevant if anyone else ever contributes."
+    }
+  ],
+  "note": "A light weekend for engine news: no Unreal or Unity release landed in the window. Reddit and three news feeds were blocked to the sweep, and the sparks desk could not reach X or TikTok. All three lab entries are preprints; the one journal candidate was a 2025 preprint newly in print."
+}
