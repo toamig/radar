@@ -1,0 +1,137 @@
+{
+  "id": "2026-W44",
+  "from": "2026-10-26",
+  "to": "2026-11-01",
+  "title": "The week agents learned to play, and to be checked",
+  "dek": "Agents ported a racing game, played Factorio to the end and started driving game editors, while the strongest setups handed the final verdict to plain code. Underneath ran two quieter threads: what agents really cost, and the text they read that nobody sees.",
+  "theme": {
+    "paper": "fog",
+    "text": "black",
+    "inks": ["blue", "orange"],
+    "type": "grotesk",
+    "mood": "a Sunday look back at agents at play and the checks around them"
+  },
+  "tldr": [
+    "Agents moved into games: a fleet of Claude agents ported F-Zero X to the 3DS, GPT-5.6 Sol launched a rocket in Factorio through a player-limited API, and Unity's CLI lets an agent press Play and take screenshots.",
+    "Checking moved to code: Meta's throwaway tests caught **74 privacy bugs**, a test script beat a frontier model's own judgement on hard problems, and Google counts a security bug only when code reproduces it.",
+    "Cheap tokens did not mean cheap agents: cache reads are most of the bill, trimming history saved nothing once caching was priced in, and background summaries took 16.4% of one team's spend.",
+    "Games got easy to make and to copy: Next Fest passed 7,300 demos, Valve said it will not police AI clones, and Claude Code now declines to remake a specific game.",
+    "Hidden text steered the tools: your prompt can be 0.03% of what an agent sends, a fake extension planted a backdoor for 11 hours, and a file dropped in Downloads can take over an agent."
+  ],
+  "threads": [
+    {
+      "title": "Agents at the controls of games",
+      "lane": "gamedev",
+      "summary": [
+        "Tuesday a developer showed 777 prompts and 588 subagents porting F-Zero X to the New 3DS at 60 fps. Thursday Simon Willison said asking a model to make a browser game more fun now works, and Friday a research engine let agents pause and play the game they were building.",
+        "Sunday brought the rest of the loop: GPT-5.6 Sol finished Factorio through a library that enforces a player's reach and fog of war, Unity's CLI exposes play, tests and screenshots to agents, and an open-source tool sends agents to playtest UE5, Unity and Godot projects."
+      ],
+      "days": ["2026-10-27", "2026-10-29", "2026-10-30", "2026-11-01"],
+      "sources": [
+        { "label": "G-Diffuser postmortem: the agentic workflow", "url": "https://hypnotize.works/gdx-3ds/postmortem/agentic.html" },
+        { "label": "Ryan Madden: GPT-5.6 Sol can beat Factorio", "url": "https://ryanmadden.net/gpt-56-beats-factorio/" },
+        { "label": "Unity: Pipeline and CLI walkthrough", "url": "https://unity.com/resources/unity-pipeline-cli-technical-walkthrough" }
+      ]
+    },
+    {
+      "title": "Let plain code say yes",
+      "lane": "ai",
+      "summary": [
+        "Meta now writes a test for each risky change, runs it overnight and throws it away; in the first half of 2026 that caught 74 serious privacy bugs. Thoughtworks let agents write all the code for a week and got a build that stayed red.",
+        "Sunday the pattern was explicit: five small models with a test script as judge outscored a frontier model on ten hard problems, Google's PageBreak reports a bug only after a validator reproduces it, and a benchmark found the best AI reviewer catches 72% of real bugs, about 82% with a person beside it."
+      ],
+      "days": ["2026-10-30", "2026-11-01"],
+      "sources": [
+        { "label": "Meta Engineering: catching bugs before they land", "url": "https://engineering.fb.com/2026/10/29/security/catching-bugs-before-they-land-jittestings-human-on-the-loop-approach-at-full-scale" },
+        { "label": "Memdoor team-solve workflow", "url": "https://github.com/guregodevo/memdoor/tree/main/examples/workflows/team-solve" },
+        { "label": "CRBugBench (arXiv)", "url": "https://arxiv.org/abs/2610.13668" }
+      ]
+    },
+    {
+      "title": "Where an agent's money goes",
+      "lane": "ai",
+      "summary": [
+        "Monday started from a paradox: token prices fell by more than half while spend rose, because agents read 96 to 99% of their tokens from cache. Tuesday a study of 42 history-trimming methods found none saved money once caching was priced in.",
+        "Thursday one team measured Claude Code's background summaries at 16.4% of spend, and Friday a leaderboard showed the top agent setups within three points of each other, differing mainly in cost per task."
+      ],
+      "days": ["2026-10-26", "2026-10-27", "2026-10-29", "2026-10-30"],
+      "sources": [
+        { "label": "Max Woolf: cheap LLMs", "url": "https://minimaxir.com/2026/10/cheap-llms/" },
+        { "label": "Anthropic docs: prompt caching", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching" }
+      ]
+    },
+    {
+      "title": "Easy to make, easy to copy",
+      "lane": "gamedev",
+      "summary": [
+        "Steam's October Next Fest grew past 7,300 demos while a top-ten demo's wishlist gain fell to about 80,000 from 143,000 in June. Valve told developers it will not gatekeep AI tools and treats cloning as a legal matter.",
+        "Saturday Anthropic confirmed two new sentences telling Claude Code not to recreate a specific existing game, and Next Fest data showed demos with no detectable engine, likely vibe-coded web games, at 17.7% of the field but 7% of the top 100."
+      ],
+      "days": ["2026-10-28", "2026-10-29", "2026-10-31"],
+      "sources": [
+        { "label": "GameDiscoverCo: who won October's Next Fest", "url": "https://newsletter.gamediscover.co/p/who-won-october-2026s-steam-next" },
+        { "label": "Game Developer: Anthropic tells Claude to stop remaking games", "url": "https://www.gamedeveloper.com/programming/anthropic-appears-to-have-ordered-ai-tool-claude-to-stop-remaking-video-games" }
+      ]
+    },
+    {
+      "title": "The text you never see",
+      "lane": "ai",
+      "summary": [
+        "A study of 1,886 coding agent releases found a user's own prompt can be 0.03% of what the agent sends. The same day a tampered Claude Code extension sat in Cursor's marketplace for 11 hours.",
+        "Sunday showed the cheapest version of the attack: a web page drops an instruction file into Downloads, and agents started there followed it, Codex in over 90% of tries and Claude Code in about half."
+      ],
+      "days": ["2026-10-31", "2026-11-01"],
+      "sources": [
+        { "label": "Hidden in Plain Sight (arXiv)", "url": "https://arxiv.org/abs/2610.37332" },
+        { "label": "Cursor: security notice", "url": "https://cursor.com/blog/claude-code-extension-security-notice" },
+        { "label": "Forever Security: Markdown is the new executable", "url": "https://forever.security/blog/hijacking-ai-agents-via-downloads-folder" }
+      ]
+    }
+  ],
+  "numbers": [
+    { "value": "96 to 99%", "label": "of an agent's tokens read from cache, Max Woolf's estimate", "date": "2026-10-26" },
+    { "value": "588", "label": "subagents used to port F-Zero X to the 3DS", "date": "2026-10-27" },
+    { "value": "7,300+", "label": "demos in Steam's October Next Fest", "date": "2026-10-28" },
+    { "value": "16.4%", "label": "of one team's Claude Code spend on background summaries", "date": "2026-10-29" },
+    { "value": "74", "label": "serious privacy bugs Meta's throwaway tests caught in six months", "date": "2026-10-30" },
+    { "value": "71.9%", "label": "of real bugs the best AI reviewer found in its top five comments", "date": "2026-11-01" }
+  ],
+  "watch": [
+    "Epic's AI MegaJam starts November 12, with agent and MCP setup allowed in advance.",
+    "Copilot retires several older Claude and GPT models on November 16.",
+    "Fast mode for Claude Opus 4.8 ends November 30; requests that still ask for it will return an error.",
+    "Ryan Madden plans Factorio runs with enemies and other models, which will show whether the player-limited approach holds under pressure."
+  ],
+  "deepRead": {
+    "id": "crbugbench-deep",
+    "lane": "ai",
+    "kind": "preprint",
+    "title": "(When) Should a Software Factory be Lights-off? Benchmarking Code Review Agents on Bug Detection",
+    "headline": "AI reviewers now catch 72% of real bugs, with people about 82%",
+    "authors": "Chenyang Yang, Hao He, Ti-Chung Cheng, et al. (Microsoft Research, Carnegie Mellon University)",
+    "where": "arXiv preprint",
+    "date": "2026-10-09",
+    "problem": "Developers now spend more time reviewing AI-written code than writing it, and nobody knew how often a review agent finds a real bug when it is not told one exists.",
+    "idea": "Mine real bugs from project history: 865 caught in human review before merge and 689 found after merge, across 99 repositories. Give the agent the pull request in a sandbox, have it write a ranked review, and let a panel of model judges check whether the real bug is in its top five comments.",
+    "result": "The best agent found 71.9% of bugs in its top five comments (79.6% before merge, 64.2% after), up from 47.7% for a model about five months older, at about $3 and ten minutes a task. Human reviewers alone caught about half; humans plus the agent about 82%.",
+    "useIt": "Run an agent review before merge, tell it to run the code and read beyond the diff, give it project knowledge, and keep a person on large or cross-file changes.",
+    "maturity": "code",
+    "links": [
+      { "label": "Paper (arXiv)", "url": "https://arxiv.org/abs/2610.13668" },
+      { "label": "CRBugBench on GitHub", "url": "https://github.com/malusamayo/CRBugBench" }
+    ],
+    "image": {
+      "src": "img/2026-11-01/crbugbench.webp",
+      "alt": "Figure: a merged pandas pull request with its diff on the left; on the right a review agent in a sandboxed copy writes a review.md flagging a TypeError, and LLM judges match it to the real bug filed later.",
+      "credit": "Yang et al. (arXiv)",
+      "creditUrl": "https://arxiv.org/abs/2610.13668",
+      "fit": "contain"
+    },
+    "more": [
+      "Why it matters this week: the week kept asking who checks an agent's work. This benchmark measures the most common answer, an AI reviewer on each pull request, against bugs that really shipped or were really caught, without telling the reviewer a bug is there. The headline is that agents now find most of them, and that a person plus an agent beats either alone.",
+      "How it was built: pre-merge bugs come from review threads that led to a fix; post-merge bugs come from pairs of a fix and the change that introduced it. Each task is a container snapshot of the repository at the pull request, with later commits removed and network access restricted. The agent writes a ranked review.md, and three model judges vote on whether any of the top comments matches the real bug. There are 1,000 public tasks from 98 repositories in five languages, plus 800 from two company monorepos.",
+      "Where agents fall short: accuracy drops by up to 25.5% on the company repositories, where only 22.8% of bugs are visible in the diff, against 46.1% on GitHub. Agents ran code in only about 8% of their turns, a prompt pushing them to explore more added up to 5.8% for about 10% more cost, and wrong pull request descriptions led them astray. The authors conclude that fully unattended review only suits narrow, low-risk changes.",
+      "What to do with it: scale review effort with the size of the change, give the reviewer the project's conventions and history, tell it to build and run tests rather than read the diff, and re-measure when you change models; the paper saw a 24-point jump in about five months."
+    ]
+  }
+}

@@ -26,8 +26,14 @@ what to avoid next time. Facts about stories never go here.
 - 2026-10-30 No. 17: blue + coral on sky, hunter text, condensed type, split hero with the source's own wide pipeline figure (contain). A half concept with a small screenshot beside a half chart left a 500px hole; dropping the unreadable screenshot evened the row. A five-node flow at wide size clips a two-word label like "Architect and programmer"; keep node labels to one or two short words. A spark with no image leaves a blank band in its row; look harder for one or put it in a row of text-heavy cards. Check data/weeks before a follow-up: the Claude Code review post had run in W42.
 - 2026-10-31 No. 18: bright-red + sunflower on lilac, black text, poster type, stack hero with a 4-row layers diagram of what an agent sends (reads cleanly on desktop and phone). Five steps in a wide block beside a third stat left a 600px hole; five steps at full width (four plus one) fit. A full-width source chart inside a compare runs about 700px but adds data the rows lack (top 500 and 1,000). A concept with points turned into a flow diagram counts as a visual and reads better. Animated GIFs: the first frame can be blank, so pull a middle frame with sharp and use contain so the subject is not cropped.
 
+- 2026-11-01 No. 19: teal + yellow on bright-white, federal-blue text, wide type, split hero with a real game screenshot plus agent transcript (cover, reads well). A practitioner (folded) concept beside a tall image concept left a hole again; unfold any block that sits beside an image block. A five-node flow at wide size clipped a two-word label ("Review, repair"); one word per node at wide. Two spotlights side by side even out when the fact lists match in length (three each). A project's title-card render is a brand card; skip it rather than use it.
+
 ## Kit requests
 
 Done 2026-10-15: code blocks no longer inherit the inline code tint; the poster hero title
 no longer overlaps the light art plate in dark mode.
 
+
+Request 2026-11-01: `npm run prune` deletes `public/img/<date>/` after 7 days, but weekly deepRead images point there
+(W42 uses img/2026-10-18, W43 uses img/2026-10-25), so those week pages now show a missing image. Prune could
+keep images that a data/weeks file references, or weeks could copy their image to their own folder.
