@@ -1,0 +1,964 @@
+{
+  "date": "2026-11-02",
+  "number": 20,
+  "title": "What the agent bill buys",
+  "dek": "One developer had the same agent build the same app in twelve web frameworks and priced every run. Plus Claude's public commit count passing 10 million a week, and a database release that slipped because AI found more bugs.",
+  "theme": {
+    "paper": "fog",
+    "text": "burgundy",
+    "inks": [
+      "purple",
+      "kelly"
+    ],
+    "type": "grotesk",
+    "mood": "a Monday about what agent work costs and what it turns up"
+  },
+  "tldr": [
+    {
+      "text": "Nolan Lawson had Claude Opus 5.5 build one Pokémon app in 12 frameworks: **Hono with htmx cost $2.67 a run, Angular $4.97**, and Astro shipped almost no JavaScript.",
+      "lane": "ai"
+    },
+    {
+      "text": "Public GitHub commits credited to Claude passed 10 million a week, about double two months ago, by Paul Kinlan's count.",
+      "lane": "ai"
+    },
+    {
+      "text": "PostgreSQL 19 will ship late: language models found many more bugs, and fixes back-ported to the new release rose over 60% in a year.",
+      "lane": "ai"
+    },
+    {
+      "text": "A browser port of NES Contra matches the original game frame by frame, checked by replaying a 40,000-frame recording through both.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Google Play's last extension ended on November 1: apps below Android 15 now stop showing up for people on newer phones.",
+      "lane": "gamedev"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Agents at work: the receipts",
+      "note": "How much they write, what they cost, and what they turn up.",
+      "ids": [
+        "framework-extremes",
+        "claude-commits",
+        "failure-memory",
+        "postgres-late",
+        "supabase-notebooks"
+      ]
+    },
+    {
+      "title": "Games: ports, engines and stores",
+      "note": "A port checked frame by frame, engine upgrades to plan for, and store rules that just took effect.",
+      "ids": [
+        "contra-port",
+        "web3d-releases",
+        "play-api",
+        "gmrt-free"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "framework-cost",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "The framework you pick sets the agent's bill",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A web developer had the same AI agent build the same small app in twelve web frameworks, five times each. The cheapest framework cost about half as much per build as the most expensive, and the lightest pages loaded fastest.",
+      "background": "Nolan Lawson is a web performance engineer who writes about how browsers and frameworks behave in practice.",
+      "body": [
+        "The app was a Pokémon browser with search and filters, built from a public data API. Each run gave Claude Opus 5.5, at high effort, the same spec, a shared set of design tokens and no component libraries, and let it choose its own architecture. A test suite that reads the page's accessibility tree checked every build, so an agent could not fake a pass.",
+        "Hono with htmx was cheapest at $2.67 a run (median of five), then Astro at $2.76 and Nuxt at $2.82. Angular was most expensive at $4.97 and took the longest, 17.2 minutes, with about 2,000 lines of code against 1,370 for Hono with htmx.",
+        "What reached the user differed even more. Astro shipped almost no JavaScript and painted its main content in about 0.8 seconds on a throttled phone test; Next.js shipped 142 KiB and took about 2.1 seconds. Lawson notes that agents often ignored the official MCP servers and skills they were given, and that an app with more interaction, such as a dashboard or a game, could rank differently."
+      ],
+      "stat": {
+        "value": "1.9x",
+        "label": "cost of the priciest framework over the cheapest, per build"
+      },
+      "terms": [
+        {
+          "term": "htmx",
+          "def": "A small library that lets HTML elements fetch and swap page fragments from the server without writing JavaScript."
+        },
+        {
+          "term": "design tokens",
+          "def": "Named values for colors, spacing and type that every part of an interface shares."
+        },
+        {
+          "term": "accessibility tree",
+          "def": "The structured view of a page that the browser gives to screen readers: its headings, buttons, links and labels."
+        },
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools and data sources into an AI model."
+        }
+      ],
+      "deep": [
+        "Medians of five runs (Angular three for some metrics, after two runs failed or broke the spec). Costs are the API-equivalent prices Claude Code reports, not money spent; the author was on a subscription plan. Fewest tokens: Nuxt at 3.85 million; most: Angular at 9.76 million.",
+        "Performance used Lighthouse in mobile mode with 4x CPU throttling and Slow 4G, home page only, Chromium only. Accessibility scored 100 everywhere and performance 97 to 100, so the gaps show in JavaScript shipped and Largest Contentful Paint (LCP), not in the summary scores. Static pre-generation of pages was not allowed.",
+        "Qwik behaved like a multi-page app on LCP (979 ms) despite client-side routing. In all five runs the plain JavaScript agent built a single-page app. The benchmark is on GitHub and the author invites competing runs."
+      ],
+      "why": "When an agent writes most of the code, framework choice shows up in your token bill and run time as well as in page weight. A small app with a spec and a test suite, run in two or three candidate stacks, is now a cheap way to settle the argument with numbers.",
+      "forYou": "Before the next SaaS front end, run a smaller version of this: one Polyglyph-sized feature built by Claude Code in React and in Astro or Hono with htmx, and compare cost per run and shipped JavaScript.",
+      "sources": [
+        {
+          "label": "Nolan Lawson: The AI cost of JavaScript frameworks",
+          "url": "https://nolanlawson.com/2026/10/28/the-ai-cost-of-javascript-frameworks/"
+        }
+      ],
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "One spec",
+            "note": "A Pokémon browser with search and filters"
+          },
+          {
+            "label": "12 frameworks",
+            "note": "Same agent, five runs each"
+          },
+          {
+            "label": "Test suite",
+            "note": "Checks the page structure, so no faked passes",
+            "key": true
+          },
+          {
+            "label": "Phone test",
+            "note": "Lighthouse on a throttled phone"
+          },
+          {
+            "label": "Scores",
+            "note": "Cost, time, tokens, code, JavaScript shipped"
+          }
+        ],
+        "links": [
+          "build",
+          "check",
+          "load",
+          "compare"
+        ],
+        "caption": "Every build had to pass the same checks before its cost counted."
+      }
+    },
+    {
+      "id": "framework-extremes",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Cheapest and priciest framework for an agent, side by side",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Across six measures, the cheapest framework to have an agent build was also smaller and lighter, but the fastest page came from a third framework, Astro.",
+      "intro": "Medians of five runs from Nolan Lawson's benchmark: Hono with htmx was the cheapest build, Angular the most expensive. The chart above shows the cost of all twelve.",
+      "left": "Hono with htmx",
+      "right": "Angular",
+      "rows": [
+        {
+          "aspect": "Cost per run",
+          "left": "$2.67",
+          "right": "$4.97"
+        },
+        {
+          "aspect": "Agent time",
+          "left": "8.6 minutes",
+          "right": "17.2 minutes"
+        },
+        {
+          "aspect": "Tokens used",
+          "left": "4.26 million",
+          "right": "9.76 million"
+        },
+        {
+          "aspect": "Lines of code",
+          "left": "About 1,370",
+          "right": "About 2,009"
+        },
+        {
+          "aspect": "JavaScript shipped",
+          "left": "18 KiB",
+          "right": "93 KiB"
+        },
+        {
+          "aspect": "Main content shown",
+          "left": "About 1.0 s",
+          "right": "About 2.0 s"
+        }
+      ],
+      "verdict": "Lighter stacks were cheaper to build here, but one content-heavy app is not every app: a dashboard or a game could rank differently.",
+      "image": {
+        "src": "img/2026-11-02/frameworks.webp",
+        "alt": "Bar chart of cost per run in US dollars for twelve frameworks, with error bars: Hono plus htmx cheapest at $2.67, Astro $2.76, Nuxt $2.82, rising to Gracile plus Lit $4.65 and Angular $4.97.",
+        "credit": "Nolan Lawson",
+        "creditUrl": "https://nolanlawson.com/2026/10/28/the-ai-cost-of-javascript-frameworks/",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "tokens",
+          "def": "The chunks of text a model reads and writes; usage is billed by the token."
+        }
+      ],
+      "why": "Cost, time and page weight moved together in this test, so the cheaper stack for the agent was also the lighter one for users.",
+      "sources": [
+        {
+          "label": "Nolan Lawson: The AI cost of JavaScript frameworks",
+          "url": "https://nolanlawson.com/2026/10/28/the-ai-cost-of-javascript-frameworks/"
+        }
+      ]
+    },
+    {
+      "id": "claude-commits",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Claude's public commits passed 10 million a week",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Code changes credited to Claude on public GitHub projects roughly doubled in two months, to over 10 million a week, according to a developer who counts them every month.",
+      "background": "Paul Kinlan, who works on web developer tools at Google, counts commits that carry Claude Code's attribution line using GitHub's search.",
+      "intro": "Weekly public commits credited to Claude, in millions, for the nine weeks from the week of August 31. The newest week was sampled a day early.",
+      "unit": "M",
+      "series": [
+        {
+          "label": "Aug 31",
+          "value": 5
+        },
+        {
+          "label": "Sep 7",
+          "value": 4.7
+        },
+        {
+          "label": "Sep 14",
+          "value": 5.4
+        },
+        {
+          "label": "Sep 21",
+          "value": 6.3
+        },
+        {
+          "label": "Sep 28",
+          "value": 8
+        },
+        {
+          "label": "Oct 5",
+          "value": 8.7
+        },
+        {
+          "label": "Oct 12",
+          "value": 8.6
+        },
+        {
+          "label": "Oct 19",
+          "value": 10.1
+        },
+        {
+          "label": "Oct 26",
+          "value": 10.3,
+          "highlight": true
+        }
+      ],
+      "note": "Public repositories only. Claude Code adds an attribution line to commits by default and other tools mostly do not, so Kinlan says the gap to other tools (about 36x in the latest week) is likely overstated. GitHub search counts vary by about 20% between runs; the trend is the reliable part.",
+      "terms": [
+        {
+          "term": "commit",
+          "def": "One saved change to a code repository, with a message describing it."
+        }
+      ],
+      "deep": [
+        "In March the count was about 2.6 million a week; April to August ran between 2.4 and 4.2 million. Kinlan links the latest jump in time to the Fable 5.1 and Opus 5.5 launches but says the data does not show cause. Four repeated searches for one August week returned 2.5M, 3.4M, 4.2M and 4.7M, which is why he takes medians and treats single weeks as plus or minus 20%."
+      ],
+      "why": "Commits that carry an AI tool's attribution are one of the few public measures of how much code agents write. Ten million a week on public repositories alone means review, testing and merge tooling now take most of the strain.",
+      "forYou": "Your own repos add to this count through the default attribution line; keep it on, since it is also how you can measure your own agent share later.",
+      "sources": [
+        {
+          "label": "Paul Kinlan: Latest stats on Claude commits",
+          "url": "https://aifoc.us/update-on-claude-commits/"
+        }
+      ]
+    },
+    {
+      "id": "failure-memory",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A written lesson after a failed fix did not beat the raw log",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "When an AI agent fails to fix a bug and tries again, having it write a lesson about its failure helped no more than handing it the old transcript, a small study found.",
+      "stats": [
+        {
+          "value": "181",
+          "label": "failed fix attempts retried on real Python bugs"
+        },
+        {
+          "value": "-1.7",
+          "label": "points for a lesson against its own transcript"
+        }
+      ],
+      "body": [
+        "Researchers retried an agent's failed repairs on 75 real bugs, with no memory, the full transcript, a self-written lesson, or the test results. Every kind of memory helped by 5.5 to 9.9 points over a plain retry (29.8%), but none of the gains was statistically clear, and the lesson cost an extra model call."
+      ],
+      "terms": [
+        {
+          "term": "transcript",
+          "def": "The full record of an agent's session: its messages, commands and their output."
+        }
+      ],
+      "deep": [
+        "Preprint, arXiv 2610.41433, using gpt-5.4-mini and gpt-5.4 on BugsInPy. Of 12 planned comparisons, only one was significant: transcript against a notice-only retry for gpt-5.4-mini (12.2 more failures resolved, on a partial run). Retries that saw earlier test results more often broke other tests that the reference fix passes. Small sample, one language."
+      ],
+      "why": "If your retry loop asks the agent to reflect before trying again, passing the failed transcript is about as good and cheaper. Run the full test suite on retries either way.",
+      "forYou": "The routines that retry failed tasks could drop any reflect-first step and pass the last transcript tail plus test output instead.",
+      "sources": [
+        {
+          "label": "Ye et al.: What does a repair agent gain from remembering its failure? (arXiv)",
+          "url": "https://arxiv.org/abs/2610.41433"
+        },
+        {
+          "label": "Data and transcripts",
+          "url": "https://github.com/Weypher/agent-failure-memory"
+        }
+      ]
+    },
+    {
+      "id": "postgres-late",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "PostgreSQL 19 is late because AI found more bugs",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The next PostgreSQL release will ship late, a core developer says, because language models found many more bugs and people still had to review and commit every fix.",
+      "background": "Robert Haas is a long-time PostgreSQL committer. Major releases have come out between mid-September and mid-October for a decade.",
+      "intro": "Commits to release branches between feature freeze (April 8) and September 25, from Haas. Most are fixes, many back-patched to the new and older releases. Each pair compares 2025 with 2026.",
+      "unit": "commits",
+      "series": [
+        {
+          "label": "New release, 2025",
+          "value": 724
+        },
+        {
+          "label": "New release, 2026",
+          "value": 1169,
+          "highlight": true
+        },
+        {
+          "label": "Prior release, 2025",
+          "value": 248
+        },
+        {
+          "label": "Prior release, 2026",
+          "value": 433,
+          "highlight": true
+        }
+      ],
+      "note": "New release: the branch for version 18 in 2025 and version 19 in 2026. Prior release: version 17 in 2025, version 18 in 2026. Three features were pulled from 19 between August 27 and September 15.",
+      "terms": [
+        {
+          "term": "committer",
+          "def": "A project member allowed to add changes to the official code."
+        },
+        {
+          "term": "back-patch",
+          "def": "To copy a bug fix into older, already released versions."
+        }
+      ],
+      "deep": [
+        "Haas writes that committers were as careful as before, but more of their mistakes were found quickly by LLMs. Two things slowed the release: fixes drafted by models were often wrong or did not meet project standards, so people had to rework and review them, and reviewer time went to security issues and older branches. The reverted features were UPDATE and DELETE FOR PORTION OF, SQL property graph queries (SQL/PGQ), and ALTER TABLE MERGE and SPLIT PARTITION. He expects release in November or later."
+      ],
+      "why": "Cheap bug finding moves the bottleneck to review. A mature project with a strict process found it could not merge fixes as fast as models report problems, which any team pointing agents at an old codebase should plan for.",
+      "forYou": "Postgres 19 features will reach the Supabase projects later than the usual autumn schedule would suggest; do not plan around them this year.",
+      "sources": [
+        {
+          "label": "Robert Haas: Postgres 19 is late, and it's AI's fault",
+          "url": "https://rhaas.blogspot.com/2026/10/postgres-19-is-late-and-its-ais-fault.html"
+        }
+      ]
+    },
+    {
+      "id": "supabase-notebooks",
+      "format": "spotlight",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Supabase notebooks turn a database investigation into a file",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Supabase added one editor for database queries and logs, and lets you save an investigation as a notebook file in your repository that anyone can rerun on live data.",
+      "name": "Explorer and Notebooks",
+      "what": "A query editor for your database and logs, plus notebooks of saved queries, charts and notes kept in your repo.",
+      "body": [
+        "Notebooks store the queries, not the results, so each run shows current data. They live in the project's supabase folder, so they are versioned and reviewed in pull requests like code. The built-in assistant can write cells, but you approve the SQL before anything saves."
+      ],
+      "facts": [
+        {
+          "k": "Status",
+          "v": "Feature preview, on every project"
+        },
+        {
+          "k": "Turn on",
+          "v": "Dashboard, Feature Previews"
+        },
+        {
+          "k": "CLI",
+          "v": "notebooks pull and push, beta channel"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-02/notebooks.webp",
+        "alt": "Supabase dashboard showing the Explorer sidebar with a list of notebooks and an open notebook titled User Growth Monitor, with a written explanation above a monthly signup chart.",
+        "credit": "Supabase",
+        "creditUrl": "https://supabase.com/blog/explorer-and-notebooks-investigations-your-team-can-rerun",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "SQL",
+          "def": "The query language used to read and change data in relational databases such as Postgres."
+        }
+      ],
+      "deep": [
+        "Explorer replaces the SQL Editor in the sidebar once the preview is on, and works without the AI assistant. The CLI commands are `supabase notebooks pull` and `supabase notebooks push`, available on the beta CLI channel only. The post does not document the file format."
+      ],
+      "why": "An investigation saved as a file in the repo can be rerun by a teammate, reviewed in a pull request, or read and edited by a coding agent, instead of living in someone's query history.",
+      "forYou": "Save the two queries you rerun most on Vylora (slow queries, failed auth) as a notebook and commit it, so Claude Code can open the same investigation next time.",
+      "sources": [
+        {
+          "label": "Supabase: Explorer and Notebooks",
+          "url": "https://supabase.com/blog/explorer-and-notebooks-investigations-your-team-can-rerun"
+        }
+      ]
+    },
+    {
+      "id": "contra-port",
+      "format": "diagram",
+      "lane": "both",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "NES Contra ported to the browser, checked against the original every frame",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A developer translated the 1987 NES game Contra from its original machine code into C and then into a browser build, and proved the port matches by replaying the same input through both and comparing every frame.",
+      "background": "The port builds on a fan-made, fully annotated disassembly of the game. No game data is included; players supply their own copy.",
+      "layout": "flow",
+      "intro": "How the port was made and verified, from the project's README. The comparison step is what makes a translation this large trustworthy.",
+      "nodes": [
+        {
+          "label": "Assembly",
+          "note": "The original 6502 code, annotated by fans"
+        },
+        {
+          "label": "C port",
+          "note": "Translated routine by routine, sound line by line"
+        },
+        {
+          "label": "Replay",
+          "note": "One 40,000-frame recording of real play"
+        },
+        {
+          "label": "Compare",
+          "note": "Memory, palette, sprites, sound state and pixels, every frame",
+          "key": true
+        },
+        {
+          "label": "WebAssembly",
+          "note": "Browser build with online two-player co-op"
+        }
+      ],
+      "links": [
+        "translate",
+        "drive",
+        "check",
+        "compile"
+      ],
+      "caption": "Stages 1 to 4 are identical to the original over the whole recording, including sound, per the README.",
+      "terms": [
+        {
+          "term": "assembly",
+          "def": "Low-level code written one processor instruction at a time; most NES games were written this way."
+        },
+        {
+          "term": "WebAssembly",
+          "def": "A compact program format that browsers run at near-native speed, compiled from languages such as C."
+        },
+        {
+          "term": "lockstep",
+          "def": "A multiplayer method where every player's machine runs the same game and only inputs are sent, so it must be fully deterministic."
+        }
+      ],
+      "deep": [
+        "The check replays a Mesen 2 emulator recording through the C core and compares RAM, nametables, palette, OAM, CHR, PPU registers, sound-engine state and the final image each frame, using a tool in the repo (port/tools/parity_telemetry.c). The original ROM can also be rebuilt byte for byte from the assembly with cc65. Desktop builds use CMake and SDL; the web build uses Emscripten. Online play is lockstep over WebRTC.",
+        "The README does not say whether AI tools were used. Hacker News readers reported keyboard problems in Firefox."
+      ],
+      "why": "Comparing a rewrite against the original on recorded play, state by state, is how you port or refactor game code without guessing. It is also the kind of check that lets an agent do a large translation safely: the comparison, not the agent, says when it is right.",
+      "forYou": "For any big refactor of a gameplay plugin, record a deterministic replay first and diff the game state per tick before and after; it is the safety net to give Claude Code.",
+      "sources": [
+        {
+          "label": "nes-contra-us on GitHub",
+          "url": "https://github.com/epoyraz/nes-contra-us"
+        },
+        {
+          "label": "Play in the browser",
+          "url": "https://epoyraz.github.io/nes-contra-us/"
+        },
+        {
+          "label": "Show HN discussion",
+          "url": "https://news.ycombinator.com/item?id=50319169"
+        }
+      ]
+    },
+    {
+      "id": "web3d-releases",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "three.js r187 and Babylon.js 9.33: what changes for browser games",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The two biggest 3D libraries for the web both shipped last week: three.js changed some behaviour that can quietly break existing games, and Babylon.js can now report how long the graphics card spends on each frame.",
+      "intro": "three.js r187 shipped on October 30, its first release in five weeks, with about 400 changes. Babylon.js 9.33 shipped on October 29 and 30.",
+      "items": [
+        {
+          "title": "three.js: two changes that can break a running game",
+          "text": "Calling setAnimationLoop(null) no longer starts the loop, and setViewport and setScissor now apply the pixel ratio only to the canvas. Check both on a high-resolution screen after upgrading.",
+          "url": "https://github.com/mrdoob/three.js/wiki/Migration-Guide"
+        },
+        {
+          "title": "three.js: renames and removals",
+          "text": "Code deprecated in r177 is gone, ProxyNodeMaterial is now NodeMaterialInstance, and getProjectionDepth is now projectionDepth. Using count and dispatchSize together now throws an error.",
+          "url": "https://github.com/mrdoob/three.js/releases/tag/r187"
+        },
+        {
+          "title": "three.js: new material and loader features",
+          "text": "The physical material gains a rough diffuse model (EON) and iridescence thickness limits; loaders add compressed EXR and HDR JPEG XL; a JavaScript version replaces the WebAssembly tangent generator.",
+          "url": "https://github.com/mrdoob/three.js/releases/tag/r187"
+        },
+        {
+          "title": "Babylon.js: GPU frame time and faster splats on WebGPU",
+          "text": "9.33.0 reports GPU time per frame on WebGPU, speeds up Gaussian splat rendering with an optional GPU depth sort, and adds a scattering material extension. 9.33.1 adds a KTX2 texture encoder.",
+          "url": "https://github.com/BabylonJS/Babylon.js/releases"
+        }
+      ],
+      "terms": [
+        {
+          "term": "WebGPU",
+          "def": "The newer browser interface to the graphics card, faster and more flexible than WebGL."
+        },
+        {
+          "term": "pixel ratio",
+          "def": "How many physical screen pixels make up one CSS pixel; 2 or 3 on most phones."
+        },
+        {
+          "term": "Gaussian splat",
+          "def": "A way to show a scanned 3D scene as millions of soft, colored blobs instead of triangles."
+        },
+        {
+          "term": "KTX2",
+          "def": "A compressed texture file format that graphics cards can read directly, so textures load smaller and faster."
+        }
+      ],
+      "why": "Behaviour changes in a render loop or viewport do not show up as errors; they show up as a blank canvas or a wrongly sized view on some devices. Read the migration notes before bumping the version.",
+      "forYou": "Bump the browser games to r187 on a branch and test the render loop and the high-DPI viewport on a phone before anything else.",
+      "sources": [
+        {
+          "label": "three.js r187 release notes",
+          "url": "https://github.com/mrdoob/three.js/releases/tag/r187"
+        },
+        {
+          "label": "three.js migration guide",
+          "url": "https://github.com/mrdoob/three.js/wiki/Migration-Guide"
+        },
+        {
+          "label": "Babylon.js releases",
+          "url": "https://github.com/BabylonJS/Babylon.js/releases"
+        }
+      ]
+    },
+    {
+      "id": "play-api",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Google Play's grace period for old Android targets ended",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Since November 1, Android apps on Google Play that still target an old version of Android are hidden from people using newer phones.",
+      "intro": "Google Play target API level rules for phone apps, from its help page.",
+      "events": [
+        {
+          "when": "Aug 31, 2025",
+          "text": "Phone apps must target Android 15 (API 35) to stay visible to new users."
+        },
+        {
+          "when": "Aug 31, 2026",
+          "text": "New apps and updates must target Android 16 (API 36)."
+        },
+        {
+          "when": "Nov 1, 2026",
+          "text": "The optional extension for existing apps ended."
+        }
+      ],
+      "terms": [
+        {
+          "term": "API level",
+          "def": "The number Android uses for each version of its platform; Android 16 is API 36."
+        }
+      ],
+      "deep": [
+        "Apps that miss the rule stop being discoverable to users on newer Android versions; people who already installed them keep them. Wear OS and Android Automotive apps need API 35 from August 31, 2026; Android XR needs API 34."
+      ],
+      "why": "An older mobile game or app that nobody has rebuilt this year may already be invisible to most new customers on Google Play.",
+      "forYou": "Check the target API of every published Flutter build in Play Console today; anything under 35 needs a rebuild.",
+      "sources": [
+        {
+          "label": "Google Play Console help: target API level requirements",
+          "url": "https://support.google.com/googleplay/android-developer/answer/11926878"
+        }
+      ]
+    },
+    {
+      "id": "gmrt-free",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "GameMaker's new runtime will be free for commercial games",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "GameMaker will let anyone sell games made with its new runtime on PC, mobile and the web without buying a licence, starting January 1, 2027.",
+      "stats": [
+        {
+          "value": "$0",
+          "label": "to ship on PC, mobile and web"
+        },
+        {
+          "value": "2027",
+          "label": "starts January 1"
+        }
+      ],
+      "body": [
+        "Consoles still need an enterprise licence. The new runtime, GMRT, is still in beta and supports working with Claude Code, per Game Developer. Announced October 23; nothing has changed since."
+      ],
+      "terms": [
+        {
+          "term": "runtime",
+          "def": "The engine code that ships inside a finished game and runs it on the player's device."
+        }
+      ],
+      "why": "Another engine has moved to charging nothing to ship small games, which keeps pressure on how tools and engines charge indie developers.",
+      "sources": [
+        {
+          "label": "Game Developer: GMRT will be free for commercial devs",
+          "url": "https://www.gamedeveloper.com/programming/gamemaker-s-gmrt-runtime-will-soon-be-free-for-all-commercial-devs"
+        },
+        {
+          "label": "GameMaker runtime licence",
+          "url": "https://gamemaker.io/legal/gamemaker-runtime-licence-free"
+        }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is WebAssembly?",
+    "answer": "WebAssembly is a compact program format that every major browser can run at close to native speed. You write code in a language such as C, C++ or Rust, compile it to a .wasm file, and the page loads and runs it next to its JavaScript.",
+    "analogy": "A shipping container: whatever you pack at the factory (C, Rust), it arrives in a standard box that every port (browser) knows how to unload.",
+    "body": [
+      "JavaScript is flexible but hard to make fast for heavy number crunching. WebAssembly is a low-level, typed instruction set that browsers check for safety and then compile to machine code, so code written for consoles and desktops can run in a tab. It runs in the same sandbox as the page and reaches graphics, sound and input through JavaScript.",
+      "Toolchains such as Emscripten compile existing C and C++ projects, which is how today's Contra port reaches the browser; emulators such as Infinite Mac run the same way. Game engines use it for their web exports, and libraries ship WebAssembly modules for heavy jobs.",
+      "It is a choice, not a rule: three.js r187 replaced its WebAssembly tangent generator with a plain JavaScript version."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Source code",
+          "note": "C, C++ or Rust"
+        },
+        {
+          "label": "Compiler",
+          "note": "Emscripten or a Rust toolchain"
+        },
+        {
+          "label": ".wasm file",
+          "note": "Compact, checked, portable",
+          "key": true
+        },
+        {
+          "label": "Browser",
+          "note": "Runs it beside JavaScript, drawing through WebGL or WebGPU"
+        }
+      ],
+      "links": [
+        "compile",
+        "load",
+        "run"
+      ],
+      "caption": "Write once in a systems language, ship a .wasm file, and the browser does the rest."
+    },
+    "terms": [
+      {
+        "term": "Emscripten",
+        "def": "A compiler toolchain that turns C and C++ programs into WebAssembly plus the JavaScript glue to run them."
+      },
+      {
+        "term": "sandbox",
+        "def": "A walled-off space where code runs without access to the rest of the computer."
+      }
+    ],
+    "seenIn": [
+      "contra-port",
+      "web3d-releases"
+    ],
+    "sources": [
+      {
+        "label": "MDN: WebAssembly concepts",
+        "url": "https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Concepts"
+      },
+      {
+        "label": "Emscripten documentation",
+        "url": "https://emscripten.org/docs/introducing_emscripten/about_emscripten.html"
+      },
+      {
+        "label": "nes-contra-us README",
+        "url": "https://github.com/epoyraz/nes-contra-us"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Add cartoon wobble to a rigged character without a physics simulation",
+    "gist": "In twenty minutes you see bouncy, jiggly secondary motion on one of your own characters, computed from its skeleton alone, and can judge whether the technique fits your animation style.",
+    "time": "20 minutes",
+    "level": "everyone",
+    "needs": "Blender 4.4 or newer and a rigged character mesh.",
+    "steps": [
+      {
+        "title": "Install the add-on",
+        "text": "In Blender open Edit, Preferences, Get Extensions, search for Dynamic Skinning and click Install. Offline, install dynamic_skinning-0.1.1.zip from the project's GitHub releases with Install from Disk."
+      },
+      {
+        "title": "Turn it on for one mesh",
+        "text": "Select the rigged mesh and click Enable under Object properties, Dynamic Skinning, or in the N sidebar."
+      },
+      {
+        "title": "Move a bone",
+        "text": "In Pose Mode rotate a bone with a long chain below it (a neck, a tail, a hat), or press play on an existing animation."
+      },
+      {
+        "title": "Tune it",
+        "text": "Change frequency, damping, amplitude and drag, and paint per-vertex weights to keep the face or hands steady."
+      }
+    ],
+    "check": "The parts away from the moving bone lag, overshoot and settle on their own, in real time, with no simulation cache to bake. If nothing moves, check the mesh has an Armature modifier.",
+    "terms": [
+      {
+        "term": "secondary motion",
+        "def": "Movement that follows the main action, such as ears flopping after a head turn."
+      },
+      {
+        "term": "per-vertex weights",
+        "def": "Values painted on a mesh that say how strongly each point follows an effect."
+      }
+    ],
+    "from": "dynskin",
+    "forYou": "Try it on a creature or a cape from the action RPG; the method is about 550 lines of C++, small enough to consider as a mesh deformer in Unreal if it looks right.",
+    "sources": [
+      {
+        "label": "Dynamic Skinning project page",
+        "url": "https://velocityskinning.com/"
+      },
+      {
+        "label": "Blender extension",
+        "url": "https://extensions.blender.org/add-ons/dynamic-skinning/"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Claude Code still has no switch for its background agent status summaries: an issue measuring them at 10 to 26% of usage has no Anthropic reply in 2.5 months.",
+      "lane": "ai",
+      "url": "https://github.com/anthropics/claude-code/issues/86879",
+      "source": "GitHub"
+    },
+    {
+      "text": "Codex CLI 0.166.0 adds search inside session transcripts, codex queue --resume, a network-only codex doctor, and keeps approval settings when a session is resumed or forked.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "Paper: two test harness revisions moved a world model's benchmark score by 0.2 and 2.6 points but flipped 11 and 214 individual test results. Compare tests one by one, not the average.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2610.41130",
+      "source": "arXiv"
+    },
+    {
+      "text": "Unity's 2026 roadmap page lists beta editor agent plugins for Claude, Codex and Grok, with Unity 6.7 LTS coming soon.",
+      "lane": "gamedev",
+      "url": "https://unity.com/blog/unity-industry-product-releases-2026",
+      "source": "Unity"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "moon-sweepers",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Moon Sweepers: clean the whole Moon, starting with a toothbrush",
+      "where": "Steam",
+      "signal": "Up 53 places to #44 in Steam's most played, with a peak of 83,138 players (Steam charts, November 2).",
+      "hook": "An absurd job for up to 16 friends: sweep and sell lunar dust, upgrade from a toothbrush to cleaning vehicles, and hope your friends actually help. Made by a two-person studio.",
+      "borrow": "A premise you can explain in one sentence, plus co-op chaos, plus a low price, is a loop streamers pick up on their own.",
+      "url": "https://store.steampowered.com/app/5335510",
+      "image": {
+        "src": "img/2026-11-02/moonsweepers.webp",
+        "alt": "A cartoon astronaut on the Moon pushing a long-handled sweeper, with Earth and a small base behind.",
+        "credit": "DragDrop Games (Steam)",
+        "creditUrl": "https://store.steampowered.com/app/5335510",
+        "fit": "cover"
+      },
+      "forYou": "The scale-up arc (toothbrush to vehicles) is an upgrade ladder worth sketching for a small co-op prototype."
+    },
+    {
+      "id": "infinite-mac-beos",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Infinite Mac now boots BeOS in a browser tab",
+      "where": "Hacker News",
+      "signal": "195 points on Hacker News (October 30).",
+      "hook": "Several versions of BeOS run on an emulated 1997 Power Mac inside a web page, after Mihai Parparita fixed a string of emulator bugs and worked around a 1997 time bomb; he says Codex helped with the reverse engineering.",
+      "borrow": "An emulator compiled to WebAssembly, disk images on a CDN and a saved drive make any old software a link you can share; the same setup works for a playable demo.",
+      "url": "https://blog.persistent.info/2026/10/infinite-mac-beos.html",
+      "image": {
+        "src": "img/2026-11-02/beos.webp",
+        "alt": "BeOS desktop in a browser, with windows showing a Macworld cover, a spinning 3D teapot, a Mandelbrot viewer, a terminal and a CPU monitor.",
+        "credit": "Mihai Parparita",
+        "creditUrl": "https://blog.persistent.info/2026/10/infinite-mac-beos.html",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "phoria2",
+      "lane": "both",
+      "kind": "tool",
+      "title": "phoria2: a small WebGL 2 library built to be easy for agents",
+      "where": "Hacker News",
+      "signal": "82 points on Hacker News (October 31).",
+      "hook": "A 2013 canvas 3D library rebuilt for WebGL 2 with no dependencies, glTF, shadows and 3D charts, where every wrong option returns an error that says how to fix it.",
+      "borrow": "Error messages that name the fix help people and coding agents alike; worth copying in any API or plugin you publish.",
+      "url": "https://kevs3d.co.uk/phoria2/",
+      "image": {
+        "src": "img/2026-11-02/phoria2.webp",
+        "alt": "The phoria2 page with a 3D bar chart of monthly sales for four regions, drawn from one line of code shown underneath.",
+        "credit": "Kevin Roast",
+        "creditUrl": "https://kevs3d.co.uk/phoria2/",
+        "fit": "cover"
+      },
+      "forYou": "The fix-telling errors pattern fits the plugins' validation messages, which Claude Code reads when it wires them up."
+    }
+  ],
+  "lab": [
+    {
+      "id": "caper",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "\"Shall We Approve?\" Consequence-Aware Approval for Autonomous Coding Agents",
+      "headline": "Run the agent's command in a throwaway copy first, then approve what it did",
+      "authors": "Weiheng Wu, Junkai Chen, Zhensu Sun, et al. (Singapore Management University)",
+      "where": "arXiv preprint",
+      "date": "2026-10-29",
+      "problem": "Tools that approve a coding agent's shell commands judge the command text. What a command really does depends on the scripts it calls and the state of the workspace, so harmful effects hide behind harmless-looking commands.",
+      "idea": "Snapshot the workspace container with networking off, run the command while tracing every file and network call, and hold its output. A separate model sees a short report of the effects and a diff of changed files. If it allows, the state is kept and the command has run once; if it blocks, the container rolls back and the agent gets the reason.",
+      "result": "On the SABER benchmark the harmful-outcome rate fell to 6.7%, against at least 14.8% for the best of six existing approvers; on the authors' new benchmark with harm hidden inside called tools, 7.8% against at least 35.3%, while blocking 1.0% of safe tasks. Median approval time was 3.2 seconds, at about $0.019 a task. Authors' own benchmarks.",
+      "useIt": "Judge effects, not text: for unattended agents, pre-run risky commands in a disposable worktree or container and show the file diff to a second model or a person before keeping it.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2610.40753"
+        },
+        {
+          "label": "Code (GitHub)",
+          "url": "https://github.com/wudaoz/Caper"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-02/caper.webp",
+        "alt": "Pipeline figure: an agent proposes make clean; the command is snapshotted, run in a Docker sandbox under strace and summarised as an effects report and file diff; an approver allows it, or blocks and rolls back.",
+        "credit": "Wu et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2610.40753",
+        "fit": "contain"
+      },
+      "forYou": "A PreToolUse hook on Bash for the routines could pre-run destructive-looking commands in a git worktree and log the diff before letting them run for real."
+    },
+    {
+      "id": "dynskin",
+      "lane": "gamedev",
+      "kind": "paper",
+      "title": "Dynamic Skinning: Kinematics-Driven Cartoon Effects for Articulated Characters",
+      "headline": "Cartoon wobble and drag straight from a character's skeleton, with no simulation",
+      "authors": "Damien Rohmer, Karim Salem, Niranjan Kalyanasundaram, Victor Zordan (École Polytechnique, Clemson University)",
+      "where": "IEEE Transactions on Visualization and Computer Graphics",
+      "date": "2026-10-29",
+      "problem": "Secondary motion such as a neck wobbling or ears dragging behind usually needs a physics simulation or hand-keyed animation, both costly for games.",
+      "idea": "Extend standard skinning with small deformers that offset each vertex using how fast its bones move and how that motion changes over time. That gives oscillation, resonance, drag and a delayed wave from root to tip, all computed per frame from the skeleton and the existing skin weights.",
+      "result": "Real time, including a 250,000-vertex model on the GPU, with artist controls for frequency, damping, amplitude and drag. The paper compares the effects with earlier methods visually in its video; it reports no frame-time numbers. Published in the journal's March issue; the accepted version and code came out on October 29.",
+      "useIt": "The oscillation core is about 550 lines of C++ called once per frame after normal skinning, small enough to port to a vertex shader or an engine's mesh deformer. Try the web demo or the Blender add-on first.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper (arXiv, accepted version)",
+          "url": "https://arxiv.org/abs/2610.40976"
+        },
+        {
+          "label": "Project page and demo",
+          "url": "https://velocityskinning.com/"
+        },
+        {
+          "label": "Code (GitHub, MIT)",
+          "url": "https://github.com/drohmer/dynamic_skinning"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-02/dynskin.webp",
+        "alt": "A cartoon giraffe whose neck sways and overshoots, a jack-in-the-box clown whose arms and hat wobble, and a toy train whose cars bend and stretch, shown as motion trails.",
+        "credit": "Rohmer et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2610.40976",
+        "fit": "contain"
+      },
+      "forYou": "A cheap secondary-motion deformer would be a sellable Fab add-on if nobody has ported it to Unreal's deformer graph yet."
+    }
+  ],
+  "note": "Reddit, GamesIndustry.biz and some news feeds refused the sweep, and Epic's news page was unreachable, so game dev news leans on Game Developer, project pages and release notes. No new Claude Code release since 2.1.316."
+}
