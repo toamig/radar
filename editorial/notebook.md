@@ -28,6 +28,7 @@ what to avoid next time. Facts about stories never go here.
 
 - 2026-11-01 No. 19: teal + yellow on bright-white, federal-blue text, wide type, split hero with a real game screenshot plus agent transcript (cover, reads well). A practitioner (folded) concept beside a tall image concept left a hole again; unfold any block that sits beside an image block. A five-node flow at wide size clipped a two-word label ("Review, repair"); one word per node at wide. Two spotlights side by side even out when the fact lists match in length (three each). A project's title-card render is a brand card; skip it rather than use it.
 - 2026-11-02 No. 20: purple + kelly on fog, burgundy text, grotesk type, stack hero with a 5-node kit flow of the benchmark method. A tall source chart cannot go in a stack hero: the 3:1 band crops it, so it moved into a full-width compare under the hero, where it reads whole. Check validate's 'source already used' warnings before keeping a block: Godot 4.8 beta 2 had run on 10-30 and was dropped. A half chart beside a half image spotlight left a 250px hole; acceptable, but trim one of them next time.
+- 2026-11-03 No. 21: green + sunflower on blush, black text, condensed type, split hero with the store's own bar chart from its Bluesky post (contain); the public Bluesky API (public.api.bsky.app, resolve the handle to a DID first) returns post text, dates and full-size images when the site will not render. A folded practitioner timeline (third) beside a wide image concept left a 900px hole; moving the vendor architecture figure into Learn one thing, where it pictured the exact concept, and unfolding the timeline evened the row. Two half stats side by side fill evenly.
 
 ## Kit requests
 
@@ -38,3 +39,5 @@ no longer overlaps the light art plate in dark mode.
 Request 2026-11-01: `npm run prune` deletes `public/img/<date>/` after 7 days, but weekly deepRead images point there
 (W42 uses img/2026-10-18, W43 uses img/2026-10-25), so those week pages now show a missing image. Prune could
 keep images that a data/weeks file references, or weeks could copy their image to their own folder.
+
+Request 2026-11-03: validate warns that an image used only by `learn.image` "is not used by any block"; it could count learn, sparks and lab images as used.

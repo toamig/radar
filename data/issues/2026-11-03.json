@@ -1,0 +1,973 @@
+{
+  "date": "2026-11-03",
+  "number": 21,
+  "title": "More uploads, same buyers",
+  "dek": "itch.io now gets twice as many new game pages a day, but not twice the buyers, and it is cleaning up. On the agent side, the Claude API now keeps the conversation for you, and Uber shows how to run 5,000 tools through one gateway.",
+  "theme": {
+    "paper": "blush",
+    "text": "black",
+    "inks": [
+      "green",
+      "sunflower"
+    ],
+    "type": "condensed",
+    "mood": "a Tuesday about a store flooding and the plumbing behind agents"
+  },
+  "tldr": [
+    {
+      "text": "itch.io says new game pages per day doubled in two months while downloads and purchases did not. It deleted terabytes of AI uploads and widened its AI disclosure rules.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "A studio rebuilt a nine-year-old idle game from scratch and kept every player's save; the hard part was recovering why the old code worked.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Message threads in the Claude API keep the conversation on the server, so each turn of an agent loop sends only what is new.",
+      "lane": "ai"
+    },
+    {
+      "text": "Uber runs more than 800 MCP servers through one gateway, and new tools start switched off until their owners approve them.",
+      "lane": "ai"
+    },
+    {
+      "text": "GitHub will block the pull_request_target trigger by default in public repositories on December 2, with test blackouts on November 9 and 16.",
+      "lane": "ai"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Stores and studios",
+      "note": "Who is filling the shelves, what players like, and a rewrite that kept every save.",
+      "ids": [
+        "itch-noai",
+        "playgama",
+        "adcap-rewrite"
+      ]
+    },
+    {
+      "title": "Agent plumbing",
+      "note": "Less to send per turn, weights edited by a model, a deadline for Actions, and a gateway for thousands of tools.",
+      "ids": [
+        "threads",
+        "astra-weights",
+        "pr-target",
+        "uber-mcp"
+      ]
+    },
+    {
+      "title": "Under the hood",
+      "note": "A big system made incremental without breaking it, and the Claude Code changes worth knowing.",
+      "ids": [
+        "cf-dns",
+        "cc-2-1-317"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "itch-flood",
+      "format": "hero",
+      "variant": "split",
+      "lane": "gamedev",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "itch.io doubled its new games, not its buyers",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The open game store itch.io says twice as many game pages are created each day as two months ago, while sales did not double. It is deleting the worst AI uploads and asking more creators to say when they used AI.",
+      "background": "itch.io is an open storefront where anyone can upload a game, asset pack or zine for free, which has made it the home of game jams and small experiments.",
+      "takeaway": "An open store is getting many more pages but not more players to share them. Saying clearly what you made, and how, is becoming part of being found.",
+      "body": [
+        "itch.io's own chart of new game pages per day climbs from about 3,000 in early August to between 6,000 and 7,000 by late October. When people asked whether the growth showed up in sales, itch.io answered that downloads and purchases had **not** doubled, Game Developer reports.",
+        "On November 3 the store's account said it had \"just deleted a couple terabytes of ai slop\" and reminded uploaders that its quality guidelines have had a clause against mass AI-generated uploads for over two years. The same morning it made an AI disclosure mandatory to create or edit pages in the tabletop, books, comics and soundtracks categories, which join game assets, and added the No AI filter to more pages, including search results.",
+        "For games, the disclosure question is still optional, so a page can go up without answering it. Steam is dealing with a similar wave of AI clones, and Valve has asked developers to lean on community and depth to stand apart."
+      ],
+      "stat": {
+        "value": "2x",
+        "label": "new game pages a day on itch.io, in two months"
+      },
+      "image": {
+        "src": "img/2026-11-03/itch-pages.webp",
+        "alt": "Bar chart of game pages created per day on itch.io from August 3 to October 30: bars sit near 3,000 through August, rise through September and reach roughly 6,000 to 7,000 by late October.",
+        "credit": "itch.io (Bluesky)",
+        "creditUrl": "https://bsky.app/profile/itch.io/post/3mz7vswlnbs23",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "AI disclosure",
+          "def": "A question on the upload form where creators say whether, and where, their project contains output from generative AI tools."
+        },
+        {
+          "term": "quality guidelines",
+          "def": "The store's written rules for what uploads are welcome and what can be removed."
+        },
+        {
+          "term": "AI clones",
+          "def": "Games that copy an existing game's look or design, produced quickly with AI tools to ride on its popularity."
+        }
+      ],
+      "why": "On a store where supply doubles and demand does not, each new page is harder to find. Tags, disclosure and a page that shows real craft now do part of the work that simply being new used to do.",
+      "forYou": "Browser builds on itch.io now compete with twice the noise: fill in the AI disclosure honestly (code help counts on some forms), and treat the page screenshots and devlog as the thing that sets the game apart.",
+      "sources": [
+        {
+          "label": "itch.io: pages per day doubled (Bluesky)",
+          "url": "https://bsky.app/profile/itch.io/post/3mz7vswlnbs23"
+        },
+        {
+          "label": "Game Developer: itch.io game pages double",
+          "url": "https://www.gamedeveloper.com/pc/number-of-game-pages-doubles-on-itch-io-as-ai-clones-flood-the-store"
+        },
+        {
+          "label": "itch.io: AI disclosure in more categories",
+          "url": "https://bsky.app/profile/itch.io/post/3mzewzv54dc2h"
+        },
+        {
+          "label": "itch.io: No AI filter in search",
+          "url": "https://bsky.app/profile/itch.io/post/3mzezjvqexs2h"
+        },
+        {
+          "label": "itch.io quality guidelines",
+          "url": "https://itch.io/docs/creators/quality-guidelines#avoid-uploading-excessive-amounts-of-automatically-generated-or-ai-generated-content"
+        }
+      ]
+    },
+    {
+      "id": "itch-noai",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Only a quarter of itch.io's newest games carry the No AI tag",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Turning on itch.io's No AI filter shrinks its list of newest games from about 1.77 million to about 432,000.",
+      "stats": [
+        {
+          "value": "1.77M",
+          "label": "games in itch.io's newest list"
+        },
+        {
+          "value": "432K",
+          "label": "left after the No AI filter, about one in four"
+        }
+      ],
+      "body": [
+        "The other three quarters mix games that disclose AI use with games whose makers skipped the question, which is optional for games, so the split is not a count of AI games."
+      ],
+      "why": "The No AI tag is becoming a filter players actually use, so leaving the question blank now hides a page from them.",
+      "sources": [
+        {
+          "label": "Game Developer",
+          "url": "https://www.gamedeveloper.com/pc/number-of-game-pages-doubles-on-itch-io-as-ai-clones-flood-the-store"
+        }
+      ]
+    },
+    {
+      "id": "playgama",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Which models build the AI games, and which ones players like",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "A web games platform that tracks more than 4,200 AI-built games finds that most are made with Claude Opus, but players like games made with OpenAI's models more.",
+      "background": "Playgama runs a portal for browser games; its AI Game Index counts which model built each game and how players react.",
+      "stats": [
+        {
+          "value": "54%",
+          "label": "of new AI-built games in the index were made with Claude Opus"
+        },
+        {
+          "value": "65",
+          "label": "likes per 1,000 plays for games made with OpenAI's Astra"
+        },
+        {
+          "value": "39",
+          "label": "likes per 1,000 plays for games made with Claude Opus"
+        }
+      ],
+      "body": [
+        "The index covers 1.1 million launches by more than 500,000 players, and Playgama has not published its method. Separately, Roblox says more than 80% of its top 100 games used AI to speed up development in October."
+      ],
+      "why": "The first player-side numbers on AI-built games suggest the model that makes the most games is not the one making the best-liked ones, though one portal's audience is a narrow sample.",
+      "forYou": "If a three.js game ships through a web portal, track likes per 1,000 plays yourself: it is the number this index ranks on.",
+      "sources": [
+        {
+          "label": "PocketGamer.biz",
+          "url": "https://www.pocketgamer.biz/more-than-80-of-robloxs-top-games-now-use-ai-while-playgama-tracks-the-tools-developers-prefer/"
+        }
+      ]
+    },
+    {
+      "id": "adcap-rewrite",
+      "format": "steps",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Rewriting a nine-year-old hit without losing a single save",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The studio behind the idle game AdVenture Capitalist rebuilt it from scratch, and players returning after five or six years found their progress intact. Its production lead explains what was harder than expected.",
+      "background": "AdVenture Capitalist is a 2015 idle game from Hyper Hippo, a Canadian studio; Alexandre Denault is its vice president of production and technology.",
+      "intro": "By 2022, changing one system broke others, which Denault calls \"like playing whack-a-mole\". The team chose a full rebuild, estimating that an incremental rewrite would take twice as long.",
+      "steps": [
+        {
+          "title": "Admit the code is the blocker",
+          "text": "No single bug forced it. Feature talks had turned into risk talks and updates had shrunk to maintenance, so the owners backed an expensive rebuild."
+        },
+        {
+          "title": "Recover the why, not just the what",
+          "text": "Source code and a working build show what a system does, not why. Rebuilding the design documents took design, programming and QA together; Denault calls assuming it would be easy the biggest misjudgement."
+        },
+        {
+          "title": "Treat old bugs as features",
+          "text": "Some long-standing bugs had become behavior players expected. Fixing them could make the game feel broken, so each one was a design decision."
+        },
+        {
+          "title": "Migrate every save format",
+          "text": "Keeping progress across several generations of save files was the hardest part. For long-lapsed players there were no saves to test with, so QA recreated them from archives."
+        },
+        {
+          "title": "Ship the same game first",
+          "text": "The first release was meant to feel familiar and keep progress, with no new content. New progression, minigames and events came in later 9.x updates."
+        },
+        {
+          "title": "Staff the testing",
+          "text": "His one regret: more people on the project, for breathing room and more test time."
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-03/adcap.webp",
+        "alt": "AdVenture Capitalist's main screen: a cartoon tycoon beside a list of businesses from lemonade stands to oil companies, each with its income.",
+        "credit": "Hyper Hippo (Steam)",
+        "creditUrl": "https://store.steampowered.com/app/346900",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "idle game",
+          "def": "A game that keeps progressing while the player is away, built around upgrades that grow income."
+        },
+        {
+          "term": "QA",
+          "def": "Quality assurance: the people and process that test a game before players see it."
+        },
+        {
+          "term": "save format",
+          "def": "The layout of the file a game writes to remember a player's progress."
+        }
+      ],
+      "why": "Any long-lived codebase hits this point. Writing down why systems behave as they do, and keeping real samples of every old data format, is cheap now and expensive to recover later.",
+      "forYou": "For each Fab plugin version and each shipped game build, keep a sample save or data asset in a fixtures folder with a test that loads it; that is the archive Hyper Hippo had to rebuild by hand.",
+      "sources": [
+        {
+          "label": "PocketGamer.biz: burning down AdVenture Capitalist",
+          "url": "https://www.pocketgamer.biz/hyper-hippo-alexandre-denault-adventure-capitalist-rewrite/"
+        }
+      ]
+    },
+    {
+      "id": "threads",
+      "format": "spotlight",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "The Claude API can now remember the conversation for you",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Normally every turn of a chat or agent loop resends the whole conversation. With the new message threads, the API keeps it for a few minutes, so each request carries only what is new and replies start faster.",
+      "name": "Message threads",
+      "what": "Server-side conversation state for the Messages API, in beta since November 2.",
+      "body": [
+        "The first request creates a thread with the full conversation, system prompt and tools. Each later request sends only the new messages plus the previous response's id; the system prompt and tools are left out because the thread keeps them.",
+        "Anthropic says requests get smaller and time to first token stays lower and steadier as the conversation grows, and that long agent loops gain most. A thread is best-effort: if it has expired, the app resends everything, so it must keep its own copy."
+      ],
+      "facts": [
+        {
+          "k": "Status",
+          "v": "Beta"
+        },
+        {
+          "k": "Expires",
+          "v": "5 minutes after the last request"
+        },
+        {
+          "k": "Deleted",
+          "v": "No more than 1 hour after last use"
+        },
+        {
+          "k": "Zero data retention",
+          "v": "Not eligible"
+        },
+        {
+          "k": "Where",
+          "v": "Claude API, AWS, Google Cloud, Microsoft Foundry"
+        }
+      ],
+      "tryIt": "anthropic-beta: message-threads-2026-08-12",
+      "terms": [
+        {
+          "term": "time to first token",
+          "def": "How long a model takes to send back the first piece of its reply."
+        },
+        {
+          "term": "system prompt",
+          "def": "Standing instructions sent with a conversation that set how the model should behave."
+        },
+        {
+          "term": "Zero data retention",
+          "def": "An arrangement under which the provider stores no request content after answering."
+        }
+      ],
+      "why": "In long agent loops, re-uploading and re-reading the whole history each turn adds latency that grows with every step. Sending only the new turn removes most of that work.",
+      "forYou": "The scheduled routines and any Managed Agents loop that runs past 20 turns are the first candidates; keep the replay path, since a five-minute pause loses the thread.",
+      "sources": [
+        {
+          "label": "Claude docs: Message threads",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/message-threads"
+        }
+      ]
+    },
+    {
+      "id": "astra-weights",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "One model edited another's weights and its math score jumped sixfold",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "MIT researchers had a large AI model read and directly rewrite a tiny fraction of a small model's numbers, with no training. The small model stopped looping on math problems and its scores rose sharply.",
+      "background": "A model's weights are the billions of numbers learned in training; changing them normally takes a training run.",
+      "intro": "Qwen3.5-0.8B before and after GPT-6 Astra edited 131,072 of its weights (0.016%), using 50 test runs as feedback. Scores in percent.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "MATH-500 before",
+          "value": 7.9
+        },
+        {
+          "label": "MATH-500 after",
+          "value": 48.1,
+          "highlight": true
+        },
+        {
+          "label": "GSM8K before",
+          "value": 13.8
+        },
+        {
+          "label": "GSM8K after",
+          "value": 67.1,
+          "highlight": true
+        },
+        {
+          "label": "IFEval before",
+          "value": 21
+        },
+        {
+          "label": "IFEval after",
+          "value": 62.3,
+          "highlight": true
+        }
+      ],
+      "note": "Reported by the authors, who call the work very early. The edit removed a looping failure; on Gemma 3 270M, which rarely loops, scores did not improve, which the authors read as weight edits removing obstacles rather than adding skills.",
+      "terms": [
+        {
+          "term": "weights",
+          "def": "The numbers inside a neural network that determine what it outputs; training adjusts them."
+        },
+        {
+          "term": "MATH-500",
+          "def": "A test of 500 competition math problems."
+        },
+        {
+          "term": "IFEval",
+          "def": "A test of how well a model follows explicit formatting and content instructions."
+        }
+      ],
+      "deep": [
+        "The authors call the approach weight-space programming. Astra worked in a Python kernel over the weights with no GPU, traced the looping to one direction written by layers 15 and 19, and subtracted it from 64 output columns in each. Answers that hit the 32,768-token limit on MATH-500 fell from 93.0% to 33.1%.",
+        "Other experiments: naming which Atari game a 17,253-weight policy was trained on, and editing 3.5% of a policy's weights to solve a physics task in one shot. Detecting a sycophantic model from weights alone failed until Astra could also inspect attention patterns. Logs and the edited model are public."
+      ],
+      "why": "If a model can find and fix a specific failure inside another model's weights, small local models could be repaired for a task without a training budget. It is early and shown on small models only.",
+      "sources": [
+        {
+          "label": "Takehi et al.: Sparks of weight-space programming",
+          "url": "https://rikiyat.github.io/blog/weight-space-programming/"
+        },
+        {
+          "label": "Experiment logs (GitHub)",
+          "url": "https://github.com/RikiyaT/lm_understand-logs"
+        },
+        {
+          "label": "Edited model (Hugging Face)",
+          "url": "https://huggingface.co/RikiyaT/Qwen3.5-0.8B-weight-space-programming"
+        }
+      ]
+    },
+    {
+      "id": "pr-target",
+      "format": "timeline",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "GitHub blocks a risky Actions trigger by default on December 2",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "A GitHub Actions trigger that lets pull requests from strangers run with your repository's secrets will be blocked by default in public repositories, with two test blackouts first.",
+      "intro": "The trigger is pull_request_target. Applies to public repositories on GitHub Free, Team and Enterprise Cloud. Private and internal repositories are not affected.",
+      "events": [
+        {
+          "when": "Now",
+          "text": "The rule runs in evaluate mode; Insights shows which workflow runs it would block."
+        },
+        {
+          "when": "Nov 9, 16:00 UTC",
+          "text": "Two-hour brownout: blocked runs fail with an error annotation."
+        },
+        {
+          "when": "Nov 16, 16:00 UTC",
+          "text": "Second two-hour brownout."
+        },
+        {
+          "when": "Dec 2",
+          "text": "Blocked by default unless an Actions event policy allows it, optionally for named workflow files only."
+        }
+      ],
+      "terms": [
+        {
+          "term": "pull_request_target",
+          "def": "A workflow trigger that runs on pull requests in the base repository's context, with access to its secrets."
+        },
+        {
+          "term": "brownout",
+          "def": "A planned, temporary switch-on of a coming change, so teams find what breaks before it is permanent."
+        }
+      ],
+      "why": "Label, triage and comment bots often use this trigger. Check before November 9 so a brownout does not surprise you.",
+      "forYou": "Check the public plugin and tool repos for pull_request_target in .github/workflows before November 9; allow it only for the workflow files that need it.",
+      "sources": [
+        {
+          "label": "GitHub changelog",
+          "url": "https://github.blog/changelog/2026-11-02-pull_request_target-blocked-by-default-december-2"
+        }
+      ]
+    },
+    {
+      "id": "uber-mcp",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Uber puts one gateway between its agents and 5,000 tools",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Uber turned its existing internal services into tools AI agents can call, more than 5,000 of them, without rewriting any service. One gateway handles access, privacy and translation, and every new tool starts switched off.",
+      "plain": "Instead of every team building its own agent integrations, a central registry decides which tools exist and who may use them, and one gateway turns agent calls into ordinary service calls.",
+      "body": [
+        "A crawler reads Uber's existing API definitions, generates a tool description for each endpoint with the help of an LLM, and registers it disabled until the owning team reviews and enables it. The gateway then translates each agent request into the HTTP, gRPC or TChannel call the service already speaks."
+      ],
+      "points": [
+        "More than 800 MCP servers and 5,000 tools behind one gateway",
+        "New tools stay off until their owner approves them",
+        "Access checked per server and per tool; personal data redacted from responses",
+        "Agents search the catalog and load one tool schema at a time",
+        "Agents can ask for only the response fields they need"
+      ],
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools and data sources into an AI model."
+        },
+        {
+          "term": "gRPC",
+          "def": "A fast way for services to call each other, using a shared definition of each call."
+        },
+        {
+          "term": "schema",
+          "def": "A formal description of what a tool expects as input and returns as output."
+        }
+      ],
+      "deep": [
+        "Components named in the write-up: an MCP registry as control plane (definitions, ownership, enablement), a proxy gateway as runtime, AutoCrawler running on Cadence to scan Protocol Buffers and Thrift definitions, a token exchange service for third-party tokens such as Jira and Google, Omni MCP for incremental discovery, Response Projection for field selection, and the aifx CLI, which writes results to files so coding agents can inspect them selectively. Configuration changes reach the gateway without restarts."
+      ],
+      "why": "Once agents can call dozens of tools, the hard problems are ownership, permissions and context size, not the protocol. Default-off tools and field selection are patterns any team with more than a handful of MCP servers can copy.",
+      "forYou": "Two ideas fit a small MCP server today: return only the fields the agent asks for, and keep new tools disabled until a test covers them.",
+      "sources": [
+        {
+          "label": "Uber: Designing an MCP gateway",
+          "url": "https://www.uber.com/us/en/blog/designing-mcp-gateway/"
+        },
+        {
+          "label": "InfoQ: Uber's MCP gateway",
+          "url": "https://www.infoq.com/news/2026/11/uber-mcp-gateway-ai-agents"
+        }
+      ]
+    },
+    {
+      "id": "cf-dns",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Cloudflare stopped rebuilding whole DNS zones and cut memory 86%",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Cloudflare's DNS system used to rebuild a customer's whole record set for many changes. It now works out the smallest rebuild that gives the same result, and falls back to a full one whenever it cannot prove that.",
+      "background": "A DNS zone is the full set of records for a domain; Cloudflare turns database changes into data its servers worldwide read.",
+      "intro": "A planner sorts each change into one of five build types and must produce output byte for byte identical to a full build. A mirror pipeline with no customer traffic compared 20% of zones against production and found differences in 0.31% of 234,313 zones, mostly timing. Numbers over 24 hours.",
+      "left": "Before",
+      "right": "Targeted builds",
+      "rows": [
+        {
+          "aspect": "Average memory",
+          "left": "49 GiB",
+          "right": "7 GiB"
+        },
+        {
+          "aspect": "Peak memory",
+          "left": "79 GiB",
+          "right": "12 GiB"
+        },
+        {
+          "aspect": "Median delay",
+          "left": "About 7.7 s",
+          "right": "About 3.3 s"
+        },
+        {
+          "aspect": "Worst p99 spike",
+          "left": "14.6 minutes",
+          "right": "1.21 minutes"
+        },
+        {
+          "aspect": "Builds that rebuild the whole zone",
+          "left": "About 11.9%",
+          "right": "7.0%"
+        }
+      ],
+      "verdict": "Most of the gain came from the rare huge zones that used to stall everything behind them; typical delays barely moved.",
+      "image": {
+        "src": "img/2026-11-03/cf-dns.webp",
+        "alt": "Flow diagram: record and wildcard change events feed a build planner, which splits work into required-work boxes, a unified scheduler combines them, and one build comes out.",
+        "credit": "Cloudflare",
+        "creditUrl": "https://blog.cloudflare.com/dns-targeted-zone-builds",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "DNS",
+          "def": "The system that turns a domain name into the address of the server behind it."
+        },
+        {
+          "term": "p99",
+          "def": "The 99th percentile: the delay that only 1% of builds exceed."
+        }
+      ],
+      "deep": [
+        "The build types are resources only (86.81% of builds), resources and metadata, apex and metadata, purge, and full zone (7.04%). Before running, the builder re-reads current settings from replicas, since state may have changed after the event arrived. Very large zones never escalate to a full build; they rebuild the apex, metadata and the named records instead. Record changes now arrive at about 700 a second, up from about 250 in 2022."
+      ],
+      "why": "Turning a full rebuild into an incremental one is a classic way to break a system. Requiring identical output, falling back when unsure, and running a shadow pipeline before switching is a recipe that transfers to build systems, caches and asset pipelines.",
+      "forYou": "The same pattern fits an asset cooking or content pipeline: a planner that picks the smallest rebuild, plus a test that compares its output to a full build.",
+      "sources": [
+        {
+          "label": "Cloudflare: targeted DNS zone builds",
+          "url": "https://blog.cloudflare.com/dns-targeted-zone-builds"
+        }
+      ]
+    },
+    {
+      "id": "cc-2-1-317",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Claude Code 2.1.317: subagents keep their own effort level",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "The latest Claude Code release fixes how helper agents pick their effort, makes messages to busy background agents arrive sooner, and asks before your email address goes out over the network.",
+      "intro": "Four changes from the November 3 release that a heavy user will notice.",
+      "items": [
+        {
+          "title": "Subagents use their own effort",
+          "text": "A subagent or teammate on a different model from the main chat now uses that model's saved effort level or default, not the session's.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317"
+        },
+        {
+          "title": "Messages reach busy agents sooner",
+          "text": "Sending a message to a running background agent now moves its current command to the background instead of stopping it.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317"
+        },
+        {
+          "title": "Hooks can fail closed",
+          "text": "Agent SDK hook callbacks accept onFailure: \"block\", so a callback that errors blocks the action instead of letting it run.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317"
+        },
+        {
+          "title": "A prompt before your email leaves",
+          "text": "Claude Code now asks for confirmation before a web or shell tool call sends your account email address over the network.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317"
+        }
+      ],
+      "terms": [
+        {
+          "term": "subagent",
+          "def": "A helper agent that the main agent starts for one task, with its own context."
+        },
+        {
+          "term": "hook",
+          "def": "A script or callback that runs automatically at a set point, such as before a tool call."
+        }
+      ],
+      "deep": [
+        "Also in 2.1.317: re-reading an unchanged file returns its content again instead of a stub; claude -p exits 1 when a full disk loses transcript writes; Grep and Glob no longer present partial results as complete after a time limit; OpenTelemetry exports time out after 10 seconds (OTEL_EXPORTER_OTLP_TIMEOUT, up to 30). CLAUDE_CODE_DISABLE_NESTED_SESSION_ID=1 restores the old behavior where claude -p inside a session shares its ID."
+      ],
+      "why": "Effort settings decide cost and depth per agent; until now a cheap subagent could silently inherit a heavy session setting.",
+      "forYou": "Security hooks written with the Agent SDK should set onFailure to block, so a crashed check does not wave a command through.",
+      "sources": [
+        {
+          "label": "Claude Code v2.1.317 release",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317"
+        }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What are a control plane and a data plane?",
+    "answer": "They are the two halves of most large systems. The control plane decides: it holds the catalog, rules and settings. The data plane does: it handles each request quickly, using what the control plane told it.",
+    "analogy": "A restaurant: the manager writes the menu and decides who works which station (control plane), while the kitchen cooks each order as it comes in (data plane).",
+    "body": [
+      "Splitting the two lets each grow on its own terms. The data plane must be fast and always up, so it does as little thinking as possible. The control plane changes slowly and carefully, with reviews and approvals, and pushes its decisions down.",
+      "In Uber's gateway, pictured here, the registry of tools and owners is the control plane and the gateway that relays every agent call is the data plane; a new setting reaches the gateway without a restart. Cloudflare's DNS works the same way: customers change records in a database, and a builder turns those changes into data that servers answering lookups read.",
+      "The split also limits damage: if the control plane goes down, requests keep being served with the last known settings."
+    ],
+    "terms": [
+      {
+        "term": "registry",
+        "def": "A central list of what exists in a system, with who owns each part."
+      }
+    ],
+    "seenIn": [
+      "uber-mcp",
+      "cf-dns"
+    ],
+    "sources": [
+      {
+        "label": "Uber: Designing an MCP gateway",
+        "url": "https://www.uber.com/us/en/blog/designing-mcp-gateway/"
+      },
+      {
+        "label": "Cloudflare: targeted DNS zone builds",
+        "url": "https://blog.cloudflare.com/dns-targeted-zone-builds"
+      }
+    ],
+    "image": {
+      "src": "img/2026-11-03/uber.webp",
+      "alt": "Uber MCP gateway diagram: a control plane row (registries, crawler, owners) above a data plane where agent calls pass through a proxy and the central gateway to existing services.",
+      "credit": "Uber Engineering",
+      "creditUrl": "https://www.uber.com/us/en/blog/designing-mcp-gateway/",
+      "fit": "contain"
+    }
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Send only the new turn: put one agent loop on a message thread",
+    "gist": "In half an hour you see whether keeping the conversation on the server makes your long agent loops start replying faster.",
+    "time": "30 minutes",
+    "level": "practitioner",
+    "needs": "A Claude API key, Node, and an agent loop or chat that runs ten or more turns.",
+    "steps": [
+      {
+        "title": "Update the SDK",
+        "text": "Install the latest @anthropic-ai/sdk; the thread helper adds the beta header for you."
+      },
+      {
+        "title": "Wrap the loop in a thread",
+        "text": "Create the helper with your model, system prompt and tools, then call thread.send with each new user or tool-result message instead of the full history."
+      },
+      {
+        "title": "Measure both ways",
+        "text": "Log time to first token per turn with the thread, then run the same task with plain requests that resend everything."
+      },
+      {
+        "title": "Test the expiry",
+        "text": "Pause for more than five minutes and send again. The helper replays the full conversation when the thread is gone; raw HTTP gets a 404 you must handle the same way."
+      }
+    ],
+    "code": {
+      "lang": "typescript",
+      "code": "const client = new Anthropic();\n\n// Create the helper. This call sends no request.\nconst thread = client.beta.messages.thread({\n  model: \"claude-opus-5-5\",\n  max_tokens: 1024,\n  cache_control: { type: \"ephemeral\" },\n  system: \"You are a support agent for Acme. Keep replies short.\"\n});\n\n// Turn 1: the helper creates a thread and sends the full conversation\nawait thread.send({ role: \"user\", content: \"Hi! I have a question about an order.\" });\n\n// Turn 2: the helper continues the thread and sends only the new message\nconst second = await thread.send({\n  role: \"user\",\n  content: \"How long does standard shipping usually take?\"\n});"
+    },
+    "check": "With the thread, later requests are much smaller and time to first token stays roughly flat as turns pile up; with full resends it creeps up. After a long pause, the next turn still works.",
+    "terms": [
+      {
+        "term": "time to first token",
+        "def": "How long a model takes to send back the first piece of its reply."
+      },
+      {
+        "term": "404",
+        "def": "The HTTP status for not found; here, the thread has expired."
+      }
+    ],
+    "from": "threads",
+    "forYou": "Try it on the longest-running routine first, where turn counts are highest; keep its own transcript as the replay source.",
+    "sources": [
+      {
+        "label": "Claude docs: Message threads",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/message-threads"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Vercel now checks lockfiles and blocks known-malicious npm package versions during builds on every plan; a flagged dependency fails the deploy with its name and version.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/blocking-malicious-npm-packages-before-and-during-installation",
+      "source": "Vercel"
+    },
+    {
+      "text": "Vercel projects can now be configured in vercel.toml, with comments; keep only one of vercel.toml, vercel.json or vercel.ts.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/projects-can-now-be-configured-with-vercel-toml",
+      "source": "Vercel"
+    },
+    {
+      "text": "Vercel's MCP server accepts Client ID Metadata Documents, so MCP clients can sign in without registering first.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-mcp-now-supports-client-id-metadata-documents",
+      "source": "Vercel"
+    },
+    {
+      "text": "Vercel Sandbox with Drives starts up to 2.4x faster, with no SDK change.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-sandbox-with-drives-now-starts-up-to-2-4x-faster",
+      "source": "Vercel"
+    },
+    {
+      "text": "PostHog is moving its warehouse off DuckDB five months in: single-node engines must be sized before the query arrives, and catalog writes slowed at about 2 PB.",
+      "lane": "ai",
+      "url": "https://posthog.com/blog/moving-off-duckdb",
+      "source": "PostHog"
+    },
+    {
+      "text": "Simon Willison's llm 0.37 adds OpenAI-compatible endpoints from the command line; he says AI-assisted contributions from 12 people were easier to review than expected.",
+      "lane": "ai",
+      "url": "https://simonwillison.net/2026/Nov/2/llm/",
+      "source": "Simon Willison"
+    },
+    {
+      "text": "A stale uv.lock can pin a package with no wheel for a new Python; Willison's fix for libraries that do not ship the lockfile is to delete it and rerun.",
+      "lane": "ai",
+      "url": "https://simonwillison.net/2026/Nov/1/delete-uv-lock-first/",
+      "source": "Simon Willison"
+    },
+    {
+      "text": "Codex 0.166.0 adds transcript search and Markdown rendering in the terminal, and keeps approval settings across resume and fork.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "GitHub's code and secret risk assessments now split findings by repository protection status, on Team and Enterprise Cloud.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-02-security-risk-assessments-include-repository-protection-status",
+      "source": "GitHub"
+    },
+    {
+      "text": "Epic's AI MegaJam on itch.io kicks off November 11 and runs November 12 to 15 in Unreal Engine or UEFN, with an in-person site in San Francisco.",
+      "lane": "gamedev",
+      "url": "https://www.invenglobal.com/articles/27578/epic-games-announces-2026-epic-ai-megajam-with-up-to-50000-in-grants",
+      "source": "Inven Global"
+    },
+    {
+      "text": "Hyper Hippo's Alexandre Denault gives the AdVenture Capitalist rewrite talk at PG Connects Summit Montreal on November 10.",
+      "lane": "gamedev",
+      "url": "https://www.pocketgamer.biz/hyper-hippo-alexandre-denault-adventure-capitalist-rewrite/",
+      "source": "PocketGamer.biz"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "warsaw-voxels",
+      "lane": "gamedev",
+      "kind": "experiment",
+      "title": "Warsaw in voxels: a city centre you can walk, built from open data",
+      "where": "Hacker News",
+      "signal": "232 points and 38 comments as a Show HN on November 2.",
+      "hook": "Central Warsaw as a Minecraft-like scene where you change the date, time and weather, or click a pedestrian and take control of them. The author says Opus 5.5 made the first draft easy; polishing took the time.",
+      "borrow": "Open data as a level source: buildings and streets from OpenStreetMap, heights and trees from national LiDAR, colours from aerial photos, then fixes by hand against photos. The code is open source.",
+      "url": "https://p.migdal.pl/warsaw-vibe-voxel/",
+      "image": {
+        "src": "img/2026-11-03/warsaw.webp",
+        "alt": "A voxel rendering of central Warsaw with the Palace of Culture and Science, skyscrapers and autumn trees.",
+        "credit": "Piotr Migdał",
+        "creditUrl": "https://p.migdal.pl/warsaw-vibe-voxel/",
+        "fit": "cover"
+      },
+      "forYou": "The same open-data pipeline could block out a real Portuguese town as a level greybox before any hand modelling."
+    },
+    {
+      "id": "outcrop",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Outcrop: point a phone at a hillside and see the rocks' names and ages",
+      "where": "Hacker News",
+      "signal": "257 points and 54 comments as a Show HN on October 29.",
+      "hook": "A live camera view paints geologic formations over the landscape and names the one you aim at, with its distance and age, using a terrain model and public geologic maps, offline.",
+      "borrow": "A real-world data layer matched to where the camera points is a ready-made level for location games: the world supplies the content, the app supplies the reveal.",
+      "url": "https://outcrop.rocks/",
+      "image": {
+        "src": "img/2026-11-03/outcrop.webp",
+        "alt": "Phone screenshot of a riverbank with a translucent green geologic layer over the hill and a label reading Platteville Formation and Glenwood Formation, 480 m away, Late Ordovician.",
+        "credit": "Outcrop",
+        "creditUrl": "https://outcrop.rocks/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "brass-bounce",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Shell casings that bounce twice with no physics engine",
+      "where": "Bluesky",
+      "signal": "15 likes and 5 reposts in Bluesky's Godot feed; the effect ships in a 58-preset Godot 4 VFX pack on itch.io.",
+      "hook": "On a flat floor, the moment a falling casing lands comes straight out of the quadratic formula, so the vertex shader replays both bounces from the casing's age alone.",
+      "borrow": "For hundreds of short-lived particles, solve the motion in closed form on the GPU instead of simulating it: no physics bodies, no per-frame CPU cost.",
+      "url": "https://gennai.itch.io/gun-shooting-vfx-godot-4",
+      "image": {
+        "src": "img/2026-11-03/brass.webp",
+        "alt": "A rifle firing in a grey test scene, with a muzzle flash, a brass casing in the air and bullet impacts on a wooden block.",
+        "credit": "gennai (itch.io)",
+        "creditUrl": "https://gennai.itch.io/gun-shooting-vfx-godot-4",
+        "fit": "cover"
+      },
+      "forYou": "A Niagara or material version of this would make shell ejection in a combat plugin nearly free on mobile."
+    }
+  ],
+  "lab": [
+    {
+      "id": "shapelib",
+      "lane": "gamedev",
+      "kind": "paper",
+      "title": "ShapeLib: Designing a library of programmatic 3D shape abstractions with Large Language Models",
+      "headline": "An LLM writes a small kit of shape functions, so 3D models become short programs you can edit",
+      "authors": "R. Kenny Jones, Paul Guerrero, Niloy J. Mitra, et al. (Brown University, Adobe Research, UCL)",
+      "where": "ACM Transactions on Graphics",
+      "date": "2026-10-09",
+      "problem": "Procedural shape programs are easy to edit only if their building blocks make sense. Earlier methods that discover those blocks automatically produce large, hard-to-read libraries whose edits often break the shape.",
+      "idea": "You describe in plain text the functions you want (a chair's legs, a table's top) and give a handful of example shapes. An LLM drafts each function and keeps only versions that actually rebuild parts of the examples; networks trained on LLM-written generators then turn new shapes into programs that use the library.",
+      "result": "Against ShapeCoder, fewer function calls per shape (9.6 against 13.5), a library of 5.6 functions against 19.2, and better voxel reconstruction (IoU 50.0 against 32.3), averaged over chairs, tables, storage, lamps and faucets. In a 13-person study, LLM edits of ShapeLib programs looked more plausible.",
+      "useIt": "A recipe for prop kits: write the parts vocabulary in plain words, let a model build the functions, and let an agent edit assets through them, so every edit stays a valid chair or table.",
+      "maturity": "prototype",
+      "links": [
+        {
+          "label": "Paper (ACM TOG)",
+          "url": "https://dl.acm.org/doi/abs/10.1145/3840293"
+        },
+        {
+          "label": "arXiv version",
+          "url": "https://arxiv.org/abs/2502.08884"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-03/shapelib.webp",
+        "alt": "Overview figure: a seed set of chairs and function descriptions feed ShapeLib, which outputs an abstraction library used for LLM shape program editing and generation.",
+        "credit": "Jones et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2502.08884",
+        "fit": "contain"
+      },
+      "forYou": "A PCG prop generator in the world tools plugin could expose ShapeLib-style named functions that an editor agent edits instead of raw meshes."
+    },
+    {
+      "id": "retrace",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Lost in Recovery: Demystifying Recovery Behavior of Computer-Use Agents via Goal-Oriented Action Replay",
+      "headline": "Agents that drive a desktop almost never undo their own mistakes, and real undo would help a lot",
+      "authors": "Byeonghun Bang, Sangwoo Park, Jinheon Baek, et al. (KAIST, ETRI, DeepAuto.ai)",
+      "where": "arXiv preprint",
+      "date": "2026-10-20",
+      "problem": "Agents that use a computer through mouse and keyboard leave side effects when they slip, and resets are often impossible. Nobody had measured whether they can put things back.",
+      "idea": "ReTrace takes a successful run, injects a verified mistake partway through, lets the agent try to recover, then replays the rest of the original actions. Recovery only counts if the same remaining actions now reach the same result.",
+      "result": "The strongest open model tested, EvoCUA-32B, restored the earlier state under 1% of the time. Explicit recovery strategies beat implicit ones by 17.86 points on average across Linux and Windows, and ideal recovery lifted task success from 39.38% to 44.26% in one setting.",
+      "useIt": "Test your own agents the same way: break the state mid-task, then check whether the remaining steps still work. And give agents explicit checkpoints or undo steps rather than hoping they self-correct.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "arXiv",
+          "url": "https://arxiv.org/abs/2610.27954"
+        },
+        {
+          "label": "Code and data",
+          "url": "https://github.com/BangProx/ReTRACE"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-03/retrace.webp",
+        "alt": "Three-panel method figure: on-policy trajectory rollout, trajectory drift via perturbation into erroneous states, and goal-oriented action replay from the recovered state with observation comparison.",
+        "credit": "Bang et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2610.27954",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "wave-forcing",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "Wave Forcing: Towards Speed-of-Light Streaming Video Generation",
+      "headline": "Streaming video generation spread across eight GPUs reaches 134.8 frames a second",
+      "authors": "Yijie Jin, Yuxuan Liu, Jiajun Xu, et al. (Shanghai Jiao Tong University and others)",
+      "where": "arXiv preprint",
+      "date": "2026-10-31",
+      "problem": "Playable world models generate video chunk by chunk, and each chunk waits on the last, so adding GPUs barely helps and frame rates stay low.",
+      "idea": "Reorder the work so different GPUs denoise different chunks at different stages at the same time, like a pipeline, and hide the data they exchange behind the heaviest compute.",
+      "result": "A 1.3B model reaches 134.8 end-to-end frames a second on eight H200 GPUs, 7.07x a single GPU, and up to 2.53x the faster of two standard parallel methods. The authors note camera drift and lost subjects remain failure modes.",
+      "useIt": "A marker for where real-time world models stand: real-time today needs a multi-GPU server, so cloud streaming, not local play, is the near-term path. Code and 1.3B weights are released.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "arXiv",
+          "url": "https://arxiv.org/abs/2611.00859"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/SJTU-DENG-Lab/WaveForcing"
+        },
+        {
+          "label": "Project page",
+          "url": "https://sjtu-deng-lab.github.io/WaveForcing/"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-03/waveforcing.webp",
+        "alt": "Frames from a generated video of a woman reading in bed at times from 0 to 95 seconds, comparing Causal Forcing, Rolling Forcing and Wave Forcing in 4-step and 5-step versions.",
+        "credit": "Jin et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2611.00859",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "The Sparks desk could not reach X, TikTok, Threads or Reddit today, so the sparks lean on Hacker News and Bluesky."
+}
