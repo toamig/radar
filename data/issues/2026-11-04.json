@@ -1,0 +1,1096 @@
+{
+  "date": "2026-11-04",
+  "number": 22,
+  "title": "Unreal 6 drops Blueprints and Actors",
+  "dek": "Epic now plans to remove Blueprints, Actors and the C++ gameplay framework when Unreal Engine 6 opens in late 2027, moving game logic to Verse. On the agent side, a study shows how the wording of a rule decides whether an agent follows it.",
+  "theme": {
+    "paper": "butter",
+    "text": "federal-blue",
+    "inks": [
+      "blue",
+      "fluoro-pink"
+    ],
+    "type": "poster",
+    "mood": "a loud Wednesday about an engine changing its foundations"
+  },
+  "tldr": [
+    {
+      "text": "At Unreal Fest Tokyo, Epic said Unreal Engine 6 will ship without Blueprints, Actors or the C++ gameplay framework. Game logic moves to Verse, levels to Scene Graph entities, and C++ stays in the engine core.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Probably Stolen, a solo developer's shopkeeper sim, sold 750,000 copies in five days after 180,000 people tried its playtest.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "In a study of Claude Code, a rule written as a plain order was followed about four times as often as the same rule starting with \"Never\" on Sonnet 5.",
+      "lane": "ai"
+    },
+    {
+      "text": "Postman's desktop app turned on plugins in Claude Code, Codex, Cursor and Copilot without asking; check your agent settings for entries you did not add.",
+      "lane": "ai"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Unreal's next engine",
+      "note": "What Epic changed between June and November, and the dates that matter.",
+      "ids": [
+        "ue6-plans",
+        "ue6-dates"
+      ]
+    },
+    {
+      "title": "Games that sold, tools that ship",
+      "note": "A solo hit with numbers behind it, and a retopology app that runs on your machine.",
+      "ids": [
+        "probably-stolen",
+        "cozyblanket"
+      ]
+    },
+    {
+      "title": "How agents take orders",
+      "note": "Rules that get followed, a team that merges 30 changes a day, identity for agents, and a cheaper model bill.",
+      "ids": [
+        "agents-md-wording",
+        "tano-prs",
+        "supabase-mcp-auth",
+        "revolut-glm"
+      ]
+    },
+    {
+      "title": "Check your setup",
+      "note": "Something else wrote to your agent settings, and the Claude Code fixes worth updating for.",
+      "ids": [
+        "postman-plugins",
+        "cc-2-1-318"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "ue6-tokyo",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "gamedev",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Unreal 6 drops Blueprints and Actors",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Epic says the next version of Unreal Engine will not include Blueprints, Actors or its C++ gameplay framework, the tools most Unreal games are built with today. Game logic moves to Verse, the language behind Fortnite's editor.",
+      "background": "Unreal Engine 6 is Epic's next engine, which merges Unreal Engine 5 with the editor used to build Fortnite islands. Epic first laid out the plan in June.",
+      "takeaway": "In June, Epic promised Blueprints and Actors would survive the first UE6 versions. Now they are gone at Early Access, and a migration tool is promised but not designed yet.",
+      "body": [
+        "At Unreal Fest Tokyo on November 3, Tim Sweeney said Blueprints, Actors and the C++ gameplay framework will be **removed** from Unreal Engine 6, according to Inven Global, which cites the Japanese outlet Game Makers. The keynote slides said \"Remove\", not \"deprecated\". Sweeney called it a painful change and apologised to developers who love Blueprints.",
+        "In their place: Verse for gameplay code, with new Verse gameplay APIs, and Scene Graph, where component-based entities replace Actors. MCP and Python are built into the engine for automation, and C++ stays in the lower layers such as rendering and physics. Early Access is still planned for the end of 2027.",
+        "Epic promises AI-assisted tools to convert Blueprints and C++ gameplay code to Verse, but their format is undecided. Sweeney linked the move to AI, saying AI tools made Epic's own staff 1.5 to 4 times more productive. Projects already in production can stay on Unreal Engine 5, and 5.9 enters Preview next week.",
+        "None of the coverage we read says what happens to code plugins sold on Fab. Epic's own Fortnite team is moving thousands of Blueprints and its remaining C++ gameplay code to Verse first."
+      ],
+      "diagram": {
+        "layout": "layers",
+        "nodes": [
+          {
+            "label": "Verse gameplay",
+            "note": "All game logic, as in Fortnite's editor today. Replaces Blueprints and C++ gameplay code.",
+            "key": true
+          },
+          {
+            "label": "Scene Graph entities",
+            "note": "Entities with components replace Actors as the pieces a level is built from."
+          },
+          {
+            "label": "MCP and Python",
+            "note": "Built into the engine for scripting, automation and AI agents."
+          },
+          {
+            "label": "C++ engine core",
+            "note": "Rendering, physics and the other low layers stay in C++."
+          }
+        ],
+        "caption": "The Unreal Engine 6 stack as reported from Unreal Fest Tokyo, top to bottom. Sources: Inven Global, GameGPU."
+      },
+      "stat": {
+        "value": "End 2027",
+        "label": "UE6 Early Access, already without Blueprints or Actors"
+      },
+      "terms": [
+        {
+          "term": "Blueprints",
+          "def": "Unreal's visual scripting system, where game logic is built by connecting boxes on a graph instead of typing code."
+        },
+        {
+          "term": "Actors",
+          "def": "In Unreal Engine 5, the basic object you place in a level: a character, a door, a light."
+        },
+        {
+          "term": "C++ gameplay framework",
+          "def": "The set of C++ classes (Actors, Pawns, Game Modes and others) that Unreal games build their rules on."
+        },
+        {
+          "term": "Verse",
+          "def": "A programming language from Epic, used today to script islands in Unreal Editor for Fortnite."
+        },
+        {
+          "term": "Scene Graph",
+          "def": "Epic's new way to build levels from entities, each a holder for small reusable components."
+        },
+        {
+          "term": "Early Access",
+          "def": "The first public version of a product, released before it is finished."
+        }
+      ],
+      "deep": [
+        "June plan, per gamefromscratch quoting Epic's post: \"Actors and Blueprints will be in early versions of UE6\", to be deprecated once the new framework matured, with conversion tools between the two. No UE5 release was planned after 5.8, with 5.9 held as an option. UE5 changes merge into UE6, not the other way round.",
+        "Tokyo additions, per Inven Global: Epic confirmed on X that 5.9 reaches Preview next week with better AI workflows, the web as a target platform, and rendering and animation updates. Sweeney said on X that current leading models \"saw little Verse\" in training but that this will change by January.",
+        "Epic Games Japan head Takayuki Kawasaki told developers interested in UE6 to try Verse and Scene Graph in Unreal Editor for Fortnite first. A full UE6 release was planned in June for 12 to 18 months after Early Access."
+      ],
+      "why": "Most Unreal code and tutorials today assume Actors and Blueprints. A move to Verse and entities means relearning the basics and rewriting gameplay code, so the choice between staying on UE5 and starting on UE6 becomes a real planning decision.",
+      "forYou": "Every C++ gameplay plugin built on Actors and components faces a rewrite or an unproven converter for UE6. Keep shipping for UE5 (5.9 is coming), prototype one small plugin feature in Verse and Scene Graph in UEFN this month, and watch for a Fab statement on UE6 listings.",
+      "sources": [
+        {
+          "label": "Inven Global: Epic will remove Blueprints and Actors from UE6",
+          "url": "https://www.invenglobal.com/articles/28098/epic-games-will-remove-blueprints-and-actors-from-unreal-engine-6"
+        },
+        {
+          "label": "GameGPU: UE6 architecture and 2027 launch",
+          "url": "https://en.gamegpu.com/news/igry/epic-games-predstavila-arkhitekturu-unreal-engine-6-i-obyavila-o-zapuske-v-2027-godu"
+        },
+        {
+          "label": "gamefromscratch: the June plan (deprecation)",
+          "url": "https://gamefromscratch.com/unreal-deprecating-blueprints-and-actors/"
+        },
+        {
+          "label": "GamesBeat: State of Unreal, June 2026",
+          "url": "https://gamesbeat.com/unreal-engine-6-will-combine-ue5-and-uefn-into-a-unified-engine-state-of-unreal/"
+        }
+      ]
+    },
+    {
+      "id": "ue6-plans",
+      "format": "compare",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "What changed between June and November",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Five months ago Epic said the old tools would live on in early Unreal 6 and fade out slowly. The new plan removes them from day one; only the date stayed the same.",
+      "intro": "Epic's plan for Unreal Engine 6, as presented at Unreal Fest Chicago in June and at Unreal Fest Tokyo on November 3.",
+      "left": "June (Chicago)",
+      "right": "November (Tokyo)",
+      "rows": [
+        {
+          "aspect": "Blueprints",
+          "left": "In early UE6 versions, deprecated once the new framework matured",
+          "right": "Removed by Early Access; slides said \"Remove\", not \"deprecated\""
+        },
+        {
+          "aspect": "Actors",
+          "left": "In early UE6 versions, then phased out",
+          "right": "Replaced by Scene Graph entities from the start"
+        },
+        {
+          "aspect": "C++ gameplay code",
+          "left": "Not singled out in the coverage we read",
+          "right": "Removed; C++ stays for rendering, physics and other low layers"
+        },
+        {
+          "aspect": "Moving old projects",
+          "left": "Conversion tools between the two ways of working",
+          "right": "AI-assisted conversion to Verse, format not decided"
+        },
+        {
+          "aspect": "Unreal Engine 5",
+          "left": "Nothing planned after 5.8, with 5.9 kept in reserve",
+          "right": "5.9 Preview next week; projects in production can stay on UE5"
+        },
+        {
+          "aspect": "Early Access",
+          "left": "End of 2027",
+          "right": "End of 2027"
+        }
+      ],
+      "verdict": "The date held and the safety net went. Anyone planning a game or tool for 2028 now has to bet on Verse or stay on UE5.",
+      "terms": [
+        {
+          "term": "deprecated",
+          "def": "Still working but marked for removal, so people have time to move off it."
+        },
+        {
+          "term": "Unreal Fest",
+          "def": "Epic's conference series for Unreal Engine developers, held in several cities a year."
+        }
+      ],
+      "why": "\"Deprecated\" gives you years of overlap; \"removed\" gives you a converter you have not seen yet. That difference decides how much old code you can carry forward.",
+      "forYou": "The June plan let plugins run on early UE6 unchanged; that assumption is gone, so do not promise buyers UE6 support until Epic shows the converter.",
+      "sources": [
+        {
+          "label": "Inven Global (Tokyo plan)",
+          "url": "https://www.invenglobal.com/articles/28098/epic-games-will-remove-blueprints-and-actors-from-unreal-engine-6"
+        },
+        {
+          "label": "gamefromscratch (June plan)",
+          "url": "https://gamefromscratch.com/unreal-deprecating-blueprints-and-actors/"
+        },
+        {
+          "label": "GamesBeat (June plan)",
+          "url": "https://gamesbeat.com/unreal-engine-6-will-combine-ue5-and-uefn-into-a-unified-engine-state-of-unreal/"
+        }
+      ]
+    },
+    {
+      "id": "ue6-dates",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "The Unreal 6 calendar",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The dates Epic has given so far, from the first announcement to the full release.",
+      "intro": "Dates as Epic gave them, in June and in Tokyo.",
+      "events": [
+        {
+          "when": "June 17, 2026",
+          "text": "Chicago: UE6 announced; Blueprints and Actors kept at first."
+        },
+        {
+          "when": "November 3",
+          "text": "Tokyo: both removed, with the C++ gameplay framework."
+        },
+        {
+          "when": "Next week",
+          "text": "Unreal Engine 5.9 Preview."
+        },
+        {
+          "when": "By January",
+          "text": "Sweeney says leading AI models will know Verse."
+        },
+        {
+          "when": "End of 2027",
+          "text": "UE6 Early Access."
+        },
+        {
+          "when": "12 to 18 months on",
+          "text": "Full UE6 release, per the June plan."
+        }
+      ],
+      "why": "UE5 has at least two more years as the engine you ship on, which is the window to learn Verse without pressure.",
+      "sources": [
+        {
+          "label": "Inven Global",
+          "url": "https://www.invenglobal.com/articles/28098/epic-games-will-remove-blueprints-and-actors-from-unreal-engine-6"
+        },
+        {
+          "label": "GamesBeat",
+          "url": "https://gamesbeat.com/unreal-engine-6-will-combine-ue5-and-uefn-into-a-unified-engine-state-of-unreal/"
+        }
+      ]
+    },
+    {
+      "id": "probably-stolen",
+      "format": "chart",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A solo shopkeeper sim sold 750,000 copies in five days",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Probably Stolen, made by one developer with contractors, had a long public playtest that tens of thousands played for hours. That depth showed up in wishlists, then in launch sales.",
+      "intro": "Probably Stolen on Steam, from GameDiscoverCo's breakdown. Wishlist adds and copies sold stand in for people.",
+      "unit": "people",
+      "series": [
+        {
+          "label": "Played the playtest 20+ hours",
+          "value": 45000
+        },
+        {
+          "label": "Tried the playtest",
+          "value": 180000
+        },
+        {
+          "label": "Playing at once, at peak",
+          "value": 165000
+        },
+        {
+          "label": "Wishlisted it before launch",
+          "value": 578528
+        },
+        {
+          "label": "Bought it in 5 days (copies)",
+          "value": 750000,
+          "highlight": true
+        }
+      ],
+      "note": "The game launched October 28 and is published by tinyBuild. Sales are the developer's figure as of November 2. Early momentum came from China via Bilibili; regional prices were around $7 to $8.",
+      "terms": [
+        {
+          "term": "playtest",
+          "def": "A free, time-limited test version on Steam that players sign up for before launch."
+        },
+        {
+          "term": "wishlist",
+          "def": "A Steam list of games a player wants; Steam emails them when the game launches or goes on sale."
+        }
+      ],
+      "why": "A playtest that people play for 20 hours is a stronger launch signal than a demo they finish in 20 minutes. The game also began as a different, plainer pitch and was rebuilt with a new art style and setting.",
+      "forYou": "For the action RPG, a Steam playtest with hours of content would tell you far more than a short demo; track how many players pass the five hour mark.",
+      "sources": [
+        {
+          "label": "GameDiscoverCo: How Probably Stolen traded up",
+          "url": "https://newsletter.gamediscover.co/p/how-probably-stolen-traded-up-to"
+        },
+        {
+          "label": "80 Level: 200,000 copies in hours",
+          "url": "https://80.lv/articles/this-indie-cyberpunk-shopkeeper-sim-sells-200-000-copies-in-hours"
+        }
+      ]
+    },
+    {
+      "id": "cozyblanket",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "An AI retopology app that runs on your own machine",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Sparseal released a desktop app that suggests a clean polygon layout over a detailed sculpt as you work, so a high-detail model becomes one a game can render.",
+      "name": "CozyBlanket Pro",
+      "what": "Retopology, UV unwrapping and baking for Windows and macOS, with AI suggestions.",
+      "body": [
+        "As you draw, the app suggests topology live: it fills quads, reroutes edge loops and places poles. It also unwraps UVs, packs thousands of UV islands on the GPU, and bakes normals, ambient occlusion and vertex colours.",
+        "Sparseal says the AI models run locally and offline. The app is free to download; saving and exporting needs a licence, whose price the announcement does not give."
+      ],
+      "facts": [
+        {
+          "k": "Platforms",
+          "v": "Windows, macOS"
+        },
+        {
+          "k": "AI",
+          "v": "Live topology suggestions"
+        },
+        {
+          "k": "Runs",
+          "v": "Locally, offline (developer claim)"
+        },
+        {
+          "k": "Also",
+          "v": "UV packing, baking, UDIMs"
+        }
+      ],
+      "tryIt": "https://80.lv/articles/sparseal-releases-ai-assisted-retopology-app-for-pc",
+      "terms": [
+        {
+          "term": "retopology",
+          "def": "Rebuilding a detailed 3D model with far fewer, well-ordered polygons so it animates and renders well in a game."
+        },
+        {
+          "term": "edge loops",
+          "def": "Rings of connected edges around a model, which decide how it bends when animated."
+        },
+        {
+          "term": "UV",
+          "def": "The flat map that tells a 3D model which part of a texture goes where."
+        },
+        {
+          "term": "baking",
+          "def": "Copying detail from a high-detail model into textures used by the simple one."
+        }
+      ],
+      "why": "Retopology is slow, manual work in most pipelines. A local tool that proposes the layout keeps the artist in charge while cutting the hours, and nothing leaves the machine.",
+      "forYou": "Worth a trial for the action RPG's characters and props before paying for outside retopo work.",
+      "sources": [
+        {
+          "label": "80 Level: Sparseal releases AI-assisted retopology app",
+          "url": "https://80.lv/articles/sparseal-releases-ai-assisted-retopology-app-for-pc"
+        }
+      ]
+    },
+    {
+      "id": "agents-md-wording",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Write agent rules as plain orders, not \"if\" or \"never\"",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Researchers gave Claude Code the same rule worded four ways in its instruction file. A direct order in that AGENTS.md-style file was followed far more often than the same rule phrased as \"if you do this\" or \"never do that\".",
+      "intro": "Share of sessions where Claude Code with Sonnet 5 followed one rule (add a marker comment under every Python function it touched), by how the rule was worded. 86 tasks from 10 repositories, three runs each.",
+      "unit": "% of sessions",
+      "series": [
+        {
+          "label": "Plain order",
+          "value": 71.6,
+          "highlight": true
+        },
+        {
+          "label": "Order plus a reason",
+          "value": 49.4
+        },
+        {
+          "label": "\"If you...\"",
+          "value": 35.6
+        },
+        {
+          "label": "\"Never... without\"",
+          "value": 17.3
+        }
+      ],
+      "note": "With Opus 5 the same four wordings scored 78.0, 77.2, 64.2 and 70.7. Two open models in another harness barely followed the rule at all. One rule and one text per style, so wording and length are mixed together.",
+      "terms": [
+        {
+          "term": "AGENTS.md",
+          "def": "A plain text file in a code project that coding agents read for the project's rules; Claude Code's version is CLAUDE.md."
+        },
+        {
+          "term": "harness",
+          "def": "The program around a model that gives it tools, files and instructions, such as Claude Code."
+        }
+      ],
+      "deep": [
+        "The plain order: \"Add the comment # @tracked on the line directly below the def line of every Python function you add or modify.\" The reason version added \"because our code-audit system uses this marker\". The conditional began \"If you add or modify a Python function\", and the prohibitive began \"Never add or modify a Python function without\".",
+        "Claude Code 2.1.227 with claude-opus-5 and claude-sonnet-5, and qwen-code 0.21.2 with gpt-oss-120b and Qwen3-Coder-Next. The rule was the last line of the context file. A replication package is on Zenodo."
+      ],
+      "why": "Instruction files are how teams steer agents, and nobody checks whether the rules land. Rewording a rule costs nothing; a rule that must always hold still belongs in a hook or a test.",
+      "forYou": "Grep your CLAUDE.md files for \"Never\" and \"If you\" and rewrite the checkable ones as direct orders; this is today's Try this.",
+      "sources": [
+        {
+          "label": "Tsuchida et al.: Do Coding Agents Follow AGENTS.md? (arXiv)",
+          "url": "https://arxiv.org/abs/2611.04367"
+        },
+        {
+          "label": "Replication package (Zenodo)",
+          "url": "https://doi.org/10.5281/zenodo.23148524"
+        }
+      ]
+    },
+    {
+      "id": "tano-prs",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "200 merged changes a month, mostly with no human review",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "An engineer at a small startup says coding agents took him from about a dozen merged changes a month to over 200. He also lists what broke: a review agent missed a currency bug, and a database change stopped data from coming in.",
+      "stats": [
+        {
+          "value": "200+",
+          "label": "merged pull requests a month for one engineer, up from 8 to 20 before"
+        },
+        {
+          "value": "<1 h",
+          "label": "median time to merge across the team, about 30 merges a day"
+        }
+      ],
+      "body": [
+        "Neil Kakkar's essay, published by The Pragmatic Engineer, describes running three to five agents at once, for one to two hours per feature, with an AI review agent on every pull request instead of a person. The figures are his own.",
+        "The failures are the useful part: the review agent missed that the Bahraini dinar has 1,000 minor units, not 100, and a blocking migration on a 6 million row table halted ingestion. Large-table migrations now run concurrently."
+      ],
+      "terms": [
+        {
+          "term": "pull request",
+          "def": "A proposed change to a codebase that is reviewed before it is merged in."
+        },
+        {
+          "term": "migration",
+          "def": "A script that changes a database's structure, such as adding a column or index."
+        }
+      ],
+      "why": "When merges speed up tenfold, the bottlenecks move to review, CI and shared context. Those are the places to invest before adding more agents.",
+      "forYou": "Before running more parallel agents on the SaaS, make database migrations non-blocking by default and add money-handling tests the review agent cannot skip.",
+      "sources": [
+        {
+          "label": "The Pragmatic Engineer: a tale of two eras",
+          "url": "https://newsletter.pragmaticengineer.com/p/how-software-engineering-is-changing"
+        }
+      ]
+    },
+    {
+      "id": "supabase-mcp-auth",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Claude can now vouch for your team when its agents reach Supabase",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Companies on Supabase can let Claude prove who a team member is, so their agents connect to the database tools without a sign-in screen each time. The catch: removing someone now has to happen in two places.",
+      "layout": "flow",
+      "intro": "How a Claude-issued identity assertion reaches the Supabase MCP server.",
+      "nodes": [
+        {
+          "label": "Member",
+          "note": "A person in the company's Claude organisation asks for a Supabase tool."
+        },
+        {
+          "label": "Claude signs",
+          "note": "Claude checks org membership and email, then signs a short-lived assertion."
+        },
+        {
+          "label": "Supabase checks",
+          "note": "Verifies the signature, the SSO identity and that an admin approved Claude.",
+          "key": true
+        },
+        {
+          "label": "Token",
+          "note": "Supabase issues a short-lived access token."
+        },
+        {
+          "label": "MCP server",
+          "note": "The agent uses Supabase's tools with that token."
+        }
+      ],
+      "links": [
+        "asks",
+        "assertion",
+        "approved",
+        "calls"
+      ],
+      "caption": "Setup takes four steps across Claude and Supabase organisation settings, per Supabase.",
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol, a standard way for AI agents to connect to outside tools and data."
+        },
+        {
+          "term": "SSO",
+          "def": "Single sign-on: one company login that works across many services."
+        },
+        {
+          "term": "assertion",
+          "def": "A signed statement from one service telling another who a user is."
+        }
+      ],
+      "deep": [
+        "Needs a Supabase Team or Enterprise organisation with SSO and a Claude Team or Enterprise organisation. In Claude, choose \"Claude-issued\" under managed authorization and copy the issuer URL; in Supabase, paste it as the ID-JAG issuer under SSO advanced settings, run the test and enable it.",
+        "Claude checks membership and email, not the company's own sign-in or MFA. Disabling a user in the identity provider no longer cuts their Supabase access through Claude, and only one issuer is allowed per SSO provider."
+      ],
+      "why": "Agents need their own identity story, and this is one of the first concrete ones from a database vendor. It also shows the offboarding gap such shortcuts create.",
+      "forYou": "Not needed on a solo plan, but the pattern (a short-lived token per agent session, checked against an approved issuer) is the right model for any MCP server the SaaS products expose.",
+      "sources": [
+        {
+          "label": "Supabase: Claude-issued enterprise-managed auth for MCP",
+          "url": "https://supabase.com/blog/claude-issued-enterprise-managed-auth-for-mcp"
+        },
+        {
+          "label": "Stack Overflow: Oh, your agents need OAuth2, too",
+          "url": "https://stackoverflow.blog/2026/11/03/oh-your-agents-need-oauth2-too"
+        }
+      ]
+    },
+    {
+      "id": "revolut-glm",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 4,
+      "size": "third",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "A bank moved its coding agents to an open model it hosts",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Revolut says running an open model on its own GPUs cut the cost of its engineers' coding assistants to about a tenth, and replies started faster.",
+      "stats": [
+        {
+          "value": "1/10",
+          "label": "of the old per-token API cost, talk-reported"
+        },
+        {
+          "value": "1.6 s",
+          "label": "to the first reply token, down from over 10 s"
+        }
+      ],
+      "body": [
+        "Per a conference talk summarised by StartupHub, about 2,000 engineers use a GLM model on 56 Nvidia B200 GPUs. The cost excludes cloud, staff and monitoring, and the speaker said token limits had been holding people back."
+      ],
+      "terms": [
+        {
+          "term": "open model",
+          "def": "An AI model whose weights are published, so anyone can run it on their own hardware."
+        }
+      ],
+      "why": "Self-hosting only pays when GPUs stay busy, so this is a large-team play. The lesson that travels is that rationed tokens held back the gains.",
+      "sources": [
+        {
+          "label": "StartupHub: Revolut says self-hosted AI cut coding costs 90%",
+          "url": "https://www.startuphub.ai/ai-news/artificial-intelligence/2026/revolut-says-self-hosted-ai-cut-coding-costs-90"
+        }
+      ]
+    },
+    {
+      "id": "postman-plugins",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Postman's desktop app wired itself into coding agents without asking",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "A popular tool for testing web APIs quietly installed plugins into several AI coding assistants during an update. One of them tells the agent to load Postman's skill for almost any API task.",
+      "intro": "What a GitHub issue opened on October 25 says Postman desktop 12.33.4 added during an automatic upgrade, and later reports on 12.35.1. Postman replied on November 3 that it will make opt-in clearer and is reviewing the hook behaviour; no fix is confirmed yet.",
+      "items": [
+        {
+          "title": "A plugin in Claude Code",
+          "text": "Enabled in the global ~/.claude/settings.json and recorded in installed_plugins.json."
+        },
+        {
+          "title": "A plugin and startup hook in Codex",
+          "text": "Added to ~/.codex/config.toml; the hook tells the agent to load Postman's API skill before any non-trivial API task, with trust entries written for it."
+        },
+        {
+          "title": "A remote MCP server",
+          "text": "The plugin points agents at Postman's hosted MCP server. Later reports found entries for Cursor and GitHub Copilot too, and the in-app uninstall missed Copilot's."
+        },
+        {
+          "title": "A command-line tool",
+          "text": "A Postman executable placed in ~/.local/bin, which is on many people's PATH."
+        }
+      ],
+      "terms": [
+        {
+          "term": "hook",
+          "def": "A command a coding agent runs automatically at set moments, such as when a session starts."
+        },
+        {
+          "term": "PATH",
+          "def": "The list of folders a terminal searches when you type a command."
+        }
+      ],
+      "why": "Agent settings are becoming a place other apps write to. Anything that can add a startup hook can steer what your agent does in every session, so check those files the way you check browser extensions.",
+      "forYou": "Audit ~/.claude/settings.json, installed plugins and hooks on every machine that runs the routines; anything you did not add goes.",
+      "sources": [
+        {
+          "label": "GitHub: postman-app-support issue 14370",
+          "url": "https://github.com/postmanlabs/postman-app-support/issues/14370"
+        }
+      ]
+    },
+    {
+      "id": "cc-2-1-318",
+      "format": "list",
+      "lane": "ai",
+      "importance": 4,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code 2.1.318: lost context, stray approvals and expiring logins",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "The newest Claude Code update is mostly fixes, including one for resumed sessions that could lose their history and one for permission prompts answered by accident.",
+      "intro": "The changes in about 40 release notes that matter most in daily and unattended use.",
+      "items": [
+        {
+          "title": "--continue keeps the conversation",
+          "text": "Since 2.1.314, resuming could drop earlier turns after a malformed tool call ran out of retries. Fixed; idle compaction also no longer swaps the conversation for a reply that is not a summary."
+        },
+        {
+          "title": "No more accidental approvals",
+          "text": "Keys typed just after sending a message, or before a slow prompt appeared, could answer a permission prompt. Fixed."
+        },
+        {
+          "title": "A warning before sign-in expires",
+          "text": "claude auth status shows loginExpiresAt, claude -p JSON includes credential_expires_at, and text mode warns on stderr from 10 days before."
+        },
+        {
+          "title": "Steadier MCP setup",
+          "text": "claude mcp add and remove now take the config lock. A stdio server that dies within 3 seconds is kept on the older handshake for 7 days instead of being re-probed every start."
+        }
+      ],
+      "terms": [
+        {
+          "term": "compaction",
+          "def": "Shrinking a long conversation into a summary so it fits in the model's memory."
+        },
+        {
+          "term": "stdio",
+          "def": "Standard input and output: a local program talking to another through its text streams."
+        }
+      ],
+      "why": "Scheduled and headless runs hit exactly these paths: resumed sessions, stored sign-ins and MCP servers that start every time.",
+      "forYou": "Update the routine's environment and add a check on credential_expires_at so a lapsed sign-in never silently skips a morning.",
+      "sources": [
+        {
+          "label": "Claude Code v2.1.318 release",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.318"
+        },
+        {
+          "label": "Claude Code changelog",
+          "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What does it mean to build a game from entities and components?",
+    "answer": "Instead of a deep family tree of object types, every thing in the game is a plain entity, and what it can do comes from the small components attached to it. Unreal Engine 6's Scene Graph works this way.",
+    "analogy": "A blank keyring: it is nothing on its own, and it becomes a car key, a house key or a bottle opener depending on what you hang on it.",
+    "body": [
+      "In Unreal Engine 5, a door is usually an Actor class that inherits from other classes and adds its own code. In an entity-component design, a door is an entity with a mesh component, a collision component and a behaviour component that opens it. A chest reuses the same parts with a different mesh.",
+      "Because behaviour lives in small parts rather than in one class, the same component can move between projects and be combined in new ways, which is the portability Epic says it wants. In Scene Graph, entities can also hold other entities, so a car can be an entity whose wheels are entities too.",
+      "The idea is old in games. Many engines use some form of it, and data-oriented versions (often called ECS) store components in tight arrays so thousands of entities update quickly."
+    ],
+    "diagram": {
+      "layout": "hub",
+      "nodes": [
+        {
+          "label": "Entity",
+          "note": "A plain thing in the scene, with no behaviour of its own.",
+          "key": true
+        },
+        {
+          "label": "Mesh",
+          "note": "What it looks like."
+        },
+        {
+          "label": "Collision",
+          "note": "What it bumps into."
+        },
+        {
+          "label": "Behaviour",
+          "note": "Code that makes it act, written in Verse in UE6."
+        },
+        {
+          "label": "Child entities",
+          "note": "Parts that are entities themselves, like a car's wheels."
+        }
+      ],
+      "caption": "One entity, defined by the components attached to it."
+    },
+    "terms": [
+      {
+        "term": "inherits",
+        "def": "Takes on all the code and data of a parent class, then adds or changes some of it."
+      },
+      {
+        "term": "ECS",
+        "def": "Entity component system: an entity-component design that stores components in compact lists so the computer can process many at once."
+      }
+    ],
+    "seenIn": [
+      "ue6-tokyo",
+      "ue6-plans"
+    ],
+    "sources": [
+      {
+        "label": "Epic: Scene Graph in Unreal Editor for Fortnite",
+        "url": "https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite"
+      },
+      {
+        "label": "Wikipedia: Entity component system",
+        "url": "https://en.wikipedia.org/wiki/Entity_component_system"
+      },
+      {
+        "label": "The Verse language book",
+        "url": "https://verselang.github.io/book/"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Reword one agent rule as a plain order and count who obeys",
+    "gist": "In under an hour you learn whether the way a rule is phrased in your instruction file changes how often your agent follows it.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A repository with a CLAUDE.md or AGENTS.md file and a coding agent such as Claude Code.",
+    "steps": [
+      {
+        "title": "Pick a rule you can check",
+        "text": "Choose one rule whose result a grep can count, such as a marker comment, a log call or a naming pattern on every new function."
+      },
+      {
+        "title": "Write two versions",
+        "text": "One as a plain order (\"Add X to every Y you add or modify\") and one as your current wording, or the \"If you...\" or \"Never... without\" form the study tested."
+      },
+      {
+        "title": "Run the same small tasks",
+        "text": "On a scratch branch, give the agent five small tasks that touch the relevant code, once with each version as the last line of the file."
+      },
+      {
+        "title": "Count and keep the winner",
+        "text": "Grep each result for the rule and compare the counts. Keep the better wording, and move any rule that must always hold into a hook or a test."
+      }
+    ],
+    "code": {
+      "lang": "text",
+      "code": "Plain order (followed most in the study):\nAdd the comment \"# @tracked\" on the line directly below the def line of every Python function you add or modify.\n\nConditional (followed less):\nIf you add or modify a Python function, add the comment \"# @tracked\" on the line directly below its def line."
+    },
+    "check": "The plain order should be followed in more of the tasks. In the study, Sonnet 5 followed it in 71.6% of sessions against 35.6% for the \"If you\" version.",
+    "terms": [
+      {
+        "term": "grep",
+        "def": "A command that searches files for a pattern and can count the matches."
+      }
+    ],
+    "from": "agents-md-wording",
+    "forYou": "Start with the Radar routine's own CLAUDE.md rules and the UE plugin repos' style rules, which use several \"Never\" lines.",
+    "sources": [
+      {
+        "label": "Tsuchida et al.: Do Coding Agents Follow AGENTS.md?",
+        "url": "https://arxiv.org/abs/2611.04367"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Vitest 5 is 8 to 25% faster in most setups and clears mocks by default; unawaited async assertions now fail, and it needs Node 22.12 and Vite 6.4.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/vite-5-release",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Postgres 19 adds REPACK (CONCURRENTLY), built-in online bloat cleanup that keeps a table readable; in one test a 493 MB table shrank to 228 MB in 9.4 seconds.",
+      "lane": "ai",
+      "url": "https://www.snowflake.com/en/blog/engineering/postgres-19-repack-table-bloat",
+      "source": "Snowflake"
+    },
+    {
+      "text": "The Claude API removes fast mode for Claude Opus 4.8 on November 30; requests that still ask for it will return an error.",
+      "lane": "ai",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "source": "Claude docs"
+    },
+    {
+      "text": "Vercel Security Review, in public beta for Pro and Enterprise, reviews each push's diff for logic flaws such as missing authorization; free until November 10.",
+      "lane": "ai",
+      "url": "https://vercel.com/blog/vercel-security-review",
+      "source": "Vercel"
+    },
+    {
+      "text": "Anthropic published an open spec and code that lets anyone check which model produced an output without seeing its weights; it has no plans to deploy it yet.",
+      "lane": "ai",
+      "url": "https://techcrunch.com/2026/11/03/anthropic-is-working-on-a-system-to-prove-ai-models-identity",
+      "source": "TechCrunch"
+    },
+    {
+      "text": "Dependabot can now open update pull requests for agent skills and prompts declared in an Agent Package Manager apm.yml file.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-03-dependabot-version-updates-support-agent-package-manager",
+      "source": "GitHub"
+    },
+    {
+      "text": "GitHub Copilot is now an agent in JetBrains Air through the Agent Client Protocol, locally or in cloud containers.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-03-github-copilot-is-now-available-in-jetbrains-air",
+      "source": "GitHub"
+    },
+    {
+      "text": "CodeQL 2.27.3 accepts data extensions as JSON and adds an opt-in threat model for data produced by language models.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-03-codeql-2-27-3-adds-python-3-15-features-and-json-data-extensions",
+      "source": "GitHub"
+    },
+    {
+      "text": "GitHub Desktop 3.6.10 and later move to short-lived, auto-refreshing sign-in tokens.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-02-github-desktop-adds-short-lived-authentication-tokens",
+      "source": "GitHub"
+    },
+    {
+      "text": "Simon Willison ran the model-reads-weights test on a laptop: Qwen 3.8 27B named three of four tiny game-playing networks, each in 46 to 65 minutes.",
+      "lane": "ai",
+      "url": "https://simonwillison.net/2026/Nov/3/qwen-can-interpret-model-weights",
+      "source": "Simon Willison"
+    },
+    {
+      "text": "Epic's AI Megajam runs November 12 to 15: teams of up to five people plus any number of AI agents, in Unreal or UEFN, with Unreal MCP.",
+      "lane": "gamedev",
+      "url": "https://www.pcgamer.com/software/ai/epic-announces-game-jam-where-you-have-to-use-ai/",
+      "source": "PC Gamer"
+    },
+    {
+      "text": "Rami Ismail on returning to development after six years: his strategy game's balance only clicked four to five months in.",
+      "lane": "gamedev",
+      "url": "https://www.gamedeveloper.com/design/what-rami-ismail-learned-with-his-return-to-game-development",
+      "source": "Game Developer"
+    },
+    {
+      "text": "Brotato climbed 66 places to #55 in Steam's most played, peaking at 29,166 players, after its Primal Dread DLC came out on November 2.",
+      "lane": "gamedev",
+      "url": "https://store.steampowered.com/app/1942280",
+      "source": "Steam"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "carlini-chess",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "Modern Stockfish on a 1996 Pentium Pro, to settle Kasparov against the machine",
+      "where": "Hacker News",
+      "signal": "465 points and 229 comments on Hacker News on November 3.",
+      "hook": "Nicholas Carlini ported Stockfish 17 to a real 200 MHz Pentium Pro booting a custom OS from floppy, tuned it for the old chip, and estimates it would play near 3,100 at 10 seconds a move, against Kasparov's under 2,800.",
+      "borrow": "The method: pin the hardware, change only the software, and measure at several time budgets. He credits about 720 of the 1,335 rating points gained since 1996 to software alone, and much of the porting code was written with an LLM.",
+      "url": "https://nicholas.carlini.com/writing/2026/algorithmic-improvements-chess.html",
+      "image": {
+        "src": "img/2026-11-04/carlini.webp",
+        "alt": "A text-mode screen from the Pentium Pro: a chess board, Stockfish 17 search output with depth 14 and best move Nxd4, and a blue supervisor status panel.",
+        "credit": "Nicholas Carlini",
+        "creditUrl": "https://nicholas.carlini.com/writing/2026/algorithmic-improvements-chess.html",
+        "fit": "cover"
+      },
+      "forYou": "The same fixed-hardware, many-budgets test would show how much the action RPG's AI improves from code changes alone on a low-end target."
+    },
+    {
+      "id": "stringman",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "Stringman: an $800 open-source robot gripper that hangs from four ceiling lines",
+      "where": "Hacker News",
+      "signal": "472 points and 163 comments on Hacker News on November 3.",
+      "hook": "Four winches in the corners of a room hold a gripper on cables, so the whole room is in reach; cameras on the anchors and gripper feed models trained with LeRobot.",
+      "borrow": "Cable-driven geometry is a cheap way to give a vision model a body, and clip-on fiducial tags tell it where things go. CAD, boards and control software are published (the specs on the page are the maker's).",
+      "url": "https://neufangled.com",
+      "image": {
+        "src": "img/2026-11-04/stringman.webp",
+        "alt": "An exploded CAD view of the Stringman gripper: orange housings, motors, gears, a camera board and two blue fingers, with an open hardware certification mark.",
+        "credit": "Neufangled",
+        "creditUrl": "https://neufangled.com",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "fish-bones",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Fish have bones: a jiggly skeleton under a jiggly skin, in Godot",
+      "where": "Bluesky",
+      "signal": "184 likes and 19 reposts on Bluesky on November 3.",
+      "hook": "Drag a floppy fish around, then slide a debug control to fade its skin and reveal a rattly skeleton with its own secondary motion.",
+      "borrow": "Give each layer its own secondary motion (heavy flesh, rattly bones) and ship the debug slider as part of the toy; it makes a technique demo into something people want to play with.",
+      "url": "https://bsky.app/profile/majormcdoom.bsky.social/post/3mzghsdkvqs2o",
+      "image": {
+        "src": "img/2026-11-04/fish.webp",
+        "alt": "A blue low-poly cartoon fish floating in a grey test room, with an orange debug panel and a slider on the right.",
+        "credit": "Zi (majormcdoom on Bluesky)",
+        "creditUrl": "https://bsky.app/profile/majormcdoom.bsky.social/post/3mzghsdkvqs2o",
+        "fit": "cover"
+      },
+      "forYou": "A skin-to-skeleton slider would make a strong preview video for any animation or physics plugin."
+    }
+  ],
+  "lab": [
+    {
+      "id": "foresight-swe",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Do Coding Agents Catch Their Own Bugs? (They Don't.)",
+      "headline": "Agents pass the task you gave them, but rarely foresee the bug a later fix would reveal; the best caught one in four",
+      "authors": "Shaswat Patel, Michel Liao, Peter Henderson, et al. (New York University, Princeton University, Stanford University)",
+      "where": "arXiv preprint",
+      "date": "2026-10-31",
+      "problem": "Benchmarks check only the stated requirement. Real changes often introduce bugs that could have been foreseen but were never written down, and a second change later fixes them.",
+      "idea": "Foresight-SWE pairs 212 real changes from 35 open-source projects in four languages with the later fix for each. The agent sees only the first task and is graded on both the first change's tests and the fix's hidden tests.",
+      "result": "Across 11 models the foresight score ran from 6.1% to 24.5% (Claude Opus 5 best), against 60.7% average on the ordinary task. Told about the bug, models fixed it 91.2% of the time, so spotting it is the problem. A prompt to consider unstated edge cases lifted Opus 5 to 32.6% but hurt Sonnet 5, and self-review raised foresight while lowering ordinary success.",
+      "useIt": "Do not treat an agent reviewing its own diff as a quality gate: use a separate reviewer or tests aimed at likely regressions, and measure any \"think about edge cases\" prompt on your own code before keeping it.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.01181"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/shaswatpatel123/Foresight-SWE"
+        },
+        {
+          "label": "Leaderboard",
+          "url": "https://shaswatpatel123.github.io/Foresight-SWE/"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-04/foresight.webp",
+        "alt": "Figure: a real pytest case. On day 0 a change merges; on day 23 users report it collects tests inside conda environments; on day 25 a fix merges.",
+        "credit": "Patel et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2611.01181",
+        "fit": "contain"
+      },
+      "forYou": "Add a fresh-context reviewer subagent to the plugin workflow rather than asking the coding agent to check itself."
+    },
+    {
+      "id": "harness-forgetting",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Can Coding Agents Sustain Continual Evolution without Forgetting?",
+      "headline": "Let an agent rewrite its own setup for a new kind of task and it can forget the old one: one score fell from 94% to 32%",
+      "authors": "Shangziqi Zhao, Yitong Zhang, Jia Li (Tsinghua University)",
+      "where": "arXiv preprint",
+      "date": "2026-11-02",
+      "problem": "Methods that let an agent improve its own prompts, tools and checks are tested on one kind of task at a time, while real agents face several kinds in a row.",
+      "idea": "Evolve a small coding agent's harness on one benchmark, then keep evolving it on another (fixing bugs, writing tests, building features), and re-test the first after each round.",
+      "result": "Single-task gains were large (82% to 96% on SWE-bench Verified). After further evolution on feature tasks, one method fell from 94% to 32% on bug fixing. 87% of newly failing cases came from verification rules that suited the new task and clashed with the old; one such rule alone took a score from 96% to 0%. Small samples (30 to 50 tasks, one model).",
+      "useIt": "If an agent edits its own instruction files, skills or hooks from experience, keep a fixed set of earlier tasks and re-run them after every self-edit, and be most wary of new \"always verify by doing X\" rules.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.03219"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/THU-Agent/continual-harness-evolution"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-04/forgetting.webp",
+        "alt": "Figure: left, the setup of three benchmarks and two evolution methods with a chart where performance on the first task drops as the agent adapts to a second; right, a breakdown of conflicts into verification, workflow and budget.",
+        "credit": "Zhao et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2611.03219",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "abacusgs",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "AbacusGS: Gaussian Splatting without Per-Splat Sorting",
+      "headline": "Sort boxes of splats instead of every splat, and a captured 3D scene holds 60 frames a second in a throttled phone-sized browser",
+      "authors": "Jiacheng Ding, Yanliang Qi, Cong Guo, et al. (University of Memphis, National University of Singapore)",
+      "where": "arXiv preprint",
+      "date": "2026-11-01",
+      "problem": "Gaussian splat scenes must sort every splat by depth each frame. On web and mobile that sort can take most of the frame: 24.1 ms of 26.8 ms in the authors' viewer.",
+      "idea": "Group splats into boxes of at most 128, store each box pre-ordered along an axis, and each frame sort only the visible boxes and pick a read direction with one dot product. A short fine-tune teaches the scene to look right with this approximate order.",
+      "result": "Quality within 0.13 dB of standard splatting on 13 scenes. Frame time 26.8 ms to 6.0 ms in OpenGL; 60 FPS against 26 to 51 FPS in headless Chrome at a phone viewport with a 4x CPU slowdown; about 17 bytes per splat on disk against 248. The test is throttled desktop, not real phones.",
+      "useIt": "For splat viewers in three.js or WebGPU, sort coarse groups and draw them with multi-draw calls instead of sorting every splat. Watch for the promised code.",
+      "maturity": "prototype",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.01534"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-04/abacus.webp",
+        "alt": "Figure: crops from three test scenes compared across ground truth, standard splatting, StochasticSplats, an untuned two-level order and AbacusGS, each labelled with its PSNR score.",
+        "credit": "Ding et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2611.01534",
+        "fit": "contain"
+      },
+      "forYou": "A route to captured real-world scenes as backdrops in the browser games without a desktop GPU."
+    }
+  ],
+  "note": "Epic's own Unreal Engine pages refused our fetches today, so the Unreal Engine 6 facts come from event coverage (Inven Global citing Game Makers, and GameGPU) rather than from Epic's post. The Sparks desk could not reach X, TikTok or Threads."
+}
