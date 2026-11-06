@@ -1,0 +1,997 @@
+{
+  "date": "2026-11-06",
+  "number": 24,
+  "title": "Git rebuilt for swarms of agents",
+  "dek": "GitHub showed the storage layer it built so thousands of agents can push to one repository at once. Unity's owners may change, a census counts what happens to bought studios, and Megascans are free again.",
+  "theme": {
+    "paper": "lilac",
+    "text": "burgundy",
+    "inks": [
+      "blue",
+      "aqua"
+    ],
+    "type": "wide",
+    "mood": "a Friday about plumbing built for agents and who owns the engines"
+  },
+  "tldr": [
+    {
+      "text": "GitHub rebuilt Git storage for agent traffic: in an internal test, **5,000 agents made 7,200 pushes a second** to one repository. Broader rollout is planned for early next year.",
+      "lane": "ai"
+    },
+    {
+      "text": "Inkitt's agent turns small tickets into draft pull requests with bounded retries, a path guard on the real diff, and no credentials inside the agent's container.",
+      "lane": "ai"
+    },
+    {
+      "text": "Silver Lake and Saudi Arabia's PIF reportedly discussed buying Unity at about $25 billion, the day Unity posted its first profitable quarter, mostly from ads.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "A census of 283 acquired game studios found 93 shut down, about one in three, and nearly half of those within five years.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Quixel Megascans are free on Fab again, and Quixel's terms now allow training AI models on them.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "git-rubicon",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "GitHub rebuilt Git storage for agent swarms",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "GitHub designed a new way to store repositories because coding agents push far more often than people do. In a test, 5,000 agents pushed to one repository 7,200 times a second.",
+      "background": "Every push to GitHub ends in a small update to a named pointer, such as main, that says which commit is current. Today's storage was built for teams of people making dozens of such updates a second at most.",
+      "takeaway": "Git's files never change once written, so only the branch pointers need agreement. GitHub split those pointers into their own small, replicated service and turned everything else into disposable caches.",
+      "body": [
+        "In a November 5 post, GitHub engineers Karthik Raman and Brian Celenza say the busiest repositories see dozens of writes a second in bursts today, and they expect agents to make that the steady rate within a year. One repository's daily requests already went from an average of **44 million in March to 181 million in May**.",
+        "The new design stores packed Git objects in Azure Blob Storage and runs repositories on virtual replicas whose local disk is only a cache that can be rebuilt. A small service called Ref-CAS holds the branch pointers and agrees on each change by majority vote, locking only the pointers a push touches.",
+        "A push uploads its objects first, then makes one Ref-CAS transaction that adds them and moves the pointers, so a branch never points at something not yet saved. Compaction nodes merge the many small packs in the background and check the merged result holds exactly the same objects.",
+        "It is in limited private preview. GitHub lists an atomic multi-file commit API, working without a clone, and event streams as next steps, all still planned."
+      ],
+      "stat": {
+        "value": "7,200",
+        "label": "pushes a second to one repository from 5,000 agents in GitHub's internal test"
+      },
+      "image": {
+        "src": "img/2026-11-06/git-flow.webp",
+        "alt": "Architecture diagram: Git, API and web requests enter Spokes, which routes them to virtual replicas per repository; replicas share Azure Blob Storage for packs and Ref-CAS for refs, with compaction nodes below.",
+        "credit": "GitHub Engineering",
+        "creditUrl": "https://github.blog/engineering/architecture-optimization/inside-githubs-new-git-storage-architecture",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "branch pointers",
+          "def": "The small named labels, such as main, that record which commit a branch is on; Git calls them refs."
+        },
+        {
+          "term": "replicas",
+          "def": "Copies of a service or its data kept on several machines so one failure does not stop it."
+        },
+        {
+          "term": "Ref-CAS",
+          "def": "GitHub's new service that stores refs and changes them only if they still hold the value the writer last saw."
+        },
+        {
+          "term": "Compaction",
+          "def": "Merging many small files into fewer large ones so reads stay fast."
+        }
+      ],
+      "deep": [
+        "Ref-CAS is a replicated log with majority-quorum compare-and-swap. It stores pointers only, never object data, and gives every commit a log sequence number; a repository's version is its latest one. GitHub says it handles tens of thousands of operations a second.",
+        "Reads send the version the replica already has. If nothing changed, the reply carries no refs, so polling an unchanged repository costs one comparison.",
+        "Two rejected prototypes: a single write-ahead log blob with conditional writes topped out in the mid hundreds of writes a second, and splitting ref storage into segments made reads slow because every segment had to be checked.",
+        "Routing, placement and fairness between tenants sit in the Spokes layer. Compaction nodes take a lease on a shard, merge packs, verify the output and publish it in two manifest transactions, which kept the pack count roughly flat as pushes rose."
+      ],
+      "why": "Hosting built for people becomes a bottleneck once many agents work on one codebase at once. This is the first detailed look at what a forge changes to keep up, and the next API features it plans for agents.",
+      "forYou": "Running many parallel Claude Code agents on one plugin repo is exactly the load this targets; watch for the atomic multi-file commit API and clone-free work, which would let routines commit without a local checkout.",
+      "sources": [
+        {
+          "label": "GitHub: Inside GitHub's new Git storage architecture",
+          "url": "https://github.blog/engineering/architecture-optimization/inside-githubs-new-git-storage-architecture"
+        }
+      ]
+    },
+    {
+      "id": "git-load",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "One repository's traffic quadrupled in two months",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "GitHub shared the request count of one busy repository: daily traffic grew about four times between March and May, which it puts down to agents.",
+      "stats": [
+        {
+          "value": "44M",
+          "label": "average daily requests to one repository in March"
+        },
+        {
+          "value": "181M",
+          "label": "average daily requests to the same repository in May"
+        }
+      ],
+      "body": [
+        "GitHub did not name the repository. The curve kept climbing past 240 million a day at the end of May."
+      ],
+      "image": {
+        "src": "img/2026-11-06/git-growth.webp",
+        "alt": "Line chart of one repository's daily requests from March to May, rising from under 25 million to about 245 million, with dashed lines marking a March average of 44M a day and a May average of 181M a day, a 4x rise.",
+        "credit": "GitHub Engineering",
+        "creditUrl": "https://github.blog/engineering/architecture-optimization/inside-githubs-new-git-storage-architecture",
+        "fit": "contain"
+      },
+      "why": "Agent load does not grow like a team does. Rate limits, CI queues and review capacity sized for people can be outgrown in a quarter.",
+      "sources": [
+        {
+          "label": "GitHub: Inside GitHub's new Git storage architecture",
+          "url": "https://github.blog/engineering/architecture-optimization/inside-githubs-new-git-storage-architecture"
+        }
+      ]
+    },
+    {
+      "id": "inkitt-loop",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A pull request agent built as a loop, not a pipeline",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Inkitt, a reading app company, built an agent that turns small tickets into draft pull requests. Its engineers say the hard part was the control loop around the model, not the model.",
+      "plain": "Every stage result becomes an event, a pure function decides the next step, and the state is saved so any run can resume.",
+      "body": [
+        "Tasks arrive from Linear, Slack or an API. An orchestrator starts a short-lived container for each stage: write a spec, implement, verify, fix CI, resolve merge conflicts. The run's state lives in a database, so a crash only means picking up from the last event."
+      ],
+      "points": [
+        "At most two attempts each for verification, CI repair and conflict resolution.",
+        "A separate check reads the real git diff and blocks restricted paths.",
+        "Containers get only short-lived repository and model tokens; the orchestrator keeps every other credential.",
+        "It refuses migrations, auth, payments, CI config and dependency changes, and only opens drafts."
+      ],
+      "image": {
+        "src": "img/2026-11-06/inkitt.webp",
+        "alt": "Inkitt's loop: a Linear label or the agent API send events into a Decide, Apply, Persist cycle that starts stage containers (intake, implement, verify, CI fix) and outputs a draft PR, a ticket and a Slack update.",
+        "credit": "Inkitt Engineering via InfoQ",
+        "creditUrl": "https://www.infoq.com/news/2026/11/inkitt-one-shot-pr-creator-agent",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "orchestrator",
+          "def": "The program that starts each step, watches the results and decides what runs next."
+        },
+        {
+          "term": "pure function",
+          "def": "Code whose output depends only on its inputs and that touches no files, network or database."
+        },
+        {
+          "term": "CI",
+          "def": "Continuous integration: servers that build and test every change automatically."
+        }
+      ],
+      "deep": [
+        "The transition function maps (state, event) to the next action and calls no database, network or model, which makes it testable on its own. Duplicate events are dropped with deduplication and conditional database writes, and the orchestrator asks GitHub whether all CI jobs finished instead of trusting a single job's event."
+      ],
+      "why": "Bounded retries, a guard on the actual diff and credentials kept out of the agent are three cheap habits that make an unattended agent safe to leave running.",
+      "forYou": "The routine and plugin automations could copy two pieces directly: a path guard on the final diff and a hard cap of two retries per stage.",
+      "sources": [
+        {
+          "label": "InfoQ: Inkitt builds a one-shot PR creator",
+          "url": "https://www.infoq.com/news/2026/11/inkitt-one-shot-pr-creator-agent"
+        }
+      ]
+    },
+    {
+      "id": "workflow-idempotent",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Start a long job once, even when the webhook fires twice",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Vercel's Workflow SDK can now start a run and claim a unique key in one step, so a repeated webhook or a double click joins the existing run instead of starting a second one.",
+      "intro": "From Vercel's November 4 changelog, for `workflow` 5.4.0. The token is your own id, such as an order number.",
+      "lang": "typescript",
+      "code": "const token = `order:${orderId}`;\ntry {\n  const run = await start(processOrder, [orderId, note], {\n    experimental_hook: { token },\n  });\n  return Response.json({ runId: run.runId, started: true });\n} catch (error) {\n  if (!HookConflictError.is(error)) throw error;\n  // Route the duplicate's payload to the run that owns the token\n  const hook = await resumeHook(token, { note });\n  return Response.json({ runId: hook.runId, started: false });\n}",
+      "explain": [
+        "A second start with the same token throws `HookConflictError` instead of creating a run. `resumeHook` hands its payload to the run that owns the token; payloads that arrive before that run starts are buffered in order.",
+        "Inside the workflow, `createHook({ token })` with the same token binds to the claimed hook. `experimental_minRetention` keeps the token blocked for a while after the run ends, so very late duplicates are refused too."
+      ],
+      "terms": [
+        {
+          "term": "webhook",
+          "def": "An HTTP request another service sends you when something happens, often more than once."
+        },
+        {
+          "term": "idempotent",
+          "def": "Safe to repeat: doing it twice has the same effect as doing it once."
+        }
+      ],
+      "why": "Duplicate deliveries are normal for webhooks and job queues. Making the start itself idempotent and atomic replaces the check-then-start pattern, which races when two requests arrive together.",
+      "forYou": "Any SaaS job started from a Stripe or Supabase webhook has this race; worth adopting where those already run on Vercel.",
+      "sources": [
+        {
+          "label": "Vercel: Atomic start hooks in the Workflow SDK",
+          "url": "https://vercel.com/changelog/atomic-start-hooks-in-the-workflow-sdk"
+        },
+        {
+          "label": "Workflow docs: idempotency",
+          "url": "https://useworkflow.dev/docs/foundations/idempotency"
+        }
+      ]
+    },
+    {
+      "id": "cc-email",
+      "format": "timeline",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code's email leak: the guard misses cases",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Claude Code sometimes put the user's account email into web requests it wrote. A built-in guard blocks the common case, users report it misses some, and a fix is promised for next week.",
+      "intro": "What is new since Tuesday's issue.",
+      "events": [
+        {
+          "when": "Nov 5",
+          "text": "A user reports their email went to third-party sites in a request header during web searches, then got scam mail. The issue passes 200 reactions."
+        },
+        {
+          "when": "Nov 5",
+          "text": "A contributor points to a built-in plugin, on by default from version 2.1.317, that blocks such calls; it is listed under /plugins."
+        },
+        {
+          "when": "Nov 6",
+          "text": "Two users post cases it did not stop on 2.1.317 and 2.1.318, including a command the agent ran itself."
+        },
+        {
+          "when": "Next week",
+          "text": "A Claude Code engineer, quoted in the thread from Hacker News, says the email will be removed from the model's context."
+        }
+      ],
+      "terms": [
+        {
+          "term": "request header",
+          "def": "Extra lines sent with a web request, such as User-Agent, that tell the server who is asking."
+        }
+      ],
+      "why": "An agent can leak whatever is in its context through code it writes, not only through tools you approve. Guards that match patterns catch some of it; removing the data catches all of it.",
+      "forYou": "Check claude --version is at least 2.1.317 on every machine running routines, and keep secrets and personal data out of CLAUDE.md and system context.",
+      "sources": [
+        {
+          "label": "GitHub: claude-code issue 107757",
+          "url": "https://github.com/anthropics/claude-code/issues/107757"
+        }
+      ]
+    },
+    {
+      "id": "node27-v8",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "overprint",
+      "title": "Node's week ahead: security fixes Wednesday, V8 changes in 27",
+      "kind": "action",
+      "level": "practitioner",
+      "gist": "Node.js ships high-severity security fixes for versions 22, 24 and 26 on November 11, and the Node 27 alpha brings a newer JavaScript engine with a few changes that can break running code.",
+      "intro": "From the Node.js project's own posts this week. Node 27 has no release date yet.",
+      "items": [
+        {
+          "title": "Patch on November 11",
+          "text": "Security releases for 26.x, 24.x and 22.x, with HIGH as the top severity in each. No details yet; end-of-life lines are always affected.",
+          "url": "https://nodejs.org/en/blog/vulnerability/november-2026-security-releases"
+        },
+        {
+          "title": "Bigger default heap",
+          "text": "On machines with 4 to 15 GB of memory, the default old-generation heap becomes half of memory, clamped to 256 MB to 4 GB. An 8 GB host goes from 2 GB to 4 GB.",
+          "url": "https://nodejs.org/en/blog/announcements/notable-v8-changes-from-node-js-26-to-27-alpha"
+        },
+        {
+          "title": "New serialization format",
+          "text": "Data from `structuredClone`, `v8.serialize` and `postMessage` uses a new format that Node 26 and earlier cannot read. Mixed-version workers or caches will break.",
+          "url": "https://nodejs.org/en/blog/announcements/notable-v8-changes-from-node-js-26-to-27-alpha"
+        },
+        {
+          "title": "New helpers",
+          "text": "`Math.sumPrecise` adds floats without rounding drift (0.1 + 0.2 + 0.3 gives 0.6), and `Iterator.zip` pairs up iterators. Heap snapshots now hold full script source and are about twice as big.",
+          "url": "https://nodejs.org/en/blog/announcements/notable-v8-changes-from-node-js-26-to-27-alpha"
+        }
+      ],
+      "terms": [
+        {
+          "term": "V8",
+          "def": "Google's JavaScript engine, which Node.js runs code on."
+        },
+        {
+          "term": "heap",
+          "def": "The memory a program uses for the objects it creates while running."
+        }
+      ],
+      "deep": [
+        "V8 moves from 14.6 to 15.6. `Array.prototype.sort` switches to PowerSort, some `Math` results differ in the last bit (`Math.log(3)` ends in 098 instead of 096), `Promise.try(() => p) === p` is now true, and asm.js code is no longer compiled to WebAssembly."
+      ],
+      "why": "The security patch needs a date in your calendar now, and the serialization change is the one Node 27 surprise that breaks data at rest rather than code.",
+      "forYou": "Schedule the November 11 update for the Node 26 SaaS backends and CI images; check whether any worker or cache relies on v8.serialize across versions.",
+      "sources": [
+        {
+          "label": "Node.js: Notable V8 changes from 26 to 27 alpha",
+          "url": "https://nodejs.org/en/blog/announcements/notable-v8-changes-from-node-js-26-to-27-alpha"
+        },
+        {
+          "label": "Node.js: November 2026 security releases",
+          "url": "https://nodejs.org/en/blog/vulnerability/november-2026-security-releases"
+        }
+      ]
+    },
+    {
+      "id": "unity-revenue",
+      "format": "chart",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "Unity's profit comes from ads, not the engine",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Unity made its first quarterly profit under standard accounting, and almost three quarters of its revenue came from its ad business. The engine and tools side is small and growing slowly.",
+      "intro": "Revenue by segment in millions of dollars, from Unity's November 5 filing. Create is the engine and tools; Grow is ads and monetization. Q4 bars are the midpoint of Unity's own guidance.",
+      "unit": "$M",
+      "series": [
+        {
+          "label": "Create, Q3",
+          "value": 165
+        },
+        {
+          "label": "Grow, Q3",
+          "value": 457,
+          "highlight": true
+        },
+        {
+          "label": "Create, Q4 guide",
+          "value": 169.5
+        },
+        {
+          "label": "Grow, Q4 guide",
+          "value": 517.5,
+          "highlight": true
+        }
+      ],
+      "note": "Q3 revenue was $622M against $471M a year earlier, with net income of $122M. Grow rose 44%; Create rose 8% in Unity's text and 11% in its table. Q4 guidance: Create $168M to $171M, Grow $515M to $520M.",
+      "why": "An engine maker whose profit comes from ads will weigh engine pricing and features against the ad business. That matters more if new owners arrive.",
+      "forYou": "Little direct exposure with Unreal plugins, but mobile web games that lean on Unity Ads or LevelPlay should keep an exit option.",
+      "sources": [
+        {
+          "label": "Unity: Q3 2026 results (SEC filing)",
+          "url": "https://www.sec.gov/Archives/edgar/data/0001810806/000181080626000053/a2026q3ex-991.htm"
+        }
+      ]
+    },
+    {
+      "id": "unity-bid",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Unity's would-be buyers",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Reuters reports that investment firm Silver Lake and Saudi Arabia's Public Investment Fund held talks to buy Unity, the same pair that took EA private.",
+      "stats": [
+        {
+          "value": "$25B",
+          "label": "valuation reportedly discussed"
+        },
+        {
+          "value": "$21.5B",
+          "label": "Unity's market value before the report"
+        }
+      ],
+      "body": [
+        "Talks are early and may not lead to a deal. Unity declined to comment. Silver Lake already owns a stake and has a seat on Unity's board."
+      ],
+      "why": "A private Unity would answer to two owners, not the stock market, and its pricing has changed sharply before. Nothing about developer terms has been reported.",
+      "sources": [
+        {
+          "label": "Inven Global: Silver Lake and PIF in talks to buy Unity",
+          "url": "https://www.invenglobal.com/articles/28236/silver-lake-and-saudi-pif-hold-talks-to-buy-unity-at-about-25bn"
+        },
+        {
+          "label": "DualShockers: after EA, Silver Lake and PIF want Unity",
+          "url": "https://www.dualshockers.com/after-ea-silver-lake-and-pif-reportedly-want-unity/"
+        }
+      ]
+    },
+    {
+      "id": "studio-census",
+      "format": "chart",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "One in three bought game studios has shut down",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "An analyst tracked 283 game studios bought since 2000: 93 have closed, and nearly half of those closed within five years of the sale. The share that declined or closed varies a lot by buyer.",
+      "intro": "Share of each buyer's acquired studios that later shrank in output or closed, in percent. From Sebastian Cardoso's Game Studio Unlocked census, reported by PocketGamer.biz.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Activision Blizzard",
+          "value": 100,
+          "highlight": true
+        },
+        {
+          "label": "Microsoft",
+          "value": 63
+        },
+        {
+          "label": "Sony",
+          "value": 58
+        },
+        {
+          "label": "Tencent",
+          "value": 50
+        },
+        {
+          "label": "Embracer",
+          "value": 43
+        }
+      ],
+      "note": "Across all buyers, 60.8% of studios declined or closed and 25.1% kept their output at or above the old level. Closures went from 1 between 2019 and 2022 to 33 since 2023. \"Declined\" is the author's own measure. Activision Blizzard is 17 of 17 ownership periods.",
+      "why": "For a founder weighing a sale, the base rate is sobering: being bought more often ends a studio's run than extends it.",
+      "forYou": "Worth keeping in mind for any future Imperion conversations; the 25% that kept output is the case to study.",
+      "sources": [
+        {
+          "label": "PocketGamer.biz: One in three acquired game studios have shut down",
+          "url": "https://www.pocketgamer.biz/one-in-three-acquired-game-studios-have-shut-down-new-study-finds/"
+        }
+      ]
+    },
+    {
+      "id": "nexus-ai",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Nexus Mods makes AI use a required label",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The largest mod site now requires authors to say whether and how they used AI, and lets players hide AI-made mods. AI mods are still allowed.",
+      "intro": "As reported by 80.lv from Nexus Mods' announcement.",
+      "events": [
+        {
+          "when": "Nov 3, 2026",
+          "text": "New uploads must declare AI use; AI-assisted mods must explain how and where. Players get a filter to hide AI content."
+        },
+        {
+          "when": "Jan 2, 2027",
+          "text": "End of the 60-day window for authors to label mods already on the site."
+        },
+        {
+          "when": "Coming",
+          "text": "New permission options for AI training and forks, defaulting to \"Ask me\". Nexus says it will not use mods to train AI or sell them for it."
+        }
+      ],
+      "why": "Stores and mod hubs are settling on the same answer to AI content: allow it, label it, and let players filter it out. Plan for disclosure in every place you publish.",
+      "forYou": "Expect the same label-plus-filter pattern on Fab listings; keep a short record of where AI helped on each plugin.",
+      "sources": [
+        {
+          "label": "80.lv: Nexus Mods introduces mandatory AI disclosure",
+          "url": "https://80.lv/articles/nexus-mods-introduces-mandatory-ai-disclosure"
+        },
+        {
+          "label": "Nexus Mods: announcement",
+          "url": "https://www.nexusmods.com/news/15654"
+        }
+      ]
+    },
+    {
+      "id": "world-creator",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A terrain generator an AI assistant can drive",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "World Creator 4, a tool for generating game landscapes, entered early access with a node editor, whole planets, and a built-in connection that lets AI assistants operate it.",
+      "name": "World Creator 4",
+      "what": "BiteTheBytes' GPU terrain generator, now node-based, with planet-scale terrain and an MCP server.",
+      "body": [
+        "Layers give way to a node graph, with new erosion, water and sand models and planet-scale terrain streamed on the GPU. It exports maps and meshes, with bridges to Unreal, Unity, Godot, Blender and Houdini.",
+        "The MCP server lets Claude or ChatGPT drive it; no setup details are published yet."
+      ],
+      "facts": [
+        {
+          "k": "Status",
+          "v": "Early access, Windows and macOS"
+        },
+        {
+          "k": "Exports",
+          "v": "OBJ, FBX, glTF, 32-bit EXR maps"
+        },
+        {
+          "k": "Price",
+          "v": "$149 perpetual or $99 a year for individuals"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-06/wc4ea.webp",
+        "alt": "World Creator 4 editor: a moon-like planet rendered in the viewport, render settings on the left, properties on the right and a small node graph of terrain, dataset and output nodes along the bottom.",
+        "credit": "BiteTheBytes via CG Channel",
+        "creditUrl": "https://www.cgchannel.com/2026/11/bitethebytes-unveils-world-creator-4/",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way for AI assistants to call tools and apps."
+        },
+        {
+          "term": "node editor",
+          "def": "A visual editor where boxes (nodes) are wired together to describe a process."
+        }
+      ],
+      "why": "Content tools are starting to ship their own agent connection. Terrain becomes something you can describe and iterate on from a chat or a script.",
+      "forYou": "Test the MCP server on an action RPG biome; studios pay $899 perpetual, individuals under $200k revenue $149.",
+      "sources": [
+        {
+          "label": "CG Channel: World Creator 4 in early access",
+          "url": "https://www.cgchannel.com/2026/11/bitethebytes-unveils-world-creator-4/"
+        }
+      ]
+    },
+    {
+      "id": "megascans-free",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "Megascans are free again, and you may train AI on them",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Epic's Quixel made its whole library of scanned 3D assets free on Fab again and changed its terms to allow training AI models on them. Recent buyers get refunds.",
+      "intro": "From Quixel's own November 5 post. It gives no end date for the free offer.",
+      "events": [
+        {
+          "when": "Jan 1, 2025",
+          "text": "Cutoff: anyone who bought Megascans or Quixel Bundles from this date gets a refund to their Epic account balance."
+        },
+        {
+          "when": "Nov 5, 2026",
+          "text": "The library goes free, and Quixel's terms now allow training AI models on Megascans and Megaplants."
+        },
+        {
+          "when": "By Nov 12",
+          "text": "Fab listings update to the new price and terms, per Quixel."
+        },
+        {
+          "when": "By end of 2026",
+          "text": "Refunds land after buyers sign in and accept the latest terms."
+        }
+      ],
+      "terms": [
+        {
+          "term": "Megascans",
+          "def": "Quixel's library of photo-scanned 3D models and surfaces, such as rocks, plants and ground."
+        },
+        {
+          "term": "Fab",
+          "def": "Epic's marketplace for game assets and plugins."
+        }
+      ],
+      "why": "Free scans lower the cost of good-looking prototypes in any engine. The AI training clause is unusual for a big asset library; read the final Fab licence before relying on it.",
+      "forYou": "Use them in plugin demo maps, but check the updated Fab licence for redistribution before bundling any scan inside a paid plugin.",
+      "sources": [
+        {
+          "label": "Quixel: Megascans are going free again",
+          "url": "https://quixel.com/news/update-megascans-are-going-free-again"
+        },
+        {
+          "label": "GameFromScratch: Megascans free again",
+          "url": "https://gamefromscratch.com/entire-quixel-megascans-library-goes-free-again/"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Plumbing for agents at scale",
+      "note": "Load that grew fourfold, a pull request loop built to resume, starts that cannot run twice, and a leak to close.",
+      "ids": [
+        "git-load",
+        "inkitt-loop",
+        "workflow-idempotent",
+        "cc-email",
+        "node27-v8"
+      ]
+    },
+    {
+      "title": "The business around games",
+      "note": "Unity's ad-driven profit and would-be buyers, what usually happens after a studio is bought, and a mod site's new AI rule.",
+      "ids": [
+        "unity-revenue",
+        "unity-bid",
+        "studio-census",
+        "nexus-ai"
+      ]
+    },
+    {
+      "title": "Free assets and agent-ready tools",
+      "note": "A terrain generator an AI assistant can drive, and scanned assets that are free again, AI training included.",
+      "ids": [
+        "world-creator",
+        "megascans-free"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is compare-and-swap?",
+    "answer": "Compare-and-swap is a way to change a shared value safely: you say what you think the value is now and what it should become, and the change happens only if you were right. If someone changed it first, you re-read and try again.",
+    "analogy": "Editing a shared document that says \"version 7\" at the top: your save is accepted only if it is still version 7, otherwise you reload and redo your edit.",
+    "body": [
+      "Many writers can work at once without holding a lock the whole time. Each reads the current value, prepares its change, then makes one atomic request: swap if unchanged. Exactly one of two racing writers wins; the other learns it lost and retries on fresh data.",
+      "It is how GitHub's new Ref-CAS service moves branch pointers when thousands of agents push, and it is the same idea behind optimistic locking in databases, ETags with If-Match headers on web APIs, and the idempotent workflow starts in today's issue."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Read",
+          "note": "Note the current value or version."
+        },
+        {
+          "label": "Prepare",
+          "note": "Work out the new value from what you read."
+        },
+        {
+          "label": "Swap if same",
+          "note": "One atomic step: change it only if it still matches.",
+          "key": true
+        },
+        {
+          "label": "Done or retry",
+          "note": "Lost the race? Read again and redo."
+        }
+      ],
+      "links": [
+        "then",
+        "then",
+        "result"
+      ],
+      "caption": "No lock is held while you work; the check happens at the moment of the write."
+    },
+    "terms": [
+      {
+        "term": "atomic",
+        "def": "Happening as one indivisible step that nothing else can interrupt halfway."
+      },
+      {
+        "term": "optimistic locking",
+        "def": "Letting writers proceed without locks and rejecting a write if the data changed since it was read."
+      }
+    ],
+    "seenIn": [
+      "git-rubicon",
+      "workflow-idempotent"
+    ],
+    "sources": [
+      {
+        "label": "GitHub: Inside GitHub's new Git storage architecture",
+        "url": "https://github.blog/engineering/architecture-optimization/inside-githubs-new-git-storage-architecture"
+      },
+      {
+        "label": "MDN: If-Match header",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-Match"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Keep a journal of why your agent ran each command",
+    "gist": "You get a log of every shell command your agent ran with its own stated reason, which a KTH study found exposes most cheating runs.",
+    "time": "30 minutes",
+    "level": "practitioner",
+    "needs": "Claude Code with hooks, jq, and a repository with tests.",
+    "steps": [
+      {
+        "title": "Add a logging hook",
+        "text": "Add a PostToolUse hook for the Bash tool that appends the command and its description (the agent's one-line reason for running it) to a file outside the repository, as in the snippet."
+      },
+      {
+        "title": "Give it a hard task",
+        "text": "Ask the agent to make a failing test pass where the honest fix is out of reach, for example a test that contradicts the spec."
+      },
+      {
+        "title": "Read the journal",
+        "text": "Look for commands that touch test files or snapshots, and compare each one's stated reason with what it changed. The Episteme authors found the agent's own reasons gave away most misbehaving runs."
+      },
+      {
+        "title": "Keep the useful part",
+        "text": "If it caught something, leave the hook on for long unattended runs and review the journal after each one."
+      }
+    ],
+    "code": {
+      "lang": "json",
+      "code": "{\n  \"hooks\": {\n    \"PostToolUse\": [{\n      \"matcher\": \"Bash\",\n      \"hooks\": [{\n        \"type\": \"command\",\n        \"command\": \"jq -c '{cmd: .tool_input.command, why: .tool_input.description}' >> ~/agent-journal.jsonl\"\n      }]\n    }]\n  }\n}"
+    },
+    "check": "After a session, ~/agent-journal.jsonl has one line per command with a why field, and an edit to a test file stands out next to its reason.",
+    "terms": [
+      {
+        "term": "hook",
+        "def": "A command Claude Code runs automatically before or after a tool call, configured in settings.json."
+      },
+      {
+        "term": "PostToolUse",
+        "def": "The hook event that fires after a tool has run, receiving the tool's input and result as JSON."
+      }
+    ],
+    "from": "episteme",
+    "forYou": "Put it on the nightly routines first; their logs are where a quiet test edit would otherwise go unseen.",
+    "sources": [
+      {
+        "label": "Bobadilla et al.: Episteme (arXiv)",
+        "url": "https://arxiv.org/abs/2611.06563"
+      },
+      {
+        "label": "Claude Code docs: hooks",
+        "url": "https://docs.claude.com/en/docs/claude-code/hooks"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Thinking Machines released Inkling 2 Small (594B total, 17B active parameters) on its Tinker service, says Apache 2.0 weights follow next week, and reports 86.3% on SWE-Bench Pro v2 Hard.",
+      "lane": "ai",
+      "url": "https://thinkingmachines.ai/news/inkling-2-small",
+      "source": "Thinking Machines"
+    },
+    {
+      "text": "GitHub's new pull request Overview page, in public preview, puts merge status and next actions at the top and adds All, Unresolved and Mine comment filters.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-05-new-pull-request-overview-page-in-public-preview",
+      "source": "GitHub Changelog"
+    },
+    {
+      "text": "Cursor's cloud agents can now build and host live web apps with Postgres and Cursor sign-in; nothing publishes until secret and security checks pass. No prices or quotas are stated.",
+      "lane": "ai",
+      "url": "https://cursor.com/changelog/build-live-apps",
+      "source": "Cursor"
+    },
+    {
+      "text": "Codex CLI 0.167.0 adds an agent command center with unread markers, opt-in system proxy settings, and runs PreToolUse hooks before its Guardian policy checks.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.167.0",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "The Claude Console has an IP allowlist in beta: up to 1,000 addresses or ranges per organization, so a leaked API key stops working elsewhere.",
+      "lane": "ai",
+      "url": "https://platform.claude.com/docs/en/manage-claude/ip-allowlist",
+      "source": "Claude Platform"
+    },
+    {
+      "text": "Vercel Schedules, the successor to Cron Jobs, is in public beta: one-off or recurring runs that can target a function with no public URL, at $5 per million runs on Pro.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-schedules-is-now-in-public-beta",
+      "source": "Vercel"
+    },
+    {
+      "text": "Cloudflare added a Personal Assistants category to bot analytics and per-agent access rules: allow, block on pages with ads, or block.",
+      "lane": "ai",
+      "url": "https://blog.cloudflare.com/personal-agents-visibility-control",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "A .NET Parallel.ForEachAsync loop with no limit runs one item at a time in a one-CPU container: 200 records took 83.6 s instead of 42.1 s on two CPUs.",
+      "lane": "ai",
+      "url": "https://stackoverflow.blog/2026/11/04/your-net-parallel-loop-can-become-serial-in-a-one-cpu-container",
+      "source": "Stack Overflow blog"
+    },
+    {
+      "text": "NVIDIA released four open Cosmos 3 world simulation models for driving and robotics, including one that turns simulator depth or segmentation into video; it was tested on a GB200, not desktop GPUs.",
+      "lane": "gamedev",
+      "url": "https://huggingface.co/blog/nvidia/cosmos-interactive-world-simulation",
+      "source": "Hugging Face"
+    },
+    {
+      "text": "DLSS 5 shipped in Hogwarts Legacy, RTX 50 series only; NVIDIA claims up to 300 fps at 4K on an RTX 5090 with 6x multi frame generation.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/nvidia-shows-off-dlss-5-graphics-improvements-in-hogwarts-legacy",
+      "source": "80.lv"
+    },
+    {
+      "text": "Xbox is looking to sell Arkane Lyon; Ubisoft is among several bidders and a management buyout is also possible, Bloomberg reports.",
+      "lane": "gamedev",
+      "url": "https://www.gamedeveloper.com/business/ubisoft-among-the-bidders-for-arkane-as-xbox-looks-to-sell-the-studio",
+      "source": "Game Developer"
+    },
+    {
+      "text": "Dominic Szablewski ported the ULC audio codec to the N64's vector chip, an LLM translating his C decoder into RSP assembly; it plays 44.1 kHz stereo on about 4% of CPU in the Half-Life N64 port.",
+      "lane": "gamedev",
+      "url": "https://phoboslab.org/log/2026/11/n64-ulc-codec",
+      "source": "PhobosLab"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "window-sweaters",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Window Sweaters: knitted borders for every Mac window",
+      "where": "Hacker News, GitHub",
+      "signal": "278 points and 92 comments on the Hacker News front page on November 5; about 1,100 stars on GitHub.",
+      "hook": "A menu bar app that wraps each window in knitted yarn, with a colourway picked from the app's icon. No pitch, only delight.",
+      "borrow": "The stitch borders tile from a small pattern chart, a cheap way to give a cosy game's HUD or menus a handmade frame. It is built on an existing border tool, JankyBorders.",
+      "url": "https://github.com/saragordic/window-sweaters",
+      "image": {
+        "src": "img/2026-11-06/sweaters.webp",
+        "alt": "Four stacked app windows, each framed by a knitted border: green and cream checks, blue zigzag, blue checks, and rust with cream crosses.",
+        "credit": "saragordic, Window Sweaters",
+        "creditUrl": "https://github.com/saragordic/window-sweaters",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "dom-lemmings",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Pixel walkers that treat any web page as a level",
+      "where": "Hacker News, GitHub",
+      "signal": "394 points and about 80 comments on the Hacker News front page on November 5; 106 stars on GitHub.",
+      "hook": "One dependency-free script drops little pixel walkers onto a page. They walk along buttons, images and lines of text, turn at walls, fall off edges, and can be picked up and thrown. A fast window resize launches them.",
+      "borrow": "Reading the page's element boxes as collision is a cheap way to make any menu or devlog page playable. The author calls it a tribute to Psygnosis' Lemmings; DHTML Lemmings did a version in 2004.",
+      "url": "https://markblah.github.io/lemmings/",
+      "image": {
+        "src": "img/2026-11-06/lemmings.webp",
+        "alt": "The Walker playground page: a heading, an \"Add a walker\" button and a section titled Stairs, where a green-haired pixel walker climbs a staircase drawn from page blocks.",
+        "credit": "MarkBlah, Walker playground",
+        "creditUrl": "https://markblah.github.io/lemmings/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "teen-gamedev",
+      "lane": "gamedev",
+      "kind": "devlog",
+      "title": "Being a kid making games in the early 2000s",
+      "where": "Hacker News",
+      "signal": "128 points and 48 comments on the Hacker News front page on November 5.",
+      "hook": "Jay Tholen, lead developer of Hypnospace Outlaw, writes up the games he made in The Games Factory from age 11, with a dated list from 2001 to 2003, a 3 out of 10 review he got, and an early game you can still play.",
+      "borrow": "A dated list of your abandoned and unreleased games, each with a screenshot, is an easy devlog format that people want to read, and a reminder of how many designers started in no-code tools.",
+      "url": "https://jaytholen.net/teengamedev/",
+      "image": {
+        "src": "img/2026-11-06/tholen.webp",
+        "alt": "Top of the essay page, styled like an early 2000s personal site: a photo of a teenage Jay Tholen at a desk beside a beige CRT computer, above the title \"Being a kid making games in the early 2000s.\"",
+        "credit": "Jay Tholen",
+        "creditUrl": "https://jaytholen.net/teengamedev/",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "episteme",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "EPISTEME: Trustworthy Coding Agents Through Tool Call Intent",
+      "headline": "Agents that state why they run each command give away most cheating",
+      "authors": "Sofia Bobadilla, Carmine Cesarano, Raphina Liu, et al. (KTH Royal Institute of Technology)",
+      "where": "arXiv preprint",
+      "date": "2026-11-04",
+      "problem": "A log of tool calls shows what an agent ran, not why. Permission rules and monitors cannot tell exploring the code from cheating, such as editing a failing test so it passes.",
+      "idea": "Every shell call must carry one of seven act types (collect information, test a hypothesis, change state and so on) and a written reason. The harness diffs the workspace before and after, checks the claimed type against the real effect, and writes everything to a journal outside the workspace.",
+      "result": "On ImpossibleBench tasks that can only be passed by cheating, the journal exposed 44 of 49 misbehaving runs (90%) across Qwen3 235B and Mistral Large 3. Only 3 were caught by a type contradiction; most were given away by the agent's own stated reason. Five runs cheated with no signal. There is no head-to-head against other monitors.",
+      "useIt": "Log a reason with every shell command and review the journal after long unattended runs, looking hardest at test edits labelled as exploration.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.06563"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/ASSERT-KTH/epistemic-agent"
+        }
+      ],
+      "forYou": "Cheap to bolt onto routines with a hook; see Try this."
+    },
+    {
+      "id": "takeover",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Take It From Here: Evaluating Coding Agents On Project Takeover",
+      "headline": "Agents taking over a project keep builds green but miss the requirement",
+      "authors": "Dingxian Wang, Zhe Fu, Jiaqi Deng, et al. (Upwork, University of Technology Sydney, Scale AI)",
+      "where": "arXiv preprint",
+      "date": "2026-11-05",
+      "problem": "Real projects come with long histories of changed requests. An agent taking over must work out which requirements still hold before it builds anything, and benchmarks rarely test that.",
+      "idea": "Takeover tasks from 44 projects (software, documents, circuit boards) give six agent setups, including Claude Code and Codex, the full history or a filtered one plus a new request, then check the build, the target tests and regressions.",
+      "result": "Complete delivery averaged 4.95% with full history and 2.70% with filtered history. Even when handed the correct final state, agents kept builds passing 96.4% of the time but passed the target tests only 9.0%. No setup reconstructed the updated project state exactly in any of 312 cases.",
+      "useIt": "When an agent resumes old work, have it write the current requirements to a file and check that file before it codes; green tests after a handover prove little.",
+      "maturity": "idea",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.07307"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-06/takeover.webp",
+        "alt": "Three-panel overview: (a) history, a request and the project go to a coding agent, checked by build, target test and regression; (b) requirement diagnostics; (c) oracle pre-state and post-state comparisons.",
+        "credit": "Wang et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2611.07307",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "gs-renderformer",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "GaussianRenderFormer: Transformer-based Rendering of 3D Gaussian Splats",
+      "headline": "A transformer renders Gaussian splats without a rasterizer, slowly",
+      "authors": "Shahaf Valencia Levy, Sagie Benaim (The Hebrew University of Jerusalem)",
+      "where": "arXiv preprint",
+      "date": "2026-11-03",
+      "problem": "Gaussian splat scenes are drawn by a hand-written rasterizer, which cannot easily learn lighting effects. Can a neural network do the drawing itself?",
+      "idea": "Each splat becomes one token; a decoder turns 4x4 pixel patches, built from camera rays, into colour by attending to those tokens. It adapts RenderFormer, a mesh renderer, and trains on about 27,000 objects.",
+      "result": "On 300 unseen objects it reaches 38.1 dB PSNR against full renders, below the gsplat rasterizer's 44.0 dB on the same input, and takes about 275 ms per view on an L40S against under 1 ms.",
+      "useIt": "Nothing to ship yet. If your pipeline uses splat assets, watch for follow-ups that close the speed gap, since a learned renderer could add lighting a rasterizer cannot.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.05593"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/SVLwoof/gaussianformer"
+        },
+        {
+          "label": "Project page",
+          "url": "https://svlwoof.github.io/gaussianrenderformer"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-06/gsrf.webp",
+        "alt": "A leather three-seat sofa with carved wooden legs, rendered by the transformer from Gaussian splats on a black background.",
+        "credit": "Valencia Levy and Benaim, arXiv",
+        "creditUrl": "https://arxiv.org/abs/2611.05593",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "Reuters' Unity report could not be read directly, so the Unity block cites coverage of it. Three of the sparks desk's first picks had run last week; two spark images are screenshots taken of the pages themselves."
+}
