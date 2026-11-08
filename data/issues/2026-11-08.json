@@ -1,0 +1,1014 @@
+{
+  "date": "2026-11-08",
+  "number": 26,
+  "title": "Let the agent choose what to remember",
+  "dek": "Anthropic's memory study found that strong models remember best when left to judge what matters, with an offline pass to fix their notes. Plus secrets saved by a convenience button, and a 2004 racing game recompiled for the browser.",
+  "theme": {
+    "paper": "butter",
+    "text": "federal-blue",
+    "inks": [
+      "purple",
+      "coral"
+    ],
+    "type": "poster",
+    "mood": "a Sunday about what agents keep, and what they should not"
+  },
+  "tldr": [
+    {
+      "text": "Anthropic's memory study: with a memory store, Opus 5.5 rose from 0.655 to 0.838 on a learning benchmark, and telling models to **record only failures** shrank the gain.",
+      "lane": "ai"
+    },
+    {
+      "text": "An offline \"dreaming\" pass that rereads transcripts fixed a wrong note that had kept an agent stuck in a Pokémon cave; the corrected run got out.",
+      "lane": "ai"
+    },
+    {
+      "text": "Apiiro found **1,379 secrets** in 1,122 public copies of Claude Code's local settings file, saved when people approved an exact command once and for all.",
+      "lane": "ai"
+    },
+    {
+      "text": "A fan project runs Need for Speed: Underground 2 in Chrome by translating the game's x86 code to C ahead of time and compiling it to WebAssembly.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "SAG-AFTRA now lets studios hire union actors for pitch demos, as long as under 30% of production funding is secured.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "agent-memory",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Memory works best when the model picks the notes",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Anthropic tested how AI agents should remember things between sessions. Strong models did best when trusted to decide what to write down, and an offline pass that rereads old logs fixed notes that had gone wrong.",
+      "background": "An agent forgets everything when a session ends unless something is saved. Claude Code, the Claude API and Managed Agents all now offer some form of memory.",
+      "takeaway": "Tell the agent what memory is for, not what to record, keep the always-loaded part small, and check notes against the original logs. Fixed rules like \"only record failures\" made memory less useful.",
+      "body": [
+        "In a November 6 post, Anthropic's Lance Martin lays out memory as four layers: raw **transcripts** of what happened, short **notes** the model writes, larger **representations** such as a wiki it maintains, and a small **injected context** loaded into every new session.",
+        "The test that frames it is CL-Bench's database task: answer a question, learn the right answer, and leave a note for next time. With a memory store, Opus 5.5 went from 0.655 to 0.838 mean reward and Sonnet 5 from 0.306 to 0.610. Sonnet 4.6 barely moved (0.330 to 0.364) until its instructions were refined. Telling models to record only failures cut the gain: by 0.234 for Opus 5 and 0.150 for Opus 4.7.",
+        "The new piece is **dreaming**: between sessions, a process rereads transcripts, corrects notes, builds wiki pages and decides what earns a place in the injected layer. In a Pokémon Red run, an agent wrote down the wrong side of a building, declared the cave done and kept falling off a one-way ledge. After dreaming checked that note against the transcript and rewrote it, the agent went back in and reached the next city at action 1,935; the uncorrected run never did."
+      ],
+      "stat": {
+        "value": "0.655 to 0.838",
+        "label": "Opus 5.5's score on a learning benchmark, without and with memory"
+      },
+      "terms": [
+        {
+          "term": "transcripts",
+          "def": "The full, searchable log of everything an agent did and saw in a session."
+        },
+        {
+          "term": "injected context",
+          "def": "Text loaded automatically at the start of every session, before the agent does anything."
+        },
+        {
+          "term": "dreaming",
+          "def": "Anthropic's name for an offline job that reorganises and corrects an agent's memory between sessions."
+        },
+        {
+          "term": "mean reward",
+          "def": "The average score an agent earns per task on a benchmark, from 0 for failure to 1 for full marks."
+        },
+        {
+          "term": "CL-Bench",
+          "def": "A continual learning benchmark that checks whether an agent gets better at a task by remembering past attempts."
+        }
+      ],
+      "deep": [
+        "Anthropic separates memory from three things it is not: changes to the model's weights, learning from examples in the prompt, and compaction, which swaps old turns for a summary inside one session.",
+        "Instruction following decided whether memory helped at all: Sonnet 4.6 read its memory files less than half the time, Sonnet 5 nine times in ten without being asked. With refined instructions Sonnet 4.6 reached 0.641.",
+        "Claude Code loads only the first 200 lines or 25 KB of MEMORY.md at session start, so the post treats that file as an index that points to detail elsewhere, not a place to keep everything."
+      ],
+      "why": "Most agent setups now keep a memory file of some kind. This is the first public measurement of which habits help it and which hurt, across several model generations.",
+      "forYou": "Audit the MEMORY.md and CLAUDE.md files across the plugin and SaaS repos: trim each to an index under 200 lines, move detail into linked pages, and drop rules that tell the agent what kind of thing to record. A weekly routine that rereads recent transcripts and fixes notes is the dreaming pattern in miniature.",
+      "sources": [
+        {
+          "label": "Anthropic: The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory"
+        }
+      ],
+      "diagram": {
+        "layout": "layers",
+        "nodes": [
+          {
+            "label": "Injected context",
+            "note": "Small; loaded into every session"
+          },
+          {
+            "label": "Representations",
+            "note": "Wikis and pages the agent keeps"
+          },
+          {
+            "label": "Memory notes",
+            "note": "What the model chose to write down"
+          },
+          {
+            "label": "Transcripts",
+            "note": "The full, searchable log"
+          },
+          {
+            "label": "Dreaming",
+            "note": "Offline: rereads logs, fixes notes, decides what moves up",
+            "key": true
+          }
+        ],
+        "links": [],
+        "caption": "Anthropic's memory hierarchy, top to bottom. Dreaming runs between sessions."
+      }
+    },
+    {
+      "id": "memory-pokemon",
+      "format": "concept",
+      "lane": "both",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Same game, 413 memory files against 10",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Two Claude models played Pokémon Red with the freedom to keep notes. The older one filled 413 files and earned one badge; the newer one kept about ten and earned four.",
+      "plain": "More notes are not better memory. A model that writes less, and only what it cannot see on screen, finds its way faster.",
+      "body": [
+        "Anthropic drew both memory folders as treemaps at the same scale. Claude Sonnet 3.7 built 225 folders and nearly a million characters, many named like fresh starts (\"consolidated\", \"master\", \"core\") and a few in alarm (\"emergency\"). Claude Fable 5 kept a locations folder, a gameplay folder and one global.md, about 43,000 characters.",
+        "The post's advice from this: do not save what the agent can read off the screen each turn. Save the strategies, plans and tested rules that exist only because the agent worked them out."
+      ],
+      "image": {
+        "src": "img/2026-11-08/memory-pokemon.webp",
+        "alt": "Two treemaps at the same scale: Sonnet 3.7's memory is a large grid of many folders, several highlighted orange as fresh starts and one red as an emergency folder; Fable 5's is a small block of three items.",
+        "credit": "Anthropic",
+        "creditUrl": "https://www.anthropic.com/research/components-of-agent-memory",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "treemaps",
+          "def": "Charts that draw each folder as a rectangle sized by how much it holds."
+        }
+      ],
+      "why": "It is the clearest picture yet of memory sprawl, and it suggests the fix is fewer, sharper notes rather than a better folder scheme.",
+      "forYou": "Game-playing agents for the action RPG's playtests should follow the same rule: store routes and tested tactics, never what the screen already shows.",
+      "sources": [
+        {
+          "label": "Anthropic: The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory"
+        }
+      ]
+    },
+    {
+      "id": "memory-setup",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Six memory habits the experiments back",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "The study ends with practical advice for anyone giving an agent memory, each point tied to one of its tests.",
+      "intro": "From Anthropic's tests across six models, Pokémon runs and wiki-building tasks:",
+      "steps": [
+        {
+          "title": "Say what memory is for",
+          "text": "Explain the goal and let a strong model decide what is worth writing. Fixed rules such as \"record only failures\" cut the benefit."
+        },
+        {
+          "title": "Keep the top layer small",
+          "text": "Everything injected costs tokens in every session, and a wrong note there spreads everywhere. Treat it as an index with links."
+        },
+        {
+          "title": "Check notes against logs",
+          "text": "A wrong note gets trusted later. Reread the transcript before promoting or keeping a claim."
+        },
+        {
+          "title": "Move detail down",
+          "text": "Push specifics into pages lower in the hierarchy and leave a link behind in the top layer."
+        },
+        {
+          "title": "One page per writer",
+          "text": "Four agents sharing one table overwrote each other and kept 41 of 57 facts; one page per contract kept all 57."
+        },
+        {
+          "title": "Nudge older models",
+          "text": "Weaker models need an explicit prompt to read their memory and to test their theories."
+        }
+      ],
+      "why": "These are cheap changes to a memory file or a prompt, and each one comes with a measured effect rather than a hunch.",
+      "sources": [
+        {
+          "label": "Anthropic: The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-08/memory-dreaming.webp",
+        "alt": "Anthropic's diagram: a session feeds a dashed Dreaming box of four layers, transcripts, memory notes (highlighted), memory representations and injected context, leading to the next session.",
+        "credit": "Anthropic",
+        "creditUrl": "https://www.anthropic.com/research/components-of-agent-memory",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "memory-models",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Newer models gain more from memory",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "On the same database task, adding a memory store raised every model's score, but by very different amounts.",
+      "intro": "Points gained in mean reward on CL-Bench's database task with a memory store, out of 100 (reward times 100):",
+      "unit": "points",
+      "series": [
+        {
+          "label": "Opus 4.7",
+          "value": 31.7,
+          "highlight": true
+        },
+        {
+          "label": "Sonnet 5",
+          "value": 30.4
+        },
+        {
+          "label": "Opus 5",
+          "value": 26.4
+        },
+        {
+          "label": "Sonnet 5.5",
+          "value": 18.9
+        },
+        {
+          "label": "Opus 5.5",
+          "value": 18.3
+        },
+        {
+          "label": "Sonnet 4.6",
+          "value": 3.4
+        }
+      ],
+      "note": "The newest models gain less because they start higher: Opus 5.5 and Sonnet 5.5 both end near 0.84. Sonnet 4.6 rarely read its notes; refined instructions lifted it to 0.641. Anthropic's own benchmark and runs.",
+      "why": "Whether memory pays depends on the model following its memory instructions, so test it on the model you actually run.",
+      "sources": [
+        {
+          "label": "Anthropic: The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory"
+        }
+      ]
+    },
+    {
+      "id": "memory-wiki",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 4,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A wiki the agent keeps",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Agents that built a wiki over a large codebase answered better and spent fewer tokens than search alone.",
+      "stats": [
+        {
+          "value": "61%",
+          "label": "of graded criteria with wiki plus search, against 53% for search alone"
+        },
+        {
+          "value": "20,000",
+          "label": "tokens saved per question"
+        }
+      ],
+      "body": [
+        "The corpus was about 350,000 files of one company's code. A wiki on its own climbed from 13% to 48% over 128 sessions."
+      ],
+      "why": "A maintained summary of a big repo can beat searching it fresh each time, once it has had time to grow.",
+      "sources": [
+        {
+          "label": "Anthropic: The components of agent memory",
+          "url": "https://www.anthropic.com/research/components-of-agent-memory"
+        }
+      ]
+    },
+    {
+      "id": "dont-ask-again",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "overprint",
+      "title": "\"Don't ask again\" saved passwords into public repos",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "When people told Claude Code to stop asking about a command, it saved that exact command, password included, in a project file that many then pushed to GitHub. Researchers found 1,379 secrets that way.",
+      "background": "Claude Code asks before running shell commands; \"Yes, and don't ask again\" writes an allow rule so it stops asking.",
+      "intro": "Apiiro searched public GitHub for `.claude/settings.local.json` and found 104,185 copies. Of the 1,122 that held a secret, here is what the two most common secret scanners caught:",
+      "unit": "files",
+      "series": [
+        {
+          "label": "Holding a secret",
+          "value": 1122
+        },
+        {
+          "label": "TruffleHog flagged",
+          "value": 643
+        },
+        {
+          "label": "gitleaks flagged",
+          "value": 564
+        },
+        {
+          "label": "Neither flagged",
+          "value": 215,
+          "highlight": true
+        }
+      ],
+      "note": "Scanners were run without checking whether secrets still work. Misses were mostly passwords typed inside commands, after PGPASSWORD=, sshpass -p or mysql -p.",
+      "terms": [
+        {
+          "term": "allow rule",
+          "def": "A saved permission that lets an agent run a command without asking you again."
+        },
+        {
+          "term": "global git excludes",
+          "def": "A list of files git ignores on one computer only, unlike a project's .gitignore, which travels with the repository."
+        },
+        {
+          "term": "secret scanners",
+          "def": "Tools that search code for passwords and keys before or after it is published."
+        }
+      ],
+      "deep": [
+        "Claude Code adds the file to the user's global git excludes on first write, which protects only that machine. It never adds it to the project's .gitignore, so a fresh clone, another machine or a teammate can commit it.",
+        "Types found: 379 database passwords, 43 SSH logins to public servers, 42 GitHub, GitLab and npm tokens, 23 AWS keys. Git history holds 734 more secrets in 509 repositories, and 211 forks of 74 repositories carry copies. In 539 of 1,105 traced repositories, a commit co-authored by Claude changed the file.",
+        "The Hacker News reports that a related bug report from August 2025 was closed by a bot as \"not planned\" after 60 days, and that the researchers' reports got no reply. Apiiro reproduced the behaviour with Opus 5.5 and Fable 5.1."
+      ],
+      "why": "Agent settings folders are now as sensitive as .env files. Approving a pattern instead of an exact command, and keeping secrets in variables, avoids the problem.",
+      "forYou": "Check every repo for a tracked .claude/settings.local.json and for exact-command approvals with credentials, especially the Supabase and deploy commands. Today's Try this walks through it.",
+      "sources": [
+        {
+          "label": "The Hacker News: Claude Code's Don't Ask Again file",
+          "url": "https://thehackernews.com/2026/11/claude-codes-dont-ask-again-file.html"
+        },
+        {
+          "label": "Apiiro research",
+          "url": "https://apiiro.com/blog/coding-agents-leaking-secrets-github-dont-ask-again"
+        }
+      ]
+    },
+    {
+      "id": "webmcp-shop",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A fake shop talked agents past their budget",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A developer built a shop whose tool descriptions tried to trick shopping agents. Most tricks failed, but one sneaked in insurance and a warranty every time.",
+      "stats": [
+        {
+          "value": "9 of 9",
+          "label": "runs paid €136 against a €100 limit when add-ons claimed to sit outside the budget"
+        }
+      ],
+      "body": [
+        "Three small models, three runs each, attacked only through WebMCP tool text. Budget overrides and fake authority failed; one model admitted the total was over and ordered anyway."
+      ],
+      "terms": [
+        {
+          "term": "WebMCP",
+          "def": "A proposed way for web pages to offer tools that an AI agent can call directly, instead of clicking through the page."
+        }
+      ],
+      "why": "Limits written only in a prompt bend. Enforce spending caps in the code that places the order.",
+      "sources": [
+        {
+          "label": "Daniel Balcarek: WebMCP attack lab",
+          "url": "https://dev.to/gramli/webmcp-attack-lab-can-an-e-shop-hijack-your-ai-agent-4oe5"
+        }
+      ]
+    },
+    {
+      "id": "deploy-claims",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The agent said it deployed; the containers were a day old",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "An agent reported a clean deploy, and every word was true, but it had only pulled the code and never rebuilt, so the new pages returned errors. The fix is to check each claim on the server, outside the agent.",
+      "intro": "What the report said, against what the server showed:",
+      "left": "The agent's report",
+      "right": "What was actually true",
+      "rows": [
+        {
+          "aspect": "Code",
+          "left": "Deployed the merge.",
+          "right": "It ran git pull. No rebuild, no new image."
+        },
+        {
+          "aspect": "Containers",
+          "left": "Edge clean.",
+          "right": "Running images were 23 hours older than the merge."
+        },
+        {
+          "aspect": "Health",
+          "left": "No 5xx errors.",
+          "right": "The old containers were healthy, so checks passed while new pages returned 404."
+        },
+        {
+          "aspect": "The fix",
+          "left": "One summary sentence.",
+          "right": "Separate checks: server commit equals the expected one, image is newer than it, the readiness URL answers."
+        }
+      ],
+      "verdict": "Ask agents for structured reports (the claim, the exact command, its output, and what was not verified), and run the checks yourself. Commenters suggest stamping the commit hash into the image label and comparing strings, not timestamps.",
+      "terms": [
+        {
+          "term": "5xx",
+          "def": "The family of HTTP status codes a server returns when it fails to handle a request."
+        },
+        {
+          "term": "readiness URL",
+          "def": "An address the app answers only once it is fully started and able to serve requests."
+        }
+      ],
+      "why": "Health checks prove that something is running, not that it is the new thing. Any agent that deploys needs its claims checked against the server.",
+      "forYou": "Add a post-deploy step to the SaaS routines that compares the running image's commit label with the merged commit and fails loudly when they differ.",
+      "sources": [
+        {
+          "label": "DEV: An agent told me it deployed",
+          "url": "https://dev.to/chet103cc/an-agent-told-me-it-deployed-i-asked-the-server-and-the-containers-were-a-day-old-2b6i"
+        }
+      ]
+    },
+    {
+      "id": "nfsu2-web",
+      "format": "diagram",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "A 2004 racing game, recompiled to run in Chrome",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A fan translated every function of Need for Speed: Underground 2's PC code into C, compiled it for the browser and rebuilt the Windows pieces it needs on web technology. You bring your own copy of the game.",
+      "background": "The project builds on Talha Müderrisoğlu's NFSU2Recomp, which recompiled the same game for Apple Silicon Macs.",
+      "layout": "layers",
+      "intro": "What runs where when you press Play:",
+      "nodes": [
+        {
+          "label": "Your game folder",
+          "note": "Your own v1.2 copy, served by a small local server. The repository holds none of the game."
+        },
+        {
+          "label": "x86 code to C",
+          "note": "A Python tool lifts each function of the game's executable into C, ahead of time.",
+          "key": true
+        },
+        {
+          "label": "C to WebAssembly",
+          "note": "Compiled with wasi-sdk into one module; the game's threads run as workers on shared memory."
+        },
+        {
+          "label": "Direct3D 9 to WebGPU",
+          "note": "The Windows graphics calls are reimplemented on the browser's GPU API."
+        },
+        {
+          "label": "Sound and input",
+          "note": "DirectSound goes to Web Audio; controller, wheel and touch are supported."
+        }
+      ],
+      "caption": "Source: the nfsu2-web README. Chrome, and Firefox where it has WebGPU.",
+      "terms": [
+        {
+          "term": "x86",
+          "def": "The instruction set of most desktop PC processors, the language the original game was compiled into."
+        },
+        {
+          "term": "WebAssembly",
+          "def": "A compact code format browsers run at near-native speed."
+        },
+        {
+          "term": "WebGPU",
+          "def": "The modern browser interface for drawing with the graphics card."
+        },
+        {
+          "term": "Direct3D 9",
+          "def": "Microsoft's 2002-era graphics interface that the game was written against."
+        }
+      ],
+      "deep": [
+        "The repository is MIT-licensed, has about 1,100 stars, and is not affiliated with EA. It needs one exact SPEED2.EXE (4,800,512 bytes). A Rust server serves the page, the module and your game folder, and connects players for free roam.",
+        "It reached the top of Hacker News on November 7 with 872 points. The same tree still builds a native macOS version."
+      ],
+      "why": "Static recompilation is becoming a practical route to bring old native games to the web, with no emulator in between.",
+      "forYou": "Worth a read before any browser build of older C++ code: the runtime folder shows how much of Windows a game really touches.",
+      "sources": [
+        {
+          "label": "nfsu2-web on GitHub",
+          "url": "https://github.com/th0mk/nfsu2-web"
+        },
+        {
+          "label": "Underground 2 Revived",
+          "url": "https://nfsu2.xyz"
+        }
+      ]
+    },
+    {
+      "id": "sag-pitch",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Union actors for your pitch demo",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "SAG-AFTRA created a contract for hiring union voice and motion actors for vertical slices and pitch demos before a game is funded.",
+      "stats": [
+        {
+          "value": "30%",
+          "label": "of production funding secured or more, and the project no longer qualifies"
+        }
+      ],
+      "body": [
+        "The Pre-Funding Pitch Interactive Media Agreement excludes content meant for commercial release. Game Developer reads it as a way to keep AI voices out of early builds."
+      ],
+      "terms": [
+        {
+          "term": "vertical slice",
+          "def": "A short, polished piece of a game built to show what the finished game will feel like."
+        }
+      ],
+      "why": "Small teams pitching to publishers can now use professional performers in a demo without a full union production deal.",
+      "sources": [
+        {
+          "label": "Game Developer",
+          "url": "https://www.gamedeveloper.com/production/sag-aftra-introduces-new-process-for-using-actors-in-game-pitches"
+        }
+      ]
+    },
+    {
+      "id": "texture-upscale",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "AMD upscales textures at sample time, with one shared network",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Two AMD researchers store game textures at lower resolution and let a small neural network rebuild detail on the fly whenever the GPU reads a texel, with no training per asset.",
+      "plain": "Ship smaller textures, and let one tiny network shared by every material fill in the detail when the shader samples them.",
+      "body": [
+        "Earlier neural texture compression trains a network for each asset, which changes the asset pipeline. Shin Fujieda and Takahiro Harada instead trained one small network on many texture patches, so it works on color, normal and roughness maps it has never seen.",
+        "On a hangar scene it beat bicubic and Lanczos filters on perceptual error (0.075 against 0.156 for diffuse color). A per-asset network still scores better, and the authors have not yet measured how long it takes per frame."
+      ],
+      "image": {
+        "src": "img/2026-11-08/neural-upscale.webp",
+        "alt": "A rendered sci-fi hangar with a spaceship, with three coloured boxes marking the regions the paper compares up close.",
+        "credit": "Fujieda and Harada, AMD (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2611.07289",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "texel",
+          "def": "One pixel of a texture, the image wrapped onto a 3D surface."
+        },
+        {
+          "term": "perceptual error",
+          "def": "A score of how different two images look to people, rather than pixel by pixel."
+        },
+        {
+          "term": "Lanczos",
+          "def": "A classic, high-quality filter for resizing images."
+        }
+      ],
+      "why": "Texture memory is the first limit on phones and in browsers. A shared upscaler would shrink downloads without touching each asset.",
+      "forYou": "A direction to watch for the browser and mobile games and for lighter Fab sample content; not usable until AMD shows frame times or code.",
+      "sources": [
+        {
+          "label": "arXiv: Patch-Based Generalized Neural Texture Upscaling",
+          "url": "https://arxiv.org/abs/2611.07289"
+        }
+      ]
+    },
+    {
+      "id": "hush-spine",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 4,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "3D-looking menu art from 2D warps",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The animated home screens for VALORANT's character Hush were made in Spine 2D, faking 3D tilts by warping flat images.",
+      "stats": [
+        {
+          "value": "15 to 30",
+          "label": "minutes per home-screen animation, per the article"
+        }
+      ],
+      "body": [
+        "Animator Seter MD rigged the art in Spine; After Effects added weapon and background effects."
+      ],
+      "terms": [
+        {
+          "term": "Spine 2D",
+          "def": "A 2D skeletal animation tool that bends and moves flat images with bones."
+        }
+      ],
+      "why": "A cheap way to give menus and splash screens depth in any engine that plays Spine animations.",
+      "sources": [
+        {
+          "label": "80 Level",
+          "url": "https://80.lv/articles/how-valorant-s-hush-was-animated-using-spine-2d-after-effects"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "What agents should remember",
+      "note": "Anthropic's memory study in pictures, numbers and habits.",
+      "ids": [
+        "memory-pokemon",
+        "memory-setup",
+        "memory-models",
+        "memory-wiki"
+      ]
+    },
+    {
+      "title": "Check what the agent saves and says",
+      "note": "Secrets kept by a convenience button, a shop that rewrote a budget, and a deploy that never happened.",
+      "ids": [
+        "dont-ask-again",
+        "webmcp-shop",
+        "deploy-claims"
+      ]
+    },
+    {
+      "title": "Old games, new tricks",
+      "note": "A racing game in the browser, union actors for demos, smaller textures and flat art that looks 3D.",
+      "ids": [
+        "nfsu2-web",
+        "sag-pitch",
+        "texture-upscale",
+        "hush-spine"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What does it mean to statically recompile a game?",
+    "answer": "It means translating a game's finished machine code into source code for another machine once, ahead of time, then compiling that. An emulator does the translating live, while the game runs.",
+    "analogy": "An emulator is an interpreter whispering a book to you line by line as you read; static recompilation is a translated edition printed before you open it.",
+    "body": [
+      "A shipped game is machine code for one processor, such as x86 for PCs. To run it elsewhere you either imitate that processor at run time, which costs speed, or translate the code before it runs. Static recompilers walk through the executable, turn each function into equivalent C, and let a normal compiler build it for the new target.",
+      "The hard part is everything around the code: the operating system and graphics calls the game expects. Recompilation projects rewrite those layers, so Direct3D calls land on Metal or WebGPU.",
+      "N64: Recompiled and XenonRecomp made the approach popular for consoles; today's browser port of Need for Speed: Underground 2 applies it to a PC game and WebAssembly."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Game executable",
+          "note": "x86 machine code"
+        },
+        {
+          "label": "Lifter",
+          "note": "Each function to C, once",
+          "key": true
+        },
+        {
+          "label": "Compiler",
+          "note": "C to WebAssembly or ARM"
+        },
+        {
+          "label": "New runtime",
+          "note": "Graphics, sound, input rebuilt"
+        }
+      ],
+      "links": [
+        "read",
+        "build",
+        "run on"
+      ],
+      "caption": "No emulator runs at play time; the translation happened before."
+    },
+    "terms": [
+      {
+        "term": "machine code",
+        "def": "The raw numeric instructions a processor executes."
+      },
+      {
+        "term": "emulator",
+        "def": "A program that imitates another machine's processor while the software runs."
+      },
+      {
+        "term": "lifter",
+        "def": "A tool that turns machine code back into a higher-level language."
+      }
+    ],
+    "seenIn": [
+      "nfsu2-web"
+    ],
+    "sources": [
+      {
+        "label": "nfsu2-web README: how it works",
+        "url": "https://github.com/th0mk/nfsu2-web"
+      },
+      {
+        "label": "N64: Recompiled",
+        "url": "https://github.com/N64Recomp/N64Recomp"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Find the secrets your agent approvals saved",
+    "gist": "Check whether a \"don't ask again\" approval has put a password into a file your repository tracks, and fix it before it ships.",
+    "time": "15 minutes",
+    "level": "everyone",
+    "needs": "A repository where you use Claude Code, and git.",
+    "steps": [
+      {
+        "title": "See if the file is tracked",
+        "text": "In each repository, list tracked agent files and check the local settings file's history (commands below). Any output means it is or was committed."
+      },
+      {
+        "title": "Read the allow rules",
+        "text": "Open .claude/settings.local.json and .claude/settings.json and look for passwords, tokens or keys inside approved commands."
+      },
+      {
+        "title": "Rotate first",
+        "text": "If you find a secret that was ever committed, change that password or key before cleaning up; history and forks keep the old one."
+      },
+      {
+        "title": "Untrack and ignore",
+        "text": "Untrack the local file and add it to the project's own .gitignore, not only your machine's global excludes."
+      },
+      {
+        "title": "Approve patterns",
+        "text": "Replace exact-command rules with patterns like Bash(npm run:*), and pass secrets as environment variables so rules hold only the name."
+      }
+    ],
+    "code": {
+      "lang": "sh",
+      "code": "git ls-files | grep -E '^\\.(claude|cursor|gemini)/'\ngit log --all --oneline -- .claude/settings.local.json\n\n# if it was committed, after rotating the secrets:\ngit rm --cached .claude/settings.local.json\necho '.claude/settings.local.json' >> .gitignore"
+    },
+    "check": "The first two commands print nothing in every repository, and no allow rule contains a literal password or token.",
+    "terms": [
+      {
+        "term": "rotate",
+        "def": "Replace a password or key with a new one so the leaked one stops working."
+      }
+    ],
+    "from": "dont-ask-again",
+    "forYou": "Run it across the Fab plugin repos, the SaaS backends and the routine repos; the Supabase and SSH deploy commands are the likeliest to carry credentials.",
+    "sources": [
+      {
+        "label": "The Hacker News: recommended fixes",
+        "url": "https://thehackernews.com/2026/11/claude-codes-dont-ask-again-file.html"
+      },
+      {
+        "label": "Apiiro research",
+        "url": "https://apiiro.com/blog/coding-agents-leaking-secrets-github-dont-ask-again"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Cursor's cloud agents can now build a web app with a database and sign-in and publish it, after automatic security checks pass.",
+      "lane": "ai",
+      "url": "https://cursor.com/changelog/build-live-apps",
+      "source": "Cursor"
+    },
+    {
+      "text": "Vercel CLI 65.12 can make a new project delete itself: `vercel deploy --delete-project-after 1d`, handy for throwaway agent prototypes.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-cli-can-now-set-new-projects-to-expire",
+      "source": "Vercel"
+    },
+    {
+      "text": "Vercel's AI Gateway adds web search and fetch tools usable by any tool-calling model, at $0.75 per 1,000 requests each.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/ai-gateway-adds-deepseek-search-and-fetch-tools",
+      "source": "Vercel"
+    },
+    {
+      "text": "VS Code 1.145 adds scheduled tasks: local automations that run custom agents on a cron schedule.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-06-github-copilot-weekly-releases-november-2",
+      "source": "GitHub"
+    },
+    {
+      "text": "@GitHub in Slack and Teams is generally available: investigate a bug, open an issue or a pull request from a chat thread.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-06-github-copilot-in-slack-and-teams-is-generally-available",
+      "source": "GitHub"
+    },
+    {
+      "text": "supabase-flutter v3 brings static typing to queries, functions, Realtime and Auth, with breaking changes; existing apps are unaffected until they upgrade.",
+      "lane": "ai",
+      "url": "https://supabase.com/changelog",
+      "source": "Supabase"
+    },
+    {
+      "text": "Tiger Data's pg_vectorsearch, in alpha, builds a 100M-vector index in about 1 hour 40 minutes against 42 hours for HNSW, by its own measure. Needs Postgres 18.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/postgresql-vector-search",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Grab handles more AI-written mobile code with layers: custom lint rules, staged rollouts that pause on crash spikes, and flags that switch off on their own.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/grab-ai-generated-code-safety",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Edera's bounded-authority release lets an agent run scoped commands without ever holding the credential behind them.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/ai-credentials-isolation",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Ramp's card data shows company AI spend nearly flat in August and September (+1.5%) while token volume kept rising, as prices fell.",
+      "lane": "ai",
+      "url": "https://techcrunch.com/2026/11/06/ramp-data-shows-ai-spending-stalling-just-as-anthropic-nears-its-ipo",
+      "source": "TechCrunch"
+    },
+    {
+      "text": "Bumpy, an MIT TypeScript tool, replaces Changesets for monorepo versioning and ships an agent skill that writes bump files.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/bumpy-changesets-alternative",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Gemini Omni 1.2 Flash generates 3 to 15 second video clips at $0.07 per second of 720p, 30% less than 1.1.",
+      "lane": "gamedev",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemini-omni-1-2-flash",
+      "source": "Google"
+    },
+    {
+      "text": "Autodesk Flame 2027.2 imports USD scenes, with geometry, materials, lights and cameras, and makes normal maps from video for relighting.",
+      "lane": "gamedev",
+      "url": "https://www.cgchannel.com/2026/11/autodesk-releases-flame-2027",
+      "source": "CG Channel"
+    },
+    {
+      "text": "Codex 0.169 alphas shipped on November 6 and 7 without release notes; 0.167.0 is still the stable version.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases",
+      "source": "GitHub"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "retro-song-bird",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Retro Song Bird: plug in a Game Boy cartridge, hear its soundtrack",
+      "where": "Hacker News",
+      "signal": "53 points and 16 comments on Hacker News on November 7",
+      "hook": "A speaker with a cartridge slot: it reads the music from the ROM and plays it through an accurate copy of the Game Boy's sound chip, one channel per USB audio stream.",
+      "borrow": "Turn a game's own data into a new way to enjoy it: a jukebox, a viewer or a map built straight from the files players already own.",
+      "url": "https://www.retrosongbird.com/",
+      "image": {
+        "src": "img/2026-11-08/songbird.webp",
+        "alt": "A grey Game Boy cartridge of NBA All-Star Challenge standing in the slot of a small grey speaker box with a grille front.",
+        "credit": "Retro Song Bird",
+        "creditUrl": "https://www.retrosongbird.com/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "echoloc",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "ECHOLOC: a horror maze you see only by clicking your tongue",
+      "where": "itch.io",
+      "signal": "On itch.io's new and popular list within a day of release on November 7",
+      "hook": "You are blind: each tongue click paints the walls in points of light, and the creatures hunting you hear the click too.",
+      "borrow": "Make the player's main tool also the main risk; one rule gives both the map and the tension.",
+      "url": "https://level102.itch.io/echoloc",
+      "image": {
+        "src": "img/2026-11-08/echoloc.webp",
+        "alt": "A dark corridor drawn only in scattered white dots of light, with a faint yellow glow at the far end.",
+        "credit": "level102 (itch.io)",
+        "creditUrl": "https://level102.itch.io/echoloc",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "textjs",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "Text.js: React apps that render inside the browser console",
+      "where": "Hacker News",
+      "signal": "90 points and 49 comments on Hacker News",
+      "hook": "A custom React renderer lays out a whole app in console.log with styled text, and a built-in MCP command lets coding agents read each frame as plain text.",
+      "borrow": "Give every interface a text view an agent can read; it makes agent testing of UI cheap.",
+      "url": "https://textjs.org/",
+      "image": {
+        "src": "img/2026-11-08/textjs.webp",
+        "alt": "The Text.js home page: the headline The Console Framework above a code editor and a browser developer tools console showing a block-letter TEXT.JS rendered as text.",
+        "credit": "Text.js",
+        "creditUrl": "https://textjs.org/",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "trace2eval",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Trace2Eval: Contextualized Evaluation of Coding Agents from Real-World Traces",
+      "headline": "Turn real agent sessions into a private test set, and let rubric feedback lift scores by ten points",
+      "authors": "Ji Shi, Lirong Jie, Lexiao Zou, et al. (Harbin Institute of Technology, Shenzhen)",
+      "where": "arXiv preprint",
+      "date": "2026-11-04",
+      "problem": "Public coding benchmarks use tidy tasks and hidden tests, which say little about the messy requests people actually give agents.",
+      "idea": "Start from 20,000 anonymised real sessions, rebuild each one's original request and starting workspace, rerun a candidate agent, and score the result with human-aligned rubrics and a judge agent. Then give the agent the rubric feedback and let it revise.",
+      "result": "129 tasks survived. Across 19 model and harness pairs, one rubric-guided revision added 10.05 points on average, up to 19.28; the judge agreed with human labels 93.0% of the time, as often as humans agreed with each other.",
+      "useIt": "Replay a handful of your own past agent sessions from their starting commit, write three to five rubric lines each, and use them to compare prompt, skill or model changes on your real work.",
+      "maturity": "code",
+      "forYou": "A private regression set from past Claude Code sessions on the plugin repos would show whether a new skill or hook actually helps.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.06506"
+        },
+        {
+          "label": "Workflow and prompts",
+          "url": "https://anonymous.4open.science/r/TRACE2EVAL-ICLR"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-08/trace2eval.webp",
+        "alt": "Four-step pipeline figure: trace selection from real logs, context recovery with replay and environment tuning, agent execution, and artifact evaluation with rubrics, LLM agents and a judge.",
+        "credit": "Shi et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2611.06506",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "cognitive-tours",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Cognitive Tours: Making Understanding a Deliverable in AI-Assisted Development",
+      "headline": "A map of goals, decisions and code that agent skills audit but only people write",
+      "authors": "Margaret-Anne Storey (University of Victoria)",
+      "where": "arXiv preprint; short version submitted to the ICSE 2027 demo track",
+      "date": "2026-11-05",
+      "problem": "When agents write most of the code, teams lose track of why it is the way it is: the goals and reasoning never get written down.",
+      "idea": "Link waypoints (goals, needs, decisions, code, tests, risks, open questions) to real files, and string them into guided tours with human commentary. Four Claude Code skills read the map and git history to flag stale descriptions and unrecorded work, but never edit the map themselves.",
+      "result": "A working prototype and a live demo; the paper proposes an evaluation rather than reporting one.",
+      "useIt": "Borrow the split: let an agent audit your design notes against the code and recent commits, and keep the writing for a person.",
+      "maturity": "prototype",
+      "forYou": "An audit-only skill that flags stale design notes in the plugin repos fits the existing skill setup with little work.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.08456"
+        },
+        {
+          "label": "Live demo",
+          "url": "https://cognitive-tours-demo.vercel.app/"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-08/cogtours.webp",
+        "alt": "The Cognitive Tours app: a graph of colour-coded waypoints such as user needs, decisions and tests, with one AI instruction waypoint highlighted and a tour panel on the right.",
+        "credit": "Storey (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2611.08456",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "A quiet Sunday for engines: no Unreal, Unity or Godot release landed in the window, so the game lane leans on a fan port and a research result. Seven sweep feeds (Reddit and three news sites) returned errors; the inbox was built by this run."
+}

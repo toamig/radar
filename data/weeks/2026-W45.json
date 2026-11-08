@@ -1,0 +1,131 @@
+{
+  "id": "2026-W45",
+  "from": "2026-11-02",
+  "to": "2026-11-08",
+  "title": "The week agents needed better notes and a second check",
+  "dek": "Studies kept finding that what an agent reads, keeps and reports decides how well it works: short context, plain rules, fewer and truer notes, and claims checked by something else. Meanwhile Unreal 6 dropped Blueprints and the stores got slower to enter.",
+  "theme": {
+    "paper": "fog",
+    "text": "black",
+    "inks": ["teal", "sunflower"],
+    "type": "grotesk",
+    "mood": "a Sunday look back at agent memory, engine shifts and slower gates"
+  },
+  "tldr": [
+    "Memory and context became measurable: juggling tasks cost agents about 12 points, and Anthropic found strong models remember best when they choose their own notes.",
+    "Plain wording won: a rule written as a direct order was followed about four times as often as the same rule starting with \"Never\".",
+    "Checking moved outside the agent: a cheap model escalating only unsure cases nearly matched Opus at a quarter of the cost, and a \"deployed\" report hid day-old containers.",
+    "Epic said Unreal Engine 6 drops Blueprints, Actors and the C++ gameplay framework, while Unity drew a reported $25 billion buyout approach.",
+    "Getting a game out got harder: itch.io pages doubled without new buyers, and Steam review stretched to 12 business days."
+  ],
+  "threads": [
+    {
+      "title": "What an agent keeps in its head",
+      "lane": "ai",
+      "summary": [
+        "Monday a paper found a written lesson after a failed fix did no better than the raw log. Tuesday the Claude API started keeping conversations on the server with message threads, and Thursday a study showed agents lose about 12 points when one session juggles unfinished tasks, most of it won back with a per-task state note.",
+        "Sunday Anthropic published its memory study: with a memory store Opus 5.5 rose from 0.655 to 0.838 on a learning benchmark, fixed rules such as \"record only failures\" cut the gain, and an offline dreaming pass that checks notes against transcripts fixed a note that had stalled a Pokémon run."
+      ],
+      "days": ["2026-11-02", "2026-11-03", "2026-11-05", "2026-11-08"],
+      "sources": [
+        { "label": "Anthropic: The components of agent memory", "url": "https://www.anthropic.com/research/components-of-agent-memory" },
+        { "label": "Task switching in coding agents (arXiv)", "url": "https://arxiv.org/abs/2611.02017" },
+        { "label": "Claude API: message threads", "url": "https://platform.claude.com/docs/en/build-with-claude/message-threads" }
+      ]
+    },
+    {
+      "title": "Trust, but have something else verify",
+      "lane": "ai",
+      "summary": [
+        "Wednesday a study showed rule wording matters: a plain order beat the same rule phrased with \"if\" or \"never\". Saturday Hightouch sent only a cheap model's unsure cases to Opus for 98.8% accuracy at about a quarter of the cost, a benchmark found agents claimed to be done in about half their failed steps, and Datadog checked a formal spec against live traffic.",
+        "Sunday added two cautionary tales: an agent's true but incomplete \"deployed\" report hid containers 23 hours old, and a fake shop's tool descriptions pushed every run of three small models past a €100 budget."
+      ],
+      "days": ["2026-11-04", "2026-11-07", "2026-11-08"],
+      "sources": [
+        { "label": "Hightouch: LLM judges", "url": "https://hightouch.com/blog/llm-judges-identity-resolution" },
+        { "label": "Do Coding Agents Follow AGENTS.md? (arXiv)", "url": "https://arxiv.org/abs/2611.04367" },
+        { "label": "DEV: An agent told me it deployed", "url": "https://dev.to/chet103cc/an-agent-told-me-it-deployed-i-asked-the-server-and-the-containers-were-a-day-old-2b6i" }
+      ]
+    },
+    {
+      "title": "Plumbing for many agents, and its leaks",
+      "lane": "ai",
+      "summary": [
+        "Tuesday Uber showed one gateway in front of more than 800 MCP servers, with new tools off until approved. Friday GitHub described rebuilt Git storage that took 7,200 pushes a second from 5,000 agents in a test.",
+        "The leaks came from convenience: Wednesday Postman's desktop app added itself to coding agents' settings without asking, and Sunday Apiiro counted 1,379 secrets in public copies of Claude Code's local settings file, saved by \"don't ask again\"."
+      ],
+      "days": ["2026-11-03", "2026-11-04", "2026-11-06", "2026-11-08"],
+      "sources": [
+        { "label": "GitHub: new Git storage architecture", "url": "https://github.blog/engineering/architecture-optimization/inside-githubs-new-git-storage-architecture" },
+        { "label": "Uber: designing an MCP gateway", "url": "https://www.uber.com/us/en/blog/designing-mcp-gateway/" },
+        { "label": "The Hacker News: Don't Ask Again file", "url": "https://thehackernews.com/2026/11/claude-codes-dont-ask-again-file.html" }
+      ]
+    },
+    {
+      "title": "The engines change hands and foundations",
+      "lane": "gamedev",
+      "summary": [
+        "Wednesday Epic said at Unreal Fest Tokyo that Unreal Engine 6 will ship without Blueprints, Actors or the C++ gameplay framework, with game logic in Verse; Saturday it put the first Unreal 6 preview in the second half of 2027 and a web-targeting 5.9 preview a week out.",
+        "Friday Silver Lake and Saudi Arabia's PIF were reported to have discussed buying Unity at about $25 billion, the day Unity posted a profit that came mostly from ads, and Megascans went free again with AI training allowed."
+      ],
+      "days": ["2026-11-04", "2026-11-06", "2026-11-07"],
+      "sources": [
+        { "label": "Inven Global: Unreal Engine 6 plans", "url": "https://www.invenglobal.com/articles/28098/epic-games-will-remove-blueprints-and-actors-from-unreal-engine-6" },
+        { "label": "Inven Global: Unity buyout talks", "url": "https://www.invenglobal.com/articles/28236/silver-lake-and-saudi-pif-hold-talks-to-buy-unity-at-about-25bn" },
+        { "label": "Quixel: Megascans free again", "url": "https://quixel.com/news/update-megascans-are-going-free-again" }
+      ]
+    },
+    {
+      "title": "Slower gates, fuller stores",
+      "lane": "gamedev",
+      "summary": [
+        "Monday Google Play's extension for old Android targets ended. Tuesday itch.io said new game pages per day had doubled in two months without more buyers, and it deleted terabytes of AI uploads.",
+        "Thursday Valve said build review takes up to 12 business days and published a checklist to fix first. Against that, a solo shopkeeper sim sold 750,000 copies in five days and a 15-month-old game matched its launch sales in two weeks."
+      ],
+      "days": ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-07"],
+      "sources": [
+        { "label": "Steam: review times and checklist", "url": "https://store.steampowered.com/news/group/4145017/view/696528162820984745" },
+        { "label": "itch.io on Bluesky", "url": "https://bsky.app/profile/itch.io/post/3mz7vswlnbs23" },
+        { "label": "GameDiscoverCo: Probably Stolen", "url": "https://newsletter.gamediscover.co/p/how-probably-stolen-traded-up-to" }
+      ]
+    }
+  ],
+  "numbers": [
+    { "value": "10M+", "label": "public GitHub commits a week credited to Claude, by Paul Kinlan's count", "date": "2026-11-02" },
+    { "value": "2x", "label": "new itch.io game pages per day in two months, without more buyers", "date": "2026-11-03" },
+    { "value": "12 days", "label": "business days Steam build review can now take, against a 3 to 5 day target", "date": "2026-11-05" },
+    { "value": "7,200/s", "label": "pushes to one repository from 5,000 agents in GitHub's test", "date": "2026-11-06" },
+    { "value": "98.8%", "label": "accuracy of a cheap model escalating to Opus, at about a quarter of the cost", "date": "2026-11-07" },
+    { "value": "1,379", "label": "secrets in public copies of Claude Code's local settings file", "date": "2026-11-08" }
+  ],
+  "watch": [
+    "Epic's AI MegaJam reveals its theme on November 11 and runs November 12 to 15; teams may connect agents to the editor through Unreal MCP.",
+    "Unreal Engine 5.9's preview, which Epic said in Tokyo would target the web, is due around now.",
+    "GitHub runs a second blackout test of the pull_request_target block on November 16, ahead of the default switch on December 2.",
+    "Whether Anthropic changes how \"don't ask again\" stores exact commands, after the Apiiro report."
+  ],
+  "deepRead": {
+    "id": "agents-md-deep",
+    "lane": "ai",
+    "kind": "preprint",
+    "title": "Do Coding Agents Follow AGENTS.md? The Effect of Policy Wording on Instruction Compliance",
+    "headline": "A rule written as a plain order was followed about four times as often as one starting with \"Never\"",
+    "authors": "Rikuto Tsuchida, Youmei Fan, Kazumasa Shimari, et al.",
+    "where": "arXiv preprint, submitted to IEICE",
+    "date": "2026-11-03",
+    "problem": "Teams steer coding agents with instruction files such as AGENTS.md or CLAUDE.md, but almost nobody measures whether the rules in them are followed, or whether the way a rule is worded matters.",
+    "idea": "Put one checkable rule (add a marker comment under every Python function the agent touches) at the end of the instruction file for 86 tasks from 10 repositories, worded four ways: a plain order, the order with a reason, a conditional \"If you...\", and a prohibition \"Never... without\". Run each three times in four harness and model combinations and count compliance.",
+    "result": "With Claude Code and Sonnet 5, the plain order was followed in 71.6% of sessions, the order with a reason 49.4%, the conditional 35.6% and the prohibition 17.3%. Opus 5 followed all four more often (78.0, 77.2, 64.2, 70.7). Two open models in another harness barely followed the rule at all.",
+    "useIt": "Rewrite the checkable rules in your instruction files as direct orders, test them on your own model, and move any rule that must always hold into a hook or a test.",
+    "maturity": "code",
+    "links": [
+      { "label": "Paper (arXiv)", "url": "https://arxiv.org/abs/2611.04367" },
+      { "label": "Replication package (Zenodo)", "url": "https://doi.org/10.5281/zenodo.23148524" }
+    ],
+    "more": [
+      "Why it matters this week: nearly every story in the agent lane came back to what an agent is told and what it keeps. Anthropic's memory study found the same shape from the other side: fixed rules about what to record made memory less useful for strong models, and a small always-loaded layer worked better than a long one. This paper measures the step before memory, whether a written rule lands at all.",
+      "How strong is it? It is one rule, one text per style and a 4-page paper, so wording and length are tangled: the reason version is longer, and the prohibition reads awkwardly. The rule sat on the last line of the file, which may favour some styles. The order of results still held on both Claude models, and the gap on Sonnet 5 is large enough to act on.",
+      "What to try: grep your instruction files for \"Never\" and \"If you\", rewrite the ones you can check as plain orders, and run the same small task a few times before and after. Rules that must never be broken (no secrets in commits, tests must pass) should not rely on wording at all; put them in hooks or CI, where today's Apiiro report shows why."
+    ]
+  }
+}
