@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #7 More like: Text.js: React apps that render inside the browser console (2026-11-09)
+  direction: more
+  issue: 2026-11-08
+  block: textjs
+  format: spark
+  lane: ai
+  
+  Optional note (what exactly, and why):
+
 ## Folded in
 
 - #6 More like: The most played demos, by peak players (2026-10-28)
