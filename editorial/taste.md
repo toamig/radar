@@ -96,6 +96,9 @@ The reader rates clever, playful builds highest: a real-world artifact rebuilt a
 scene (an IKEA manual played back step by step in 3D), a systems game whose payoff is absurdly
 large (wire logic gates into a computer, then run DOOM on it). Look for one or two of these every
 day: something built with care that teaches a technique by showing it off.
+The same goes for developer tools that run where nobody expected (a React app rendered inside the
+browser console, readable by an agent as plain text): a clever change of medium that teaches how
+the stack underneath works.
 
 The reader also rates builds where AI and play meet: a video or world model you can actually play,
 and agents left to themselves that start inventing games or rules. Treat interactive

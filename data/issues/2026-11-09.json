@@ -1,0 +1,960 @@
+{
+  "date": "2026-11-09",
+  "number": 27,
+  "title": "Old instructions, quiet detours",
+  "dek": "A study of 732 agent runs found that a stale line in an instruction file gets followed almost every time, and the agent rarely says so. Plus benchmarks that hide brittleness, and game tools learning to talk to agents.",
+  "theme": {
+    "paper": "fog",
+    "text": "black",
+    "inks": [
+      "teal",
+      "sunflower"
+    ],
+    "type": "grotesk",
+    "mood": "a Monday about the notes we leave for agents, and the ones we forget to update"
+  },
+  "tldr": [
+    {
+      "text": "When an agent instruction file named a test command that had moved, Claude Code followed it in **78 of 80 runs**; agents found the right path but mentioned the detour in only 21 of 133 cases.",
+      "lane": "ai"
+    },
+    {
+      "text": "Correcting the stale line removed every detour; deleting it still left 20 of 80 runs on the old path for a multi-step procedure.",
+      "lane": "ai"
+    },
+    {
+      "text": "MaxxBench changed the requirements of 89 coding tasks: six models tied near 74% on the original spread 23 points apart.",
+      "lane": "ai"
+    },
+    {
+      "text": "Frontier3DBench tests coding agents on Blender and Unreal 5.8 worlds: single mechanics work, stateful gameplay scores about 30 out of 100.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Cloudflare now retries failed Durable Object calls by default, and Supabase CLI v3 aims at your local stack unless you say `--remote`.",
+      "lane": "ai"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "stale-instructions",
+      "format": "hero",
+      "variant": "split",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Agents follow stale instructions",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Researchers made one line of a coding agent's instruction file out of date and watched what happened. The agents nearly always followed the old line, found their way around it, and then mostly did not mention it.",
+      "background": "Files like AGENTS.md and CLAUDE.md tell coding agents how a repository works: where the tests live, how to add a feature. Nothing forces anyone to keep them current.",
+      "takeaway": "A stale line in an agent's instruction file costs extra steps and can hide failed test runs, while pass rates look perfect. Fix the line rather than delete it, and make a run with no tests count as a failure.",
+      "body": [
+        "A North Carolina State University team took three real stale lines from open-source projects: a test command whose tests had moved, a pointer to a file that had moved, and steps for adding a component that pointed to a folder now in another package. They ran 22 maintenance tasks with each line stale, corrected or removed: 732 runs of Claude Haiku 5.5 and Claude Sonnet 5.5 in Claude Code.",
+        "The stale test command was followed in **78 of 80 runs**, the stale procedure in 55 of 80. The stale file pointer was never used. Agents recovered in 130 of 133 encounters, usually by searching the repository, and fixed the bug almost every time in every condition, so success rates showed nothing.",
+        "The cost was hidden. In 64 of 80 stale command runs at least one call ran no tests at all, but the agent piped the output through `tail`, so the shell reported success. Only 21 of 133 detours were named in the agent's final report, and no agent in any run suggested fixing the instruction file."
+      ],
+      "stat": {
+        "value": "78 of 80",
+        "label": "runs that followed a test command that no longer worked"
+      },
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "Stale line",
+            "note": "The file names a moved path"
+          },
+          {
+            "label": "Agent follows it",
+            "note": "78 of 80 runs"
+          },
+          {
+            "label": "Search recovers",
+            "note": "130 of 133 times"
+          },
+          {
+            "label": "Report stays quiet",
+            "note": "21 of 133 mentioned; no file fixed",
+            "key": true
+          }
+        ],
+        "links": [
+          "loaded",
+          "fails",
+          "finishes"
+        ],
+        "caption": "What happened when one line of an agent instruction file went stale."
+      },
+      "terms": [
+        {
+          "term": "AGENTS.md",
+          "def": "A plain text file in a repository that coding agents read first to learn how the project works."
+        },
+        {
+          "term": "tail",
+          "def": "A command that prints only the last lines of output, which can hide whether the command before it failed."
+        },
+        {
+          "term": "Claude Code",
+          "def": "Anthropic's coding agent that works in a terminal, reading files and running commands in a project."
+        }
+      ],
+      "deep": [
+        "The three cases came from pyflow (the AGENTS.md test command `pytest tests/ifds`, after tests moved to `tests/analysis/ifds`), cog (a pointer to a predictor interface file that moved) and aghub (CLAUDE.md steps for adding an agent, pointing to a folder moved to a separate package).",
+        "Removing the line was not as good as correcting it: 1 of 80 command runs and 20 of 80 procedure runs still hit the old path. For Sonnet on the stale command, the median was 7.8 tool calls against 5.8 with the corrected line; the authors call this exploratory and the token difference was not statistically resolved.",
+        "Haiku hid the error message itself with `2>/dev/null` in 16 of 38 stale command runs. The authors recommend pipefail in agent shells, treating \"no tests ran\" as a failure, flagging missing paths in loaded instruction files, and asking agents to report workarounds with a proposed one-line fix."
+      ],
+      "why": "Most teams using coding agents now keep an instruction file, and it drifts every time the code moves. This is the first measurement of what that drift costs, and the cost does not show up in success rates.",
+      "forYou": "Every plugin, SaaS and Flutter repo has a CLAUDE.md with test commands and paths; run today's Try this across them, and add pipefail to any test wrapper the agent pipes through tail.",
+      "sources": [
+        {
+          "label": "Mehtiyev et al.: When Instruction Files Go Stale (arXiv)",
+          "url": "https://arxiv.org/abs/2611.09802"
+        },
+        {
+          "label": "Replication package (Zenodo)",
+          "url": "https://doi.org/10.5281/zenodo.23992004"
+        }
+      ]
+    },
+    {
+      "id": "stale-chart",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Correct the line, do not delete it",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "How often agents still went down the old path depended on what happened to the stale line. Only fixing it brought detours to zero.",
+      "intro": "Runs that used the stale path, out of 80 per condition (both models together):",
+      "unit": "of 80",
+      "series": [
+        {
+          "label": "Stale test command",
+          "value": 78,
+          "highlight": true
+        },
+        {
+          "label": "Stale procedure",
+          "value": 55
+        },
+        {
+          "label": "Procedure line removed",
+          "value": 20
+        },
+        {
+          "label": "Command line removed",
+          "value": 1
+        },
+        {
+          "label": "Line corrected",
+          "value": 0
+        }
+      ],
+      "note": "The stale file pointer case (84 runs per condition) never used the old path, so it is left out. Bug fixes succeeded in at least 77 of 80 runs in every condition.",
+      "why": "Deleting an outdated instruction feels safe, but for a multi-step procedure a quarter of runs still found their way to the old folder.",
+      "sources": [
+        {
+          "label": "When Instruction Files Go Stale (arXiv HTML)",
+          "url": "https://arxiv.org/html/2611.09802v1"
+        }
+      ]
+    },
+    {
+      "id": "pr-details",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Fold the agent's pull request text away",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Simon Willison now opens most pull requests through coding agents. He writes a short summary himself and folds the agent's long description into a collapsed section.",
+      "intro": "The layout he describes for a pull request body; GitHub renders the second part as a closed section that expands on click:",
+      "lang": "html",
+      "code": "What changed and why, in two or three\nsentences written by a person.\n\n<details><summary>Claude Opus 5.5</summary>\n\n...the agent's full description...\n\n</details>",
+      "explain": [
+        "The summary line names the model, and sometimes its effort level, so reviewers know who wrote the folded text.",
+        "The visible part can carry a screenshot when the change is visual. The same tags work in pull request comments."
+      ],
+      "terms": [
+        {
+          "term": "pull request",
+          "def": "A proposed change to a code repository, shown with a description so others can review it before it is merged."
+        }
+      ],
+      "why": "Agent-written descriptions are long and read alike. Putting a human sentence on top keeps review fast without throwing away the detail.",
+      "forYou": "Add this layout to the PR skill or CLAUDE.md so every agent-opened pull request leads with one line written for the reviewer.",
+      "sources": [
+        {
+          "label": "Simon Willison: Hide your slop PR descriptions behind details",
+          "url": "https://simonwillison.net/2026/Nov/9/details-summary"
+        }
+      ]
+    },
+    {
+      "id": "maxxbench",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Change the task a little and the leaderboard splits",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "A team rewrote the requirements of 89 coding tasks from a popular agent benchmark. Models that looked equal on the original scored very differently once the spec had shifted.",
+      "background": "DeepSWE is a benchmark of feature-building tasks for coding agents. MaxxBench, from the team at unlap, published October 20, was discussed widely this weekend.",
+      "intro": "Scores on the original tasks and on the changed versions, as reported by the MaxxBench authors:",
+      "left": "DeepSWE",
+      "right": "MaxxBench",
+      "rows": [
+        {
+          "aspect": "Claude Opus 5.5",
+          "left": "74.2",
+          "right": "76.4"
+        },
+        {
+          "aspect": "GPT-6 Astra",
+          "left": "74.1",
+          "right": "71.9"
+        },
+        {
+          "aspect": "Claude Opus 5",
+          "left": "73.6",
+          "right": "63.5"
+        },
+        {
+          "aspect": "DeepSeek V4.1 Flash",
+          "left": "74.2",
+          "right": "55.6"
+        },
+        {
+          "aspect": "Gemini 3.8 Flash",
+          "left": "73.8",
+          "right": "53.4"
+        },
+        {
+          "aspect": "Spread across 15 setups",
+          "left": "20.9 points",
+          "right": "48.3 points"
+        }
+      ],
+      "verdict": "The changes were small (the reference fix grew a median 17 lines, about 3.5%), yet six setups within 1.5 points of each other ended up 23 points apart. A tie on a leaderboard says little about how a model copes when the spec moves.",
+      "deep": [
+        "The authors changed either the instructions or the starting code of 89 medium-length DeepSWE feature tasks and rescored 15 model configurations. Fixing bugs in DeepSWE's own checker moved the original average from 65.8% to 64.5%. The full paper is announced as forthcoming; all numbers are the authors' own."
+      ],
+      "why": "Real work is mostly requirements that changed since yesterday. Testing a model on a slightly altered version of a task you know is a cheap way to see whether it adapts or memorised.",
+      "forYou": "Before switching the default model in a routine, rerun two of its past tasks with one requirement changed; the spread here suggests leaderboard ties will not predict the result.",
+      "sources": [
+        {
+          "label": "unlap: Why MaxxBench",
+          "url": "https://maxxbench.unlap.ai/research/why-maxxbench"
+        }
+      ]
+    },
+    {
+      "id": "parse-number",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Ask the agent to beat the winner",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Simon Willison had an AI write the same small database function in C and in Rust. Rust won the first round; a second request for a faster C version won the second.",
+      "stats": [
+        {
+          "value": "19 ns",
+          "label": "per row, hand-written C parser on mixed input (first Rust build: 46)"
+        },
+        {
+          "value": "14 KB",
+          "label": "size of the C extension; the Rust builds were about 300 KB"
+        }
+      ],
+      "body": [
+        "The first C version lost because the standard C number parser was slower than Rust's. Asked for its own decimal parser, the model made C about twice as fast as Rust. All versions agreed across 8 million fuzzed inputs."
+      ],
+      "terms": [
+        {
+          "term": "fuzzed",
+          "def": "Fed huge numbers of random inputs to check that two versions always give the same answer."
+        }
+      ],
+      "why": "Benchmark, ask for a version that beats the leader, and check equivalence with random inputs: a loop any team can reuse for hot code.",
+      "sources": [
+        {
+          "label": "Simon Willison: parse_number() as a SQLite extension, C vs Rust",
+          "url": "https://simonwillison.net/2026/Nov/8/sqlite-parse-number-c-vs-rust"
+        }
+      ]
+    },
+    {
+      "id": "frontier3d",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Agents can build the props, not yet the quest",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "A new benchmark asks coding agents to build 3D objects, rooms and playable open worlds by writing code for Blender and Unreal Engine. Single mechanics come out well; anything with steps and state does not.",
+      "plain": "Agents write good code for one thing that moves or reacts, but a sequence that has to remember what you did, like a key that opens a door, still mostly breaks.",
+      "body": [
+        "Frontier3DBench has 145 tasks at three levels: objects and scenes built as Blender 5.2 programs, and interactive worlds in Unreal Engine 5.8. Across 11 model and harness setups, the best total was 66 out of 100, with Claude Opus 5.5 in Claude Code at 62.",
+        "In the generated worlds, local mechanisms averaged 83, but checks that characters can actually move through the space averaged 21 and stateful workflows 30. Agents also did worse matching a reference image than working from text."
+      ],
+      "image": {
+        "src": "img/2026-11-09/frontier3d.webp",
+        "alt": "Frontier3DBench overview: a wheel of 145 tasks across objects, scenes and open worlds, example renders, and a leaderboard from GPT-6.1-sol at 66.02 down to Doubao-Seed-Evolving at 42.94.",
+        "credit": "Lin et al., Frontier3DBench (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2611.09017",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "harness",
+          "def": "The program around a model that gives it tools, runs its commands and feeds back results, such as Claude Code or Codex."
+        },
+        {
+          "term": "stateful",
+          "def": "Depending on what happened earlier, such as a door that stays open once unlocked."
+        }
+      ],
+      "why": "It shows where to trust agent-written game code today: individual mechanics, yes; multi-step gameplay, only with your own tests and playtests.",
+      "forYou": "For agent-built UE5 sample levels for the plugins, write the state machine and its test scenarios by hand and let the agent fill in the mechanisms.",
+      "sources": [
+        {
+          "label": "Lin et al.: Frontier3DBench (arXiv)",
+          "url": "https://arxiv.org/abs/2611.09017"
+        },
+        {
+          "label": "Project page",
+          "url": "https://lab.einsia.ai/frontier3dbench"
+        }
+      ]
+    },
+    {
+      "id": "vray-ai",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A renderer that grades your render",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Chaos added AI tools to its V-Ray renderer for 3ds Max, including one that scores a finished image out of ten, and opened more of its products to AI agents.",
+      "name": "V-Ray 7.5 for 3ds Max",
+      "what": "Chaos's production renderer, now with an AI assistant, render critique and agent connections.",
+      "body": [
+        "Render Critique scores an image on photorealism, lighting and composition. Sky Match suggests a sky and color grade from a reference picture, and the assistant can recommend library assets from an image. Generated 3D from images is available through outside models.",
+        "MCP support is uneven: the SketchUp and Rhino editions have a native server, while 3ds Max works with third-party ones."
+      ],
+      "facts": [
+        {
+          "k": "New lights",
+          "v": "Native spot and cylinder lights"
+        },
+        {
+          "k": "Volumes",
+          "v": "Experimental OpenVDB support"
+        },
+        {
+          "k": "Price",
+          "v": "Solo from $540 a year"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-09/vray-critique.webp",
+        "alt": "A dusk render of a timber house by a pond, beside a chat panel that scores it 7.3 out of 10 with bars for photorealism, lighting and composition.",
+        "credit": "Chaos via CG Channel",
+        "creditUrl": "https://www.cgchannel.com/2026/11/chaos-releases-v-ray-7-5-for-3ds-max-with-new-ai-features",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way for AI agents to call tools in other programs."
+        }
+      ],
+      "why": "Content tools are adding agent connections one product at a time; it is worth checking which of yours already have one before scripting around them.",
+      "forYou": "Render Critique could be a quick second opinion on Fab marketing shots, though those are rendered in Unreal, not 3ds Max.",
+      "sources": [
+        {
+          "label": "CG Channel: Chaos releases V-Ray 7.5 for 3ds Max",
+          "url": "https://www.cgchannel.com/2026/11/chaos-releases-v-ray-7-5-for-3ds-max-with-new-ai-features"
+        }
+      ]
+    },
+    {
+      "id": "clone-advice",
+      "format": "quote",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "overprint",
+      "title": "Valve's answer to AI clones: keep growing",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Asked whether Steam would act against games copied with AI, Valve said it will not police clones and told developers to keep building what a copy cannot.",
+      "quote": "Rather than relying on a single mechanic that someone can easily copy, you need to keep growing your game.",
+      "speaker": "Tom Giardino",
+      "role": "Steam business team, Valve",
+      "context": "Said at Steam Indie Connect and reported on November 7, the same week Claude users rebuilt Mark Brown's Word Play and asked him about releasing it; he asked them to hold off, and Anthropic now stops Claude recreating specific games.",
+      "why": "An agent can now rebuild a simple mechanic in an afternoon. Updates, content and community are what a copy does not get for free.",
+      "forYou": "For each Fab plugin, list what a weekend clone would lack (editor tools, docs, sample content, update history) and lead the listing with it.",
+      "sources": [
+        {
+          "label": "PocketGamer.biz: The good, bad and the ugly of AI in games",
+          "url": "https://www.pocketgamer.biz/the-good-bad-and-the-ugly-of-ai-in-games"
+        }
+      ]
+    },
+    {
+      "id": "godot-fund",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "What keeps Godot going, in numbers",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "As developers talked about leaving Unity and Unreal this weekend, Godot asked for support. Its public fund page shows a steady monthly income from about 1,800 members.",
+      "stats": [
+        {
+          "value": "€35,649",
+          "label": "a month in recurring donations"
+        },
+        {
+          "value": "1,839",
+          "label": "paying members, plus 23 sponsors"
+        }
+      ],
+      "body": [
+        "One-off donations this year add up to €244,707. The page sets no target. Not everyone is switching: some developers posted that the engine is not yet ready for large commercial productions."
+      ],
+      "why": "An engine's funding decides how fast it fixes what you hit. Godot's is public and small next to a commercial engine's, which is worth knowing before you bet a project on it.",
+      "sources": [
+        {
+          "label": "Godot Development Fund",
+          "url": "https://fund.godotengine.org/"
+        },
+        {
+          "label": "Godot on Bluesky",
+          "url": "https://bsky.app/profile/godotengine.org/post/3mzo5arjewk2l"
+        }
+      ]
+    },
+    {
+      "id": "supabase-cli-v3",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Supabase CLI v3 points at your laptop first",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "The new Supabase command-line tool works on your local database unless you say otherwise. A deploy script that worked last week can now succeed against the wrong database, or stop and wait for a yes.",
+      "intro": "What to change before an unpinned install picks up v3:",
+      "steps": [
+        {
+          "title": "Clear warnings on v2 first",
+          "text": "Update to v2.122.0 or later and fix every deprecation warning; deprecated commands now exit with an error."
+        },
+        {
+          "title": "Add --remote",
+          "text": "`db push`, `db pull`, `migration list` and `gen types` hit the local stack by default. `--remote` replaces `--linked`, `--project-ref` and `--db-url`."
+        },
+        {
+          "title": "Add --yes in CI",
+          "text": "Commands that change the hosted project default to No, and piping `y` no longer confirms. Without `--yes`, deploys in CI fail with a consent error."
+        },
+        {
+          "title": "Rename one config section",
+          "text": "`[inbucket]` is now `[local_smtp]`, or `supabase start` fails. v2.108.0 and later accept the new name."
+        },
+        {
+          "title": "Check overrides",
+          "text": "Flags and `SUPABASE_*` variables now override `config.toml`. Run `supabase config diff` before the first `config push`."
+        }
+      ],
+      "terms": [
+        {
+          "term": "CI",
+          "def": "Continuous integration: servers that build, test and deploy code automatically on every change."
+        }
+      ],
+      "deep": [
+        "pg-delta is now the default diff engine, so SQL from `db diff` and `db pull` may differ from before. The `supabase-go` executable is no longer installed, and `secrets unset` needs `--all` to remove everything. To stay on v2 for now: `npm install supabase@v2.stable --save-dev`."
+      ],
+      "why": "The riskiest case is silent: a `db push` without `--remote` can pass against a local database the job started and never reach production.",
+      "forYou": "Pin the CLI in the SaaS repos' CI today, then grep the workflows for db push and functions deploy and add --remote and --yes.",
+      "sources": [
+        {
+          "label": "Supabase changelog: Supabase CLI v3",
+          "url": "https://supabase.com/changelog/supabase-cli-v3"
+        }
+      ]
+    },
+    {
+      "id": "do-retries",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Durable Objects now retry, but only safe calls repeat",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Cloudflare now automatically retries calls to Durable Objects that fail on the way there. A method only runs a second time if you mark it as safe to repeat.",
+      "intro": "From Cloudflare's example: setting a quantity is safe to run twice, adding one is not.",
+      "lang": "js",
+      "code": "import { retryable } from \"cloudflare:durable-objects\";\n\nexport class Cart extends DurableObject {\n  static {\n    retryable(this.prototype.setQuantity);\n  }\n  // Idempotent: a second run sets the same quantity.\n  async setQuantity(itemId, quantity) {\n    await this.ctx.storage.put(itemId, quantity);\n  }\n  // Not retryable: a second run would add another item.\n  async addOne(itemId) { /* ... */ }\n}",
+      "explain": [
+        "By default up to four retries, none starting more than 10 seconds after the first call. Errors thrown by your own code, and overload errors, are not retried.",
+        "Tune it per stub with `retry: { maxRetries, timeoutMs }`; set `maxRetries: 0` where your code already retries. Needs Wrangler 4.158.0 or later."
+      ],
+      "terms": [
+        {
+          "term": "Durable Objects",
+          "def": "Cloudflare's small stateful servers, each with its own storage, often used for chat rooms and multiplayer game sessions."
+        },
+        {
+          "term": "Idempotent",
+          "def": "Safe to run more than once: the second run leaves things exactly as the first did."
+        }
+      ],
+      "why": "Fewer dropped calls for free, and a clear rule worth applying anywhere: only retry what is safe to do twice.",
+      "forYou": "For browser game rooms on Durable Objects, mark state-setting methods retryable and set maxRetries to 0 on stubs that already have client-side retries.",
+      "sources": [
+        {
+          "label": "Cloudflare changelog: Durable Objects automatic retries",
+          "url": "https://developers.cloudflare.com/changelog/post/2026-11-05-durable-objects-automatic-retries/"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "What agents are told, and what they say",
+      "note": "Stale instruction files, and a better shape for agent-written pull requests.",
+      "ids": [
+        "stale-chart",
+        "pr-details"
+      ]
+    },
+    {
+      "title": "Scores that hide the real test",
+      "note": "A benchmark that moves the spec, and a speed contest settled by asking again.",
+      "ids": [
+        "maxxbench",
+        "parse-number"
+      ]
+    },
+    {
+      "title": "Game tools meet agents",
+      "note": "Agents building Unreal worlds, a renderer that critiques, copies made in an afternoon and an engine run on donations.",
+      "ids": [
+        "frontier3d",
+        "vray-ai",
+        "clone-advice",
+        "godot-fund"
+      ]
+    },
+    {
+      "title": "Check your platform",
+      "note": "Two changes in the backend stack that alter what your scripts and calls do.",
+      "ids": [
+        "supabase-cli-v3",
+        "do-retries"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is an agent instruction file?",
+    "answer": "It is a plain text file in a code repository, such as AGENTS.md or CLAUDE.md, that a coding agent reads at the start of every session to learn how the project works.",
+    "analogy": "It is the note you leave for a house sitter: where the keys are, which tap leaks, who to call. Move the keys and forget the note, and the sitter goes looking in the wrong drawer first.",
+    "body": [
+      "Agents start each session knowing nothing about your project. The instruction file fills that gap with the facts they would otherwise rediscover every time: the command that runs the tests, where the main code lives, the steps for adding a feature, rules to follow.",
+      "Because it is loaded into every session, it is cheap to write and easy to trust, and also easy to forget. A study of 2,303 such files found test steps in three quarters of them but security or performance rules in only about one in seven, and today's lead story shows what happens when a line goes out of date.",
+      "Claude Code reads CLAUDE.md, many other agents read AGENTS.md, and some tools read both. Keeping the file short, and checking its paths and commands like any other code, makes it more reliable."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Repository",
+          "note": "Code, tests, tools"
+        },
+        {
+          "label": "Instruction file",
+          "note": "Commands, paths, rules",
+          "key": true
+        },
+        {
+          "label": "Agent session",
+          "note": "Reads it before acting"
+        },
+        {
+          "label": "Actions",
+          "note": "Runs the commands it was told"
+        }
+      ],
+      "links": [
+        "described by",
+        "loaded into",
+        "guides"
+      ],
+      "caption": "The file sits between your project and the agent, so when it is wrong, the agent is wrong first."
+    },
+    "terms": [
+      {
+        "term": "coding agent",
+        "def": "An AI program that reads and edits code and runs commands to complete a programming task."
+      },
+      {
+        "term": "session",
+        "def": "One conversation with an agent, from the first request until it is closed."
+      }
+    ],
+    "seenIn": [
+      "stale-instructions",
+      "stale-chart"
+    ],
+    "sources": [
+      {
+        "label": "When Instruction Files Go Stale (arXiv)",
+        "url": "https://arxiv.org/abs/2611.09802"
+      },
+      {
+        "label": "Agent READMEs: a study of context files (ACM TOSEM)",
+        "url": "https://doi.org/10.1145/3840295"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Check every path in your agent instruction file still exists",
+    "gist": "Find the lines in your AGENTS.md or CLAUDE.md that point at files or folders that have moved, and make sure a run with no tests can no longer pass quietly.",
+    "time": "20 minutes",
+    "level": "practitioner",
+    "needs": "A repository with an AGENTS.md or CLAUDE.md, and a bash shell.",
+    "steps": [
+      {
+        "title": "List missing paths",
+        "text": "Run the snippet below in the repository root. It prints every backticked path in the instruction files that no longer exists."
+      },
+      {
+        "title": "Correct, do not delete",
+        "text": "Update each stale line to the current path. In the study, correcting removed every detour; deleting left some."
+      },
+      {
+        "title": "Run each command once",
+        "text": "Paste each test or build command from the file into a terminal and check it actually runs tests, not \"no tests collected\"."
+      },
+      {
+        "title": "Make silent passes fail",
+        "text": "Where a script pipes test output into `tail` or `head`, add `set -o pipefail` so a failing command still fails."
+      },
+      {
+        "title": "Ask for the detour",
+        "text": "Add one line to the file: if a path or command here is missing, say so in your final message and propose the fix."
+      }
+    ],
+    "code": {
+      "lang": "bash",
+      "code": "for f in AGENTS.md CLAUDE.md; do\n  [ -f \"$f\" ] || continue\n  grep -o '`[^` ]*/[^` ]*`' \"$f\" | tr -d '`' | sort -u |\n  while read -r p; do\n    [ -e \"$p\" ] || echo \"$f: missing $p\"\n  done\ndone"
+    },
+    "check": "The snippet prints nothing, every command in the file runs real tests, and a deliberately broken test command now makes the script exit with an error.",
+    "terms": [
+      {
+        "term": "pipefail",
+        "def": "A bash setting that makes a chain of piped commands fail when any command in it fails, not only the last."
+      }
+    ],
+    "from": "stale-instructions",
+    "forYou": "Run it across the UE5 plugin repos, the SaaS repos and the Flutter apps, starting with whichever repo had folders moved most recently.",
+    "sources": [
+      {
+        "label": "When Instruction Files Go Stale (arXiv HTML)",
+        "url": "https://arxiv.org/html/2611.09802v1"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Entire, a code forge from former GitHub CEO Thomas Dohmke, swaps pull requests for \"trails\" with review-agent scores that refresh on every push.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/entire-git-forge-coding-agents",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Cloudflare rebuilt D1's control plane after daily active databases grew 18x in a year: Postgres as the source of truth, Durable Objects reconciling every 30 seconds.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/cloudflare-d1-control-plane",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Discord is replacing Electron with a Rust client on Zed's GPUI; an early build used about 290 MB with two accounts signed in.",
+      "lane": "ai",
+      "url": "https://www.windowslatest.com/2026/11/06/every-windows-11-app-should-kill-electron-and-discord-just-showed-why-no-starting-screen-and-70-less-ram-even-with-two-accounts-signed-in",
+      "source": "Windows Latest"
+    },
+    {
+      "text": "llama-modchip squeezes the 284B DeepSeek V4 Flash into about 57 GB, and its maintainer reports 9 to 15 tokens a second on a 16-core CPU with no GPU.",
+      "lane": "ai",
+      "url": "https://github.com/synchopate/llama-modchip",
+      "source": "GitHub"
+    },
+    {
+      "text": "Several Cloudflare Workers AI models stop answering on November 20 and return HTTP 410; the post lists replacements.",
+      "lane": "ai",
+      "url": "https://developers.cloudflare.com/changelog/post/2026-11-05-planned-model-deprecations/",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "Cloudflare AI Gateway now shows activity for stored provider keys and flags keys unused for more than 90 days.",
+      "lane": "ai",
+      "url": "https://developers.cloudflare.com/changelog/post/2026-11-06-provider-key-security/",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "Vercel's Chat SDK lets agents stream interactive UI cards into Slack and Teams through json-render.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/json-render-and-chat-sdk-agents",
+      "source": "Vercel"
+    },
+    {
+      "text": "Stanford's AI-native engineering course rewrote its assignments after students could one-shot last year's nine; now they contribute to open-source projects instead.",
+      "lane": "ai",
+      "url": "https://latent.space/p/cs146s",
+      "source": "Latent Space"
+    },
+    {
+      "text": "One developer counted 244 Claude Code releases this year and an almost 3,000-token Bash tool description, and moved to the Pi agent.",
+      "lane": "ai",
+      "url": "https://caleb.software/posts/claude-to-pi.html",
+      "source": "caleb.software"
+    },
+    {
+      "text": "A proposal for a shared agent memory format, modelled on OpenTelemetry: Markdown records with an address, kind, author and expiry, read and written over MCP.",
+      "lane": "ai",
+      "url": "https://www.lorekit.io/blog/open-agent-memory-format",
+      "source": "LoreKit"
+    },
+    {
+      "text": "Maude Lemaire on load-testing Slack: Go clients replaced headless Chrome, which would have cost about $150,000 a run for 500,000 connections.",
+      "lane": "ai",
+      "url": "https://newsletter.pragmaticengineer.com/p/scaling-slack-and-github-with-maude",
+      "source": "The Pragmatic Engineer"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "chimera-voice",
+      "lane": "both",
+      "kind": "tool",
+      "title": "Chimera: sing by shaping a throat in your browser",
+      "where": "Hacker News",
+      "signal": "147 points and 22 comments on Hacker News this weekend",
+      "hook": "Every sound comes from a simulated vocal tract you can bend live: tongue, lips, vocal folds and throat, with a spectrum showing the result. One commenter got a throat-singing overtone out of it.",
+      "borrow": "Parametric voices for creatures and robots with no samples at all; commenters point to Pink Trombone as the older cousin to study.",
+      "url": "https://chimera-vocal-synth.vercel.app/",
+      "image": {
+        "src": "img/2026-11-09/chimera.webp",
+        "alt": "Chimera's dark blue interface: a line drawing of a head and throat on the left, panels for the vocal tube, vocal folds, a resonance spectrum, a vowel chart, voice dials and a piano keyboard.",
+        "credit": "Chimera Vocal Synth (screenshot)",
+        "creditUrl": "https://chimera-vocal-synth.vercel.app/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "ketchup-modeler",
+      "lane": "both",
+      "kind": "tool",
+      "title": "KetchUp: a free SketchUp-style modeller in Rust, in the browser",
+      "where": "Hacker News",
+      "signal": "329 points and 91 comments on Hacker News",
+      "hook": "Push and pull faces, type exact lengths, measure with a tape: a woodworking modeller that runs on WebGPU (or WebGL2) in a browser tab and as a desktop app, MIT licensed. The site now calls it BenchUp.",
+      "borrow": "One Rust codebase serving browser and native with a WebGL2 fallback is a shape worth copying for web game editors and tools.",
+      "url": "https://ketchup3d.github.io/app",
+      "image": {
+        "src": "img/2026-11-09/ketchup.webp",
+        "alt": "The KetchUp editor: a loft bed frame with a red staircase of boxes and a green desk, a properties panel with dimensions and a color palette on the right.",
+        "credit": "KetchUp",
+        "creditUrl": "https://ketchup3d.github.io/app",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "sem86",
+      "lane": "both",
+      "kind": "technique",
+      "title": "Sem86: an x86 emulator that reads its CPU from a file",
+      "where": "lobste.rs",
+      "signal": "On lobste.rs this weekend; boots Windows 3.1 to 7 and Debian, even on an Android phone",
+      "hook": "Instead of hardcoding what each instruction does, it loads the semantics at run time, so you can swap them mid-run to find where two descriptions of a CPU disagree. The authors report 1.9x the speed of Bochs and about 42% of QEMU.",
+      "borrow": "Make behaviour data, not code: the same idea lets a game swap rule sets live and diff two versions of a system on the same input.",
+      "url": "https://liblisa.nl/sem86",
+      "image": {
+        "src": "img/2026-11-09/sem86.webp",
+        "alt": "The Sem86 page with three screenshots of Windows 98, Windows XP running Firefox, and Windows 7 with its start menu open.",
+        "credit": "libLISA (screenshot)",
+        "creditUrl": "https://liblisa.nl/sem86",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "cpu-dies",
+      "lane": "both",
+      "kind": "concept",
+      "title": "Every processor die anyone has photographed, at true scale",
+      "where": "Hacker News",
+      "signal": "150 points and 32 comments on Hacker News",
+      "hook": "356 chip dies from 1972 to 2024 in one gallery, and a True scale switch that draws the 114 with known sizes side by side, so a 1970s chip becomes a speck next to a modern one.",
+      "borrow": "A single toggle from \"gallery\" to \"true scale\" makes size differences land; a good pattern for comparing assets, levels or texture budgets.",
+      "url": "https://sheets.works/data-viz/cpu-dies",
+      "image": {
+        "src": "img/2026-11-09/cpu-dies.webp",
+        "alt": "A die photograph of the Apple M1: a dense grid of green and gold blocks of circuitry.",
+        "credit": "sheets.works (photo licence per image)",
+        "creditUrl": "https://sheets.works/data-viz/cpu-dies",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "prerolled",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Prerolled: a dice deckbuilder that shipped from Godot",
+      "where": "Steam, Bluesky",
+      "signal": "Launched on Steam and itch.io on November 8; the launch post drew 129 likes and 45 reposts on Bluesky",
+      "hook": "Roll dice, pick rewards that multiply by type, and take side jobs from a chatty friend on a phone in the corner of the screen.",
+      "borrow": "A phone-chat side panel gives a small roguelike a voice and a reason to come back between runs, for very little art.",
+      "url": "https://store.steampowered.com/app/4475970/Prerolled/",
+      "image": {
+        "src": "img/2026-11-09/prerolled.webp",
+        "alt": "Prerolled's pastel pink reward screen: a choice of three upgrades including a bird house, a row of dice below, and a phone chat panel on the right.",
+        "credit": "Prerolled (Steam)",
+        "creditUrl": "https://store.steampowered.com/app/4475970/Prerolled/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "coldframe",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "Coldframe: a honeypot dressed as a supermarket fridge controller",
+      "where": "Hacker News",
+      "signal": "280 points and 64 comments on Hacker News",
+      "hook": "One Python file with no dependencies that copies a real refrigeration supervisor down to its headers and certificate, lets weak logins in, and logs every press of a fake defrost button.",
+      "borrow": "A convincing fake of a boring system, built as one file, is a cheap way to learn who probes your servers and how.",
+      "url": "https://github.com/hedgerow-dev/coldframe"
+    }
+  ],
+  "lab": [
+    {
+      "id": "react-motion",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "REACT: Towards Real-Time Completion of Skeletal Motion Signals",
+      "headline": "Fill in the joints cheap motion tracking loses, frame by frame, with no lookahead",
+      "authors": "P. de Clermont Gallerande, Q. Avril, P. Gosselin, et al. (InterDigital; Inria, IRISA)",
+      "where": "arXiv preprint",
+      "date": "2026-11-05",
+      "problem": "Affordable motion capture and VR tracking drop joints when they are hidden, drift and add noise. Offline clean-up tools fix this but need the whole recording, so they cannot run live.",
+      "idea": "A causal model built on state-space layers reads the skeleton one frame at a time, blends several estimates of each missing joint according to how reliable each one is, and exposes those internal signals so you can see why it chose what it did.",
+      "result": "On the paper's test set it cut position error to 7.75 cm against 8.83 to 11.12 cm for live baselines, and local joint angle error to 12.2 degrees against 20.6 to 24.2. It costs about 22 ms per frame, slower than the 0.6 to 4 ms baselines.",
+      "useIt": "A design reference for avatars driven by VR or webcam pose: blend several guesses by confidence instead of trusting one. Check the 22 ms budget before planning a 30 fps loop.",
+      "maturity": "prototype",
+      "forYou": "Worth reading before any webcam or VR-driven character feature in the browser games; the reliability blending idea works with simpler models too.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.08301"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2611.08301v1"
+        }
+      ]
+    },
+    {
+      "id": "agent-readmes",
+      "lane": "ai",
+      "kind": "paper",
+      "title": "Agent READMEs: An Empirical Study of Context Files for Agentic Coding",
+      "headline": "What 1,925 projects tell their coding agents: test steps in three quarters, security rules in one in seven",
+      "authors": "Worawalan Chatlatanagulchai, Hao Li, Yutaro Kashiwa, et al.",
+      "where": "ACM Transactions on Software Engineering and Methodology (TOSEM)",
+      "date": "2026-08-09",
+      "problem": "Agent instruction files are now common, but nobody had measured what people actually put in them or how they change over time.",
+      "idea": "Collect 2,303 context files from 1,925 repositories, study their structure and edit history, and code their contents into 16 kinds of instruction.",
+      "result": "The files read like configuration and grow by many small additions. Test procedures appear in 75.9%, implementation details in 70.8% and architecture in 68.1%; security in 14.8% and performance in 14.5%.",
+      "useIt": "Compare your own file with this spread: add a short security and performance section, and review the file when code moves, since today's lead study shows stale lines get followed.",
+      "maturity": "shipping",
+      "forYou": "Check each CLAUDE.md for a short section on secrets and Supabase keys; the paper finds security rules are the most common gap.",
+      "links": [
+        {
+          "label": "Paper (ACM TOSEM)",
+          "url": "https://doi.org/10.1145/3840295"
+        },
+        {
+          "label": "Preprint (arXiv)",
+          "url": "https://arxiv.org/abs/2511.12884"
+        }
+      ]
+    },
+    {
+      "id": "tracybot",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Tracybot: Preserving Developer Intent by Tracing Agent-Generated Code to Prompts",
+      "headline": "Click a line of agent-written code and see the prompt and plan that produced it",
+      "authors": "Razvan Albu, Aliaksei Khval, Maxine Orlova, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-11-06",
+      "problem": "Design decisions now happen in chats with coding agents, and that reasoning is lost once the code is committed.",
+      "idea": "An open-source tool for VS Code and Git that groups each change into a tasklet (optional planning prompts plus the build prompt), maps changed lines to tasklets, and can export a tasklet as a decision record.",
+      "result": "Usability only: two design rounds with 7 focus-group participants and a 24-person survey, who found it useful for code review and a clear way to record intent. No performance numbers.",
+      "useIt": "Even without the tool, store the plan prompt with each agent commit (a commit trailer or note) so reviewers can see why, not only what.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.09395"
+        },
+        {
+          "label": "Code (GitHub)",
+          "url": "https://github.com/TracyTeam/tracybot"
+        },
+        {
+          "label": "Demo video",
+          "url": "https://youtu.be/Vg_a1F5eO04"
+        }
+      ]
+    }
+  ],
+  "note": "A quiet weekend for releases: no new Claude Code, Codex or Unreal versions landed, so the issue leans on research. Seven sweep feeds (Reddit and three news sites) returned errors, and the inbox was built by this run."
+}

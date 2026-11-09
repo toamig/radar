@@ -8,6 +8,8 @@ entries under "Folded in".
 
 ## New
 
+## Folded in
+
 - #7 More like: Text.js: React apps that render inside the browser console (2026-11-09)
   direction: more
   issue: 2026-11-08
@@ -16,8 +18,7 @@ entries under "Folded in".
   lane: ai
   
   Optional note (what exactly, and why):
-
-## Folded in
+  Lesson (2026-11-09): clever dev tools that run UIs in unexpected places count as playful builds. Added to taste.md.
 
 - #6 More like: The most played demos, by peak players (2026-10-28)
   direction: more
