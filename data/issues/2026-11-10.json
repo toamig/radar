@@ -1,0 +1,998 @@
+{
+  "date": "2026-11-10",
+  "number": 28,
+  "title": "A new top model, and a dial to set",
+  "dek": "Claude Fable 5.2 tops an independent index and costs less per token, but the bill per task depends on how hard you ask it to think. Plus an overnight game build, GDScript compiled to C++, and what an AI party game really costs.",
+  "theme": {
+    "paper": "butter",
+    "text": "hunter",
+    "inks": [
+      "medium-blue",
+      "coral"
+    ],
+    "type": "condensed",
+    "mood": "a Tuesday about choosing how hard the model thinks"
+  },
+  "tldr": [
+    {
+      "lane": "ai",
+      "text": "Claude Fable 5.2 is out at **$8 in and $40 out** per million tokens, 20% below Fable 5.1, and leads Artificial Analysis's index at 65."
+    },
+    {
+      "lane": "ai",
+      "text": "Effort now matters more than the model name: at max effort the index run cost $26.54 per task, and Simon Willison saw max burn 128,000 thinking tokens with no answer."
+    },
+    {
+      "lane": "ai",
+      "text": "Fable 5.2 checks that earlier turns were not edited: change the system prompt, tools or an old message and send back later thinking, and the call fails."
+    },
+    {
+      "lane": "both",
+      "text": "One developer had Fable 5.2 grow a one-hero prototype into a 12-stage, 18-fighter, four-player beat 'em up overnight, then test every stage in a headless browser."
+    },
+    {
+      "lane": "gamedev",
+      "text": "Grit compiles GDScript to C++ at export: up to 49 times faster on typed loops, no gain on engine-bound code."
+    }
+  ],
+  "blocks": [
+    {
+      "id": "fable-effort",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Pick the effort, not just the model",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Anthropic released Claude Fable 5.2, its strongest generally available model, at a lower price per token. How much thinking you ask for now decides most of the cost and the wait.",
+      "background": "Fable is Anthropic's top tier above Opus; Mythos 5.2 is the same model with fewer safeguards, offered only to vetted organizations.",
+      "body": [
+        "Fable 5.2 arrived on November 9 on the Claude API, the major clouds, GitHub Copilot and Vercel's AI Gateway. It costs **$8 per million input tokens and $40 per million output**, down from $10 and $50 for Fable 5.1, with a 1M token context window and up to 128k output tokens.",
+        "Every request runs at one of five effort levels, from low to max. Anthropic's docs say most of the gain already arrives at high, the API default; Claude's apps and Claude Code default to medium. Anthropic reports that Fable 5.2 at high roughly matched Opus 5.5 at max on its FrontierCode coding test at about half the cost per task (a vendor result).",
+        "The independent numbers show the other side. Artificial Analysis ranks Fable 5.2 first of 74 models with an index score of 65, run at max effort, but that run used 275M output tokens and cost $26.54 per task, against $10.04 for Opus 5.5. Simon Willison ran the same prompt at all five levels: xhigh gave the best result, and max spent its whole 128,000-token thinking budget and returned nothing."
+      ],
+      "stat": {
+        "value": "65",
+        "label": "Artificial Analysis index at max effort, first of 74 models"
+      },
+      "diagram": {
+        "layout": "layers",
+        "nodes": [
+          {
+            "label": "Low",
+            "note": "Quick lookups and simple edits"
+          },
+          {
+            "label": "Medium",
+            "note": "Default in Claude apps and Claude Code"
+          },
+          {
+            "label": "High",
+            "note": "API default; most of the gain, per the docs",
+            "key": true
+          },
+          {
+            "label": "Xhigh",
+            "note": "Hardest long agent runs, once measured"
+          },
+          {
+            "label": "Max",
+            "note": "Slower and costlier, often for a small gain"
+          }
+        ],
+        "caption": "The five effort levels on Fable 5.2, with Anthropic's guidance for each."
+      },
+      "terms": [
+        {
+          "term": "effort",
+          "def": "A setting that tells the model how much to think before it answers: more effort means more tokens, more time and more cost."
+        },
+        {
+          "term": "tokens",
+          "def": "The small chunks of text a model reads and writes; providers bill by the million."
+        },
+        {
+          "term": "context window",
+          "def": "How much text the model can take in at once, counted in tokens."
+        },
+        {
+          "term": "Artificial Analysis",
+          "def": "An independent group that runs the same set of tests on many models and publishes scores, speeds and costs."
+        }
+      ],
+      "deep": [
+        "The API model id is `claude-fable-5-2`. Effort is set with `output_config.effort` in the Messages API; the docs say to set a large `max_tokens` at high and above because thinking counts toward it, and to run your own sweep rather than carry over Fable 5.1 settings. A per-message effort change (beta) keeps the prompt cache.",
+        "Fast mode generates output up to 2.5 times faster for twice the price ($16 in, $80 out per million), set with `speed: \"fast\"`. Anthropic also describes two team roles: Haiku, Sonnet or Opus can consult Fable 5.2 as an advisor on hard steps, and Fable 5.2 can act as an orchestrator that hands simple work to smaller models.",
+        "Artificial Analysis measured 98 output tokens per second and 216 seconds to the first answer token at max effort. Vendor-reported scores against Opus 5.5 include 69.9% vs 62.3% on FrontierSWE v2 and 51.4% vs 42.5% on AutomationBench."
+      ],
+      "why": "A cheaper price per token can still mean a bigger bill if the model thinks longer. Teams that measure effort per task will get the gains; teams that pin max will pay for them twice.",
+      "forYou": "Do the Fable effort sweep on one real plugin bug and one SaaS ticket before switching any routine; keep the daily routines on the cheapest level that passes.",
+      "sources": [
+        {
+          "label": "Anthropic: Claude Fable 5.2 and Mythos 5.2",
+          "url": "https://www.anthropic.com/claude-fable-and-mythos-5-2"
+        },
+        {
+          "label": "Claude docs: Effort",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/effort"
+        },
+        {
+          "label": "Artificial Analysis: Claude Fable 5.2",
+          "url": "https://artificialanalysis.ai/models/claude-fable-5-2"
+        },
+        {
+          "label": "Simon Willison: llm-anthropic 0.31",
+          "url": "https://simonwillison.net/2026/Nov/9/llm-anthropic"
+        }
+      ]
+    },
+    {
+      "id": "fable-switch",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Cheaper per token, hungrier per task",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Fable 5.2 costs a fifth less per token than Fable 5.1, but on the same independent test it wrote far more and cost twice as much per task.",
+      "intro": "Fable 5.1 against Fable 5.2, from Anthropic's release notes and Artificial Analysis (both index runs at max effort):",
+      "left": "Fable 5.1",
+      "right": "Fable 5.2",
+      "rows": [
+        {
+          "aspect": "Price per million tokens",
+          "left": "$10 in, $50 out",
+          "right": "$8 in, $40 out"
+        },
+        {
+          "aspect": "Artificial Analysis index",
+          "left": "49",
+          "right": "65, first of 74 models"
+        },
+        {
+          "aspect": "Output tokens for the index run",
+          "left": "163M",
+          "right": "275M"
+        },
+        {
+          "aspect": "Cost per index task",
+          "left": "$12.99",
+          "right": "$26.54"
+        },
+        {
+          "aspect": "In Claude Code",
+          "left": "Saved picks move to the new model",
+          "right": "Default Fable model from v2.1.321"
+        },
+        {
+          "aspect": "Zero data retention",
+          "left": "Not offered",
+          "right": "Not offered unless Anthropic authorizes it"
+        }
+      ],
+      "verdict": "The new model is smarter and cheaper per token, but it spends more tokens when left at max. Price a real task at two or three effort levels before you move a workload.",
+      "terms": [
+        {
+          "term": "zero data retention",
+          "def": "An agreement under which the provider keeps no copy of your prompts and answers after replying."
+        }
+      ],
+      "why": "Per-token prices are the number on the launch page; cost per finished task is the number on your invoice, and here they move in opposite directions.",
+      "forYou": "If any client SaaS account runs with zero data retention, Fable 5.2 calls will fail there; keep those on Opus 5.5.",
+      "sources": [
+        {
+          "label": "Claude platform release notes",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        },
+        {
+          "label": "Artificial Analysis: Claude Fable 5.2",
+          "url": "https://artificialanalysis.ai/models/claude-fable-5-2"
+        },
+        {
+          "label": "Artificial Analysis: Claude Fable 5.1",
+          "url": "https://artificialanalysis.ai/models/claude-fable-5-1"
+        },
+        {
+          "label": "Claude Code v2.1.321 release",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.321"
+        }
+      ]
+    },
+    {
+      "id": "thinking-prefix",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Edit the past and the call fails",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Fable 5.2 refuses a request that sends back its earlier reasoning after the conversation before it was changed. Agent loops that rewrite their prompt or tools between turns need checking before the switch.",
+      "body": [
+        "When a model thinks, the API returns that reasoning as a thinking block, and agent code often sends it back on the next turn. For Fable 5.2 and Mythos 5.2, Anthropic now checks every account for one thing: that everything before a returned thinking block is unchanged.",
+        "If your code edits the system prompt, the tool list or an earlier message, and then sends back a Fable 5.2 thinking block from a later turn, the request returns a 400 error. Moving a conversation onto Fable 5.2 keeps reasoning from Opus, Sonnet and Haiku 5.5; moving it off drops Fable's thinking blocks, and the call still works."
+      ],
+      "points": [
+        "Thinking blocks only work in the account that made them, or a linked one.",
+        "Computer use needs the newer `computer_toolset_20260801`; the old tool returns a 400 outside Bedrock.",
+        "A Fable 5.2 executor accepts only Fable 5.2 or Mythos 5.2 as its advisor."
+      ],
+      "terms": [
+        {
+          "term": "thinking block",
+          "def": "The part of a reply that holds the model's step-by-step reasoning, kept separate from the answer."
+        },
+        {
+          "term": "400 error",
+          "def": "An HTTP response meaning the server rejected the request as malformed or not allowed."
+        },
+        {
+          "term": "system prompt",
+          "def": "The standing instructions sent at the top of every request in a conversation."
+        }
+      ],
+      "why": "Many agent frameworks trim history or swap tools between turns to save context. With this model, that habit turns into hard failures.",
+      "forYou": "Check any custom loop that compacts history or swaps MCP tools mid-run before pointing it at Fable 5.2.",
+      "sources": [
+        {
+          "label": "Claude platform release notes",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        }
+      ]
+    },
+    {
+      "id": "gateway-fallback",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Give the new model somewhere to fall back",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Vercel added Fable 5.2 to its AI Gateway with a list of backup models, because the model's safety filter can decline some security-flavoured prompts.",
+      "intro": "Vercel's example: ask for Fable 5.2 at high effort, and name the models to try in order if the request is declined.",
+      "lang": "typescript",
+      "code": "import { streamText } from 'ai';\n\nconst result = streamText({\n  model: 'anthropic/claude-fable-5.2',\n  reasoning: 'high',\n  prompt: 'Review this login handler for security bugs.',\n  providerOptions: {\n    gateway: {\n      models: [\n        'anthropic/claude-opus-5.5',\n        'anthropic/claude-sonnet-5.5',\n      ],\n    },\n  },\n});",
+      "explain": [
+        "The gateway tries each model in the `models` list in order when Fable 5.2's cybersecurity classifier declines a request.",
+        "Teams with zero data retention switched on get an error instead: Fable 5.2 requires 30-day retention, and prompts are not used for training."
+      ],
+      "terms": [
+        {
+          "term": "AI Gateway",
+          "def": "Vercel's service that sits between your app and many model providers, so one API reaches all of them."
+        },
+        {
+          "term": "classifier",
+          "def": "A small model that screens requests and blocks ones that look like a given category, here cybersecurity misuse."
+        }
+      ],
+      "why": "A code-review prompt about security bugs is exactly the kind a safety filter can stop. A fallback list keeps the feature working when that happens.",
+      "forYou": "Copy this fallback pattern into any SaaS feature that reviews code or auth flows with the strongest model.",
+      "sources": [
+        {
+          "label": "Vercel: Claude Fable 5.2 on AI Gateway",
+          "url": "https://vercel.com/changelog/claude-fable-5-2-now-available-on-ai-gateway"
+        }
+      ]
+    },
+    {
+      "id": "claude-code-321",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code 2.1.321: the new default and four changes to check",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The latest Claude Code makes Fable 5.2 the default Fable model and changes how mods, fast mode and hooks behave.",
+      "intro": "From the 2.1.321 and 2.1.322 release notes:",
+      "items": [
+        {
+          "title": "Fable 5.2 is the default Fable model",
+          "text": "Saved Fable 5.1 picks move to `fable`; type `/model claude-fable-5-1` to go back. Cache reads cost $0.20 per million tokens.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.321"
+        },
+        {
+          "title": "Fast mode no longer stalls",
+          "text": "When fast serving is rate-limited or failing, it now tries standard speed on the same model first, instead of losing replies or retrying for minutes. 2.1.322 adds fast mode on Vertex.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.322"
+        },
+        {
+          "title": "Mods Claude writes turn on by themselves",
+          "text": "In auto and bypass modes, mods Claude writes are enabled without asking, and their own tool calls raise no prompt. Deny rules and organization policy still apply.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.321"
+        },
+        {
+          "title": "Hook and security fixes",
+          "text": "A PreToolUse `ask` is no longer lost when another hook's `defer` finishes first, and MCP sign-in no longer sends refresh tokens to another host on a redirect.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.321"
+        }
+      ],
+      "terms": [
+        {
+          "term": "mods",
+          "def": "Small extensions Claude Code can write for itself, such as panels, commands or hooks on tool calls."
+        },
+        {
+          "term": "hook",
+          "def": "A script that runs automatically at a set moment, such as before a tool runs, and can allow, block or question it."
+        }
+      ],
+      "why": "A default model change moves every saved session to a new price and behaviour at once; it is worth knowing which model your routines now call.",
+      "forYou": "Check which model the scheduled routines now resolve to after the update, and re-test any hook that returns ask or defer.",
+      "sources": [
+        {
+          "label": "Claude Code v2.1.321 release",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.321"
+        },
+        {
+          "label": "Claude Code v2.1.322 release",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.322"
+        }
+      ]
+    },
+    {
+      "id": "fast-mode",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Fast mode: pay double, wait less",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Fable 5.2 has an optional fast mode that writes its answer much faster at twice the normal price.",
+      "stats": [
+        {
+          "value": "2.5x",
+          "label": "faster output, at most"
+        },
+        {
+          "value": "2x",
+          "label": "the price: $16 in, $80 out per million"
+        }
+      ],
+      "body": [
+        "Set `speed: \"fast\"` on an API request, no beta header needed, or toggle it in Claude Code."
+      ],
+      "why": "For a developer waiting at the keyboard, speed can be worth more than tokens; for overnight jobs it rarely is.",
+      "sources": [
+        {
+          "label": "Claude platform release notes",
+          "url": "https://platform.claude.com/docs/en/release-notes/overview"
+        }
+      ]
+    },
+    {
+      "id": "overnight-game",
+      "format": "steps",
+      "lane": "both",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A nephew's drawings, a beat 'em up by morning",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A developer left Fable 5.2 working overnight on a small browser game built from his nephew's drawings. By morning it had 12 boss stages, 18 fighters and four-player controller support.",
+      "background": "The first version, built in June with Claude Code, had one hero and was not worth playing for more than a couple of minutes, the author writes.",
+      "intro": "How Lex Toumbourou's build went, in his own account:",
+      "steps": [
+        {
+          "title": "Scan the design",
+          "text": "The nephew's drawings of heroes and twelve numbered villains were scanned and handed over as the reference for every character."
+        },
+        {
+          "title": "Write one long brief",
+          "text": "A modern take on arcade brawlers, as fun as possible, four-player controllers, its own judgment, and \"commit as you go\". By morning most earlier code had been rewritten."
+        },
+        {
+          "title": "Generate the assets",
+          "text": "Images came from OpenAI's image model and sound, music and announcer lines from ElevenLabs, through API keys in the brief."
+        },
+        {
+          "title": "Test it with a bot",
+          "text": "The agent ran the game through all twelve stages in a headless browser and checked screenshots for problems."
+        },
+        {
+          "title": "Playtest with the family",
+          "text": "Four controllers over Bluetooth on one laptop. Gaps surfaced, like a power-up move a child wanted, and were added after."
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-10/aiden-character-select-18.webp",
+        "alt": "A pixel-art character select screen titled Choose your fighter, with eighteen portraits including children, adults, a dog and two turtles, and four player slots.",
+        "credit": "Lex Toumbourou, Aiden's Revenge",
+        "creditUrl": "https://notesbylex.com/fable-5-2-one-shotted-my-nephews-dream-game",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "headless browser",
+          "def": "A web browser that runs without a window, so a program can load and play pages and take screenshots."
+        },
+        {
+          "term": "cache",
+          "def": "Saved earlier input the model can reuse cheaply instead of reading it again at full price."
+        }
+      ],
+      "deep": [
+        "The author's tally over two days: about 600 Claude requests, roughly 320M tokens read from cache, 19M written to cache and 1M output, \"call it 340M tokens\". He never tried the same brief on Opus 5.5, so he does not know whether earlier models could have done it."
+      ],
+      "why": "The reusable part is not the one-shot: it is the brief that hands over the design and the self-play bot that checks every stage, which works with any model.",
+      "forYou": "The self-play screenshot bot fits the browser games directly; see today's Try this.",
+      "sources": [
+        {
+          "label": "Lex Toumbourou: Fable 5.2 one-shotted my nephew's dream game",
+          "url": "https://notesbylex.com/fable-5-2-one-shotted-my-nephews-dream-game"
+        },
+        {
+          "label": "Play Aiden's Revenge",
+          "url": "https://aidens-revenge.pages.dev/"
+        }
+      ]
+    },
+    {
+      "id": "werewolf-costs",
+      "format": "chart",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "What one AI player's turn really costs",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A developer who runs a Werewolf party game with AI players published the real bill from 51,000 model calls. The same turn cost from a fifth of a cent to over ten cents depending on the model.",
+      "intro": "Cost of one bot turn in AI Werewolf, by model, from 53 days of real games:",
+      "unit": "cents",
+      "series": [
+        {
+          "label": "Claude Haiku 5.5",
+          "value": 0.19
+        },
+        {
+          "label": "DeepSeek V4 Pro",
+          "value": 0.55
+        },
+        {
+          "label": "Gemini 3.1 Pro",
+          "value": 2.94
+        },
+        {
+          "label": "Claude Sonnet 5.5",
+          "value": 3.13
+        },
+        {
+          "label": "GPT-6 Astra",
+          "value": 4.38
+        },
+        {
+          "label": "Claude Fable 5.1",
+          "value": 10.6,
+          "highlight": true
+        }
+      ],
+      "note": "Fable 5.1 is approximate in the source. A typical game of 50 or more turns cost $1.49: $1.03 text, $0.32 images, $0.13 voice. Only 29% of input tokens came from the prompt cache, because bots waited a median of four minutes between calls.",
+      "terms": [
+        {
+          "term": "prompt cache",
+          "def": "A provider feature that bills repeated input at a discount if it is sent again within a set time."
+        }
+      ],
+      "deep": [
+        "With bots calling every four minutes or so, the five-minute cache often expired. On Sonnet 5.5 the one-hour cache cost 3.13 cents per turn against 2.94 cents with no cache. The author's own cost tracking was off by 1.54 times because it priced one-hour cache writes at half their real price; the provider balance falling faster than predicted gave it away."
+      ],
+      "why": "Real per-turn numbers for AI characters are rare. They show the model choice swings cost by 50 times, and that caching only pays when calls come close together.",
+      "forYou": "Use these bands to budget any AI-driven NPC or narrator in the browser games, and reconcile logged token cost against the provider balance in week one.",
+      "sources": [
+        {
+          "label": "Aliaksei Zelianouski: What it costs to run a text game with LLMs",
+          "url": "https://azelianouski.dev/post/werewolf-real-llm-costs"
+        }
+      ]
+    },
+    {
+      "id": "grit-gdscript",
+      "format": "chart",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "GDScript compiled to C++: fast loops, same engine calls",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Grit, an experimental tool, turns a Godot game's scripts into C++ when you export it. Math-heavy code runs up to 49 times faster; code that mostly calls the engine barely changes.",
+      "background": "Godot games are usually scripted in GDScript, which runs in an interpreter; Unity does a similar trick for C# with IL2CPP.",
+      "intro": "Speed-up over Godot's normal script interpreter in the author's benchmarks, same build:",
+      "unit": "times",
+      "series": [
+        {
+          "label": "Integer loop",
+          "value": 49.1,
+          "highlight": true
+        },
+        {
+          "label": "Collatz steps",
+          "value": 41.6
+        },
+        {
+          "label": "Mandelbrot",
+          "value": 35.3
+        },
+        {
+          "label": "Count primes",
+          "value": 19.6
+        },
+        {
+          "label": "Particles (vectors)",
+          "value": 4.2
+        },
+        {
+          "label": "Node properties",
+          "value": 2.5
+        },
+        {
+          "label": "Spawn nodes",
+          "value": 1.1
+        }
+      ],
+      "note": "String building gained nothing (1.0 times). Measured by the author on one Ryzen 9 7950X3D under Linux. Grit needs a patched Godot 4.7.2 and custom export templates, is tested only on Linux and Windows x86_64, and its README says not to ship games with it yet.",
+      "terms": [
+        {
+          "term": "GDScript",
+          "def": "Godot's own scripting language, similar to Python, normally run by an interpreter."
+        },
+        {
+          "term": "export template",
+          "def": "The prebuilt engine binary Godot packs your game into when you export it."
+        }
+      ],
+      "deep": [
+        "At export, Grit records the bytecode Godot generates, emits C++ into `.godot/grit/generated` and compiles a custom template. Functions it cannot handle, edited scripts and mismatched signatures fall back to the interpreter one function at a time. The editor always uses the interpreter. The author reports all 1,540 functions in Godot's script test suite compile and pass."
+      ],
+      "why": "It shows how much speed is left in a scripting language when you compile ahead of time with a safe fallback, and where it is not: engine calls dominate most game code.",
+      "sources": [
+        {
+          "label": "Grit on GitHub",
+          "url": "https://github.com/DasDarki/grit"
+        },
+        {
+          "label": "GameFromScratch: Grit",
+          "url": "https://gamefromscratch.com/grit-gdscript-to-c-compiler"
+        }
+      ]
+    },
+    {
+      "id": "engine-notes",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Engine notes: Godot nears 4.8, Luanti locks its sandbox",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Three tool releases from the weekend: a near-final Godot beta, a voxel engine closing a security switch, and a debugger that sees CPU and GPU together.",
+      "items": [
+        {
+          "title": "Godot 4.8 beta 3",
+          "text": "74 fixes from 51 contributors, mostly regressions. The .NET build now needs .NET 10 or newer, and a threading race and Web audio bugs are fixed.",
+          "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-3"
+        },
+        {
+          "title": "Luanti 5.18",
+          "text": "Several texture packs can load at once, mods get a Lua lighting API, and the mod security toggle is gone: the sandbox can only be turned off with a command-line flag.",
+          "url": "https://blog.luanti.org/2026/11/09/5.18.0-released/"
+        },
+        {
+          "title": "One debugger for CPU and GPU code",
+          "text": "Meta extended LLDB so the CPU and GPU show up as two targets in one session, live or from a crash dump. Most of the framework is already in LLVM.",
+          "url": "https://engineering.fb.com/2026/11/09/developer-tools/extending-lldb-to-debug-applications-that-span-cpus-and-gpus"
+        }
+      ],
+      "terms": [
+        {
+          "term": "LLDB",
+          "def": "The debugger from the LLVM compiler project, used to pause a running program and inspect it."
+        },
+        {
+          "term": "sandbox",
+          "def": "A fenced-off environment that limits what code, here a mod, can touch on your machine."
+        }
+      ],
+      "why": "Beta 3 is usually the last big step before a Godot release candidate, and the .NET 10 requirement is the one change that can break a C# project.",
+      "sources": [
+        {
+          "label": "Godot: Dev snapshot 4.8 beta 3",
+          "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-3"
+        },
+        {
+          "label": "Luanti 5.18.0 released",
+          "url": "https://blog.luanti.org/2026/11/09/5.18.0-released/"
+        },
+        {
+          "label": "Meta Engineering: LLDB across CPUs and GPUs",
+          "url": "https://engineering.fb.com/2026/11/09/developer-tools/extending-lldb-to-debug-applications-that-span-cpus-and-gpus"
+        }
+      ]
+    },
+    {
+      "id": "godot-hedge",
+      "format": "quote",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "An engine as a hedge",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "After a report that investors were in talks to buy Unity, a game designer and teacher started moving a project to Godot.",
+      "quote": "I've been porting my current project to Godot and I'm really impressed.",
+      "speaker": "Molleindustria",
+      "role": "game designer, on Bluesky",
+      "context": "The post replies to news, cited from Reuters, that EA owner Silver Lake and Saudi Arabia's PIF had held talks to buy Unity. The author adds that they plan to teach Godot in their classes too.",
+      "why": "Ownership news moves engine choices before any terms change; an open source engine is the hedge people reach for.",
+      "sources": [
+        {
+          "label": "Molleindustria on Bluesky",
+          "url": "https://bsky.app/profile/molleindustria.org/post/3mzq7w6drcc26"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Moving to Fable 5.2",
+      "note": "What the new model costs per task, and two changes that can break existing code.",
+      "ids": [
+        "fable-switch",
+        "thinking-prefix",
+        "gateway-fallback"
+      ]
+    },
+    {
+      "title": "In your tools this week",
+      "note": "Claude Code's new default, and the price of speed.",
+      "ids": [
+        "claude-code-321",
+        "fast-mode"
+      ]
+    },
+    {
+      "title": "Games made and run with models",
+      "note": "An overnight build, the real bill for AI players, and scripts compiled for speed.",
+      "ids": [
+        "overnight-game",
+        "werewolf-costs",
+        "grit-gdscript"
+      ]
+    },
+    {
+      "title": "Engine watch",
+      "note": "Releases and a mood shift around the engines.",
+      "ids": [
+        "engine-notes",
+        "godot-hedge"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What does a model's effort level change?",
+    "answer": "It sets how much the model reasons before it answers. Higher effort means longer hidden reasoning, which can raise quality on hard tasks but costs more tokens and time.",
+    "analogy": "It is like telling a contractor how long to plan before building: a shelf needs a minute, a staircase an afternoon, and planning a shelf for a day only costs you the day.",
+    "body": [
+      "Reasoning models write out their working before the final answer. That working is billed as output tokens, the most expensive kind, and it also adds wait. An effort level is a budget hint: low keeps the working short, max lets it run as long as it likes.",
+      "More effort helps only up to a point. Anthropic's docs say most of Fable 5.2's gain arrives at high, and today's independent numbers show a max-effort run costing twice its predecessor's per task. At the extreme, a model can spend its whole thinking budget and return nothing.",
+      "The practical habit is a sweep: run a few real tasks at two or three levels, note pass or fail, time and tokens, and pick the cheapest level that still passes. Re-run it when the model changes."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Request",
+          "note": "Task plus an effort level"
+        },
+        {
+          "label": "Reasoning",
+          "note": "Hidden working, billed as output",
+          "key": true
+        },
+        {
+          "label": "Answer",
+          "note": "The part you see"
+        },
+        {
+          "label": "Bill and wait",
+          "note": "Grow with the reasoning"
+        }
+      ],
+      "links": [
+        "sets budget",
+        "leads to",
+        "adds up to"
+      ],
+      "caption": "Effort controls the middle step, which is where most of the cost and time goes."
+    },
+    "terms": [
+      {
+        "term": "reasoning model",
+        "def": "A model that writes out intermediate thinking before giving its final answer."
+      },
+      {
+        "term": "output tokens",
+        "def": "The tokens a model writes, usually priced several times higher than the tokens it reads."
+      }
+    ],
+    "seenIn": [
+      "fable-effort",
+      "fable-switch",
+      "fast-mode"
+    ],
+    "sources": [
+      {
+        "label": "Claude docs: Effort",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/effort"
+      },
+      {
+        "label": "Simon Willison: llm-anthropic 0.31",
+        "url": "https://simonwillison.net/2026/Nov/9/llm-anthropic"
+      },
+      {
+        "label": "Artificial Analysis: Claude Fable 5.2",
+        "url": "https://artificialanalysis.ai/models/claude-fable-5-2"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Have an agent play every level of your browser game and screenshot it",
+    "gist": "Get a repeatable bot that loads your game headless, plays through each level and flags anything that looks broken, the check that caught problems in today's overnight build.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A browser game that runs from a local server, Node.js, and a coding agent such as Claude Code.",
+    "steps": [
+      {
+        "title": "Ask for a player script",
+        "text": "Have the agent write a Playwright script that starts the game headless, jumps to each level in turn (add a debug query parameter if needed) and plays with simple inputs for 20 to 30 seconds."
+      },
+      {
+        "title": "Capture at fixed moments",
+        "text": "Save a screenshot every few seconds and at each level end, named by level and time, plus any console errors."
+      },
+      {
+        "title": "Let the agent look",
+        "text": "Ask the agent to open the screenshots and the error log and list anything wrong: missing sprites, stuck players, overlapping text, blank screens."
+      },
+      {
+        "title": "Fix and rerun",
+        "text": "Fix one issue, rerun the script, and commit the script so every later change can be checked the same way."
+      }
+    ],
+    "check": "The script reaches every level without hanging, writes a folder of screenshots, and the agent's review names at least one real problem you can see in an image.",
+    "terms": [
+      {
+        "term": "Playwright",
+        "def": "A library that drives a real browser from code: it clicks, types, presses keys and takes screenshots."
+      }
+    ],
+    "from": "overnight-game",
+    "forYou": "Start with the three.js prototype that has the most levels; the same script can run before every deploy.",
+    "sources": [
+      {
+        "label": "Lex Toumbourou: Fable 5.2 one-shotted my nephew's dream game",
+        "url": "https://notesbylex.com/fable-5-2-one-shotted-my-nephews-dream-game"
+      },
+      {
+        "label": "Playwright: screenshots",
+        "url": "https://playwright.dev/docs/screenshots"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "lane": "ai",
+      "text": "Claude Fable 5.2 is generally available in GitHub Copilot for Pro+, Max, Business and Enterprise; Business and Enterprise admins must switch on the model policy first.",
+      "url": "https://github.blog/changelog/2026-11-09-claude-fable-5-2-in-github-copilot",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "Meta's Muse Ember is a small agent model at $0.10 in and $0.50 out per million tokens with a 1M context; Meta's own tests put it ahead of Haiku 5.5 on agent tasks, behind it on coding.",
+      "url": "https://research.meta.ai/blog/muse-ember",
+      "source": "Meta"
+    },
+    {
+      "lane": "ai",
+      "text": "Vercel's AI Gateway index: decision models went from zero to 26% of requests in two months, and Anthropic was the first pick for 42.7% of new paid teams in October.",
+      "url": "https://vercel.com/blog/ai-gateway-production-index-november-2026",
+      "source": "Vercel"
+    },
+    {
+      "lane": "ai",
+      "text": "Same index: over half of October language requests went to models under 60 days old, and three in four teams dropped a model within four weeks of its peak.",
+      "url": "https://vercel.com/blog/ai-gateway-production-index-november-2026",
+      "source": "Vercel"
+    },
+    {
+      "lane": "ai",
+      "text": "Node.js 27 alpha starts yearly majors where every release becomes LTS; `http` keep-alive timeout rises from 5 to 65 seconds and `req.headers.hasOwnProperty()` now throws.",
+      "url": "https://nodejsdesignpatterns.com/blog/whats-new-in-nodejs-27",
+      "source": "Node.js Design Patterns"
+    },
+    {
+      "lane": "ai",
+      "text": "The Tokio team released Topcoat 0.9, a server-rendered full-stack Rust framework whose type-checked Rust snippets compile to JavaScript for instant updates, without WebAssembly.",
+      "url": "https://www.infoq.com/news/2026/11/topcoat-rust-framework",
+      "source": "InfoQ"
+    },
+    {
+      "lane": "ai",
+      "text": "Vercel Sandbox snapshots now take under 0.4 seconds to create, down from a 4.4-second median, and restore about twice as fast.",
+      "url": "https://vercel.com/changelog/vercel-sandbox-snapshot-creation-is-now-up-to-10x-faster",
+      "source": "Vercel"
+    },
+    {
+      "lane": "ai",
+      "text": "Vercel's Workflow SDK v5 writes events over WebSockets by default; Vercel's own agent-stream replay finished 4.2 times faster than v4.",
+      "url": "https://vercel.com/changelog/workflow-writes-now-use-websockets-on-vercel",
+      "source": "Vercel"
+    },
+    {
+      "lane": "ai",
+      "text": "GitHub secret scanning now checks Actions workflow logs after each run, in public preview for Enterprise Cloud with Secret Protection; it is off by default.",
+      "url": "https://github.blog/changelog/2026-11-09-secret-scanning-detects-secrets-in-github-actions-workflow-logs",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "Simon Willison had Claude Code build a web app that turns phones and laptops into microphones to triangulate a beep; it found an old carbon monoxide detector to about 40 cm.",
+      "url": "https://simonwillison.net/2026/Nov/9/mysterious-beeps",
+      "source": "Simon Willison"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "beep-locator",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "Beep Locator: every phone in the house becomes an ear",
+      "where": "Simon Willison's blog",
+      "signal": "Posted November 9 by Simon Willison; a mystery beep located to about 40 cm with phones, tablets and laptops",
+      "hook": "Scan a QR code and each device joins as a listener; the app aligns their clocks with a chirp and triangulates the beep on a floor plan. The culprit was an old carbon monoxide detector.",
+      "borrow": "Browser sensors on spare phones make cheap physical-world inputs, and pushing new code to every listener over a WebSocket without reloads is a neat trick for live game jams and installations.",
+      "forYou": "The live code push over WebSocket is worth copying for multi-device browser game prototypes.",
+      "url": "https://simonwillison.net/2026/Nov/9/mysterious-beeps",
+      "image": {
+        "src": "img/2026-11-10/beep-locator.webp",
+        "alt": "A web dashboard with a QR code for adding listeners, a map of device positions around a highlighted beep location, and loudness bars per device.",
+        "credit": "Simon Willison",
+        "creditUrl": "https://simonwillison.net/2026/Nov/9/mysterious-beeps",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "watched-earth",
+      "lane": "both",
+      "kind": "tool",
+      "title": "Watched: every satellite that passed over you this week",
+      "where": "Hacker News",
+      "signal": "277 points and 46 comments on Show HN on November 9",
+      "hook": "Pick any place and see the 16,000-plus objects that flew over it, drawn live on a globe, then the real satellite photos taken on those passes.",
+      "borrow": "The author says the GPU solves each object's orbit every frame: thousands of moving things from one closed-form formula, a pattern for any large swarm in a browser game.",
+      "url": "https://www.watched.earth",
+      "image": {
+        "src": "img/2026-11-10/watched-earth.webp",
+        "alt": "A dark page reading Something watched you this week, with a place search box beside a 3D globe surrounded by a haze of satellite dots.",
+        "credit": "Watched (screenshot)",
+        "creditUrl": "https://www.watched.earth",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "old-map-city",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Procedural city streets drawn like an old map",
+      "where": "Bluesky",
+      "signal": "90 likes and 16 reposts on Bluesky's Godot feed for a #screenshotsaturday post",
+      "hook": "A generator lays out streets and blocks around a river, then styles them as ink on aged paper, so a procedural city reads like a found artifact.",
+      "borrow": "The developer also shared the debug views used to check regions and neighbourhoods; building those first is the habit worth taking from any generator.",
+      "url": "https://bsky.app/profile/joelobrist.com/post/3mzpwxxdcak2d",
+      "image": {
+        "src": "img/2026-11-10/city-streets.webp",
+        "alt": "A procedurally generated city in dark red blocks on a parchment background, cut through by a winding blue river with bridges.",
+        "credit": "Joel Obrist on Bluesky",
+        "creditUrl": "https://bsky.app/profile/joelobrist.com/post/3mzpwxxdcak2d",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "agent-evolution",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Beneath the Surface: What We Overlook When We Talk About Agent Evolution",
+      "headline": "Self-tuned agent setups win new tasks but quietly lose old ones",
+      "authors": "X. Wang, Z. Wang, S. Ye, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-11-05",
+      "problem": "Methods that automatically rewrite an agent's prompts, tools and scaffolding are judged by their headline score. Nobody checks what the evolved agent stopped being able to do, or what it costs to run.",
+      "idea": "Run four evolution methods on two benchmarks with two agent harnesses, and track every task gained and lost against the starting agent, plus running cost. Then add a gate that rejects changes which lose tasks the agent already solved.",
+      "result": "All 16 evolved agents gained tasks and all lost some; most reliability gains also raised cost. With the gate, average success rose by 3.5 to 7.9 points over the seed in all four settings, losing 1 to 5 tasks against 3 to 15 gained.",
+      "useIt": "If you tune an agent's instruction file, skills or hooks in a loop, keep a set of tasks that already pass and reject any change that breaks one, even when the total score goes up.",
+      "maturity": "idea",
+      "forYou": "Before letting any routine rewrite its own prompt or skills, keep a small regression set of tasks it already handles.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.07624"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2611.07624v1"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-10/lab-evolve.webp",
+        "alt": "A diagram of a loop of record, select, rollout, analyze, mutate, validate, evaluation and gate steps, beside three research questions on what improves, where gains hold and how they arise.",
+        "credit": "Wang et al., arXiv",
+        "creditUrl": "https://arxiv.org/html/2611.07624v1",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "error-delivery",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Same Error, Different Recovery: How Delivery Changes LLM Agent Behavior",
+      "headline": "Where you put a tool error decides whether the agent retries or gives up",
+      "authors": "S. Woo, J. Conde, P. Reviriego",
+      "where": "arXiv preprint",
+      "date": "2026-11-08",
+      "problem": "When a tool call fails, agent code passes the error back in different ways. It was unclear whether the placement matters, or only the error text.",
+      "idea": "Test 13 open models on the same failures delivered different ways. The best form keeps the failed call in the history and adds a short new note naming the kind of fault (transient, fixable, unrecoverable) and what to do.",
+      "result": "On explicit errors, success rose 14.2 points for 7 to 8B models and 10.5 for 32 to 70B, with no change on runs without faults. Removing the failed exchange from history made some models stop dead.",
+      "useIt": "In your own tool loops or MCP clients, never delete a failed call; append a one-line note saying whether a retry is safe, and only retry tools that do not change anything.",
+      "maturity": "prototype",
+      "forYou": "Apply the note pattern to the MCP servers that wrap build and deploy steps, where blind retries would be dangerous.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.11581"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2611.11581v1"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-10/lab-errors.webp",
+        "alt": "Three heatmaps of decision accuracy for eight open models across four delivery conditions, for transient, fixable and unrecoverable faults.",
+        "credit": "Woo, Conde and Reviriego, arXiv",
+        "creditUrl": "https://arxiv.org/html/2611.11581v1",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "A launch day: the lead draws on Anthropic's own pages plus independent tests from Artificial Analysis and Simon Willison. Eight sweep feeds (Reddit and three news sites) returned errors, and the lab desk could not open ACM or Wiley pages, so both lab papers are arXiv preprints."
+}
