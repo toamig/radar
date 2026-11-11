@@ -1,0 +1,983 @@
+{
+  "date": "2026-11-11",
+  "number": 29,
+  "title": "Unreal opens its editor to agents",
+  "dek": "Epic's Unreal Engine 5.9 preview was mostly written by agents, and it lets your own agent drive the editor. Plus why stale TODO comments cost agents time, one sentence that changes how Fable 5.2 edits code, and a 44 times cheaper classifier.",
+  "theme": {
+    "paper": "sky",
+    "text": "black",
+    "inks": [
+      "purple",
+      "yellow"
+    ],
+    "type": "wide",
+    "mood": "a Wednesday about engines and codebases that agents can work in"
+  },
+  "tldr": [
+    {
+      "lane": "gamedev",
+      "text": "Unreal Engine 5.9's preview adds Unreal Assistant, a panel that runs **Claude Code, Codex, Cursor or OpenCode** inside the editor over Unreal MCP. Epic says agents wrote most of the release in about a week."
+    },
+    {
+      "lane": "gamedev",
+      "text": "Unreal can target the browser again through WebAssembly and WebGPU, but it is experimental: source builds only, crashes past 2 GB of memory, and no joining servers yet."
+    },
+    {
+      "lane": "ai",
+      "text": "Google found that when coding agents chase old TODO bug comments unasked, the session takes **70% more steps and 105% more wait time**."
+    },
+    {
+      "lane": "ai",
+      "text": "Anthropic's docs say telling Fable 5.2 the codebase is its own makes it merge repeated code in about half of tries, against under a tenth without."
+    },
+    {
+      "lane": "ai",
+      "text": "Amazon swapped Sonnet 4.6 for a small classifier on a ticket labelling job: 4.2 seconds down to 0.9, and about 44 times cheaper per ticket (vendor figures)."
+    }
+  ],
+  "blocks": [
+    {
+      "id": "ue59-agents",
+      "format": "hero",
+      "variant": "split",
+      "lane": "gamedev",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Built by agents, open to agents",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Epic released an early preview of Unreal Engine 5.9 that it says was mostly written by AI agents, and it lets developers plug their own coding agent straight into the editor.",
+      "background": "Unreal Engine is Epic Games' 3D engine; Epic said last week that 5.9 would preview with the web as a target, ahead of its AI MegaJam on November 12 to 15.",
+      "takeaway": "Your coding agent can now work inside Unreal's editor, not just on its source files. The preview is rough by Epic's own account, so try it on a copy of a project.",
+      "body": [
+        "Epic calls the 5.9 MegaJam Preview the first Unreal release built mainly with agent workflows: a handful of people directed fleets of agents that ported AI tools and wrote the new web platform, while engineers reviewed and tested. It had about a week of development and a shorter test pass than usual.",
+        "The part developers can use is **Unreal Assistant**, an experimental editor panel where you work with Claude Code, Codex, Cursor or OpenCode. It talks to Unreal MCP, which now starts with the editor and offers tools for rendering, source control, profiling, debugging, gameplay testing, geometry, audio, UI and level building. A new Fab toolset lets an agent search the store, browse your library and install assets.",
+        "Epic recommends testing on a copy of a project rather than converting one, and lists a catch: in new projects the toolset plugins are off, so an agent connects but gets no editor tools until you enable them."
+      ],
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "Agent",
+            "note": "Claude Code, Codex, Cursor or OpenCode"
+          },
+          {
+            "label": "Assistant",
+            "note": "A panel inside the editor"
+          },
+          {
+            "label": "MCP",
+            "note": "Starts with the editor",
+            "key": true
+          },
+          {
+            "label": "Toolsets",
+            "note": "Blueprints, profiling, tests, Fab"
+          }
+        ],
+        "links": [
+          "runs in",
+          "talks to",
+          "calls"
+        ],
+        "caption": "How a coding agent reaches the editor in the 5.9 preview, per Epic's release post."
+      },
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way for an AI agent to discover and call tools that another program offers."
+        },
+        {
+          "term": "toolset",
+          "def": "A group of related actions the editor exposes to agents, such as editing Blueprints or running a profiler."
+        },
+        {
+          "term": "Blueprints",
+          "def": "Unreal's visual scripting system, where game logic is built by wiring nodes together."
+        },
+        {
+          "term": "Fab",
+          "def": "Epic's marketplace for game assets, tools and plugins."
+        }
+      ],
+      "deep": [
+        "Known issue UE-412135: new projects ship with the AllToolsets, EditorToolset, BlueprintToolsets, ConsoleToolset and LiveCodingToolset plugins disabled, so `list_toolsets` returns no actor, level, asset, Blueprint or Python tools. Enable All Toolsets in Edit > Plugins (or add AllToolsets to the .uproject), restart and reconnect.",
+        "Other items in the preview notes: a Modular Test Framework for scoped plugin tests, GraphDsl (a text language for graph assets), StateTree tasks editable from Blueprint or Python, Python APIs for audio, MetaSounds, modeling, physics, Niagara, materials, PCG and UI, a runtime path-traced Lumen World Cache that needs hardware ray tracing, and Unreal Canvas, a shared space where people and agents make content with generative services.",
+        "Epic says it is still cleaning up agent-written code and that parts of the web renderer are prototypes to be refactored before the full 5.9 release. Known crash UE-411502: swapping a Blueprint's root through Python can crash the editor."
+      ],
+      "why": "Agents that can open levels, edit Blueprints and run a profiler can test and fix gameplay, not only write code. Plugin makers should expect buyers to ask whether their tools work from an agent.",
+      "forYou": "Install the preview beside 5.8, copy one plugin's demo project, enable All Toolsets, and see whether an agent can find and configure the plugin's components; that tells you what to document for agent users before Fab buyers ask.",
+      "sources": [
+        {
+          "label": "Epic forums: Unreal Engine 5.9 MegaJam Preview",
+          "url": "https://forums.unrealengine.com/t/unreal-engine-5-9-megajam-preview/2852840"
+        },
+        {
+          "label": "Epic: Unreal Engine 5.9 release notes",
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-9-release-notes"
+        },
+        {
+          "label": "80 Level: 5.9 Preview is out and was built with AI",
+          "url": "https://80.lv/articles/unreal-engine-5-9-preview-is-out-it-was-built-with-ai"
+        }
+      ]
+    },
+    {
+      "id": "ue-web",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Unreal in the browser is back, with a list of limits",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "For the first time since Unreal 4 dropped its web export, Unreal games can run in a browser again through WebAssembly and WebGPU, but the preview comes with hard limits worth knowing before you plan a web release.",
+      "intro": "From the known issues Epic published with the preview:",
+      "items": [
+        {
+          "title": "What it needs",
+          "text": "A source build of the engine and a C++ project. It uses the mobile renderer, and Chrome works best.",
+          "url": "https://forums.unrealengine.com/t/unreal-engine-5-9-megajam-preview/2852840"
+        },
+        {
+          "title": "Memory and size",
+          "text": "Games crash above **2 GB** of WebAssembly memory. itch.io caps browser games at 500 MB total and 200 MB per file, which Lyra and development builds exceed.",
+          "url": "https://forums.unrealengine.com/t/unreal-engine-5-9-megajam-preview/2852840"
+        },
+        {
+          "title": "Textures and video",
+          "text": "BC and DXT textures fail on Android and on iPhones older than the 15 Pro, so cook with ASTC. Bink video does not play.",
+          "url": "https://forums.unrealengine.com/t/unreal-engine-5-9-megajam-preview/2852840"
+        },
+        {
+          "title": "Saves and servers",
+          "text": "Web-ready projects cannot join servers yet, and in some builds saves and settings vanish on reload.",
+          "url": "https://forums.unrealengine.com/t/unreal-engine-5-9-megajam-preview/2852840"
+        }
+      ],
+      "terms": [
+        {
+          "term": "WebAssembly",
+          "def": "A compact code format browsers run at near native speed, used to bring C++ programs to the web."
+        },
+        {
+          "term": "WebGPU",
+          "def": "The modern browser interface for drawing graphics and running work on the graphics card."
+        },
+        {
+          "term": "ASTC",
+          "def": "A texture compression format that works on nearly all phones."
+        },
+        {
+          "term": "source build",
+          "def": "An engine compiled yourself from Epic's code, instead of the ready-made launcher version."
+        }
+      ],
+      "deep": [
+        "Issue numbers: UE-411671 (crash above 2 GB Wasm memory), UE-412027 (no IpNetDriver in --web-ready projects), UE-412003 (saves lost on reload in launcher-built C++ web games), UE-411672 (Bink unsupported), UE-412148 (iOS 26 WebKit uses far more thread memory than iOS 27), UE-411308 and UE-411939 (opening index.html from file:// fails). Mac and Linux premade builds were missing some Wasm support files at launch."
+      ],
+      "why": "A browser build is the shortest path from a game to a player, for demos, jams and playtests. These limits decide whether that path is open to your project yet.",
+      "forYou": "Worth one test build of a small three.js-sized scene to compare download size and load time against the existing web stack; do not plan a web release on it yet.",
+      "sources": [
+        {
+          "label": "Epic forums: 5.9 MegaJam Preview known issues",
+          "url": "https://forums.unrealengine.com/t/unreal-engine-5-9-megajam-preview/2852840"
+        },
+        {
+          "label": "GameFromScratch: Unreal Engine 5.9 Preview",
+          "url": "https://gamefromscratch.com/unreal-engine-5-9-preview"
+        }
+      ]
+    },
+    {
+      "id": "blender-splats",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Blender 5.3 treats Gaussian splats as real geometry",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Blender can now import 3D scans made of Gaussian splats, edit them with its node tools and render them, which makes captured scenes easier to clean up and reuse.",
+      "plain": "A Gaussian splat scene is a cloud of millions of soft, colored blobs that together look like a photo-real 3D capture; Blender now loads them as point clouds you can process like any other geometry.",
+      "body": [
+        "Blender 5.3 imports splats from PLY, SPZ and glTF files, lets Geometry Nodes crop and transform them, and renders them in EEVEE, Cycles and Workbench. They show as glowing by default; relighting them is still basic, and performance is still being tuned.",
+        "The release also makes Vulkan the default in EEVEE and the viewport, and lets studios share asset libraries as installable extensions."
+      ],
+      "image": {
+        "src": "img/2026-11-11/blender-splat.webp",
+        "alt": "A Blender node graph feeding a splat's radiance attribute into a Diffuse BSDF, above a viewport showing a scanned table with small objects rendered as a splat cloud.",
+        "credit": "Blender Foundation",
+        "creditUrl": "https://www.blender.org/download/releases/5-3",
+        "fit": "cover"
+      },
+      "terms": [
+        {
+          "term": "Gaussian splat",
+          "def": "A way to store a captured 3D scene as many small, soft, colored blobs instead of triangles."
+        },
+        {
+          "term": "Geometry Nodes",
+          "def": "Blender's node system for building and changing geometry with rules instead of by hand."
+        },
+        {
+          "term": "point clouds",
+          "def": "Geometry made only of points in space, with no surfaces connecting them."
+        }
+      ],
+      "deep": [
+        "Splat attributes: `scale` (vector), `rotation` (quaternion), `radiance:base` (base color with opacity in the fourth component) and `radiance:sh_{index}` for spherical harmonic bands. Blender notes color can drift because splat tools work in sRGB and Blender in linear space. Cycles also gains DLSS 4.5 Ray Reconstruction as a denoiser (NVIDIA driver 620 or newer)."
+      ],
+      "why": "Scans are a cheap way to get real places into a game, but they have been hard to edit. A standard tool that can crop and transform them shortens that path.",
+      "forYou": "Try one phone-captured prop through Blender 5.3 to see if a cleaned splat can serve as a reference or backdrop for environment work.",
+      "sources": [
+        {
+          "label": "Blender 5.3 release notes",
+          "url": "https://www.blender.org/download/releases/5-3"
+        }
+      ]
+    },
+    {
+      "id": "defold-1141",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Defold 1.14.1: sharp text and a real debugger",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The free Defold engine, popular for small web and mobile games, now draws text sharply at any size, debugs Lua scripts with standard tools, and reports big speedups for particles.",
+      "name": "Defold 1.14.1",
+      "what": "A free, lightweight 2D and 3D engine aimed at web and mobile games.",
+      "body": [
+        "New fonts default to vector rendering, so text stays sharp at any size. Lua scripts can now be debugged over the standard Debug Adapter Protocol, so editors that speak it can set breakpoints and step through code.",
+        "Debug and headless builds also describe their runtime services in OpenAPI, a machine-readable format that scripts and agents can read."
+      ],
+      "facts": [
+        {
+          "k": "Particles",
+          "v": "About 94% faster vertex work in a 200,000-particle test"
+        },
+        {
+          "k": "Transforms",
+          "v": "1.17 to 3.25 times faster in 100,000-object tests"
+        },
+        {
+          "k": "Windows",
+          "v": "OpenGL, Vulkan or DirectX 12, chosen per project"
+        },
+        {
+          "k": "Breaking",
+          "v": "WebGL 1 and OpenGL ES 2.0 shaders now off by default"
+        }
+      ],
+      "tryIt": "https://defold.com/2026/11/10/Defold-1-14-1",
+      "terms": [
+        {
+          "term": "Debug Adapter Protocol",
+          "def": "A standard that lets any code editor control a debugger the same way."
+        },
+        {
+          "term": "headless",
+          "def": "Running without a window or screen, for servers and automated tests."
+        },
+        {
+          "term": "OpenAPI",
+          "def": "A standard file format that describes what a web service offers, so tools can call it without guessing."
+        }
+      ],
+      "why": "Small engines compete on build size and iteration speed; a standard debugger and machine-readable runtime make Defold easier to automate and test.",
+      "forYou": "The OpenAPI runtime description is a pattern worth copying in your own game servers so agents can query live state.",
+      "sources": [
+        {
+          "label": "Defold: release 1.14.1",
+          "url": "https://defold.com/2026/11/10/Defold-1-14-1"
+        }
+      ]
+    },
+    {
+      "id": "agent-distraction",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Old TODO comments send coding agents on detours",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Google measured what happens when coding agents read old TODO notes that point to bug tickets: mostly nothing, but when an agent wanders off to chase one unasked, the session gets much longer and costlier.",
+      "plain": "Agents read comments as live instructions, so a codebase full of dead notes quietly costs time and tokens.",
+      "body": [
+        "Google engineers Sam Saccone and Madhuri Garikapati studied agent sessions across thousands of Google engineers. In 13% of sessions the agent read a TODO or FIXME that named a bug. It ignored the note 94% of the time; in the 6% where it acted, 83% of those actions were unprompted. Of those detours, 41% chased tickets that were already closed, and 57% went after open bugs nobody had asked about.",
+        "Compared with similar sessions from the same developer, an unprompted detour meant **70% more steps, 77% more tokens and 105% more wait time** (Google's figures). Google's answer was cleanup agents: over six months they removed thousands of obsolete TODOs after checking bug and file history, and reviewers accepted over 95% of the changes."
+      ],
+      "image": {
+        "src": "img/2026-11-11/todo-flow.webp",
+        "alt": "Flow chart: 13% of file reads include a TODO bug; agents ignore 94% and act on 6%; 83% of actions are unprompted; of those, 57% target open bugs, 32% already fixed bugs and 9% obsolete or won't-fix tickets.",
+        "credit": "Google Developers Blog",
+        "creditUrl": "https://developers.googleblog.com/agent-distraction/",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "TODO",
+          "def": "A comment a programmer leaves in code to mark work still to do, often with a bug ticket number."
+        },
+        {
+          "term": "tokens",
+          "def": "The small chunks of text a model reads and writes; providers bill by the token."
+        }
+      ],
+      "deep": [
+        "The overhead figures come from a fixed-effects regression that held developer, codebase area, task type, files read, prompt length, timing and model constant; ranges were +54 to +87% for steps, +60 to +96% for tokens and +86 to +126% for wait time. Of open-bug detours, 61% only looked the bug up and 39% edited code. The post was published November 6 and covered by InfoQ on November 10."
+      ],
+      "why": "Code hygiene used to be a nice-to-have for people. With agents reading every comment, dead notes now cost measurable time and money on every task that touches them.",
+      "forYou": "Plugin source trees with years of engine-upgrade TODOs are a prime target; let an agent list TODOs whose referenced issue is closed and remove them in one reviewed pass.",
+      "sources": [
+        {
+          "label": "Google Developers Blog: Agent distraction",
+          "url": "https://developers.googleblog.com/agent-distraction/"
+        },
+        {
+          "label": "InfoQ: technical debt can derail coding agents",
+          "url": "https://www.infoq.com/news/2026/11/google-agent-distraction"
+        }
+      ]
+    },
+    {
+      "id": "owner-line",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "overprint",
+      "title": "Tell Fable 5.2 the code is its own",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Anthropic's prompting guide says one sentence telling Claude Fable 5.2 that it owns the codebase makes it clean up repeated code instead of piling on more.",
+      "stats": [
+        {
+          "value": "~50%",
+          "label": "tries merged repeated code with the sentence"
+        },
+        {
+          "value": "<10%",
+          "label": "tries without it"
+        },
+        {
+          "value": "1.5x",
+          "label": "output tokens with it"
+        }
+      ],
+      "body": [
+        "Without it, the model tends to add to the existing structure and only report nearby problems. With it, it also makes unrequested changes, so review the whole diff. Small tests, Anthropic's own figures."
+      ],
+      "why": "Who the prompt says owns the code now changes how much the model refactors, so it is a setting to choose, not a phrase to copy everywhere.",
+      "forYou": "Use it in your own repos' instruction files, and leave it out of client work where the diff must stay small.",
+      "sources": [
+        {
+          "label": "Claude docs: Prompting Claude Fable 5.2",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2#say-who-owns-the-code"
+        },
+        {
+          "label": "Simon Willison: quoting the guide",
+          "url": "https://simonwillison.net/2026/Nov/10/prompting-claude-fable-52"
+        }
+      ]
+    },
+    {
+      "id": "modern-web",
+      "format": "code",
+      "lane": "both",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Browser makers ship a skill to update agents' web habits",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Coding agents still write web code the way it was done years ago. The Chrome, Edge, Firefox and MDN teams published a free guide agents can load to use modern browser features instead.",
+      "intro": "Modern Web Guidance covers 250 web features and 203 common tasks. From the repo's own instructions:",
+      "lang": "bash",
+      "code": "# add the guidance to your coding agent\nnpx modern-web-guidance@latest install\n\n# find the modern way to do a task\nnpx modern-web-guidance@latest search \"animate a dialog modal backdrop\"\n\n# list old patterns in a project\nnpx modern-web-guidance@latest legacy-scan .",
+      "explain": [
+        "The install step adds plugins for Claude, Codex, Cursor, Gemini, Grok and Kimi. The maintainers say they used evals to cut content models already know, but the repo shows no results yet.",
+        "`legacy-scan` is the quickest test: it points at code a browser feature now handles, such as hand-built modals that a native dialog element replaces."
+      ],
+      "terms": [
+        {
+          "term": "skill",
+          "def": "A packaged set of instructions and references a coding agent loads when a task needs it."
+        },
+        {
+          "term": "MDN",
+          "def": "Mozilla's web documentation site, the standard reference for HTML, CSS and JavaScript."
+        },
+        {
+          "term": "evals",
+          "def": "Repeatable tests that measure how well a model or prompt does a task."
+        }
+      ],
+      "why": "Less code to ship and maintain: native browser features replace scripts and libraries that agents keep reaching for out of habit.",
+      "forYou": "Run legacy-scan on the browser game front end and one React SaaS app; pick the two biggest hits as agent tasks.",
+      "sources": [
+        {
+          "label": "GitHub: GoogleChrome/modern-web-guidance",
+          "url": "https://github.com/GoogleChrome/modern-web-guidance"
+        }
+      ]
+    },
+    {
+      "id": "strands-decider",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Amazon replaced a frontier model with a small classifier",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "For a job that only picks one label out of twenty, Amazon engineers swapped Claude Sonnet 4.6 for a small model that scores the options directly, and cut latency and cost sharply.",
+      "intro": "An internal ticket labelling job with 20 categories, per the Strands team's write-up. All figures are Amazon's own; no accuracy numbers were published beyond saying the small model did as well.",
+      "left": "Claude Sonnet 4.6",
+      "right": "Strands Decider E4B",
+      "rows": [
+        {
+          "aspect": "Average time per call",
+          "left": "4,215 ms",
+          "right": "897 ms"
+        },
+        {
+          "aspect": "Tokens per ticket",
+          "left": "6,724",
+          "right": "2,010"
+        },
+        {
+          "aspect": "Output tokens per ticket",
+          "left": "170",
+          "right": "1"
+        },
+        {
+          "aspect": "Cost per million tickets",
+          "left": "about $22,200",
+          "right": "about $500"
+        }
+      ],
+      "verdict": "When the answer is one item from a fixed list, a model that scores the options beats one that writes text. The rollout is the part to copy: a switch ran both models side by side on live traffic, and rolling back took a 45-second config change.",
+      "terms": [
+        {
+          "term": "classifier",
+          "def": "A model that picks a category from a fixed list instead of writing free text."
+        },
+        {
+          "term": "Gemma",
+          "def": "Google's family of open-weight models that anyone can run on their own hardware."
+        }
+      ],
+      "deep": [
+        "Strands Decider E4B is a Gemma 4 build that returns a probability per option plus a confidence score. It runs on a SageMaker ml.g5.xlarge (one A10G GPU, about $1.41 an hour), handling about 5,600 tickets an hour per instance. Labels were rewritten as one- or two-sentence criteria to fit a 4,096-token window. An AppConfig switch had three modes: BEDROCK (Sonnet only), DUAL (both, compared) and DECIDER. Reordering JSON keys shifted probabilities by up to 0.19, so requests are now sent with sorted keys."
+      ],
+      "why": "Many production AI calls are routing and labelling, not writing. Measuring them against a small scoring model can cut both the bill and the wait.",
+      "forYou": "Any SaaS feature that tags or routes user input is a candidate; run the small model in shadow beside the current one before switching.",
+      "sources": [
+        {
+          "label": "Strands Agents: Amazon replaces Sonnet 4.6 with Strands Decider",
+          "url": "https://strandsagents.com/blog/amazon-saves-millions-replacing-sonnet-with-strands-decider"
+        }
+      ]
+    },
+    {
+      "id": "durable-agents",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Agents that wait for weeks need a journal",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "An agent that waits days for a supplier or a manager must survive crashes and restarts. A new article shows how durable execution lets it pick up exactly where it stopped.",
+      "layout": "flow",
+      "intro": "Kiran Prakash of Thoughtworks, on martinfowler.com, builds a stock reordering agent that waits up to 7 days for replies and runs on Temporal and Cloudflare Workflows.",
+      "nodes": [
+        {
+          "label": "Step",
+          "note": "A model or tool call"
+        },
+        {
+          "label": "Journal",
+          "note": "Result written to a log",
+          "key": true
+        },
+        {
+          "label": "Wait",
+          "note": "Sleeps for approval or a reply"
+        },
+        {
+          "label": "Crash",
+          "note": "The process dies"
+        },
+        {
+          "label": "Replay",
+          "note": "Logged results return; no step reruns"
+        }
+      ],
+      "links": [
+        "records",
+        "then",
+        "may hit",
+        "recovers by"
+      ],
+      "caption": "Measured wake times: about 14 ms on Temporal and 0.1 s on Cloudflare in memory; about 2 s rebuilt from the log on Cloudflare.",
+      "terms": [
+        {
+          "term": "durable execution",
+          "def": "A runtime that logs each step's result so a program can restart after a crash without redoing finished work."
+        },
+        {
+          "term": "idempotency key",
+          "def": "A unique id sent with a request so that repeating it does not do the work twice."
+        }
+      ],
+      "deep": [
+        "The article pairs the journal with idempotency keys (the purchase order number) so retries do not duplicate orders, a cancel tool for compensation, approvals that expire and a price range rather than one price, and a rules version so old runs finish under old rules. Retry policy in the example: 6 attempts, 2 s first interval, backoff 2. It stresses the limits: the log records what the agent saw, not what happened, and prompt injection is still the harness's job."
+      ],
+      "why": "Long-running agents fail in boring ways: restarts, deploys, timeouts. Logging every outside call turns those into pauses instead of duplicate orders or lost work.",
+      "forYou": "Any routine that waits on a person or another service could move onto Cloudflare Workflows with step.do and step.waitForEvent rather than a polling loop.",
+      "sources": [
+        {
+          "label": "martinfowler.com: Long-horizon agents and durable execution",
+          "url": "https://martinfowler.com/articles/durable-execution-agents.html"
+        }
+      ]
+    },
+    {
+      "id": "supabase-expo",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "One command gives each app build its own Supabase",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Expo's build tool can now create a Supabase backend and wire its keys into every app environment, so test builds stop touching real user data.",
+      "intro": "From Supabase's announcement, for Expo projects with eas-cli 21.8.0 or newer:",
+      "steps": [
+        {
+          "title": "Connect",
+          "text": "Run `eas integrations:supabase:connect`. It creates a Supabase project, installs the SDK and writes keys to Production, Preview and Development."
+        },
+        {
+          "title": "Split preview",
+          "text": "Add `--environment preview` to give preview builds and over-the-air updates their own project and keys."
+        },
+        {
+          "title": "Develop locally",
+          "text": "Point Development at a local Supabase stack on your machine."
+        },
+        {
+          "title": "Read the advisors",
+          "text": "Security and performance findings, such as a table with Row Level Security off, show in the Expo build dashboard."
+        }
+      ],
+      "terms": [
+        {
+          "term": "Expo",
+          "def": "A toolkit and cloud build service for React Native mobile apps."
+        },
+        {
+          "term": "Row Level Security",
+          "def": "A Postgres feature that limits which rows each user can read or change."
+        }
+      ],
+      "deep": [
+        "Every command in the integration runs without prompts and returns JSON, which Supabase says lets an agent set up a backend in the same pass as the app."
+      ],
+      "why": "Separate backends per environment are the cheapest protection against a test build wiping real data, and the advisor check catches open tables before store review.",
+      "forYou": "The advisor-in-the-build-dashboard idea is worth copying for the Flutter apps' CI even without Expo.",
+      "sources": [
+        {
+          "label": "Supabase: every Expo environment in one command",
+          "url": "https://supabase.com/blog/set-up-supabase-for-every-expo-environment-in-one-command"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Engines and tools this week",
+      "note": "Unreal on the web, scans in Blender, and a faster Defold.",
+      "ids": [
+        "ue-web",
+        "blender-splats",
+        "defold-1141"
+      ]
+    },
+    {
+      "title": "Code that agents read well",
+      "note": "What dead comments cost, one prompt line, and newer web habits.",
+      "ids": [
+        "agent-distraction",
+        "owner-line",
+        "modern-web"
+      ]
+    },
+    {
+      "title": "Agents in production",
+      "note": "The right size of model, surviving long waits, and safer test builds.",
+      "ids": [
+        "strands-decider",
+        "durable-agents",
+        "supabase-expo"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is MCP, and why does an engine add it?",
+    "answer": "MCP (Model Context Protocol) is a shared standard that lets an AI agent ask a program which tools it offers and then call them. An engine that speaks MCP can be driven by any agent that speaks it too.",
+    "analogy": "It is like a universal power socket: any appliance with the standard plug works, so the engine does not need a separate adapter for every agent.",
+    "body": [
+      "A program that supports MCP runs a small server. When an agent connects, the server lists its tools, each with a name, a description and the inputs it takes, such as 'spawn actor at location' or 'run the profiler'. The agent reads that list, decides which tool fits the task, and sends a call; the server does the work and returns the result as text the agent can read.",
+      "That is why Unreal 5.9 can host Claude Code, Codex, Cursor or OpenCode in the same panel: they all speak the protocol, so Epic writes the editor's tools once. It also explains the preview's main snag: if the toolset plugins are switched off, the server has nothing to list, and the agent connects to an empty toolbox."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Agent",
+          "note": "Decides what to do"
+        },
+        {
+          "label": "List",
+          "note": "Asks which tools exist"
+        },
+        {
+          "label": "Server",
+          "note": "Runs inside the program",
+          "key": true
+        },
+        {
+          "label": "Result",
+          "note": "Comes back as text"
+        }
+      ],
+      "links": [
+        "asks",
+        "calls",
+        "returns"
+      ],
+      "caption": "An MCP round trip: the agent discovers tools, calls one, and reads the result."
+    },
+    "terms": [
+      {
+        "term": "server",
+        "def": "A program that waits for requests and answers them; here it runs inside the editor."
+      },
+      {
+        "term": "protocol",
+        "def": "An agreed set of rules for how two programs talk to each other."
+      }
+    ],
+    "seenIn": [
+      "ue59-agents"
+    ],
+    "sources": [
+      {
+        "label": "Model Context Protocol: introduction",
+        "url": "https://modelcontextprotocol.io/introduction"
+      },
+      {
+        "label": "Epic forums: Unreal Engine 5.9 MegaJam Preview",
+        "url": "https://forums.unrealengine.com/t/unreal-engine-5-9-megajam-preview/2852840"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Test the ownership sentence on one refactor, with and without",
+    "gist": "Find out in your own code whether one line in the system prompt makes Fable 5.2 merge duplicated code, and what it costs in extra changes.",
+    "time": "30 minutes",
+    "level": "practitioner",
+    "needs": "A repo you own with some duplicated helpers, and a coding agent running Claude Fable 5.2.",
+    "steps": [
+      {
+        "title": "Pick a task",
+        "text": "Choose a small feature that touches code with two or three near-identical helpers."
+      },
+      {
+        "title": "Make two copies",
+        "text": "Create two git worktrees at the same commit so both runs start from the same code."
+      },
+      {
+        "title": "Add the line to one",
+        "text": "In one worktree, put the sentence below near the top of the system prompt or instruction file. Leave the other as it is."
+      },
+      {
+        "title": "Run the same prompt",
+        "text": "Give both agents the same request at the same effort level, then compare the diffs: merged versus copied code, files touched, and changes nobody asked for."
+      }
+    ],
+    "code": {
+      "lang": "text",
+      "code": "This codebase is yours: what it's for and how it's built are your call, and you'll keep building on it."
+    },
+    "check": "The run with the sentence merges at least one duplicated helper and the feature still works. Also count unrequested edits; Anthropic saw about 1.5 times the output tokens and some behaviour changes, so read the whole diff, not the summary.",
+    "terms": [
+      {
+        "term": "worktree",
+        "def": "A second working folder for the same git repository, so two branches can be checked out at once."
+      }
+    ],
+    "from": "owner-line",
+    "forYou": "Run it on a plugin module with copied component helpers; if it helps, add the line to that repo's instruction file only.",
+    "sources": [
+      {
+        "label": "Claude docs: Say who owns the code",
+        "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2#say-who-owns-the-code"
+      },
+      {
+        "label": "Git: worktree",
+        "url": "https://git-scm.com/docs/git-worktree"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "lane": "ai",
+      "text": "Anthropic added Whiteboards and Sheets (both beta) and made Claude Data, its dashboard tool, generally available on paid plans; Claude Meetings (beta) can join Google Meet calls.",
+      "url": "https://claude.com/resources/articles/sheets-whiteboards-data",
+      "source": "Anthropic"
+    },
+    {
+      "lane": "ai",
+      "text": "Gemini 4 Carbon is out in GitHub Copilot and Vercel's AI Gateway at $2 in and $10 out per million tokens until November 30, then $4 and $20.",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available",
+      "source": "Google"
+    },
+    {
+      "lane": "ai",
+      "text": "A JetBrains and CMU study of 404 engineers found doubling a week's agent tokens went with only about 10% more commits; token spend tracks agent use, not output.",
+      "url": "https://arxiv.org/abs/2611.13396",
+      "source": "arXiv"
+    },
+    {
+      "lane": "ai",
+      "text": "A study of 4,123 checkable rules in agent context files found coding agents followed about 60% on average; 37% of rules were never followed.",
+      "url": "https://arxiv.org/abs/2611.13709",
+      "source": "arXiv"
+    },
+    {
+      "lane": "both",
+      "text": "From December 8, GitHub pauses Dependabot alerts on most repositories with no push in a year; any push turns them back on.",
+      "url": "https://github.blog/changelog/2026-11-10-dependabot-alerts-will-pause-on-inactive-repositories",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "both",
+      "text": "GitHub's C++ language server plugin for Copilot CLI now builds the compile database for MSBuild projects by itself; CMake still uses a skill.",
+      "url": "https://github.blog/changelog/2026-11-10-c-language-server-now-auto-configures-msbuild-builds",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "gamedev",
+      "text": "A leaked EU Digital Fairness Act draft would ban paid loot boxes for minors, require odds and real-money prices for virtual currency, and allow fines up to 6% of turnover.",
+      "url": "https://www.pocketgamer.biz/leaked-eu-proposal-targets-loot-boxes-and-addictive-game-design/",
+      "source": "PocketGamer.biz"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Cosmo Tree Gen, a free MIT-licensed Godot 4.6 add-on, generates low-poly trees in the editor and exports glTF with LODs and collision meshes.",
+      "url": "https://github.com/FrogCosmonaut/cosmo_tree_gen",
+      "source": "GitHub"
+    },
+    {
+      "lane": "ai",
+      "text": "Effect 4.0 rewrites the TypeScript library's runtime with no dependencies; the team reports a minimal bundle down from 35.6 kB to 7.1 kB.",
+      "url": "https://www.infoq.com/news/2026/11/effect-4-0-release",
+      "source": "InfoQ"
+    },
+    {
+      "lane": "ai",
+      "text": "Google Cloud spend caps are generally available for the Gemini API and Cloud Run: new requests stop when estimated spend hits the cap.",
+      "url": "https://www.infoq.com/news/2026/11/google-cloud-spend-caps",
+      "source": "InfoQ"
+    },
+    {
+      "lane": "ai",
+      "text": "Cloudflare is building a public certificate authority on Merkle Tree Certificates to keep post-quantum TLS small; a Chrome Beta test saw a 9% median speedup.",
+      "url": "https://blog.cloudflare.com/pq-ca-with-mtcs/",
+      "source": "Cloudflare"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "tiny-valencia",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "Tiny València: a whole city repainted as SimCity pixel art",
+      "where": "Hacker News",
+      "signal": "218 points on Show HN on November 10, per Hacker News",
+      "hook": "Every building in about 112 square km of València, painted tile by tile in one pixel-art style by an image model, each tile continuing its neighbours. Search a place, jump somewhere random, or share the view by URL.",
+      "borrow": "Render real 3D map data from one camera, then restyle it tile by tile with the neighbours as context, for consistent tiled art. It follows isometric.nyc from January, so it is a spreading recipe, not a first; commenters spotted invented details.",
+      "forYou": "The render-then-restyle loop could turn a three.js level's blockout into a consistent painted map for a browser game.",
+      "url": "https://tinyvalencia.com/",
+      "image": {
+        "src": "img/2026-11-11/tiny-valencia.webp",
+        "alt": "An isometric pixel-art view of central València with orange tiled roofs, a bullring, tree-lined streets and church domes.",
+        "credit": "Tiny València",
+        "creditUrl": "https://tinyvalencia.com/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "ghana-street-games",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Ghana Street Games: 35 childhood street games in the browser",
+      "where": "Hacker News",
+      "signal": "107 points on Show HN on November 8, per Hacker News",
+      "hook": "Real street games from Ghana rebuilt as 3D browser scenes: street football with pole goals, Ampe, Oware, Four Corners and more, playable alone or in private rooms with friends.",
+      "borrow": "Rooms joined by a short share code and a nickname with a recovery key, instead of an account, keep multiplayer one tap away; specific local rules are content nobody else has.",
+      "forYou": "The no-signup room code plus recovery key is a clean model for a casual multiplayer web prototype.",
+      "url": "https://www.ghanastreetgames.com/",
+      "image": {
+        "src": "img/2026-11-11/ghana-street-games.webp",
+        "alt": "A menu of game cards with 3D scenes of players on dusty courts and pitches: street football, Ab3d3mu, Four Corners, Penalties, One Pole, Laski, Tyre Rubber Band and Ampe.",
+        "credit": "Ghana Street Games",
+        "creditUrl": "https://www.ghanastreetgames.com/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "recalc",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "recalc: a spreadsheet whose cells are coding agents",
+      "where": "GitHub",
+      "signal": "61 stars on GitHub for a macOS beta, per the repo",
+      "hook": "A cell starting with `@claude(...)` runs an agent, `$` runs a shell command and `=` is a formula; `{A2}` pulls in another cell, so agents chain like formulas and rerun when their inputs change.",
+      "borrow": "Laying out multi-agent work as a dependency grid makes it visible and rerunnable; boards are plain folders of files, and an MCP server lets agents edit the board themselves.",
+      "forYou": "A grid of agent cells is a neat way to run the same check across many plugin modules and see the results side by side.",
+      "url": "https://github.com/sshah03/recalc",
+      "image": {
+        "src": "img/2026-11-11/recalc.webp",
+        "alt": "A spreadsheet of contract files with columns filled by agent cells, a source panel on the right and an agent log at the bottom showing tokens and cost.",
+        "credit": "recalc",
+        "creditUrl": "https://github.com/sshah03/recalc",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "alphaproof-code",
+      "lane": "ai",
+      "kind": "report",
+      "title": "Introducing AlphaProof Code: a breakthrough in verifying complex software at depth",
+      "headline": "Agents proved the compiled code behind Signal's encryption correct in four weeks",
+      "authors": "P. Kohli, S. Chaudhuri, et al. (Google DeepMind)",
+      "where": "Google DeepMind",
+      "date": "2026-11-10",
+      "problem": "Mathematically proving that real compiled software does what its security goals say has needed expert teams working for years, so it is rarely done.",
+      "idea": "Split the work by trust. Human experts write and review the specification; agents running on Gemini Carbon write the proofs in the Lean proof language; Lean checks every proof, and a trusted gatekeeper accepts only what passes.",
+      "result": "Over six million lines of Lean in four weeks, with about 1% of the code flagged for a human look. When two old, fixed bugs were put back into a copy, the system produced machine-checked proofs that the buggy versions were insecure (DeepMind's figures).",
+      "useIt": "Borrow the shape for critical code: you write the spec (tests, invariants), the agent does the work, and an independent checker you trust decides. The verification artifacts are public; the framework itself is not stated to be released.",
+      "maturity": "prototype",
+      "forYou": "Save-game and economy logic are where a spec-plus-checker loop pays off; property tests are the light version.",
+      "links": [
+        {
+          "label": "DeepMind blog",
+          "url": "https://deepmind.google/blog/introducing-alphaproof-code"
+        },
+        {
+          "label": "Verification artifacts",
+          "url": "https://google-deepmind.github.io/code-verification"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-11/lab-alphaproof.webp",
+        "alt": "Workflow diagram: people review a spec-writer agent that turns papers into a Lean spec; Signal code compiled to machine code runs on a Lean processor model; prover agents send proofs to a trusted gatekeeper.",
+        "credit": "Google DeepMind",
+        "creditUrl": "https://deepmind.google/blog/introducing-alphaproof-code",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "flowplan",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "FlowPlan: Reducing the Token Cost of Coding Agents with Abstraction-Guided Planning and Verification",
+      "headline": "Declare the change first, then check it: same fix rate for a fraction of the tokens",
+      "authors": "M. Sepidband, J. Shin, S. Wang, et al. (York University)",
+      "where": "arXiv preprint",
+      "date": "2026-11-09",
+      "problem": "Coding agents spend most of their tokens rereading files and rerunning tests after each edit to convince themselves the fix is right.",
+      "idea": "Give Claude Code five MCP tools that show a function's control-flow graph. The agent states its fix as a change to that graph, edits, then checks the rebuilt graph matches the plan, instead of re-testing over and over.",
+      "result": "With Haiku 4.5 the agent used 0.32 to 0.47 times the tokens of plain Claude Code on SWE-bench Verified and Pro; with Sonnet 5, 0.72 to 0.76 times. Fix rates were not significantly different. One example went from 50 calls and 2.7M tokens to 17 calls and 0.53M.",
+      "useIt": "Ask your agent to write the intended change before editing, then compare the diff to it. The repo ships the MCP server and a /flowfix skill to read; savings are smaller on stronger models and the tests are on Python code.",
+      "maturity": "code",
+      "forYou": "A plan-then-diff check is cheap to add to a routine's instructions without adopting the tools.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.13241"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/MelikaSepidband/FlowPlan"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-11/lab-flowplan.webp",
+        "alt": "Comparison of two runs on one bug: plain Claude Code takes 50 calls and 2.70M tokens; FlowPlan locates the fault in a control-flow graph, plans, edits, checks and stops after 17 calls and 0.53M tokens.",
+        "credit": "Sepidband et al., arXiv",
+        "creditUrl": "https://arxiv.org/html/2611.13241",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "ntc-aniso",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "Explicit LOD-Conditioned Anisotropic Filtering for Neural Texture Compression",
+      "headline": "Neural texture compression learns to stay sharp on surfaces seen at a slant",
+      "authors": "S. Fujieda, T. Harada (AMD)",
+      "where": "arXiv preprint",
+      "date": "2026-11-09",
+      "problem": "Neural texture compression stores materials in a fraction of the memory, but has lacked anisotropic filtering, so floors and walls seen at a steep angle blur or shimmer.",
+      "idea": "Feed the small decoder network the same three values a GPU's texture sampler computes (detail level, stretch and angle of the footprint), sample along the stretched axis across four levels, and train against simulated hardware filtering.",
+      "result": "A 16.75 MB model replaces 67 MB of BC7 mip chains for three 4K maps. It beats trilinear BC7 by 1.31 to 7.63 dB on all ten test pairs and lands 0.03 to 3.37 dB below anisotropic BC7, a fair price for a quarter of the memory.",
+      "useIt": "Nothing to ship yet: it runs as a PyTorch emulation with no runtime timings or code. Watch it as a sign neural textures are closing their last quality gap with block compression.",
+      "maturity": "idea",
+      "forYou": "Relevant if texture memory becomes the limit for web or mobile builds; no action now.",
+      "links": [
+        {
+          "label": "Paper (arXiv)",
+          "url": "https://arxiv.org/abs/2611.12650"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-11/lab-ntc-method.webp",
+        "alt": "Method figure: a four-level feature grid sampled along an elliptical footprint, Gaussian-weighted by detail level, combined with rotation, stretch and level values and decoded by a small network into texture maps.",
+        "credit": "Fujieda and Harada, arXiv",
+        "creditUrl": "https://arxiv.org/html/2611.12650",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "Reddit, GamesIndustry.biz, Ars Technica and The Verge refused the sweep, and X and TikTok could not be searched with counts, so the sparks lean on Hacker News and project pages. The hero rests on Epic's own preview post; the full 5.9 release may differ."
+}
