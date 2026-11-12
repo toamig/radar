@@ -1,0 +1,791 @@
+{
+  "date": "2026-11-12",
+  "number": 30,
+  "title": "Tests the agent cannot rewrite",
+  "dek": "When an agent writes the code, keep the checks somewhere it cannot quietly edit: a table of cases, or tests proven against the real service. Plus a flood of AI-found bugs, what reliability layers really buy, and a shooter recompiled for Apple silicon.",
+  "theme": {
+    "paper": "fog",
+    "text": "federal-blue",
+    "inks": ["green", "coral"],
+    "type": "condensed",
+    "mood": "a Thursday about keeping the checks out of the agent's reach"
+  },
+  "tldr": [
+    {
+      "lane": "ai",
+      "text": "A Thoughtworks engineer argues that when AI writes the code, the tests are your contract with it, so keep them as **data in tables** the agent cannot quietly change."
+    },
+    {
+      "lane": "ai",
+      "text": "AWS built a free local AWS emulator with agents, first proving each test against **real AWS** and then letting agents code until the same tests passed."
+    },
+    {
+      "lane": "ai",
+      "text": "VulnCheck counts **442 CVEs** credited to Anthropic in seven months. Only 217 of nearly 38,000 findings are marked fixed, so expect a long tail of patches."
+    },
+    {
+      "lane": "ai",
+      "text": "Two field tests of agent add-ons: on a coding task, cheap checks beat voting; on code search, plain file tools held up against most indexes."
+    },
+    {
+      "lane": "gamedev",
+      "text": "A fan project recompiles Black Ops II into native Apple silicon code ahead of time, with agents doing the grind; it runs at **51 to 60 fps on an M1**."
+    }
+  ],
+  "blocks": [
+    {
+      "id": "tests-as-data",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Keep the contract in a table",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "If a coding agent can edit both the code and its tests, a passing test proves little. One engineer's fix: write the expected behaviour as plain tables of cases, and let the agent write only the code that reads them.",
+      "background": "Martin Fowler's site publishes long-form articles by Thoughtworks engineers; this one is by Matteo Vaccari.",
+      "takeaway": "Write what the software must do as rows of examples you own, and let the agent write the code that runs them. If the rows change during a refactor, something is wrong.",
+      "body": [
+        "Vaccari interviewed 26 developers at a company that leans heavily on coding agents. Many had stopped trusting their tests, because the agent rewrote the tests along with the code whenever it changed something. His answer: when AI writes most of the code, you are its customer, and customer tests, not developer tests, become the contract between you.",
+        "So move that contract out of test code and into test data: a table with one row per case (input, expected output, expected error), plus a small runner that reads the table and calls the real system. You draft a sample of the format, the agent writes the runner, you check the runner against production code, and both of you add rows. Tables are quick to read, which makes reviewing them realistic.",
+        "The payoff is a simple rule about what may change. Refactoring touches only production code; adding a feature touches code and data; improving coverage touches only data. A diff that breaks the rule is a signal to stop and look."
+      ],
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          { "label": "You", "note": "Draft the table format" },
+          { "label": "Agent", "note": "Writes the runner" },
+          { "label": "Check", "note": "Runner against real code" },
+          { "label": "Cases", "note": "Rows both of you add", "key": true },
+          { "label": "Code", "note": "Agent changes only this" }
+        ],
+        "links": ["asks", "you verify", "then", "decide if"],
+        "caption": "The tests-as-data loop as the article describes it: you own the cases, the agent owns the code."
+      },
+      "terms": [
+        { "term": "customer tests", "def": "Tests written from the user's point of view: given this input, the system must answer this, regardless of how the code inside is arranged." },
+        { "term": "runner", "def": "A small program that reads each row of the table, feeds it to the software, and compares the answer with the expected one." },
+        { "term": "refactor", "def": "Changing how code is organised without changing what it does." }
+      ],
+      "deep": [
+        "The article shows a CSV greeting table (columns test_name, resource, name, greeting, error) and an access-control table for an admin dashboard (role, session state, resource, expected result, logged). It ties the idea to older practice: XP acceptance tests, Fit, Go's table-driven tests and approval testing, which AI now makes cheap to set up because the custom runner costs minutes.",
+        "The author cites outside reports that agent-written code has raised defects (Faros AI, DX, a CloudBees survey of 213 tech leaders); those figures are cited, not measured by him. He lists limits: it suits production systems rather than prototypes, an external format only pays if people review the tables, and it does not replace exploratory testing."
+      ],
+      "why": "An agent that can rewrite its own tests can make any change look green. Separating the expected behaviour from the code that checks it gives you something stable to review.",
+      "forYou": "Plugin damage, inventory stacking and interaction rules are natural tables; keep them in a data folder the agent may read but not edit, and review only the rows.",
+      "sources": [
+        { "label": "martinfowler.com: Tests as data", "url": "https://martinfowler.com/articles/tests-as-data.html" }
+      ]
+    },
+    {
+      "id": "what-may-change",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Which files an agent should touch, by task",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "With tests kept as data, every kind of task has an expected footprint. Check a diff against this table before you read the code.",
+      "intro": "From Vaccari's article: what should change for each kind of work.",
+      "left": "Should change",
+      "right": "Should stay put",
+      "rows": [
+        { "aspect": "New feature", "left": "Production code and test data", "right": "The test runner" },
+        { "aspect": "Refactor", "left": "Production code only", "right": "Test data and the runner" },
+        { "aspect": "More coverage", "left": "Test data only", "right": "Production code and the runner" },
+        { "aspect": "Better test format", "left": "Test data and the runner", "right": "Production code" }
+      ],
+      "verdict": "If an agent's refactor edits the table of cases, treat it as a bug, not a cleanup.",
+      "why": "A one-line rule per task turns review from reading every change into checking that the right folders moved.",
+      "forYou": "Add this as a short section in each plugin repo's agent instructions so the agent states the task type before it starts.",
+      "sources": [
+        { "label": "martinfowler.com: Tests as data", "url": "https://martinfowler.com/articles/tests-as-data.html" }
+      ]
+    },
+    {
+      "id": "aws-emulator",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "AWS let agents build its emulator, but only against tests proven on real AWS",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Amazon released a free tool that imitates its cloud on your own machine, so code can be tested without an account or a bill. Agents wrote all of it, held to tests that were first checked against the real service.",
+      "layout": "flow",
+      "intro": "How the emulator was built, per Swami Sivasubramanian's post on November 11:",
+      "nodes": [
+        { "label": "API models", "note": "400+ public specs, 200+ services" },
+        { "label": "Fidelity tests", "note": "Corrected until real AWS passes", "key": true },
+        { "label": "Agents build", "note": "Until the same tests pass" },
+        { "label": "Merge gate", "note": "Checks and review agents" },
+        { "label": "Emulator", "note": "Free, offline, public domain" }
+      ],
+      "links": ["generate", "set the bar", "must pass", "ships"],
+      "caption": "The key step is the second one: a test only counts after it passes against the real service, so the agents chase recorded behaviour, not their own guesses.",
+      "terms": [
+        { "term": "emulator", "def": "A program that imitates another system closely enough that software can run against it as if it were the real thing." },
+        { "term": "fidelity tests", "def": "Tests that check the copy behaves exactly like the original, using scenarios a real customer would run." },
+        { "term": "merge gate", "def": "Automatic checks every change must pass before it is allowed into the main code." }
+      ],
+      "deep": [
+        "The tests come from AWS's public API models, written in its Smithy format. Agents adjust each scenario until it passes against real AWS, which records actual behaviour; then agents build the emulator until it passes too. A failing test marks a gap. Several adversarial security-review agents and a general reviewer sit behind the merge gate, and deterministic checks stop agents from touching code they should not.",
+        "Sivasubramanian says an internal version came together over a weekend. In his own anecdote, rebuilding a replication engine that once took about four months stalled for four nights until the agent had a spec and a test environment, then took about two hours. Simon Willison notes it is written in Rust, counts 29,684 commits in its first three weeks, and needs Docker on macOS and Windows."
+      ],
+      "why": "It is the tests-as-contract idea at scale: agents can write a whole service when the bar they must clear was set by reality, not by them.",
+      "forYou": "For the SaaS backends, the same trick works small: record a few real Supabase responses once, freeze them as fixtures, and let the agent build against those.",
+      "sources": [
+        { "label": "All Things Distributed: AWS Emulator and the engineer's job", "url": "https://www.allthingsdistributed.com/2026/11/aws-emulator-and-the-engineers-job-when-agents-write-the-code.html" },
+        { "label": "aws/aws-emulator on GitHub", "url": "https://github.com/aws/aws-emulator" },
+        { "label": "Simon Willison: aws-emulator", "url": "https://simonwillison.net/2026/Nov/11/aws-emulator" }
+      ]
+    },
+    {
+      "id": "cve-flood",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "AI bug hunting is finding far more than anyone fixes",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "A security firm counted the public vulnerabilities credited to Anthropic's bug-hunting program: hundreds in seven months, but a tiny share of its findings are fixed so far, and maintainers rate most as less severe.",
+      "stats": [
+        { "value": "442", "label": "CVEs credited to Anthropic in seven months" },
+        { "value": "217", "label": "of 37,966 findings marked fixed" },
+        { "value": "2", "label": "known to be exploited" }
+      ],
+      "body": [
+        "VulnCheck's November update says Anthropic's model rated 91.5% of its September findings critical or high, against 51.3% by the maintainers. Between September 8 and November 2 the ledger gained 11,813 findings and 15 fixes."
+      ],
+      "image": {
+        "src": "img/2026-11-12/vulncheck-ledger.webp",
+        "alt": "Flow chart: 37,966 findings split into 30,617 not in the ledger and 7,349 in it; of those, 217 fixed, 419 withdrawn, 1,654 duplicates, 4,866 disclosed and 193 not yet disclosed.",
+        "credit": "VulnCheck",
+        "creditUrl": "https://www.vulncheck.com/blog/anthropic-glasswing-november-update",
+        "fit": "contain"
+      },
+      "terms": [
+        { "term": "CVEs", "def": "Common Vulnerabilities and Exposures: public ID numbers given to known security bugs so everyone refers to the same one." },
+        { "term": "ledger", "def": "Anthropic's public list of what its bug-hunting program found and what happened to each finding." }
+      ],
+      "deep": [
+        "In curl, 45 reports led to 34 published so far: 19 judged not vulnerabilities, 6 confirmed low severity and 9 pending. VulnCheck's author suspects a ledger bug inflates the disclosed count, and the chart strikes through an earlier figure. Anthropic claims a 94.2% true-positive rate; that is its own number."
+      ],
+      "why": "Dependency updates will keep coming in larger batches, and many will be labelled more urgent than they are. Triage by exposure, not by the label.",
+      "forYou": "Pin and batch dependency updates on the Node services, and read the maintainer's severity, not the reporter's.",
+      "sources": [
+        { "label": "VulnCheck: Anthropic Glasswing November update", "url": "https://www.vulncheck.com/blog/anthropic-glasswing-november-update" }
+      ]
+    },
+    {
+      "id": "patch-overlay",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "Patch every copy of a library at once",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Geoffrey Huntley argues that if bugs now arrive faster than upstream fixes, teams should keep their own patches and apply them everywhere from one definition: laptops, CI, agent sandboxes and servers.",
+      "plain": "Describe all your software once, keep fixes as patch files, and rebuild every machine from that description so one fix reaches all of them.",
+      "body": [
+        "In a write-up of his talk, Huntley uses Nix: a patch file sits next to the package definition, an overlay routes every consumer to the patched build, and patching a core library rebuilds whatever depends on it. A note in the agent instructions tells the next agent to remove temporary patches after seven days."
+      ],
+      "points": [
+        "Back pressure: hooks that refuse commits that do not build.",
+        "Static checks that enforce module boundaries.",
+        "Property-based tests for behaviour.",
+        "Agents run loose only on throwaway machines, never near production."
+      ],
+      "terms": [
+        { "term": "Nix", "def": "A package manager that builds software from exact written recipes, so the same recipe gives the same result on every machine." },
+        { "term": "overlay", "def": "In Nix, a layer that swaps in your version of a package for everything that uses it." },
+        { "term": "property-based tests", "def": "Tests that check a rule holds for many generated inputs, instead of a few hand-picked examples." }
+      ],
+      "deep": [
+        "Huntley's example patches git to disable force-push and shows that an OpenSSL patch recompiles dependents such as Nginx and Postgres; CI builds once and publishes to a cache. He names Bombadil and Hegel for property testing; both come from Antithesis, a company he is affiliated with. The post has no code; his demo repo is ghuntley/nix-demo."
+      ],
+      "why": "When fixes lag reports, waiting for upstream leaves every machine exposed; a single patched definition closes the gap everywhere at once.",
+      "sources": [
+        { "label": "Geoffrey Huntley: the answer to AI is engineering", "url": "https://ghuntley.com/answer" }
+      ]
+    },
+    {
+      "id": "reliability-layers",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Reliability layers mostly sort answers, they rarely fix them",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Two engineers tested common add-ons that are meant to make an AI pipeline more accurate. The free check was the most useful; the expensive ones changed little or broke right answers.",
+      "intro": "Tokens spent per run on a medical-code extraction task, lower end of each reported range:",
+      "unit": "tokens",
+      "series": [
+        { "label": "Vocabulary check", "value": 0, "highlight": true },
+        { "label": "Self-correction", "value": 1500 },
+        { "label": "Second-model judge", "value": 84000 },
+        { "label": "Three-way voting", "value": 411000 }
+      ],
+      "note": "The check fixed nothing but split answers well (about 5 in 6 right among those it accepted). Self-correction fixed nothing; voting netted minus one to plus one codes and destroyed 2 to 5 right ones; the judge lifted F1 from 0.397 to 0.420. The baseline was right about 1 time in 3.",
+      "terms": [
+        { "term": "F1", "def": "A single score that balances how many answers were right against how many right answers were missed." },
+        { "term": "self-correction", "def": "Asking the model to review and fix its own answer." }
+      ],
+      "deep": [
+        "Recalling codes from memory invented codes 13 to 18% of the time; picking from a menu of valid codes was about ten times better. A refusal rule passed 21 to 23% of records at 0.74 to 0.82 accuracy. The authors' advice: report yield (how many records you keep) next to accuracy."
+      ],
+      "why": "Before paying for voting or a judge model, turn free-text answers into choices from a list and add deterministic checks; that is where the gains were.",
+      "forYou": "For any classifier step in the SaaS products, make the model pick from an enum and validate it in code before adding a second model.",
+      "sources": [
+        { "label": "InfoQ: LLM reliability layers under test", "url": "https://www.infoq.com/articles/llm-reliability-layers-limits-accuracy" }
+      ]
+    },
+    {
+      "id": "code-retrieval",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Plain file tools held their own against code indexes",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A streaming company tested six ways for a coding agent to find code, from plain file search to search indexes. Plain tools were competitive on concrete tasks; indexes helped mainly when the task was vaguely described.",
+      "plain": "Before adding a search index for your agent, measure whether it beats grep and file reads on your own tasks.",
+      "body": [
+        "JioHotstar ran Claude Sonnet as the agent on SWE-bench subsets, CodeScaleBench and an internal question set, comparing a file-tools baseline with Sourcebot, Graphify, CocoIndex Code, Repowise and an in-house RAG index. Sourcebot beat the baseline on harder tasks and cost less; on easier ones, retrieval added overhead and did not reliably cut tokens."
+      ],
+      "image": {
+        "src": "img/2026-11-12/retrieval-calls.webp",
+        "alt": "Stacked bar charts of tool calls per task for five setups, split into knowledge base, search, read, edit, shell and other; the file-system baseline uses mostly search and read calls.",
+        "credit": "JioHotstar via InfoQ",
+        "creditUrl": "https://www.infoq.com/news/2026/11/jiohotstar-codingagent-retrieval",
+        "fit": "contain"
+      },
+      "terms": [
+        { "term": "RAG", "def": "Retrieval-augmented generation: fetching relevant documents and adding them to the model's prompt." },
+        { "term": "SWE-bench", "def": "A benchmark of real GitHub issues that a coding agent must fix in the actual repository." }
+      ],
+      "why": "Agents already reach for text search and file reads. An index is worth its upkeep only if your traces show it helps on your own work.",
+      "forYou": "Keep the Unreal plugin repos on plain tools; if search gets slow in the engine source, try a structural search before any embedding index.",
+      "sources": [
+        { "label": "InfoQ: JioHotstar benchmarks retrieval for coding agents", "url": "https://www.infoq.com/news/2026/11/jiohotstar-codingagent-retrieval" }
+      ]
+    },
+    {
+      "id": "bo2-native",
+      "format": "steps",
+      "lane": "both",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Black Ops II, translated to native Apple silicon code",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A fan project converts your own Steam copy of a 2012 Windows shooter into a native Mac program before it runs, with no emulator, and reports 51 to 60 frames per second on a base M1.",
+      "background": "Radar covered a similar recompile of a racing game to the browser on November 8; this one targets native Mac code through LLVM and leans on agents.",
+      "intro": "What the converter does on your Mac, in about 1 hour 45 minutes on an M1:",
+      "image": {
+        "src": "img/2026-11-12/bo2-mac.webp",
+        "alt": "A first-person view of the Zombies mode running on a Mac, a burning zombie in a dark street, with a frame counter reading 55.",
+        "credit": "bo2-mac",
+        "creditUrl": "https://github.com/adrbn/bo2-mac",
+        "fit": "cover"
+      },
+      "steps": [
+        { "title": "Check", "text": "Accepts only the exact Steam build, matched by checksum." },
+        { "title": "Lift and fold", "text": "Ghidra lists the functions, Remill turns each into LLVM's portable code, and clang compiles it for ARM64." },
+        { "title": "Run", "text": "A hand-written Windows layer sends Direct3D 11 to Metal and audio to CoreAudio." }
+      ],
+      "terms": [
+        { "term": "LLVM", "def": "A widely used compiler toolkit with a portable in-between code that can be compiled for many processors." },
+        { "term": "ARM64", "def": "The processor family in Apple silicon Macs and most phones." },
+        { "term": "Metal", "def": "Apple's graphics programming interface." }
+      ],
+      "deep": [
+        "The README says AI agents supply the throughput (writing shims, bisecting millions of calls, reading code) while the human sets goals and corrects from what is on screen; the Show HN post names the model. Measured only on one M1 (16 GB): campaign 51 to 60 fps, multiplayer against bots 53 to 60. Known issues: no online play, a fixed 1280 by 720 window, and very high temperatures in long sessions. Code is GPL-3.0; users must decrypt their own executables with a separate tool."
+      ],
+      "why": "Agents make the slow, mechanical parts of a port affordable for one person, while a human still judges the result. That shifts what legacy code is worth rescuing.",
+      "forYou": "The lift, fold and runtime split is a template for moving old C++ tools between platforms with agents doing the shims.",
+      "sources": [
+        { "label": "adrbn/bo2-mac on GitHub", "url": "https://github.com/adrbn/bo2-mac" }
+      ]
+    },
+    {
+      "id": "motion-paths",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Edit an animation's path like a curve in Blender",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A free Blender add-on draws the path a bone or object travels as a curve you can grab and reshape in the viewport, and the animation updates as you do.",
+      "name": "Editable Motion Paths",
+      "what": "Keyframes become points and their easing becomes handles on a 3D curve.",
+      "body": [
+        "Mesh-editing moves such as snapping, extrude, knife and bevel work on the path and rewrite the animation curves live, so cleanup happens where you see the motion instead of in the Graph Editor. It works on existing rigs with no setup or baking, and adds ghost frames, easing presets and breakdown tools. Its author says the add-on was built heavily with AI help."
+      ],
+      "facts": [
+        { "k": "Price", "v": "Free" },
+        { "k": "Needs", "v": "Blender 4.4 or newer" },
+        { "k": "Setup", "v": "None, works on existing rigs" }
+      ],
+      "image": {
+        "src": "img/2026-11-12/motion-paths.webp",
+        "alt": "Two Blender viewports: a hand's swing drawn as a coloured oval path with a selected point and handle, and a character with several coloured motion arcs around the arm.",
+        "credit": "Editable Motion Paths, Blender Extensions",
+        "creditUrl": "https://extensions.blender.org/add-ons/editable-motion-paths/",
+        "fit": "cover"
+      },
+      "terms": [
+        { "term": "keyframes", "def": "Poses saved at specific moments; the software fills in the motion between them." },
+        { "term": "Graph Editor", "def": "Blender's panel of value-over-time curves, where animators normally fine-tune motion." }
+      ],
+      "why": "Adjusting an arc where you can see it is faster than nudging abstract curves, especially for combat swings and jumps.",
+      "forYou": "Try it on one attack animation for the action RPG before FBX export and compare cleanup time with the Graph Editor.",
+      "sources": [
+        { "label": "Blender Extensions: Editable Motion Paths", "url": "https://extensions.blender.org/add-ons/editable-motion-paths/" },
+        { "label": "80 Level: edit animations like a mesh", "url": "https://80.lv/articles/edit-your-blender-animations-just-like-editing-mesh-with-this-free-tool" }
+      ]
+    },
+    {
+      "id": "unity-google-signin",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Google ships an open-source Sign in with Google plugin for Unity",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Google released a free plugin that adds Google sign-in to Unity games on Android and iOS, configured in the editor instead of by hand-editing platform files.",
+      "name": "Sign in with Google for Unity",
+      "what": "Returns a signed Google ID token to C# that your backend can verify.",
+      "body": [
+        "On Android it uses Credential Manager and on iOS Google's sign-in library; you paste a web client ID and an iOS client ID into the editor. The token works with Firebase Auth, Supabase, Auth0 or your own server. It replaces an older plugin that broke with current Android tooling, and it only signs players in: account management is up to you."
+      ],
+      "facts": [
+        { "k": "Platforms", "v": "Android and iOS" },
+        { "k": "Needs", "v": "Unity 6.5" },
+        { "k": "Output", "v": "Google ID token" },
+        { "k": "Source", "v": "Open, on GitHub" }
+      ],
+      "terms": [
+        { "term": "ID token", "def": "A signed piece of data that proves who the user is, which a server can check without asking Google again." },
+        { "term": "Credential Manager", "def": "Android's built-in system for passwords, passkeys and sign-in providers." }
+      ],
+      "why": "Mobile sign-in has been one of the fiddliest parts of a Unity build; an official, maintained plugin removes a common source of store-review failures.",
+      "forYou": "Supabase accepts a Google ID token directly, so a Unity mobile prototype could share accounts with the SaaS backends.",
+      "sources": [
+        { "label": "googlesamples/siwg-mobile-unity-plugin", "url": "https://github.com/googlesamples/siwg-mobile-unity-plugin" },
+        { "label": "PocketGamer.biz: Google releases the plugin", "url": "https://www.pocketgamer.biz/google-releases-open-source-sign-in-with-google-plugin-for-unity" }
+      ]
+    },
+    {
+      "id": "fortis-closes",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 4,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Fortis Games shuts down",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "A mobile studio that grew through acquisitions closed after its only backer stopped funding it, before any of its games fully launched.",
+      "stats": [
+        { "value": "440", "label": "jobs at risk" },
+        { "value": "0", "label": "games fully launched" }
+      ],
+      "body": [
+        "Las Vegas Sands, its sole financier, ended funding. Twilight Towers, in soft launch since September 2025 with weak retention, closes on November 16."
+      ],
+      "terms": [
+        { "term": "soft launch", "def": "Releasing a game in a few countries first to test retention and revenue before a worldwide launch." }
+      ],
+      "why": "Scaling a team before one game proves it keeps players leaves a studio exposed to a single funding decision.",
+      "sources": [
+        { "label": "PocketGamer.biz: Fortis Games shuts down", "url": "https://www.pocketgamer.biz/fortis-games-shuts-down-as-up-to-440-jobs-are-put-at-risk" }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Checks the agent cannot bend",
+      "note": "Tables you own, and tests proven on the real thing.",
+      "ids": ["what-may-change", "aws-emulator"]
+    },
+    {
+      "title": "Bugs arrive faster than fixes",
+      "note": "What AI bug hunting is producing, and one way to keep up.",
+      "ids": ["cve-flood", "patch-overlay"]
+    },
+    {
+      "title": "Measure before you add a layer",
+      "note": "Two field tests of add-ons people bolt onto agents.",
+      "ids": ["reliability-layers", "code-retrieval"]
+    },
+    {
+      "title": "Game dev: ports, tools, a closure",
+      "note": "A native Mac port, two free tools, and a warning.",
+      "ids": ["bo2-native", "motion-paths", "unity-google-signin", "fortis-closes"]
+    }
+  ],
+  "learn": {
+    "question": "What is a test oracle?",
+    "answer": "A test oracle is whatever tells you the right answer for a test: a table of expected results, a trusted older system, or the real service. A test is only as good as its oracle.",
+    "analogy": "It is the answer key for an exam. If the student can edit the answer key, every exam gets full marks.",
+    "body": [
+      "Running a test is easy; knowing what the result should be is the hard part. That knowledge can come from a person writing expected values, from a specification, from a second implementation, or from recording what the real system does.",
+      "Coding agents make the question urgent. If the same agent writes the code and the expected values, the oracle is no longer independent, and passing proves little. Today's stories show two ways to keep it independent: tables of cases a person owns, and tests that must first pass against real AWS before agents build against them."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        { "label": "Input", "note": "A case to try" },
+        { "label": "Software", "note": "Gives an answer" },
+        { "label": "Oracle", "note": "Knows the right answer", "key": true },
+        { "label": "Verdict", "note": "Pass or fail" }
+      ],
+      "links": ["feeds", "compared with", "decides"],
+      "caption": "A test compares what the software says with what the oracle says. Keep the oracle out of the agent's reach."
+    },
+    "terms": [
+      { "term": "specification", "def": "A written description of what software must do, independent of how it does it." }
+    ],
+    "seenIn": ["tests-as-data", "what-may-change", "aws-emulator"],
+    "sources": [
+      { "label": "Wikipedia: Test oracle", "url": "https://en.wikipedia.org/wiki/Test_oracle" },
+      { "label": "martinfowler.com: Tests as data", "url": "https://martinfowler.com/articles/tests-as-data.html" }
+    ]
+  },
+  "tryThis": {
+    "lane": "both",
+    "title": "Move one module's tests into a table the agent cannot edit",
+    "gist": "Find out whether your agent can refactor a module while the expected behaviour stays fixed, and catch it when it tries to change the rules.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A small module with clear inputs and outputs (a pricing rule, a damage formula), and Claude Code or another agent with file permission rules.",
+    "steps": [
+      { "title": "Write the table", "text": "Put five to ten cases in a CSV under tests/cases/: one row per case with the input, the expected output and any expected error, like the article's greeting table." },
+      { "title": "Get a runner", "text": "Ask the agent to write a small test runner that reads every row, calls the module and compares results. Check it yourself by breaking one row on purpose: the run must fail." },
+      { "title": "Lock the cases", "text": "Add the deny rule below to .claude/settings.json so the agent's file tools cannot edit the table. Shell commands are not covered, so still check the diff." },
+      { "title": "Refactor", "text": "Ask the agent to refactor the module. Afterwards, run git diff: only production code should have changed." }
+    ],
+    "code": {
+      "lang": "json",
+      "code": "{\n  \"permissions\": {\n    \"deny\": [\"Edit(/tests/cases/**)\"]\n  }\n}"
+    },
+    "check": "The refactor passes against the unchanged table, git diff shows no changes under tests/cases/, and a deliberately broken version of the module fails the run.",
+    "terms": [
+      { "term": "deny rule", "def": "A Claude Code permission setting that blocks a tool from acting on matching files, whatever the agent decides." }
+    ],
+    "from": "tests-as-data",
+    "forYou": "Start with one plugin's damage or stacking rules; the same CSV can later feed a Modular Test Framework test in Unreal.",
+    "sources": [
+      { "label": "martinfowler.com: Tests as data", "url": "https://martinfowler.com/articles/tests-as-data.html" },
+      { "label": "Claude Code docs: permissions", "url": "https://code.claude.com/docs/en/permissions" }
+    ]
+  },
+  "ticker": [
+    {
+      "lane": "ai",
+      "text": "Node.js 26.13.1, 24.22.3 and 22.23.5 are security releases fixing 15 to 16 CVEs each, mostly in HTTP/2 and TLS, including a remotely reachable TLS server crash.",
+      "url": "https://nodejs.org/en/blog/release/v24.22.3",
+      "source": "Node.js"
+    },
+    {
+      "lane": "ai",
+      "text": "GitHub Agentic Workflows are generally available: agents start read-only, writes go through separate jobs, and runs are capped at 1,000 AI credits ($10) by default.",
+      "url": "https://www.infoq.com/news/2026/11/github-agentic-workflows-ga",
+      "source": "InfoQ"
+    },
+    {
+      "lane": "ai",
+      "text": "Claude API: on Fable 5.2, replaying a thinking block after editing the system prompt or tools now returns a 400 error for every account.",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "source": "Anthropic"
+    },
+    {
+      "lane": "ai",
+      "text": "Claude Code 2.1.322 adds fast mode on Vertex in the global, us and eu regions, falling back to standard speed if Vertex refuses it.",
+      "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "source": "Claude Code changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "Codex 0.167.2 sends tool updates incrementally on Vertex AI by default; set incremental_tools_legacy_gcp = false under [features] to opt out.",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.167.2",
+      "source": "Codex releases"
+    },
+    {
+      "lane": "ai",
+      "text": "Gemini Decision 1 answers yes or no and multiple-choice questions with probabilities instead of text, at 10 cents per million input tokens and free output, per Simon Willison.",
+      "url": "https://simonwillison.net/2026/Nov/11/gemini-decisions-api",
+      "source": "Simon Willison"
+    },
+    {
+      "lane": "ai",
+      "text": "llm 0.37.2 fixes two security advisories in how it handles OpenAI-compatible endpoints configured in extra-openai-models.yaml.",
+      "url": "https://simonwillison.net/2026/Nov/11/llm",
+      "source": "Simon Willison"
+    },
+    {
+      "lane": "ai",
+      "text": "Resend says Claude Code picked it first in 64 of 102 email API recommendations, and that cutting data per tool call mattered more than cutting its MCP server's 80-plus tools.",
+      "url": "https://latent.space/p/resend",
+      "source": "Latent Space"
+    },
+    {
+      "lane": "both",
+      "text": "Issue types and custom fields such as Priority and Effort now work in repositories owned by personal GitHub accounts, up to 25 of each.",
+      "url": "https://github.blog/changelog/2026-11-11-issue-types-and-fields-are-available-for-personal-accounts",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "Supabase Correlated Logs link logs by request, trace or user in Studio, and CLI v3 adds a terminal log explorer with filters, JSON export and SQL.",
+      "url": "https://supabase.com/changelog",
+      "source": "Supabase"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Epic's AI MegaJam runs November 12 to 15 in Unreal or UEFN; teams can have up to four people plus any number of AI agents.",
+      "url": "https://forums.unrealengine.com/t/vibe-your-way-to-50k-the-2026-epic-ai-megajam-is-coming/2843983",
+      "source": "Epic forums"
+    },
+    {
+      "lane": "gamedev",
+      "text": "European game industry groups called the leaked EU Digital Fairness Act draft \"game over\" for the sector; the Commission has not published the final proposal.",
+      "url": "https://www.pocketgamer.biz/the-dfa-is-game-over-for-the-european-games-industry",
+      "source": "PocketGamer.biz"
+    },
+    {
+      "lane": "gamedev",
+      "text": "JetBrains renewed its Platinum sponsorship of the Godot Foundation for 2027; Rider covers GDScript, C# and C++ extensions in one IDE.",
+      "url": "https://godotengine.org/article/partners_jetbrains_sponsorship_renewal_2027",
+      "source": "Godot Foundation"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Sensor Tower data: Chinese publishers take 40% of revenue from the top mobile games, US publishers 16.5%.",
+      "url": "https://www.pocketgamer.biz/china-takes-40-of-global-mobile-games-revenue-as-us-share-falls-to-165",
+      "source": "PocketGamer.biz"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "term-sheet-please",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Term Sheet, Please: a border desk game about funding startups",
+      "where": "Hacker News",
+      "signal": "198 points and 79 comments on Show HN on November 11, per Hacker News",
+      "hook": "You play a junior investor after Demo Day: call founders, drag their papers onto the desk, catch the claims that do not match, and decide who gets a check before the clock runs out.",
+      "borrow": "The document-inspection loop works on any job with paperwork and a deadline. Here it doubles as satire, and the whole game runs in a browser tab.",
+      "forYou": "A desk-and-documents loop could teach plugin setup or code review in a short web game.",
+      "url": "https://termsheetplease.com",
+      "image": {
+        "src": "img/2026-11-12/termsheet.webp",
+        "alt": "Pixel-art desk view: a street of office buildings above, an empty desk below, a note saying press NEXT to call the founder, and a clock reading 16:12.",
+        "credit": "Term Sheet, Please by Bo Lau",
+        "creditUrl": "https://termsheetplease.com",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "safe-sand",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Sand that slides, glints and clicks when you tilt your phone",
+      "where": "Hacker News",
+      "signal": "339 points and 66 comments on Hacker News; the repo has 76 stars on GitHub",
+      "hook": "Pour real-scale grains in a phone browser, then tilt to make them slide and shake to scatter them, with sound made from how much sand is moving.",
+      "borrow": "The repo describes a per-frame height map that drives slopes, shadows and occlusion, lighting that follows the device's tilt, and quality that drops pixel ratio and grain count when frames lag, then remembers the setting.",
+      "forYou": "The adaptive-quality step is worth copying in the three.js games: test for a frame cap, then scale down and store the choice.",
+      "url": "https://av.github.io/safe-sand",
+      "image": {
+        "src": "img/2026-11-12/sand.webp",
+        "alt": "A swirl of grey and brown sand grains on an off-white phone screen, scattered at one edge where a finger dragged through it.",
+        "credit": "av/safe-sand",
+        "creditUrl": "https://github.com/av/safe-sand",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "klad",
+      "lane": "both",
+      "kind": "tool",
+      "title": "Klad: a paint app your coding agent draws in with the same brushes",
+      "where": "Hacker News",
+      "signal": "75 points on Show HN on November 11; 133 stars on GitHub",
+      "hook": "No image model: the agent paints by issuing brush strokes from a command line, you edit any stroke, and the agent can draw the in-between frames and export to Godot.",
+      "borrow": "Give an agent a real tool with readable data (strokes as JSON) instead of pixels, and ship the agent's instructions with the tool. A variant of agent-and-canvas ideas, aimed at game art.",
+      "forYou": "The ship-a-skill-with-the-CLI pattern fits the plugins: an agent guide bundled with each one.",
+      "url": "https://github.com/klad-app/klad",
+      "image": {
+        "src": "img/2026-11-12/klad.webp",
+        "alt": "A terminal listing klad stroke commands beside the Klad editor showing a green sprout creature painted from those strokes.",
+        "credit": "Klad",
+        "creditUrl": "https://github.com/klad-app/klad",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "maya-agents",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "48 agents combed lidar scans and found a Maya site, already found",
+      "where": "Hacker News",
+      "signal": "953 points and 350 comments on Hacker News on November 11",
+      "hook": "Public lidar of about 1,200 square km was cut into images; agents checked each against a written guide to Maya structures, searched the literature and flagged an unregistered village. Then the author learned a 2025 study had mapped it.",
+      "borrow": "Many agents each review one tile against a guide, then a verification pass: it works for any big pile of images, from map tiles to level screenshots. So does the lesson: check the literature harder than the agents did.",
+      "url": "https://pietromiotti.com/latest/maya-site",
+      "image": {
+        "src": "img/2026-11-12/maya.webp",
+        "alt": "Side-by-side view: dense green forest canopy in a satellite image on the left, and the same area as bare-ground lidar shaded orange and blue on the right.",
+        "credit": "Pietro Miotti",
+        "creditUrl": "https://pietromiotti.com/latest/maya-site",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "rob-run",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "ROB RUN: cops and robbers in one shared city",
+      "where": "Steam",
+      "signal": "up 169 places to #9 in Steam's most played, peak 274,010 players, per Steam",
+      "hook": "A free-to-play Early Access crime sandbox where thousands of players split into gangs and police in one city, with heists you have to get out of alive.",
+      "borrow": "A familiar open-city shell plus the tension of extraction (you keep the loot only if you escape) is a cheap way to give a sandbox stakes. Reviews are mixed, so the rise is reach, not acclaim.",
+      "url": "https://store.steampowered.com/app/4262460",
+      "image": {
+        "src": "img/2026-11-12/rob-run.webp",
+        "alt": "Masked players in tracksuits rob a jewellery store while a clerk raises his hands, cash stacked on the counter.",
+        "credit": "ROB RUN on Steam",
+        "creditUrl": "https://store.steampowered.com/app/4262460",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "bone-cloth",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Bone Cloth: hair and cloth sway for Godot, ported from KawaiiPhysics",
+      "where": "Bluesky",
+      "signal": "32 likes on Jettelly's Bluesky post on November 11; 35 stars on GitHub",
+      "hook": "Hair, skirts, capes and tails swing on the skeleton with sphere, capsule and plane collisions, and a wind node keeps them moving while the character stands still.",
+      "borrow": "Bone chains are a cheap stand-in for cloth simulation. The solver comes from KawaiiPhysics, a well-known Unreal plugin, which shows how a good runtime idea travels between engines.",
+      "forYou": "KawaiiPhysics already covers this in Unreal; the presets and wind node are ideas for the character plugin's docs.",
+      "url": "https://github.com/pulppixel/godot-bone-cloth",
+      "image": {
+        "src": "img/2026-11-12/bone-cloth.webp",
+        "alt": "A stylised character seen from behind, long dark teal hair hanging over a red jacket, on a dark background.",
+        "credit": "PulpPixel via Jettelly",
+        "creditUrl": "https://bsky.app/profile/jettelly.bsky.social/post/3n227zihuih2l",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "wikitrace",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Don't Just Trust Your Memory: Evidence-Linked Memory Reduces Memory-Induced Degradation in LLM Agents",
+      "headline": "Agent notes help more when each lesson links to the run it came from",
+      "authors": "Yukyeong Lee, Yumin Choi, Jinheon Baek, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-11-10",
+      "problem": "Lessons an agent saved from earlier runs can make it fail tasks it would solve without them, usually because it follows a wrong or stale lesson.",
+      "idea": "Store each lesson as a chain: a short insight, a summary of why that run went well or badly, and the raw run. The agent reads the insights, and follows the links to the evidence when a lesson is vague, conflicts with another or came from a failure.",
+      "result": "Across 8 suites in 5 benchmarks, average success rose from 79.5 with no memory and 87.0 with insights alone to 90.2. Tasks lost because of memory fell from 6.5% to 4.5%, for about 1.17 times the cost of insights alone.",
+      "useIt": "Next to each lesson in an agent's instruction file, link the transcript or pull request it came from, and add one line: if a lesson looks wrong or conflicts, open its source before acting.",
+      "maturity": "code",
+      "forYou": "Link each lesson in the routine notebook and CLAUDE.md files to the session or commit it came from.",
+      "links": [
+        { "label": "Paper (arXiv)", "url": "https://arxiv.org/abs/2611.14320" },
+        { "label": "Code", "url": "https://github.com/yukyeongleee/wikitrace" }
+      ],
+      "image": {
+        "src": "img/2026-11-12/lab-wikitrace.webp",
+        "alt": "Two-part figure: an agent fails a task with memory that it solves without it; then the agent checks a doubtful insight against its compilation and source run before revising it.",
+        "credit": "Lee et al., CC BY 4.0",
+        "creditUrl": "https://arxiv.org/abs/2611.14320",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "agentic-much",
+      "lane": "ai",
+      "kind": "paper",
+      "title": "Agentic Much? Adoption of Coding Agents on GitHub",
+      "headline": "About a quarter of active GitHub projects already show coding-agent traces",
+      "authors": "Romain Robbes, Théo Matricon, Thomas Degueule, et al. (Univ. Bordeaux, CNRS, Univ. Rennes, Inria)",
+      "where": "ACM Transactions on Software Engineering and Methodology",
+      "date": "2026-11-04",
+      "problem": "Surveys say many developers use coding agents, but nobody had measured adoption from what agents leave behind in real repositories.",
+      "idea": "Scan 128,018 GitHub projects for agent traces: instruction files such as CLAUDE.md, ignore-file entries, and agents named as commit co-authors, then compare agent-assisted commits with human-only ones.",
+      "result": "Estimated adoption was 22.20% to 28.66% on February 21, 2026, spread across project ages, languages and topics, including established organisations. Agent-assisted commits are larger than human-only ones.",
+      "useIt": "Expect bigger diffs from agent-assisted work and size code review to match. The released pipeline can measure the same signals in your own organisation's repositories.",
+      "maturity": "code",
+      "forYou": "Run the pipeline on the plugin repos to see how commit size changed since agents took over.",
+      "links": [
+        { "label": "Paper (ACM TOSEM)", "url": "https://dl.acm.org/doi/10.1145/3822180" },
+        { "label": "Preprint (arXiv)", "url": "https://arxiv.org/abs/2601.18341" },
+        { "label": "Code", "url": "https://github.com/labri-progress/agent-impact" }
+      ]
+    },
+    {
+      "id": "gtagym",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "GTAGym: Real AAA Game Tasks Environment for Evaluation and Reinforcement Learning",
+      "headline": "A game test bed that checks agents against the engine's state, not their own claims",
+      "authors": "Jiajun Chen, Shicheng Fang, Jiahao Lu, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-11-09",
+      "problem": "Training or grading game-playing agents in a big commercial game needs people to watch and judge whether each task was done.",
+      "idea": "Turn 75 GTA V story missions into 150 tasks, rebuild the 3D ones in a browser engine where success is read from game state, and generate new task variants from templates to make training environments with automatic rewards.",
+      "result": "The best model scored 70.9 against 89.8 for people. Training an open 27B model on 50 generated navigation tasks lifted on-foot accuracy from 54.2% to 72.9%, and success on 100 tasks in the real game from 15% to 23%; shooting accuracy fell.",
+      "useIt": "Copy the two parts that transfer: a verifier that reads success from your engine's state, and a template generator for task variants. Together they give automated playtests of your own game.",
+      "maturity": "code",
+      "forYou": "An engine-state verifier is what an agent-driven Unreal playtest needs to know a quest step really completed.",
+      "links": [
+        { "label": "Paper (arXiv)", "url": "https://arxiv.org/abs/2611.13028" },
+        { "label": "Code", "url": "https://github.com/ljbro/GTAGym" }
+      ],
+      "image": {
+        "src": "img/2026-11-12/lab-gtagym.webp",
+        "alt": "Grid of game screenshots labelled by task family, such as road navigation, interception, aquatic and aerial navigation, with an instruction under each, plus shooting and sniping tasks.",
+        "credit": "Chen et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2611.13028",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "The arXiv and Reddit feeds failed in this morning's sweep, so lab picks came from searches and journal feeds. The EU Digital Fairness Act is still a leaked draft; no final text yet."
+}
