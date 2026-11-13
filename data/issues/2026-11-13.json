@@ -1,0 +1,632 @@
+{
+  "date": "2026-11-13",
+  "number": 31,
+  "title": "The cheap model does the typing",
+  "dek": "Google's new coding setup plans with a strong model and hands the edits to a cheaper one, inside a single task. Plus Rust 1.100, lockfiles for GitHub Actions, a C++ standard that failed its vote, and a studio that left Fortnite for its own engine.",
+  "theme": {
+    "paper": "lilac",
+    "text": "burgundy",
+    "inks": ["teal", "fluoro-pink"],
+    "type": "grotesk",
+    "mood": "a Friday about giving each step the model it needs"
+  },
+  "tldr": [
+    {
+      "lane": "ai",
+      "text": "Google's Antigravity now lets one task switch models: **Gemini 4 Carbon plans, the new Hydrogen edits and tests**, and Carbon takes over when Hydrogen gets stuck. Google reports near-Carbon success for 24% less quota."
+    },
+    {
+      "lane": "ai",
+      "text": "Hydrogen costs **$1.50 in and $7.50 out** per million tokens. In Simon Willison's drawing test it used a fifth of Carbon's cost per image."
+    },
+    {
+      "lane": "ai",
+      "text": "Rust 1.100 lets Cargo **skip crate versions younger than a set age**, and GitHub Actions now has a lockfile, so workflows can name readable tags while a file pins the exact commits."
+    },
+    {
+      "lane": "both",
+      "text": "C++26 became the **first C++ draft to fail its ISO ballot**, over Contracts; the committee meets again from November 16."
+    },
+    {
+      "lane": "gamedev",
+      "text": "A studio behind 14 Fortnite islands moved its card game to Defold after a payout change cut one game's income by about 40%: **4-second boot, 6,500 tests, an MCP server for agents**."
+    }
+  ],
+  "blocks": [
+    {
+      "id": "orchestrator",
+      "format": "hero",
+      "variant": "split",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Plan with the big model, edit with the small one",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Google's coding tool can now switch models in the middle of a task: an expensive model works out the plan, a cheaper one does the edits and runs the tests, and the expensive one steps back in only when the cheap one gets stuck.",
+      "background": "Antigravity is Google's agent-first coding environment; Gemini 4 Carbon and Argon are its top models, released earlier this week.",
+      "takeaway": "Most of an agent's tokens go into routine edits and test runs, which a cheaper model can handle once the plan is good. Google now builds that split into the tool and reports that it costs about a quarter less for nearly the same results.",
+      "body": [
+        "On November 12 Google released **Gemini 4 Hydrogen**, the cheapest model in the Gemini 4 family, and a new **Orchestrator** option in Antigravity's model menu. Orchestrator pairs Hydrogen with a stronger model in one task. Carbon starts read-only, explores the code and its dependencies, and writes a plan that includes when to re-plan. Hydrogen then makes the edits, updates packages and runs the tests.",
+        "If Hydrogen hits trouble, the task goes back to Carbon, which inspects the state, repairs the plan and lets Hydrogen resume. For parallel work, Carbon coordinates while Hydrogen runs worker and checker agents in separate workspaces.",
+        "Google reports that Orchestrator reached near-Carbon task success on Terminal-Bench while using about **24% less quota** and finishing about **19% faster** on average. These are the vendor's own numbers; no independent test of Orchestrator has been published yet."
+      ],
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          { "label": "Explore", "note": "Carbon reads, changes nothing" },
+          { "label": "Plan", "note": "Carbon, with re-plan triggers" },
+          { "label": "Edit and test", "note": "Hydrogen does the work", "key": true },
+          { "label": "Hand back", "note": "Carbon repairs the plan" }
+        ],
+        "links": ["then", "hands to", "if stuck"],
+        "caption": "How Orchestrator splits one task, as Google's Antigravity post describes it. After a hand back, Hydrogen resumes on the repaired plan."
+      },
+      "terms": [
+        { "term": "quota", "def": "The amount of model usage a subscription allows in a period; cheaper models use less of it per task." },
+        { "term": "Terminal-Bench", "def": "A public benchmark that gives an agent real tasks to complete in a command-line environment and checks whether they work." },
+        { "term": "read-only", "def": "Allowed to look at files and run inspections, but not to change anything." }
+      ],
+      "deep": [
+        "Hydrogen offers four thinking levels: low, medium, high (the default) and a new xhigh. Google cites 51 on the Artificial Analysis Intelligence Index at high (Argon scores 50) and 54 at xhigh, and 57% on Terminal-Bench 4.1 against 18.2% for Gemini 3.8 Flash. Google's two posts name different Terminal-Bench versions for the Orchestrator result (4.0 on blog.google, 4.1 on the Antigravity blog).",
+        "Availability: Hydrogen is in the Gemini API, AI Studio and Android Studio, and in Antigravity for paid AI Pro and Ultra plans. Orchestrator (Carbon) is for Ultra; Orchestrator (Argon) is for Pro and Ultra. The context window is 1 million tokens in and up to 1 million out, priced flat across it.",
+        "Antigravity's SDK lets you build the same split yourself, assigning models to roles. Google's example is an issue triage system where Hydrogen agents triage, code and ask clarifying questions, and a Carbon agent takes large refactors and security checks; no code for it is published yet."
+      ],
+      "why": "Picking one model per session wastes money on easy steps or quality on hard ones. A planner and worker split is a pattern you can copy in any agent setup, and now there is a vendor measurement of what it saves.",
+      "forYou": "This is the same shape as a Claude Code main session delegating to cheaper subagents. Try a Fable planner with Haiku 5.5 subagents doing the edits and test runs on one plugin task, and compare cost and outcome against an all-Fable run.",
+      "sources": [
+        { "label": "Google Antigravity: Hydrogen and Orchestrator", "url": "https://antigravity.google/blog/gemini-4-hydrogen-in-google-antigravity" },
+        { "label": "Google: Introducing Gemini 4 Hydrogen", "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/" }
+      ]
+    },
+    {
+      "id": "pelican-cost",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Same drawing, a fifth of the cost",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Simon Willison asked each new Gemini model to draw the same picture in code. Hydrogen did it for 2 to 4 cents; the bigger models spent 17 to 20 cents, mostly on long thinking.",
+      "intro": "Cost of one run of the same prompt, by model and thinking level:",
+      "unit": "cents",
+      "series": [
+        { "label": "Hydrogen, low", "value": 2.25 },
+        { "label": "Hydrogen, medium", "value": 2.98 },
+        { "label": "Hydrogen, high", "value": 3.99, "highlight": true },
+        { "label": "Argon, high", "value": 17.17 },
+        { "label": "Carbon, high", "value": 20.31 }
+      ],
+      "note": "One prompt per model, 40 input tokens each. Hydrogen wrote 3,000 to 5,300 output tokens; Carbon wrote 20,305 and took over four minutes. Willison found Hydrogen's drawing plainer.",
+      "why": "Output tokens drive the bill, and bigger models think longer. For routine steps, the cheaper model's speed and price add up fast.",
+      "sources": [
+        { "label": "Simon Willison: llm-gemini 0.37", "url": "https://simonwillison.net/2026/Nov/12/llm-gemini/" }
+      ]
+    },
+    {
+      "id": "hydrogen-price",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "What the split saves, and what Hydrogen costs",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Google's own numbers for Orchestrator, and Hydrogen's price per million output tokens. Carbon and Argon cost $10 per million output tokens until November 30, then $20.",
+      "stats": [
+        { "value": "24%", "label": "less quota than Carbon alone, per Google" },
+        { "value": "19%", "label": "faster on average, per Google" },
+        { "value": "$7.50", "label": "per million output tokens for Hydrogen" }
+      ],
+      "body": [
+        "Input costs $1.50 per million tokens and cached input $0.075. Willison notes that Claude Haiku 5.5 and GPT-6 Luna cost $0.10 in and $0.50 out, so Hydrogen is 15 times their price: cheap next to Carbon, not cheap overall."
+      ],
+      "terms": [
+        { "term": "cached input", "def": "Input the provider has already processed in an earlier request and can reuse, billed at a small fraction of the normal price." }
+      ],
+      "why": "The saving from a split depends on the gap between the two prices. That gap doubles on December 1, when Carbon and Argon double in price.",
+      "forYou": "Before December 1, note which agent runs lean on Carbon or Argon through Copilot or the AI Gateway; their cost doubles that day.",
+      "sources": [
+        { "label": "Simon Willison: llm-gemini 0.37", "url": "https://simonwillison.net/2026/Nov/12/llm-gemini/" },
+        { "label": "Google Antigravity blog", "url": "https://antigravity.google/blog/gemini-4-hydrogen-in-google-antigravity" }
+      ]
+    },
+    {
+      "id": "relax-jit",
+      "format": "chart",
+      "lane": "both",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Relax runs Rust straight from source, and patches edits live",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "An experimental tool from the Makepad team skips Rust's slow compile step during development: it compiles each function the first time it runs, so a large 3D game reached its first frame in 11 seconds instead of about three minutes.",
+      "intro": "Seconds until the program is running, measured by the Makepad team on November 12 (M4 laptop):",
+      "unit": "s",
+      "series": [
+        { "label": "cargo build, then start", "value": 180 },
+        { "label": "Relax, clean checkout", "value": 11, "highlight": true },
+        { "label": "Relax, save to tests re-run", "value": 2.2 },
+        { "label": "Relax, second launch", "value": 1.15 }
+      ],
+      "note": "The cargo figure is the page's own estimate of about three minutes. Tests: 92 re-run after saving a file. Author-reported numbers.",
+      "terms": [
+        { "term": "JIT", "def": "Just-in-time compilation: turning code into machine instructions while the program runs, function by function, instead of all at once beforehand." }
+      ],
+      "deep": [
+        "Each function is compiled at its first call (interpreted or at a low optimisation level) and hot functions are recompiled at a higher level in the background. Edits are patched into the running process, but changes to struct layout, imports, trait or impl headers and macros need a restart.",
+        "Optimised code is still slower than a release build: 1.12 times rustc's time on x64 and 1.24 times on arm64 (geometric mean of 21 workloads). Windows is untested, some crates do not run yet, and `relax check` is not faster than `cargo check` on large packages."
+      ],
+      "why": "Compile time is the slowest part of an edit-run loop, for people and for coding agents that rebuild after every change. Relax is a JIT for development only; release builds still use cargo.",
+      "sources": [
+        { "label": "Makepad: Relax", "url": "https://makepad.github.io/relax" }
+      ]
+    },
+    {
+      "id": "rust-1-100",
+      "format": "spotlight",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Rust 1.100 lets Cargo wait before trusting a new release",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The new Rust release can refuse dependency versions published only hours ago, which gives the community time to spot a poisoned package before it reaches your build.",
+      "name": "Rust 1.100",
+      "what": "Released November 12, with a dependency cooldown, the never type and custom allocators.",
+      "body": [
+        "Set a minimum publish age and Cargo picks only crate versions older than it. The release notes say cooldowns reduce the risk from some supply chain attacks but are not a complete defense, and `cargo install` ignores the setting."
+      ],
+      "facts": [
+        { "k": "Cooldown", "v": "global-min-publish-age in .cargo/config.toml" },
+        { "k": "Never type", "v": "`!` is stable after 10 years" },
+        { "k": "Allocators", "v": "The Allocator trait is stable" },
+        { "k": "New lint", "v": "Cargo warns about unused dependencies" }
+      ],
+      "tryIt": "global-min-publish-age = \"3 days\" under [registry] in .cargo/config.toml",
+      "terms": [
+        { "term": "supply chain attack", "def": "Slipping malicious code into a package that many projects install, so it spreads through their builds." },
+        { "term": "never type", "def": "A Rust type for values that can never exist, used for functions that never return or results that cannot fail." }
+      ],
+      "deep": [
+        "Stabilising `!` required a small breaking change so that `Infallible` can become an alias of it; the notes say this should be rare but may make the compiler find more unreachable code. Also new: `DropGuard`, which runs a closure when dropped and can be dismissed. A consistent build directory layout may break scripts that worked around the old one. The unused dependency warning appears only when every build target is built, and not for dev-dependencies."
+      ],
+      "why": "Most poisoned packages are caught within days. A cooldown is a one-line setting that keeps your builds behind that window.",
+      "forYou": "Set the cooldown in any Rust tooling repos, and look for the npm equivalent for the Node and Supabase projects.",
+      "sources": [
+        { "label": "Rust blog: Announcing Rust 1.100.0", "url": "https://blog.rust-lang.org/2026/11/12/Rust-1.100.0" }
+      ]
+    },
+    {
+      "id": "actions-lock",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Pin your GitHub Actions in a lockfile, not in hashes",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Workflows usually pin third-party actions to long commit hashes for safety, which nobody can read. A new GitHub tool keeps readable version tags in the workflow and records the exact commits in a lockfile that CI checks.",
+      "background": "A GitHub Action is a reusable step that a workflow downloads and runs; if its tag is moved to malicious code, every workflow using that tag runs it.",
+      "intro": "Hugo van Kemenade's setup, posted on November 11 and already used in Pillow and CPython:",
+      "steps": [
+        { "title": "Install", "text": "Add the extension with `gh extension install github/gh-actions-lock`." },
+        { "title": "Lock", "text": "Run `gh actions-lock` in the repo. It writes `.github/workflows/actions.lock` with each tag's commit and repository IDs." },
+        { "title": "Use tags", "text": "Replace hash pins with tags such as `actions/checkout@v7.0.1`, and commit the workflows with the lockfile." },
+        { "title": "Verify in CI", "text": "Add a job that installs the extension pinned to v0.4.1 and runs `gh actions-lock --verify`, so a stale or tampered lock fails the build." },
+        { "title": "Keep it fresh", "text": "Renovate and Dependabot both update the lockfile; give them a cooldown. zizmor 1.32.0 understands lockfiles as a pre-commit check." }
+      ],
+      "terms": [
+        { "term": "lockfile", "def": "A generated file that records the exact version of every dependency, so each build uses the same code." },
+        { "term": "commit hash", "def": "The unique ID of one exact snapshot of a repository; unlike a tag, it cannot be moved." }
+      ],
+      "deep": [
+        "The lockfile is machine-generated and starts with a version field, a list of workflows and the actions each uses, then a dependencies map with each tag's ref, commit (as `sha1-...`), owner_id and repo_id. Adding a new workflow file means running `gh actions-lock` again, or the verify job fails. The author runs the verify job on `ubuntu-slim` with `persist-credentials: false` on checkout."
+      ],
+      "why": "Hash pins protect you but hide what version you run, so they rot. A lockfile keeps the protection and makes reviews and updates readable.",
+      "forYou": "Do this first on the radar repo and the game web builds, where workflows already pull third-party actions.",
+      "sources": [
+        { "label": "Hugo van Kemenade: Lock your GitHub Actions", "url": "https://hugovk.dev/blog/2026/lock-github-actions" }
+      ]
+    },
+    {
+      "id": "claude-code-323",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code 2.1.323: Code Mode, plugin version ranges, a bigger default window",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "This week's Claude Code update adds an experimental mode where Claude writes small programs to call its tools, lets plugins say which versions they support, and changes two defaults worth checking.",
+      "intro": "From the changelog for 2.1.323, November 13:",
+      "items": [
+        { "title": "Code Mode", "text": "An experimental opt-in in which Claude writes JavaScript to call its tools instead of calling them one at a time. Organisations can turn it off.", "url": "https://code.claude.com/docs/en/code-mode" },
+        { "title": "Plugin version ranges", "text": "Plugins can declare `engines[\"claude-code\"]` in plugin.json; outside that range they are not installed, updated or loaded. `claude plugin validate` now type-checks TypeScript hook modules.", "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md" },
+        { "title": "1M window for unknown models", "text": "A model ID Claude Code does not recognise is now assumed to have a 1M-token window, not 200K. Set `CLAUDE_CODE_DISABLE_1M_CONTEXT=1` for smaller models behind a gateway, or sessions can fail once full.", "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md" },
+        { "title": "Safer starts", "text": "Auto mode falls back to Manual when unavailable, and a startup warning flags Bash allow rules with `*` in a variable's value, such as `Bash(PORT=* npm run dev)`. The `subagentStatusLine` setting is removed.", "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md" }
+      ],
+      "terms": [
+        { "term": "allow rule", "def": "A Claude Code permission setting that lets a matching command run without asking first." }
+      ],
+      "why": "The context default matters most: anyone pointing Claude Code at a non-Anthropic model with a smaller window should set the variable now.",
+      "forYou": "Check settings for subagentStatusLine and for `*` inside variable values in allow rules, and add an engines range to any plugin you publish.",
+      "sources": [
+        { "label": "Claude Code changelog", "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md" },
+        { "label": "Claude Code releases", "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.323" }
+      ]
+    },
+    {
+      "id": "portentum-defold",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "A Fortnite island studio moved its own game to Defold",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A five-person team that made 14 Fortnite games left the platform after a payout change cut one game's income by about 40%, and built its card game in the free Defold engine instead, chasing fast loading and fast iteration.",
+      "background": "Defold is a free, lightweight engine from the Defold Foundation, scripted in Lua and strong on small, fast-loading builds.",
+      "name": "Portentum",
+      "what": "A cards-and-dice auto-battler by Snowfall Games, in Steam Early Access since October 28.",
+      "body": [
+        "Snowfall's Fortnite games have been played more than 9 million times. When Epic changed its payout formula in November 2025, one game earned about 40% less with the same players. The studio's conclusion: it did not control its own growth there.",
+        "It chose Defold for speed of iteration (it found Unreal Editor for Fortnite slow to iterate), easy UI work and no royalties. The team also built **defold-mcp**, an MCP server that lets coding agents build the game and drive a running copy to check their changes."
+      ],
+      "facts": [
+        { "k": "Team", "v": "Five people, two full-time" },
+        { "k": "Fortnite", "v": "About 14 games, peak 36,471 players on one" },
+        { "k": "Engine", "v": "Defold, Lua, custom GUI pipeline" }
+      ],
+      "image": {
+        "src": "img/2026-11-13/portentum-editor.webp",
+        "alt": "The Defold editor with Portentum's main menu GUI open: a menu of collection, card packs, quests and shop beside a Play button, with the project's folders listed on the left, including a .claude folder.",
+        "credit": "Snowfall Games via Defold",
+        "creditUrl": "https://defold.com/2026/11/12/Creator-Spotlight-Snowfall-Games-Portentum",
+        "fit": "cover"
+      },
+      "terms": [
+        { "term": "auto-battler", "def": "A game where you build a team or deck between rounds, and the fights then play out on their own." },
+        { "term": "MCP server", "def": "A program that offers tools to AI agents through the Model Context Protocol, a standard way for an agent to call tools in another program." }
+      ],
+      "why": "Platform payouts can change overnight. A studio that owns its game and its toolchain keeps its income and its pace in its own hands.",
+      "forYou": "defold-mcp is the same idea as Unreal MCP for a smaller engine; worth reading for how an agent drives a running build to check gameplay changes in the browser games.",
+      "sources": [
+        { "label": "Defold: Creator spotlight, Snowfall Games", "url": "https://defold.com/2026/11/12/Creator-Spotlight-Snowfall-Games-Portentum" }
+      ]
+    },
+    {
+      "id": "xogot-modeler",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Xogot Modeler brings level blockout tools into the Godot editor",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A free beta add-on lets Godot users rough out levels and props with curved paths and polygon editing right inside the engine, then save them as ordinary Godot meshes.",
+      "name": "Xogot Modeler",
+      "what": "A 3D modeling and level tool for Godot on Windows and Linux, ported from Xogot for Mac.",
+      "body": [
+        "You draw curved geometry along Bezier paths or start from shapes, then edit vertices, edges and faces, extrude and bevel, paint materials and vertex colours, unwrap UVs and add collision. Output is standard Godot meshes, so nothing extra ships with the game."
+      ],
+      "facts": [
+        { "k": "Price", "v": "Free in beta; later versions may be paid" },
+        { "k": "Catch", "v": "Each build expires 30 days after it was built" },
+        { "k": "Rights", "v": "Sell what you make, no royalties or credit" }
+      ],
+      "image": {
+        "src": "img/2026-11-13/xogot.webp",
+        "alt": "Godot's 3D editor showing a winding hedge-lined path built from a Bezier plane with collision, next to the Xogot Modeler name and axolotl icon.",
+        "credit": "Xogot, via the Godot Asset Store",
+        "creditUrl": "https://store.godotengine.org/asset/xogot/modeler/",
+        "fit": "cover"
+      },
+      "terms": [
+        { "term": "blockout", "def": "A rough version of a level made from simple shapes, used to test layout and movement before any final art." },
+        { "term": "Bezier paths", "def": "Smooth curves controlled by a few draggable points, common in drawing tools." }
+      ],
+      "why": "Blocking out inside the engine means you can walk a level the minute you shape it, without a round trip through Blender.",
+      "sources": [
+        { "label": "GameFromScratch: Xogot Modeler", "url": "https://gamefromscratch.com/xogot-3d-modeler-level-tool-for-godot" },
+        { "label": "Godot Asset Store: Xogot Modeler", "url": "https://store.godotengine.org/asset/xogot/modeler/" }
+      ]
+    },
+    {
+      "id": "cpp26-ballot",
+      "format": "stat",
+      "lane": "both",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "C++26 failed its ISO ballot, a first for C++",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The national standards bodies voted down the draft of the next C++ standard, mainly over a new feature for built-in checks called Contracts. Everything else in C++26 now waits for the committee to decide what to do.",
+      "stats": [
+        { "value": "60%", "label": "of voting members approved, as reported" },
+        { "value": "66.7%", "label": "needed to pass" }
+      ],
+      "body": [
+        "The figures come from a LinkedIn post by committee member Robert Seacord, reproduced on herecomesthemoon.net. The committee meets in Brazil from November 16 to 21; the post's author expects a fix could take about a year, since each ballot runs for weeks."
+      ],
+      "terms": [
+        { "term": "Contracts", "def": "A proposed C++ feature for writing checks on a function's inputs and outputs (pre, post, contract_assert) that the compiler can enforce." },
+        { "term": "ISO ballot", "def": "The formal vote in which national standards bodies approve or reject a draft international standard." }
+      ],
+      "why": "Compilers ship C++26 features piecemeal anyway, but library hardening is tied to Contracts and its timing is now unclear.",
+      "forYou": "No change for Unreal plugin code, which targets C++20; skip planning around Contracts or hardened standard library modes for now.",
+      "sources": [
+        { "label": "herecomesthemoon: C++26 failed the national bodies", "url": "https://herecomesthemoon.net/2026/11/cpp26-failed-the-national-bodies" }
+      ]
+    },
+    {
+      "id": "portentum-pipeline",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "How a five-person team keeps a game fast and tested",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Snowfall ships only the essentials on first launch and streams the rest, and every pull request runs thousands of tests with no window open.",
+      "stats": [
+        { "value": "4 s", "label": "to boot" },
+        { "value": "68 MB", "label": "first download, about 6 s" },
+        { "value": "6,500", "label": "tests on every pull request" }
+      ],
+      "body": [
+        "Card art, cosmetics, music, effect videos and every language except English stream in later. Each pull request also runs a Lua linter and about 30 guard scripts, with the full suite headless through Defold's build tool."
+      ],
+      "terms": [
+        { "term": "headless", "def": "Run without a screen or window, so tests can run on a build server." }
+      ],
+      "why": "A small first download keeps players from bouncing, and a wide automatic test net is what lets a small team, or its agents, change code quickly.",
+      "sources": [
+        { "label": "Defold: Creator spotlight, Snowfall Games", "url": "https://defold.com/2026/11/12/Creator-Spotlight-Snowfall-Games-Portentum" }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "One task, two models",
+      "note": "What the planner and worker split costs and saves.",
+      "ids": ["pelican-cost", "hydrogen-price"]
+    },
+    {
+      "title": "Faster builds, pinned dependencies",
+      "note": "Rust tooling, supply chain settings and this week's Claude Code.",
+      "ids": ["relax-jit", "rust-1-100", "actions-lock", "claude-code-323"]
+    },
+    {
+      "title": "Engines, tools and a stalled standard",
+      "note": "A studio's move off a platform, a Godot add-on, and C++26.",
+      "ids": ["portentum-defold", "xogot-modeler", "cpp26-ballot", "portentum-pipeline"]
+    }
+  ],
+  "learn": {
+    "question": "What is prompt caching?",
+    "answer": "Prompt caching lets a model provider reuse the work it already did on the start of a request. When the next request begins with exactly the same text, that part is billed at a fraction of the price and answered faster.",
+    "analogy": "It is a reader who keeps a bookmark: if you hand over the same book again, they skip straight to the new chapter instead of rereading from page one.",
+    "body": [
+      "Agents send the same long beginning on every turn: instructions, tool definitions, earlier messages. The provider stores its processed form of that prefix. If the next request matches it exactly, the stored part is read back instead of recomputed, which is why prices list cached input separately (Hydrogen's is $0.075 per million tokens against $1.50).",
+      "The match must be exact, so one changed character near the top, such as a timestamp or keys in a different order, breaks it. Nothing errors when that happens; the bill just stays high. Today's research entry found that 90% of such mistakes in open-source agent apps fail silently."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        { "label": "First call", "note": "Full price for the prefix" },
+        { "label": "Prefix stored", "note": "Instructions, tools, history" },
+        { "label": "Next call", "note": "Same prefix, new question" },
+        { "label": "Cache read", "note": "Prefix at a fraction of the price", "key": true }
+      ],
+      "links": ["provider keeps", "starts with", "if identical"],
+      "caption": "Only an identical prefix is reused. Put anything that changes (dates, IDs, the new question) after it."
+    },
+    "terms": [
+      { "term": "prefix", "def": "The opening part of a request, which stays the same from one call to the next." }
+    ],
+    "seenIn": ["hydrogen-price"],
+    "sources": [
+      { "label": "Claude docs: Prompt caching", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching" },
+      { "label": "arXiv: Silent and Costly", "url": "https://arxiv.org/abs/2610.34817" }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Check that your agent actually hits the prompt cache",
+    "gist": "Find out in a few minutes whether your app pays full price for text it sends on every call, and fix the most common cause.",
+    "time": "30 minutes",
+    "level": "practitioner",
+    "needs": "An app or script that calls a model API with prompt caching turned on, and access to the response's usage numbers.",
+    "steps": [
+      { "title": "Send it twice", "text": "Make the same request twice in a row, a few seconds apart, and log the usage block of each response." },
+      { "title": "Read the counts", "text": "On the Claude API, the second call should show most of the prefix under `cache_read_input_tokens`. If it shows zero, the prefix changed between calls." },
+      { "title": "Hunt the change", "text": "Look above the cache marker for anything that varies: timestamps, request IDs, random ordering of JSON keys or tools, or a marker placed after changing content. These are the patterns the paper found most often." },
+      { "title": "Move and re-run", "text": "Move changing values below the marker, sort keys when you serialise, and repeat the two calls." }
+    ],
+    "check": "The second call reports most of the prefix as cache-read tokens, and your daily input cost drops on the next real run.",
+    "terms": [
+      { "term": "cache marker", "def": "The point in a request (on the Claude API, a cache_control field) that tells the provider how far the reusable prefix extends." }
+    ],
+    "from": "cachelint",
+    "forYou": "Run it on the SaaS backends that call Claude with long system prompts, and on the radar routine's own scripts if they call the API directly.",
+    "sources": [
+      { "label": "arXiv: Silent and Costly", "url": "https://arxiv.org/abs/2610.34817" },
+      { "label": "Claude docs: Prompt caching", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching" }
+    ]
+  },
+  "ticker": [
+    {
+      "lane": "ai",
+      "text": "Anthropic now offers self-hosted Claude Managed Agents: you run the API, agent loop and session storage (on PostgreSQL 16 or later) as well as the sandboxes, by request through your account team.",
+      "url": "https://platform.claude.com/docs/en/managed-agents/self-hosted",
+      "source": "Claude docs"
+    },
+    {
+      "lane": "ai",
+      "text": "Codex 0.168.0 adds side conversations beside the main chat (features.tui_workspace), animated GIF generation, and OSC 777 terminal notifications.",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.168.0",
+      "source": "OpenAI Codex"
+    },
+    {
+      "lane": "ai",
+      "text": "Gemini 4 Hydrogen and Thinking Machines' Inkling 2 Small are on Vercel's AI Gateway as google/gemini-4-hydrogen and thinkingmachines/inkling-2-small.",
+      "url": "https://vercel.com/changelog/gemini-4-hydrogen-now-available-on-ai-gateway",
+      "source": "Vercel"
+    },
+    {
+      "lane": "ai",
+      "text": "From December 8, GitHub turns off Dependabot alerts on most repositories with no activity for a year; any push turns them back on and restores the archived alerts.",
+      "url": "https://github.blog/changelog/2026-11-10-dependabot-alerts-will-pause-on-inactive-repositories",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "GitHub-hosted runners stop running ARM32 jobs on Linux and Windows by December 8, because Node 24 does not support ARM32.",
+      "url": "https://github.blog/changelog/2026-11-12-actions-for-arm32-linux-windows-retirement",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "GitHub secret scanning now detects leaked Cloudflare service tokens.",
+      "url": "https://github.blog/changelog/2026-11-12-secret-scanning-adds-a-detector-for-cloudflare",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "Supabase accounts that sign in with GitHub or another provider can now add a password and MFA recovery codes as a backup way in.",
+      "url": "https://supabase.com/changelog/account-backup-sign-in",
+      "source": "Supabase"
+    },
+    {
+      "lane": "ai",
+      "text": "A researcher turned a 22-year-old PostgreSQL type confusion into code execution from the lowest-privilege login (CVE-2026-6460); fixes shipped November 9, and managed hosts were told privately first.",
+      "url": "https://mehmetince.net/part-3-6-how-i-ended-up-turning-a-22-year-old-postgresql-type-confusion-primitive-into-rce-cve-2026-6460/",
+      "source": "Mehmet Ince"
+    },
+    {
+      "lane": "ai",
+      "text": "Angular's compiler for TypeScript 7 is in beta with a Rust preprocessor built on Oxc; early cold builds are 2 to 3 times faster, and production should stay on the current compiler for now.",
+      "url": "https://www.infoq.com/news/2026/11/angular-compiler-rust-typescript/",
+      "source": "InfoQ"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Godot 4.8 beta 3 is mostly regression fixes, including Web audio driver fixes and a thread-flush race; the team says the release candidate is not far off.",
+      "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-3/",
+      "source": "Godot"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "zigzag",
+      "lane": "both",
+      "kind": "tool",
+      "title": "ZigZag: an embroidery app built to dodge a subscription, with an MCP server",
+      "where": "Hacker News, GitHub",
+      "signal": "415 points and 159 comments on Show HN on November 12, per Hacker News",
+      "hook": "A $300 embroidery machine wanted a subscription, so its owner reverse-engineered the Bluetooth protocol and wrote a full design app: SVG art in, stitches planned, file sent to the machine.",
+      "borrow": "One document model with three doors: a UI for people, a CLI for scripts and an MCP server so an agent can edit the live design. Any content tool can be built that way.",
+      "forYou": "The same three-door shape fits an editor utility plugin: a panel, a command and MCP tools over one data model.",
+      "url": "https://github.com/simpsoka/zigzag",
+      "image": {
+        "src": "img/2026-11-13/zigzag.webp",
+        "alt": "ZigZag's editor: a round badge design with a dark disc, an orange sun and a red swoosh, with stitch settings (fill, satin, run) and a thread sequence panel on the right.",
+        "credit": "simpsoka/zigzag on GitHub",
+        "creditUrl": "https://github.com/simpsoka/zigzag",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "garden-agent",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "An agent that waters a garden and grades its own forecasts",
+      "where": "Personal blog, Hacker News",
+      "signal": "138 points and 72 comments on Hacker News on November 8, per Hacker News",
+      "hook": "Eleven sensors and a camera feed a data store; every morning at 08:45 an agent reads them, adjusts watering by tapping the sprinkler app on an old Android phone, and logs what it expects to see tomorrow, then checks.",
+      "borrow": "Make an agent write down a prediction with each decision and score it the next run. And the author's own lesson: limits belong in the tool that acts, not in the prompt.",
+      "forYou": "A nightly balance agent could log its expected effect of each tuning change and grade it against the next day's play data.",
+      "url": "https://jatorre.github.io/garden/",
+      "image": {
+        "src": "img/2026-11-13/garden-cam.webp",
+        "alt": "A white security camera on a garden wall looking down at a narrow raised bed of young cabbage and broccoli with a drip line and a green soil probe.",
+        "credit": "Javier de la Torre",
+        "creditUrl": "https://jatorre.github.io/garden/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "fable52-arcade",
+      "lane": "gamedev",
+      "kind": "experiment",
+      "title": "Fable52.games: an arcade of one-file games written by a model",
+      "where": "Hacker News, web",
+      "signal": "66 points and 55 comments on Show HN on November 12, with 32 games listed, per Hacker News and the site",
+      "hook": "Every game is a single HTML file you can play, download and read, and some show the prompt that made them: one shooter took 73 autonomous turns over 41 minutes and fits in 128 KB.",
+      "borrow": "Ship the source and the prompt beside the playable result. For browser games, a hard file-size budget in the prompt is a useful constraint to test.",
+      "forYou": "Try the 128 KB shooter's prompt as a template for a three.js prototype and compare what comes back.",
+      "url": "https://fable52.games",
+      "image": {
+        "src": "img/2026-11-13/fable52.webp",
+        "alt": "First-person shooter screenshot: a rainy container port at sunset, a rifle with a red-dot sight, and the objective 'Cut the three uplink relays'.",
+        "credit": "Saltline, via fable52.games",
+        "creditUrl": "https://fable52.games",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "cachelint",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Silent and Costly: Characterizing and Detecting Prompt-Caching Mis-Integration in LLM Agents",
+      "headline": "Most broken prompt caching fails silently, and a linter can find it",
+      "authors": "Ying Zhang, Ruoqi Guo, Yi Liu, et al.",
+      "where": "arXiv preprint",
+      "date": "2026-10-27",
+      "problem": "Prompt caching cuts the price of repeated input sharply, but integrating it is fiddly, provider rules keep changing, and when it breaks nothing errors: the app just pays full price.",
+      "idea": "The authors went through 148,947 merged pull requests in 10 open-source agent apps, found 120 caching mistakes and sorted them into patterns, such as a timestamp in the cached prefix, unstable JSON ordering or miscounted cache usage. They then built CacheLint, which combines code queries, a dated table of what each provider supports, and a model that double-checks each finding.",
+      "result": "90% of the mistakes failed silently. CacheLint scored 0.71 precision and 0.78 recall on the labelled set, and 0.86 precision across 571 other agent projects, where it found 32 real problems. Developers confirmed 21 findings and merged 18 fixes, one in Anthropic's official SDK. Without the double-check, precision fell to 0.31.",
+      "useIt": "Treat the paper's patterns as a review checklist for any code that calls a model: nothing that changes above the cache marker, stable key order, and a log line for cache-read tokens so a silent miss shows up.",
+      "maturity": "prototype",
+      "forYou": "Run the checklist over the SaaS services that send long system prompts and over any routine scripts that call the API.",
+      "links": [
+        { "label": "Paper (arXiv)", "url": "https://arxiv.org/abs/2610.34817" },
+        { "label": "Full text (HTML)", "url": "https://arxiv.org/html/2610.34817" }
+      ],
+      "image": {
+        "src": "img/2026-11-13/lab-cachelint.webp",
+        "alt": "Three-panel overview: the empirical study (10 agent apps, 148,947 pull requests, 120 mis-integrations, 90% silent), the CacheLint pipeline with an LLM guard check and dated oracle, and evaluation results with 0.86 precision and an ablation.",
+        "credit": "Zhang et al., CC BY 4.0",
+        "creditUrl": "https://arxiv.org/abs/2610.34817",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "The arXiv and Reddit feeds failed in this morning's sweep, so the lab pick came from a search. Hydrogen and Orchestrator numbers are Google's own; no independent test of Orchestrator was found yet."
+}
