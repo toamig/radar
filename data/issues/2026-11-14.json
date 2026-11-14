@@ -1,0 +1,1020 @@
+{
+  "date": "2026-11-14",
+  "number": 32,
+  "title": "Let the search find the bug",
+  "dek": "A testing company's fuzzer now wins NetHack in minutes by saving, branching and scoring game states. Plus an audit of agent-written tests, stricter Claude Code permissions, an open shader from EVE's studio, and the EU's rules for games.",
+  "theme": {
+    "paper": "butter",
+    "text": "hunter",
+    "inks": [
+      "bright-red",
+      "aqua"
+    ],
+    "type": "poster",
+    "mood": "a Saturday about letting a search do the testing"
+  },
+  "tldr": [
+    {
+      "lane": "both",
+      "text": "Antithesis's fuzzer **won 79% of 480 NetHack games**, median under 77 seconds, by branching from saved states and scoring progress. The trick was the action layer and the scoring, not raw speed."
+    },
+    {
+      "lane": "ai",
+      "text": "Momentic audited 1,000 unit tests its agents wrote and rated **only 9.6% useful**; Google open-sourced a sidecar that confirms each production agent failure before reporting it."
+    },
+    {
+      "lane": "ai",
+      "text": "Claude Code 2.1.325 makes **sandboxed commands ask by default** and stops scheduled tasks before some skills; Node.js patched 16 flaws, 7 rated high."
+    },
+    {
+      "lane": "gamedev",
+      "text": "EVE's studio open-sourced **CORTAO**, an ambient occlusion pass with less error than GTAO in its complex-scene test, and the EU published its Digital Fairness Act proposal."
+    }
+  ],
+  "blocks": [
+    {
+      "id": "nethack-fuzzer",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "both",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A fuzzer that wins NetHack in minutes",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Antithesis pointed its bug-hunting tool at NetHack, a notoriously hard game to finish, and it now wins most fresh games in a couple of minutes by saving the game, trying many branches and keeping the promising ones.",
+      "background": "NetHack is a dungeon game from 1987 with permanent death, hidden rules and a very long path to victory, which players call ascending.",
+      "body": [
+        "Antithesis sells a testing platform that runs software in a deterministic simulation, so any moment can be saved, rewound and replayed. Its fuzzer explores a tree of game states: it branches from saved snapshots, scores each state with a value function built from progress signals such as depth, experience and key items, and prunes states that look doomed.",
+        "Two changes made it work. A `Player` layer turns random input into whole actions (wield this weapon, light the Candelabrum), and tactics read the game state so only valid choices get tried: attaching a candle went from about one command in ten thousand to all seven candles within minutes. A step the team calls brain damage throws away most of the search state at each resume, which stopped the search clinging to overrated states.",
+        "The authors say the fuzzer ascended with a short config file instead of thousands of lines of bot code. It still reads hidden values such as luck and prayer timeout, scaffolding they say they are removing. Claude helped debug stalled runs and tune the value function. All numbers are the company's own."
+      ],
+      "stat": {
+        "value": "79%",
+        "label": "of 480 runs won on the stock game, median 77 seconds"
+      },
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "Snapshot",
+            "note": "Save the game at any moment"
+          },
+          {
+            "label": "Branch",
+            "note": "Try many inputs from it"
+          },
+          {
+            "label": "Score",
+            "note": "A value function rates progress",
+            "key": true
+          },
+          {
+            "label": "Prune",
+            "note": "Drop states that look doomed"
+          },
+          {
+            "label": "Forget",
+            "note": "Discard most search state, restart from milestones"
+          }
+        ],
+        "links": [
+          "then",
+          "rate each",
+          "keep the best",
+          "at each resume"
+        ],
+        "caption": "How the fuzzer searches, as the Antithesis post describes it. The Player layer and state-reading tactics decide which inputs a branch can try."
+      },
+      "terms": [
+        {
+          "term": "fuzzer",
+          "def": "A testing tool that feeds a program huge numbers of generated inputs to find crashes and broken rules."
+        },
+        {
+          "term": "deterministic",
+          "def": "Always producing the same result from the same inputs, so a run can be replayed exactly."
+        },
+        {
+          "term": "value function",
+          "def": "A score that estimates how good a state is, used to choose which branches to explore next."
+        },
+        {
+          "term": "snapshots",
+          "def": "Saved copies of the whole program state that a run can return to and continue from."
+        }
+      ],
+      "deep": [
+        "Across 480 trials, 120 per role: with NetHack's stock random generator, 379 ascensions (79.0%), median 76.8 s, 90th percentile 179.3 s, fastest 27.7 s. With a patch that reseeds the game's random generator from the fuzzer after each keypress, 448 ascensions (93.3%), median 27.6 s, 90th percentile 91.1 s, fastest 7.5 s. The post also says nearly 80% of seeds find a path to victory within 5 wall-clock minutes. Monks were the hardest role on the stock game (70.8%).",
+        "The first autonomous ascension, a dwarven Valkyrie, took 11,665 moves. One bug was in the harness itself: the reward overflowed past 2^31, wrapped negative, and made dropping items the most rewarding move. The authors compare brain damage to dropout in neural network training and to clause forgetting in SAT solvers.",
+        "The harness exposes the full level, monster health and inventories, luck, alignment and the dungeon layout. The post does not say the NetHack harness will be released."
+      ],
+      "why": "Most game bugs hide in long, rare sequences that scripted tests never reach. Snapshot, branch and score is a way to explore them that any team with deterministic replay can copy, and the post shows the hard work is the action layer and the scoring, not the search.",
+      "forYou": "The action RPG's modular gameplay plugins are a fit: expose attack, use item and interact as a test action layer, snapshot the game state, and let a scored search hunt soft-locks in inventory and interaction flows.",
+      "sources": [
+        {
+          "label": "Antithesis: Beating the frontier on NetHack",
+          "url": "https://antithesis.com/blog/2026/nethack"
+        }
+      ]
+    },
+    {
+      "id": "momentic-audit",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "One AI-written test in ten earned its place",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A testing company checked 1,000 unit tests its coding agents wrote and judged fewer than one in ten useful; the rest tested trivia, repeated other tests, or mocked so much they tested nothing real.",
+      "intro": "Momentic's human-checked audit of 1,000 AI-written unit tests in its own codebase, share of tests by verdict:",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Low consequence",
+          "value": 31.6
+        },
+        {
+          "label": "Redundant",
+          "value": 22.8
+        },
+        {
+          "label": "Excessive mocking",
+          "value": 22.4
+        },
+        {
+          "label": "Useful",
+          "value": 9.6,
+          "highlight": true
+        },
+        {
+          "label": "Unused code",
+          "value": 9.1
+        },
+        {
+          "label": "Contrived coverage",
+          "value": 4.5
+        }
+      ],
+      "note": "Vendor data: Momentic sells an AI verifier and reports it found 3 to 5 times more bugs than Codex or Claude Code alone on four open-source apps. The post also cites a 111-task experiment where agents barred from writing tests succeeded 66.2% of the time, against 65.3% for agents that wrote them.",
+      "terms": [
+        {
+          "term": "unit tests",
+          "def": "Small automated checks that one function or module behaves as expected."
+        },
+        {
+          "term": "mocking",
+          "def": "Replacing real parts of a system with fakes during a test, which can hide how the real thing behaves."
+        }
+      ],
+      "why": "A pile of passing tests says little about agent work. The post argues for a separate checker with fresh context, the original requirements and the running app, instead of letting the coding agent grade itself.",
+      "forYou": "Sample 20 agent-written tests in one SaaS repo and sort them into these six bins; if useful is under a quarter, stop asking the coding agent for tests and add a separate verifier subagent instead.",
+      "sources": [
+        {
+          "label": "Stack Overflow blog: Your coding agent shouldn't grade its own homework",
+          "url": "https://stackoverflow.blog/2026/11/13/your-coding-agent-shouldn-t-grade-its-own-homework"
+        }
+      ]
+    },
+    {
+      "id": "aqua-sidecar",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Google's sidecar reads an agent's sessions and checks its own hunches",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Google open-sourced a helper that samples a production agent's recent conversations, groups the failures by cause, and has a second model confirm each one before reporting it.",
+      "background": "Google described AQuA on its developer blog on October 8; InfoQ's write-up on November 13 brought it wider notice.",
+      "plain": "Sample, review, cluster, verify, track: only failures a separate model can back up reach the queue.",
+      "body": [
+        "AQuA (Ambient Quality Agent) samples up to 1,000 recent sessions from Google Cloud logs or traces, reviews them against a checklist, clusters failures by mechanism and discards clusters the verifier cannot support. On request it diagnoses one against a source snapshot taken at deploy, citing files and lines; it never applies the edit.",
+        "In the authors' replay of 32 sessions from a sample travel agent, it found 6 verified issues. Two one-line prompt fixes raised fully passing sessions from 5 to 13 of 32, and the sweep cost $3.76."
+      ],
+      "image": {
+        "src": "img/2026-11-14/aqua-pipeline.webp",
+        "alt": "A five-stage pipeline: sample up to 1,000 sessions, review with a checklist, cluster by failure mechanism, verify with a separate model that discards unsupported clusters, then track issues as new, recurring or resolved.",
+        "credit": "Google for Developers",
+        "creditUrl": "https://developers.googleblog.com/the-outer-loop-insights-first-an-ambient-quality-agent-that-diagnoses-your-production-agent/",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "sidecar",
+          "def": "A helper process that runs next to a main service and watches or extends it without changing its code."
+        },
+        {
+          "term": "clusters",
+          "def": "Groups of similar items; here, failures that share the same cause."
+        }
+      ],
+      "deep": [
+        "The replay produced 42 findings in 9 clusters; the verifier rejected 3. Seat-selection bypasses fell from 15 sessions to 2 and dietary omissions from 7 to 0 after the two prompt fixes. Findings are tracked as NEW, RECURRING or RESOLVED, and resolve on their own after 14 days unseen. It reads Cloud Trace, Cloud Logging or BigQuery, so it needs Google Cloud; sampling can miss rare failures."
+      ],
+      "why": "Production agents fail quietly while dashboards stay green. The sample, cluster and verify loop works for any agent you run, even if this code needs Google Cloud.",
+      "sources": [
+        {
+          "label": "Google for Developers: an ambient quality agent",
+          "url": "https://developers.googleblog.com/the-outer-loop-insights-first-an-ambient-quality-agent-that-diagnoses-your-production-agent/"
+        },
+        {
+          "label": "AQuA code in google/adk-recipes",
+          "url": "https://github.com/google/adk-recipes/tree/main/core/python/ambient-quality-agent"
+        },
+        {
+          "label": "InfoQ: Google open sources AQuA",
+          "url": "https://www.infoq.com/news/2026/11/google-ambient-agent-prod"
+        }
+      ]
+    },
+    {
+      "id": "tw-radar",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Thoughtworks' new Radar: sandbox your agents, trim their instructions",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Thoughtworks' twice-yearly Technology Radar, a survey of what its consultants see working on client projects, now puts agent sandboxing in its top ring and warns against bloated agent instructions.",
+      "intro": "Technology Radar Vol. 35, November 2026: the AI coding entries in each ring.",
+      "items": [
+        {
+          "title": "Adopt",
+          "text": "Agent sandboxing and progressive context disclosure as techniques; OpenAI Codex and OpenCode as tools.",
+          "url": "https://www.thoughtworks.com/radar"
+        },
+        {
+          "title": "Trial",
+          "text": "Subagents for context management, unattended overnight agentic builds, a self-improving harness, a feedback flywheel, anchoring agents to a reference app; Beads, OpenSpec and Pi.",
+          "url": "https://www.thoughtworks.com/radar"
+        },
+        {
+          "title": "Assess",
+          "text": "Local coding models, programmatic tool calling, harness quality evaluation, production-aware coding agents, tests as data over tests as code; Claude Managed Agents.",
+          "url": "https://www.thoughtworks.com/radar"
+        },
+        {
+          "title": "Caution",
+          "text": "Agent instruction bloat, human-in-the-loop theater, coding throughput as a productivity measure, naive context compression, blanket frontier model use, stacked pull requests.",
+          "url": "https://www.thoughtworks.com/radar"
+        }
+      ],
+      "terms": [
+        {
+          "term": "sandboxing",
+          "def": "Running a program in a fenced-off space where it cannot touch files, networks or secrets it was not given."
+        },
+        {
+          "term": "progressive context disclosure",
+          "def": "Giving an agent short summaries first and loading full detail only when the task needs it."
+        },
+        {
+          "term": "harness",
+          "def": "The program around a model that gives it tools, instructions and context, and runs its loop."
+        }
+      ],
+      "deep": [
+        "The four themes this time are harness engineering at scale, beyond frontier models, putting more agents to work, and constructing the AI factory. The Radar uses a Caution ring where older editions said Hold. Martin Fowler's note on the release points to the full list and adds his colleagues' context for each entry."
+      ],
+      "why": "The Radar reflects what one large consultancy sees across many client teams, so it trails the frontier. Its Caution ring is still a useful list of habits to drop.",
+      "forYou": "Most of the Trial ring matches the daily subagent and skills setup. The instruction bloat warning is the one to act on: prune the CLAUDE.md files that grew this year and move rules into checks.",
+      "sources": [
+        {
+          "label": "Thoughtworks Technology Radar",
+          "url": "https://www.thoughtworks.com/radar"
+        },
+        {
+          "label": "Martin Fowler: Fragments, November 10",
+          "url": "https://martinfowler.com/fragments/2026-11-10.html"
+        }
+      ]
+    },
+    {
+      "id": "claude-code-325",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code 2.1.325: sandboxed commands ask again, and unattended skills need a rule",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "This week's Claude Code update makes sandboxed shell commands ask for permission by default and makes scheduled tasks pause before certain skills, so setups that ran alone may now wait for a click.",
+      "intro": "From the release notes for 2.1.325, November 13:",
+      "items": [
+        {
+          "title": "Sandbox asks by default",
+          "text": "Sandboxed Bash commands now follow the normal permission flow. Set `sandbox.autoAllowBashIfSandboxed: true` to keep running them without prompts; in managed settings, set it in the highest-ranking source.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.325"
+        },
+        {
+          "title": "Scheduled tasks and skills",
+          "text": "Scheduled tasks and `/loop` now ask before running a skill that declares `allowed-tools` or hooks. Add `Skill(name)` to `permissions.allow` to run it unattended.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.325"
+        },
+        {
+          "title": "Permission gaps closed",
+          "text": "Some compound Bash commands that ran without asking now ask, an allow rule can no longer run a different program than it names, and relative deny rules like `Read(./.env)` survive a `cd`. A zstd decoding security issue is fixed.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.325"
+        },
+        {
+          "title": "Other repositories ask first",
+          "text": "Read-only git commands now ask in a repository that is not the project's or trusted; name it with `--add-dir`. Isolated worktrees refuse `git bisect run` and `git maintenance` set-up.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.325"
+        }
+      ],
+      "terms": [
+        {
+          "term": "sandboxed",
+          "def": "Run inside a fence that limits which files and network addresses a command can reach."
+        },
+        {
+          "term": "allow rule",
+          "def": "A Claude Code permission setting that lets a matching command run without asking first."
+        },
+        {
+          "term": "worktrees",
+          "def": "Extra checkouts of the same git repository in separate folders, so parallel work does not collide."
+        }
+      ],
+      "deep": [
+        "Also in this release: `claude remote-control` exits with status 4 when it stops by itself and 69 when it cannot register, so a service manager can restart it. `CLAUDE_CODE_MAX_CONTEXT_TOKENS` now also sets the window for unrecognised model IDs starting with `claude-`. Subagents cut off at the output limit are asked for the whole answer again, more briefly. In VS Code, Tab accepts prompt suggestions; `promptSuggestionEnabled: false` turns them off."
+      ],
+      "why": "Anyone running Claude Code on a schedule should run each job once after updating: a task that used to finish alone may now sit waiting for an approval nobody sees.",
+      "forYou": "Run each scheduled routine, including this briefing's morning run, once by hand after the update and add `Skill(name)` allow rules for any skill with allowed-tools or hooks before it stalls overnight.",
+      "sources": [
+        {
+          "label": "Claude Code v2.1.325 release notes",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.325"
+        }
+      ]
+    },
+    {
+      "id": "kitesurf",
+      "format": "spotlight",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Cloudflare open-sources a browser engine built for agents",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Cloudflare released Kitesurf, an experimental browser that runs inside its serverless platform with no Chrome behind it, so an agent can load a page, run its scripts and take a screenshot cheaply.",
+      "name": "Kitesurf",
+      "what": "An experimental headless browser engine written in Rust, compiled to WebAssembly and run on Cloudflare Workers.",
+      "body": [
+        "It parses HTML, applies CSS, runs JavaScript and renders screenshots and PDFs, and it speaks the Chrome DevTools Protocol, so existing Puppeteer scripts can drive it. Cloudflare calls it experimental and not a Chromium replacement; the post gives no speed numbers and points to the project site for benchmarks."
+      ],
+      "facts": [
+        {
+          "k": "Licence",
+          "v": "Apache 2.0"
+        },
+        {
+          "k": "Built from",
+          "v": "Blitz for layout and paint, Stylo for CSS, Boa as a JavaScript fallback"
+        },
+        {
+          "k": "Runs on",
+          "v": "Workers; deploying needs the Paid plan for Dynamic Workers"
+        }
+      ],
+      "terms": [
+        {
+          "term": "headless browser",
+          "def": "A browser with no window, driven by code to load pages, click and take screenshots."
+        },
+        {
+          "term": "WebAssembly",
+          "def": "A compact code format that runs at near-native speed inside browsers and serverless platforms."
+        },
+        {
+          "term": "Chrome DevTools Protocol",
+          "def": "The remote-control interface Chrome exposes, which automation tools like Puppeteer speak."
+        }
+      ],
+      "why": "Agents that browse usually pay for a full Chrome per session. A browser that starts like a serverless function could make page checks and scraping steps much cheaper, as long as pages render correctly.",
+      "forYou": "Worth a test as the screenshot step for browser game smoke checks, but expect WebGL and WebGPU pages not to render; keep Playwright for those.",
+      "sources": [
+        {
+          "label": "Cloudflare blog: Kitesurf is now open source",
+          "url": "https://blog.cloudflare.com/kitesurf-open-source"
+        },
+        {
+          "label": "cloudflare/kitesurf on GitHub",
+          "url": "https://github.com/cloudflare/kitesurf"
+        }
+      ]
+    },
+    {
+      "id": "node-security",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Node.js patches 16 flaws, 7 of them high",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Node.js shipped security fixes for every supported version; most of the serious bugs can be triggered remotely against HTTPS and HTTP/2 servers.",
+      "stats": [
+        {
+          "value": "16",
+          "label": "vulnerabilities fixed"
+        },
+        {
+          "value": "7",
+          "label": "rated high"
+        }
+      ],
+      "body": [
+        "Update to 22.23.5, 24.22.3 or 26.13.1. One high bug leaks server memory into HTTPS responses; another lets a TLS 1.2 client switch host name and skip client-certificate checks."
+      ],
+      "terms": [
+        {
+          "term": "TLS",
+          "def": "The encryption layer under HTTPS that protects traffic between client and server."
+        }
+      ],
+      "why": "A server that handles HTTPS or HTTP/2 directly in Node is exposed until it runs a patched version.",
+      "forYou": "Bump the Node pins in the SaaS Dockerfiles and CI to 22.23.5 or 26.13.1 today.",
+      "sources": [
+        {
+          "label": "Node.js: November 2026 security releases",
+          "url": "https://nodejs.org/en/blog/vulnerability/november-2026-security-releases"
+        }
+      ]
+    },
+    {
+      "id": "cortao",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "EVE's studio open-sources an ambient occlusion pass with less error than GTAO",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The team behind EVE Online released CORTAO, a free shader technique for the soft shadows in corners and crevices, and its own charts show less error than the common GTAO method at every cost tested.",
+      "name": "CORTAO",
+      "what": "Circular Occluder Ray-Traced Ambient Occlusion: three HLSL compute passes, MIT licensed, from Fenris Creations.",
+      "body": [
+        "In the studio's complex-scene test at 4K on an AMD RX 7900 XT, CORTAO at 6 samples beat GTAO's best setting in under two thirds of the time, and kept improving with more samples while GTAO's error rose."
+      ],
+      "facts": [
+        {
+          "k": "Passes",
+          "v": "Prepass, main pass, optional filter"
+        },
+        {
+          "k": "Needs",
+          "v": "Shader Model 6.7 integer sampling, or the documented workarounds"
+        },
+        {
+          "k": "Tested on",
+          "v": "DirectX 11 with a workaround, and DirectX 12; perspective cameras only"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-14/cortao-complex.webp",
+        "alt": "Line chart of average squared error against time in milliseconds for a complex scene: CORTAO's red line sits below GTAO's grey line at every cost, and GTAO's error rises past its 8 by 2 setting.",
+        "credit": "Fenris Creations, CORTAO README (MIT)",
+        "creditUrl": "https://github.com/carbonengine/CORTAO",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "Ambient occlusion",
+          "def": "Soft shading that darkens creases and contact points where surrounding surfaces block light."
+        },
+        {
+          "term": "HLSL",
+          "def": "The shader language used by DirectX, which most engines can compile to other graphics APIs."
+        },
+        {
+          "term": "samples",
+          "def": "The number of directions or points tested per pixel; more samples cost time and reduce noise."
+        }
+      ],
+      "deep": [
+        "The repository's 1.00 release is dated November 5; 80 Level's coverage on November 13 brought it to wider attention. Inputs are depth and view-space normal buffers plus occluder and bent-normal lookup tables, with about 10.5 MB of packed data at 1920x1080. The benchmark used a 5-sample bilateral blur and temporal filtering. All performance claims are the developer's own; 80 Level quotes the studio saying no AI was used to develop it. In simple scenes the README reports similar error to GTAO, faster convergence at low sample counts and a slightly higher cost per sample."
+      ],
+      "why": "Screen-space ambient occlusion is in almost every 3D renderer, and an open, documented alternative with published error charts is rare. Custom engines and web renderers can port it; treat it as a reference to study more than a drop-in.",
+      "forYou": "Unreal has its own AO, so the value is for the three.js and WebGPU games: porting the main pass to WGSL is a contained experiment, and the error charts give a target to check against.",
+      "sources": [
+        {
+          "label": "carbonengine/CORTAO on GitHub",
+          "url": "https://github.com/carbonengine/CORTAO"
+        },
+        {
+          "label": "80 Level: EVE Online dev open-sources its SSAO",
+          "url": "https://80.lv/articles/eve-online-dev-open-sources-its-physically-based-ssao-technology"
+        }
+      ]
+    },
+    {
+      "id": "epic-apple-court",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Epic v. Apple reaches the Supreme Court in January",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Epic asked the US Supreme Court to keep Apple in contempt over its 27% fee on web purchases made after an in-app link; until the case ends, Apple cannot charge that commission.",
+      "intro": "How the link-out fee got here:",
+      "events": [
+        {
+          "when": "2020",
+          "text": "Epic bypasses Apple's payments in Fortnite; Apple removes the game and Epic sues."
+        },
+        {
+          "when": "Apr 2025",
+          "text": "A judge finds Apple in willful violation and bars commissions on purchases made outside the app."
+        },
+        {
+          "when": "Appeal",
+          "text": "Contempt upheld, but a total ban goes too far: a limited fee may come later, only with court approval."
+        },
+        {
+          "when": "Nov 13",
+          "text": "Epic's brief argues Apple shaped the 27% fee to make web checkout pointless."
+        },
+        {
+          "when": "Jan 11, 2027",
+          "text": "Oral argument. The Court weighs the contempt standard, not whether 27% is fair."
+        }
+      ],
+      "why": "US iOS apps that send players to web checkout keep commission-free links at least until a ruling. Epic says 27% plus over 3% in payment fees would cost more than Apple's 30% in-app cut.",
+      "forYou": "No change before 2027 for the mobile games and Flutter apps; keep web checkout links where they exist.",
+      "sources": [
+        {
+          "label": "80 Level: Epic is taking Apple's 27% web fee to the Supreme Court",
+          "url": "https://80.lv/articles/epic-is-taking-apple-s-27-web-fee-to-the-supreme-court"
+        }
+      ]
+    },
+    {
+      "id": "eu-dfa",
+      "format": "compare",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "The EU's Digital Fairness Act is now a formal proposal: what it means for games",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The European Commission published its consumer law proposal on November 11. For games it targets loot boxes and pay-to-progress pressure aimed at children and unclear virtual currency prices, with fines up to 6% of global turnover.",
+      "background": "Until this week only a leaked draft circulated; this is the Commission's formal proposal, which Parliament and member states must still agree.",
+      "intro": "What the proposal would change, as Euronews reports it:",
+      "left": "For children",
+      "right": "For adults",
+      "rows": [
+        {
+          "aspect": "Loot boxes",
+          "left": "Gambling-style loot boxes restricted",
+          "right": "Still allowed, as are streak mechanics"
+        },
+        {
+          "aspect": "Paying to progress",
+          "left": "Pressure to pay to advance, and to overspend, restricted",
+          "right": "No specific rule in the reporting"
+        },
+        {
+          "aspect": "Virtual currency",
+          "left": "The real-money price must be clear",
+          "right": "The real-money price must be clear"
+        },
+        {
+          "aspect": "Personalised ads and prices",
+          "left": "Unfair targeting of minors banned",
+          "right": "Banned where it exploits vulnerabilities"
+        },
+        {
+          "aspect": "Subscriptions",
+          "left": "Easier cancelling, a reminder before a trial turns paid",
+          "right": "Same"
+        }
+      ],
+      "verdict": "Nothing applies yet and no adoption date is set. Game industry groups in Finland and Germany, and Supercell's CEO, have already said the rules would hurt European studios or players.",
+      "terms": [
+        {
+          "term": "loot boxes",
+          "def": "Paid random rewards in a game, where the player does not know what they will get."
+        },
+        {
+          "term": "Virtual currency",
+          "def": "Game money such as gems or coins, bought with real money and spent inside the game."
+        }
+      ],
+      "deep": [
+        "Other parts of the package: a ban on dark patterns such as fake scarcity, an option to switch off autoplay and endless scrolling, a right to reach a human in customer service, and disclosure rules for influencers. A revised enforcement regulation would let the Commission investigate and fine directly in large multi-country cases, and non-EU companies would need an EU legal representative. It runs alongside a proposed EU Kids Act."
+      ],
+      "why": "Any game sold in the EU with an in-game currency, loot boxes or a subscription would be in scope, wherever the studio is based.",
+      "forYou": "As an EU-based seller, the mobile and web games and the SaaS subscription flows are in scope later. No rebuild now, but design new monetisation with visible real-money prices and a one-step cancel.",
+      "sources": [
+        {
+          "label": "Euronews: EU targets subscription traps and addictive design",
+          "url": "https://www.euronews.com/2026/11/11/eu-targets-subscription-traps-addictive-design-and-hidden-fees-with-new-digital-rules"
+        },
+        {
+          "label": "PocketGamer.biz: Finnish and German associations warn on the DFA",
+          "url": "https://www.pocketgamer.biz/finnish-and-german-games-associations-warn-eu-digital-fairness-act-could-hurt-industry"
+        },
+        {
+          "label": "Game Developer: proposed EU law and free-to-play",
+          "url": "https://www.gamedeveloper.com/business/european-union-proposes-digital-fairness-act-which-could-have-major-effects-on-game-development"
+        }
+      ]
+    },
+    {
+      "id": "outfit7-ai-search",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Talking Tom's maker got AI assistants to name its games",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Outfit7 found AI assistants almost never suggested its games for questions like a request for a virtual pet game, worked on its site and press coverage for a year, and now shows up in 90% of the 50 prompts it tracks.",
+      "stats": [
+        {
+          "value": "357%",
+          "label": "more visits referred by AI assistants, over six months"
+        },
+        {
+          "value": "90%",
+          "label": "of 50 tracked prompts now name its games"
+        }
+      ],
+      "body": [
+        "It chose prompts from search terms, support emails and store reviews, rewrote its website for AI retrieval, and sought coverage on sites assistants cite. Outfit7 says it cannot prove the work caused the rise, since the models improved too."
+      ],
+      "terms": [
+        {
+          "term": "AI retrieval",
+          "def": "How an assistant finds and pulls web pages to ground its answer."
+        }
+      ],
+      "deep": [
+        "The audit began in October 2025. A cross-functional team covered marketing, legal, PR, copywriting, content and technical SEO. Outfit7 measures traffic to its website as a proxy, because visits from assistants to app stores cannot be counted directly. Quoted: Primož Bevk, senior director of engineering."
+      ],
+      "why": "Players increasingly ask assistants what to play or buy. A small studio can run the same audit with nothing but a list of prompts.",
+      "forYou": "Run it for the Fab plugin categories and the SaaS products: what do assistants recommend for an Unreal inventory plugin today?",
+      "sources": [
+        {
+          "label": "PocketGamer.biz: How Talking Tom boosted AI referral traffic by 357%",
+          "url": "https://www.pocketgamer.biz/ai-is-changing-discoverability-how-talking-tom-boosted-ai-referral-traffic-by-357/"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Who checks the agent's work",
+      "note": "Generated tests, production sweeps, and what a big consultancy now recommends.",
+      "ids": [
+        "momentic-audit",
+        "aqua-sidecar",
+        "tw-radar"
+      ]
+    },
+    {
+      "title": "Tools that changed this week",
+      "note": "Claude Code permissions, a browser for agents, and a Node patch.",
+      "ids": [
+        "claude-code-325",
+        "kitesurf",
+        "node-security"
+      ]
+    },
+    {
+      "title": "Shadows, stores and the law",
+      "note": "An open shader, an app store case, EU rules, and being found by assistants.",
+      "ids": [
+        "cortao",
+        "epic-apple-court",
+        "eu-dfa",
+        "outfit7-ai-search"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is fuzzing, and how can it play a game?",
+    "answer": "Fuzzing is testing by feeding a program huge numbers of generated inputs and watching for crashes or broken rules. Modern fuzzers keep the inputs that reached new behaviour and build on them, so they dig deeper over time.",
+    "analogy": "It is like a cook who varies a recipe at random but writes down every version that tasted new, then starts the next round of changes from those.",
+    "body": [
+      "A plain fuzzer throws random bytes. A coverage-guided fuzzer watches which parts of the program each input reaches and keeps the inputs that found something new, then mutates them. That simple loop has found many security bugs in parsers, codecs and network code.",
+      "Games are harder: the interesting states sit thousands of moves deep, and random keys mostly do nothing. Today's lead shows two fixes. Saving and rewinding the whole state lets the search branch from deep points instead of starting over, and an action layer turns randomness into valid moves, while a score of progress decides where to dig."
+    ],
+    "diagram": {
+      "layout": "cycle",
+      "nodes": [
+        {
+          "label": "Generate",
+          "note": "Make or mutate an input"
+        },
+        {
+          "label": "Run",
+          "note": "Feed it to the program"
+        },
+        {
+          "label": "Watch",
+          "note": "Crash, new code, rule broken?"
+        },
+        {
+          "label": "Keep",
+          "note": "Save inputs that found something new",
+          "key": true
+        }
+      ],
+      "links": [
+        "feed",
+        "observe",
+        "if new",
+        "mutate again"
+      ],
+      "caption": "The basic fuzzing loop. The NetHack fuzzer adds snapshots, so a new round can start from a saved deep state."
+    },
+    "terms": [
+      {
+        "term": "coverage-guided",
+        "def": "Steered by which parts of the code each input exercises, keeping inputs that reach new parts."
+      },
+      {
+        "term": "mutates",
+        "def": "Changes an input slightly, such as flipping a byte or swapping a move, to make a new one."
+      }
+    ],
+    "seenIn": [
+      "nethack-fuzzer"
+    ],
+    "sources": [
+      {
+        "label": "Antithesis: Beating the frontier on NetHack",
+        "url": "https://antithesis.com/blog/2026/nethack"
+      },
+      {
+        "label": "Wikipedia: Fuzzing",
+        "url": "https://en.wikipedia.org/wiki/Fuzzing"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Ask the assistants who they recommend in your genre",
+    "gist": "Find out in under an hour whether AI assistants name your game or tool when players ask for one like it, and which sites they lean on.",
+    "time": "45 minutes",
+    "level": "everyone",
+    "needs": "A released game, plugin or app, and access to two or three AI assistants.",
+    "steps": [
+      {
+        "title": "Collect the questions",
+        "text": "Write 20 questions a buyer might ask without naming you, worded the way they talk: take phrases from store reviews, support emails and search terms, as Outfit7 did."
+      },
+      {
+        "title": "Ask them",
+        "text": "Put each question to two or three assistants in fresh chats. Note whether you are named, who is named instead, and which sites the answer cites."
+      },
+      {
+        "title": "Score it",
+        "text": "Count the share of questions where you appear. This is your baseline; Outfit7 started near zero."
+      },
+      {
+        "title": "Fix one gap",
+        "text": "Pick the weakest question and make sure your own page answers it plainly, in the buyer's words. Note the cited sites as places worth being covered by."
+      }
+    ],
+    "check": "You have a percentage you can re-measure next month, and a list of the sites the assistants trust for your genre.",
+    "terms": [
+      {
+        "term": "baseline",
+        "def": "A first measurement that later results are compared against."
+      }
+    ],
+    "from": "outfit7-ai-search",
+    "forYou": "Start with the Fab plugin categories (inventory, combat, interaction) and one SaaS product; compare against the competing listings the assistants name.",
+    "sources": [
+      {
+        "label": "PocketGamer.biz: How Talking Tom boosted AI referral traffic",
+        "url": "https://www.pocketgamer.biz/ai-is-changing-discoverability-how-talking-tom-boosted-ai-referral-traffic-by-357/"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "lane": "ai",
+      "text": "GitHub retires several Copilot models on December 14, including Claude Fable 5, Claude Haiku 4.5, Gemini 3.8 Flash and Gemini 4 Argon; each has a named replacement.",
+      "url": "https://github.blog/changelog/2026-11-13-upcoming-deprecation-of-selected-github-copilot-models-in-december",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "GitHub's AI Scan for code scanning can now be switched on per organisation or repository through the REST API, in public preview; each scan spends AI credits.",
+      "url": "https://github.blog/changelog/2026-11-13-manage-ai-scan-for-repositories-using-the-rest-api",
+      "source": "GitHub Changelog"
+    },
+    {
+      "lane": "ai",
+      "text": "Codex 0.169 adds side-chat tabs and task search, and keeps project config and MCP servers off in untrusted folders even with workspace-write.",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.169.0",
+      "source": "Codex releases"
+    },
+    {
+      "lane": "ai",
+      "text": "Claude Managed Agents can now run entirely on your own infrastructure, sessions and history included; access goes through Anthropic's account team.",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "source": "Claude platform"
+    },
+    {
+      "lane": "ai",
+      "text": "Cloudflare adds per-product spending caps and alerts for Workers and Durable Objects; at the cap, new billable requests are refused.",
+      "url": "https://blog.cloudflare.com/spend-management",
+      "source": "Cloudflare"
+    },
+    {
+      "lane": "ai",
+      "text": "llama.cpp reaches 1.0: the C API now follows semantic versioning, so a major number change means a breaking change.",
+      "url": "https://huggingface.co/blog/ggml-org/llama-cpp-v1",
+      "source": "Hugging Face"
+    },
+    {
+      "lane": "ai",
+      "text": "Flutter 3.50 deprecates the bundled Material and Cupertino libraries in favour of standalone material_ui and cupertino_ui packages.",
+      "url": "https://docs.flutter.dev/release/whats-new",
+      "source": "Flutter"
+    },
+    {
+      "lane": "ai",
+      "text": "Vercel Sandbox starts up to 4x faster outside iad1, and the build cache limit rises to 5 GB at no extra cost.",
+      "url": "https://vercel.com/changelog",
+      "source": "Vercel"
+    },
+    {
+      "lane": "ai",
+      "text": "Edge0 announced an open 145B model with about 10B active parameters that it says runs in about 29 GB; its benchmark wins are the company's own, with the method still unpublished.",
+      "url": "https://edge0.ai/blog/introducing-edge0-145b-frontier-ai-capabilities-on-your-own-computer",
+      "source": "Edge0"
+    },
+    {
+      "lane": "ai",
+      "text": "Martin Fowler describes having an LLM draft a domain glossary for experts to review, loading only terms up front and definitions on demand.",
+      "url": "https://martinfowler.com/bliki/GeneratedGlossary.html",
+      "source": "Martin Fowler"
+    },
+    {
+      "lane": "ai",
+      "text": "Cloudflare D1 exports can now include full-text search and R*Tree virtual tables, and AI Search can index a D1 database in beta.",
+      "url": "https://developers.cloudflare.com/changelog/",
+      "source": "Cloudflare"
+    },
+    {
+      "lane": "gamedev",
+      "text": "CD Projekt Red used an AI voice model, with the actor's consent and pay, so Geralt's Polish voice could return after a stroke.",
+      "url": "https://www.gamedeveloper.com/production/polish-voice-actor-for-geralt-returns-for-the-witcher-3-with-ai",
+      "source": "Game Developer"
+    },
+    {
+      "lane": "gamedev",
+      "text": "Nexon plans deeper cuts after cancelling six projects.",
+      "url": "https://www.pocketgamer.biz/nexon-plans-deeper-cuts-after-cancelling-six-projects",
+      "source": "PocketGamer.biz"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "foss-pinball",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "A pinball engine with Jolt physics and TypeScript tables",
+      "where": "Hacker News",
+      "signal": "131 points and 45 comments on Hacker News (November 12)",
+      "hook": "Tables are designed in parametric CAD, scripted in TypeScript and edited live while the ball is in play; the demo table hides an Asteroids video mode.",
+      "borrow": "Scripted, live-editable content on an off-the-shelf physics engine. The author dropped a custom solver for Jolt once ramps and curves broke it, and tunes the feel by running many simulations.",
+      "forYou": "Jolt plus live editing during play is a good pattern for a physics-heavy browser toy; the 18 ms timing window the author mentions is a reminder to test feel, not just correctness.",
+      "url": "https://www.getlazarus.org/forums/topic/17/",
+      "image": {
+        "src": "img/2026-11-14/pinball.webp",
+        "alt": "A 3D pinball table in red and gold with flippers, bumpers, ramps and lit lanes, seen from the player's end.",
+        "credit": "sysrpl, Lazarus forums",
+        "creditUrl": "https://www.getlazarus.org/forums/topic/17/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "isometric-sf",
+      "lane": "both",
+      "kind": "technique",
+      "title": "Isometric SF: the Bay Area redrawn as pixel art by a model trained for it",
+      "where": "Hacker News",
+      "signal": "177 points and 68 comments on Show HN (November 13)",
+      "hook": "Google's photorealistic 3D tiles, rendered in three.js and repainted tile by tile by a small image model fine-tuned on about 1,460 examples, roughly a second per tile.",
+      "borrow": "Train a small style model on pairs a big model redrew, feather the tile seams, and overlay real map data where generation is unreliable. It follows isometric.nyc and the València map featured here; training a cheap model of its own is the new step.",
+      "forYou": "The render, redraw, fine-tune chain could restyle level overviews or store art from a 3D blockout; the write-up lists the compute (about 119 H100 hours).",
+      "url": "https://www.justinchavez.com/blog/isometric-sf-how/",
+      "image": {
+        "src": "img/2026-11-14/isometric-sf.webp",
+        "alt": "Three panels of the same San Francisco block: the raw Google 3D render, a pixel-art redraw, and the final version without cast shadows.",
+        "credit": "Justin Chavez",
+        "creditUrl": "https://www.justinchavez.com/blog/isometric-sf-how/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "hype-riders",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Hype Riders: a Twitch overlay where viewers race karts with their tips",
+      "where": "Steam, Bluesky",
+      "signal": "143 likes and 63 reposts in Bluesky's Godot feed; released in Steam Early Access on November 12",
+      "hook": "Each Bit, sub or gift sub moves a viewer's kart ahead, the hype train speeds up with its level, and a scoreboard closes the race.",
+      "borrow": "An audience's spending turned into a visible race is a small, shippable loop: one input, instant feedback, a ranking at the end, plus an editor so streamers can build their own trains.",
+      "url": "https://store.steampowered.com/app/5073950/Hype_Riders/",
+      "image": {
+        "src": "img/2026-11-14/hype-riders.webp",
+        "alt": "The Hype Riders editor and control panel over a purple stream overlay, with a cartoon locomotive pulling cars that show viewers' avatars.",
+        "credit": "Dare Looks, Steam",
+        "creditUrl": "https://store.steampowered.com/app/5073950/Hype_Riders/",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "satisfix",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Eliciting and Mitigating Specification Satisficing in Coding Agents",
+      "headline": "Agents knowingly skip requirements; listing the shortcuts first helps",
+      "authors": "Ruixin Wang, Tianyi Zhang (Purdue University)",
+      "where": "arXiv preprint (cs.SE)",
+      "date": "2026-11-12",
+      "problem": "Agents often consider a solution that meets a requirement, then pick one that does not, with a reason they accept themselves. Ordinary self-correction misses this because the agent still agrees with its own choice.",
+      "idea": "Two prompts just before coding. First, as an advisor to the project's maintainers, the agent lists every place it decided a requirement could be handled differently: the requirement, its choice, its reason, without judging. Then, back in the developer role, it checks each against the task text and reconsiders.",
+      "result": "Pass rate up 5.09 points on average on DeepSWE and 7.06 on the hard subset of SWE-bench Pro, across five models and two agent frameworks, beating the best self-correction baseline by 3.98 on DeepSWE. Without the listing step, the gain disappeared in the ablation.",
+      "useIt": "Add an advisor-audit turn after planning and before edits, and compare how often finished tasks miss a written requirement with and without it.",
+      "maturity": "prototype",
+      "forYou": "This fits as a skill step in plugin work where specs are explicit: ask for the list of requirements the agent chose to handle differently before it writes C++.",
+      "links": [
+        {
+          "label": "arXiv: 2611.16289",
+          "url": "https://arxiv.org/abs/2611.16289"
+        }
+      ]
+    },
+    {
+      "id": "retarget-guard",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "Real-Time Self-Penetration Repair for Skinned Characters with Soft Contact Budgets",
+      "headline": "A 2 ms post-pass stops hands sinking into bodies after retargeting",
+      "authors": "Yifei Zhu",
+      "where": "arXiv preprint (cs.GR)",
+      "date": "2026-11-06",
+      "problem": "Motion that looks right on one body often pushes hands and forearms into the torso when copied to a heavier or taller one, and fixing it usually means hand cleanup or a trained model.",
+      "idea": "A training-free fix after retargeting: a small per-frame solve adjusts 21 joint rotations with a soft thickness budget per body part, then a second step nudges the final skinned mesh where contact remains.",
+      "result": "On 320 unseen clips and 3 body shapes, frames with hand-torso penetration deeper than 20 mm fell from 15.53% to 0.00%, with a worst final depth of 9.3 mm. It costs 2.29 ms per frame on one CPU core. Compared only against unrepaired copied motion.",
+      "useIt": "Run it as a post-pass after retargeting or generated animation, where crossed arms and hands on stomachs clip; it needs an offline pack per character.",
+      "maturity": "code",
+      "forYou": "Retargeted marketplace animations on the RPG's characters are exactly this case; the plain C module could sit after the IK step in an Unreal plugin.",
+      "links": [
+        {
+          "label": "arXiv: 2611.09693",
+          "url": "https://arxiv.org/abs/2611.09693"
+        },
+        {
+          "label": "Code: retarget-guard",
+          "url": "https://github.com/zhuyifeiabcd1/retarget-guard"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-14/retarget-guard.webp",
+        "alt": "Two rows of a grey character model in four stages: source body, copied to a new body with red penetration patches on the torso, pose fix only, and the final repair with almost no red left.",
+        "credit": "Yifei Zhu, arXiv 2611.09693",
+        "creditUrl": "https://arxiv.org/abs/2611.09693",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "The arXiv and Reddit feeds failed in this morning's sweep, so lab picks came from direct searches; ACM and Unreal pages refused fetches. The NetHack, Momentic, Outfit7 and CORTAO numbers are each company's own."
+}
