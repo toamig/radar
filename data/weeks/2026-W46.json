@@ -1,0 +1,132 @@
+{
+  "id": "2026-W46",
+  "from": "2026-11-09",
+  "to": "2026-11-15",
+  "title": "The week the checks moved outside the agent",
+  "dek": "Again and again, the work that held up was judged by something the agent could not edit: a table of tests, real AWS, a proof checker, a fuzzer's score. Meanwhile Unreal opened its editor to agents and small, cheap games kept finding big crowds.",
+  "theme": {
+    "paper": "sky",
+    "text": "federal-blue",
+    "inks": ["green", "fluoro-pink"],
+    "type": "grotesk",
+    "mood": "a Sunday look back at outside judges, cheaper models and open engines"
+  },
+  "tldr": [
+    "Checks moved outside the agent: tests kept as tables, an emulator proven against real AWS, a sidecar that confirms failures, and Google's falsifiers that agents cannot edit.",
+    "What an agent reads mattered: a stale test command was followed in 78 of 80 runs, and old TODO comments added 70% more steps.",
+    "Cheaper models took over more steps: Gemini 4 Hydrogen edits while Carbon plans, and a small classifier replaced a frontier model at about a 44th of the cost.",
+    "Unreal Engine 5.9's preview lets Claude Code, Codex, Cursor or OpenCode drive the editor over MCP, and brings back a browser target.",
+    "Small games won big: a solo $8 co-op game passed an estimated 250,000 copies, and a fuzzer won NetHack in minutes."
+  ],
+  "threads": [
+    {
+      "title": "Keep the judge outside the agent",
+      "lane": "ai",
+      "summary": [
+        "Thursday a Thoughtworks engineer argued for tests kept as data tables an agent cannot quietly change, and AWS described building a local emulator with agents only after each test had passed against real AWS. Saturday Momentic rated just 9.6% of 1,000 agent-written unit tests useful, and Google released a sidecar that confirms each production agent failure before reporting it.",
+        "Sunday Google Research described /teamwork, where many agents explore and only results that pass a falsifier survive: a Lean proof checker, unmodified tests or a simulator. A Rust port of its AV1 decoder matched the C++ bit for bit and ended 20 to 30% faster, by Google's account."
+      ],
+      "days": ["2026-11-12", "2026-11-14", "2026-11-15"],
+      "sources": [
+        { "label": "Martin Fowler: tests as data", "url": "https://martinfowler.com/articles/tests-as-data.html" },
+        { "label": "Stack Overflow: your coding agent should not grade its own homework", "url": "https://stackoverflow.blog/2026/11/13/your-coding-agent-shouldn-t-grade-its-own-homework" },
+        { "label": "Google Research: /teamwork", "url": "https://research.google/blog/advancing-science-engineering-with-antigravitys-teamwork-feature" }
+      ]
+    },
+    {
+      "title": "What the agent reads decides what it does",
+      "lane": "ai",
+      "summary": [
+        "Monday a study of 732 runs found agents follow a stale line in an instruction file almost every time, 78 of 80 runs for a moved test command, and rarely say so. Wednesday Google showed old TODO comments send agents on unasked detours, with 70% more steps.",
+        "Friday a paper found most broken prompt caching fails silently, and Sunday a developer measured 52 connected MCP tools at 24,600 tokens of descriptions per turn, against 640 for four focused tools, with fewer right first picks."
+      ],
+      "days": ["2026-11-09", "2026-11-11", "2026-11-13", "2026-11-15"],
+      "sources": [
+        { "label": "Stale instructions study (arXiv)", "url": "https://arxiv.org/abs/2611.09802" },
+        { "label": "Google Developers: agent distraction", "url": "https://developers.googleblog.com/agent-distraction/" },
+        { "label": "DEV: MCP servers draining your context", "url": "https://dev.to/necoz/your-mcp-servers-are-silently-draining-your-context-window-the-hidden-cost-of-tool-heavy-ai-agents-fkl" }
+      ]
+    },
+    {
+      "title": "The right model for each step",
+      "lane": "ai",
+      "summary": [
+        "Tuesday Claude Fable 5.2 arrived at $8 in and $40 out per million tokens, with effort level mattering as much as the model name. Wednesday Amazon swapped a frontier model for a small classifier on a labelling job, about 44 times cheaper by its own figures.",
+        "Friday Google let one Antigravity task plan with Gemini 4 Carbon and hand edits to the cheaper Hydrogen, for 24% less quota. Sunday Perplexity released Decider v1.3, an open model for routing and judging in one pass."
+      ],
+      "days": ["2026-11-10", "2026-11-11", "2026-11-13", "2026-11-15"],
+      "sources": [
+        { "label": "Anthropic: Claude Fable and Mythos 5.2", "url": "https://www.anthropic.com/claude-fable-and-mythos-5-2" },
+        { "label": "Antigravity: Gemini 4 Hydrogen", "url": "https://antigravity.google/blog/gemini-4-hydrogen-in-google-antigravity" },
+        { "label": "Perplexity: Decider v1.3", "url": "https://www.perplexity.ai/hub/blog/perplexity-decider" }
+      ]
+    },
+    {
+      "title": "Engines open the door to agents",
+      "lane": "gamedev",
+      "summary": [
+        "Monday Frontier3DBench found agents can build props in Blender and Unreal but score about 30 of 100 on stateful gameplay. Wednesday Epic's Unreal Engine 5.9 preview, mostly written by agents in about a week, added an editor panel that runs Claude Code, Codex, Cursor or OpenCode over Unreal MCP, plus an experimental browser target.",
+        "Friday a five-person studio that left Fortnite showed its Defold pipeline: a 4-second boot, 6,500 tests and an MCP server for agents. Saturday Antithesis's fuzzer won 79% of 480 NetHack games by saving, branching and scoring game states."
+      ],
+      "days": ["2026-11-09", "2026-11-11", "2026-11-13", "2026-11-14"],
+      "sources": [
+        { "label": "Unreal Engine 5.9 MegaJam preview", "url": "https://forums.unrealengine.com/t/unreal-engine-5-9-megajam-preview/2852840" },
+        { "label": "Defold: Snowfall Games and Portentum", "url": "https://defold.com/2026/11/12/Creator-Spotlight-Snowfall-Games-Portentum" },
+        { "label": "Antithesis: NetHack", "url": "https://antithesis.com/blog/2026/nethack" }
+      ]
+    },
+    {
+      "title": "Small games, found by players",
+      "lane": "gamedev",
+      "summary": [
+        "Saturday Talking Tom's maker reported 357% more visits referred by AI assistants after six months of work, and the EU's Digital Fairness Act became a formal proposal aimed at subscription traps and hidden fees.",
+        "Sunday GameDiscoverCo profiled Crack, an $8 co-op game one developer made in nine months, at an estimated 250,000 copies, and shared a playbook for reaching Chinese players on Steam. A MIGS talk showed AI-disclosed games make up 40% of Steam releases but about 13% of reviews."
+      ],
+      "days": ["2026-11-14", "2026-11-15"],
+      "sources": [
+        { "label": "GameDiscoverCo: Crack", "url": "https://newsletter.gamediscover.co/p/is-crack-the-future-of-small-footprint" },
+        { "label": "PocketGamer.biz: Talking Tom and AI referrals", "url": "https://www.pocketgamer.biz/ai-is-changing-discoverability-how-talking-tom-boosted-ai-referral-traffic-by-357/" },
+        { "label": "PocketGamer.biz: MIGS and PGC Montreal", "url": "https://www.pocketgamer.biz/key-takeaways-from-migs-and-pgc-montreal" }
+      ]
+    }
+  ],
+  "numbers": [
+    { "value": "78 of 80", "label": "runs that followed a stale test command in an instruction file", "date": "2026-11-09" },
+    { "value": "$8 / $40", "label": "Claude Fable 5.2 price per million tokens in and out", "date": "2026-11-10" },
+    { "value": "70%", "label": "more steps when agents chased old TODO comments, per Google", "date": "2026-11-11" },
+    { "value": "442", "label": "CVEs credited to Anthropic in seven months, per VulnCheck", "date": "2026-11-12" },
+    { "value": "79%", "label": "of 480 NetHack games won by Antithesis's fuzzer", "date": "2026-11-14" },
+    { "value": "250,000+", "label": "copies of Crack, a solo $8 co-op game, GameDiscoverCo estimate", "date": "2026-11-15" }
+  ],
+  "watch": [
+    "The C++ committee meets from November 16, after C++26 became the first C++ draft to fail its ISO ballot.",
+    "Feedback and fixes during Unreal Engine 5.9's preview, which Epic says it will triage with help from agents.",
+    "Steam Awards voting opens November 23.",
+    "Epic v. Apple reaches the US Supreme Court in January."
+  ],
+  "deepRead": {
+    "id": "satisfix-deep",
+    "lane": "ai",
+    "kind": "preprint",
+    "title": "Eliciting and Mitigating Specification Satisficing in Coding Agents",
+    "headline": "Agents knowingly pick shortcuts that skip a requirement; asking them to list those choices first fixes many",
+    "authors": "Ruixin Wang, Tianyi Zhang (Purdue University)",
+    "where": "arXiv preprint (cs.SE)",
+    "date": "2026-11-12",
+    "problem": "Coding agents often consider an approach that meets a requirement, then settle on one that does not, for a reason they find acceptable. Self-correction prompts miss this, because the agent still agrees with its own choice.",
+    "idea": "SatisFix adds two turns before coding. First the agent, cast as an advisor helping maintainers revise the task, lists each requirement where it chose a different approach, with its choice and reason, without judging them. Then, back in the developer role, it checks each item against the task text and reconsiders.",
+    "result": "Across five models and two agent frameworks, pass@1 rose by 5.09 points on average on DeepSWE and 7.06 on the hard subset of SWE-bench Pro, and beat the best of three self-correction baselines by 3.98 on DeepSWE. Without the advisor role, the gain fell back to the base agent's level.",
+    "useIt": "After planning and before edits, ask the agent to list, as an advisor to the maintainers, every requirement it chose to handle differently and why; then have it check each one against the task text.",
+    "maturity": "prototype",
+    "links": [
+      { "label": "arXiv: 2611.16289", "url": "https://arxiv.org/abs/2611.16289" },
+      { "label": "Full text (HTML)", "url": "https://arxiv.org/html/2611.16289" }
+    ],
+    "more": [
+      "Why it was the week's most useful result: it names a failure every agent user has seen, a finished task that quietly drops one requirement, and gives a fix that costs two prompts. It also explains why asking an agent to check its own work often fails: the agent judges its choices by the same reasons it used to make them.",
+      "The framing is the trick. The listing turn does not ask the agent to find mistakes; it asks it to help revise the task description, so it can report a choice without treating it as an error. With GPT-5.6-Luna, 90 such items surfaced in 61 of 113 tasks; DeepSeek V4 Flash reported 227 items in 105 tasks, about 2.0 per task against 0.8.",
+      "On tasks where the agent reconsidered at least one item, GPT-5.6-Luna with SatisFix solved 55.7% against 47.1% for the base agent over four runs; on the other tasks the two were close, at 42.3% and 40.9%. The gain comes from the items it surfaces, not from extra thinking in general.",
+      "Limits: the benchmarks are Python repositories with hidden tests, the models are mid-sized, and the paper reports no released code. The two prompts are simple enough to try in any agent as a skill or a planning step."
+    ]
+  }
+}

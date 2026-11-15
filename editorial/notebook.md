@@ -43,6 +43,8 @@ what to avoid next time. Facts about stories never go here.
 
 - 2026-11-14 No. 32: bright-red + aqua on butter, hunter text, poster type, stack hero with a 5-node kit flow (snapshot, branch, score, prune, forget); the source's cover art was decorative and its flowchart showed the game, not the method, so both were dropped. A wide image spotlight beside a five-event timeline third left about 350px; moving the spotlight's second finding and background into deep cut it to about 150. A half chart beside a half image concept left about 200px; acceptable. Sparks ran thin: check HN threads before taking a desk's pick (the Quake 4 expansion turned out AI-finished and disputed), and a Playwright pass over a forum page can find a video poster that makes an honest spark image.
 
+- 2026-11-15 No. 33: purple + orange on mint, black text, wide type, split hero with a real Steam screenshot (cover). Wide type overflowed a stat value of "250,000+" past the column; "250k+" fits. A half steps block beside a half chart left a 500px hole; making the steps full width (four across) and pairing the chart with a half flow diagram evened it. At wide size, a seven-letter node label ("Explore") clipped in wide type; use four or five letters. A folded practitioner list beside a spotlight left a hole again; unfold it.
+
 ## Kit requests
 
 Done 2026-10-15: code blocks no longer inherit the inline code tint; the poster hero title
