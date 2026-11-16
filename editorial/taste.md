@@ -143,6 +143,10 @@ Write for a curious reader who loves games and AI but is not an expert in every 
 of them. The owner reads Radar to learn, not only to keep up. Lead with the plain point,
 define the jargon, and keep the depth one click away.
 
+Learn one thing works best when the concept is a game design idea the day's stories lean on
+(the incremental loop behind a hit, with its history and a loop diagram), not only an
+engineering term. Alternate design and technical concepts over the week.
+
 Developer to developer. Plain words, short sentences, concrete nouns. Explain what it
 is, what changed, and what to do about it. No hype words: powerful, seamless, robust,
 game-changing, revolutionary, unlock, supercharge.

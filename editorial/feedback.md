@@ -8,6 +8,8 @@ entries under "Folded in".
 
 ## New
 
+## Folded in
+
 - #8 More like: What is an incremental game? (2026-11-16)
   direction: more
   issue: 2026-11-15
@@ -16,8 +18,7 @@ entries under "Folded in".
   lane: both
   
   Optional note (what exactly, and why):
-
-## Folded in
+  Lesson (2026-11-16): game design concepts make good Learn one thing picks; alternate them with technical ones. Added to taste.md.
 
 - #7 More like: Text.js: React apps that render inside the browser console (2026-11-09)
   direction: more
