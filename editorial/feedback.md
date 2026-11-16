@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #8 More like: What is an incremental game? (2026-11-16)
+  direction: more
+  issue: 2026-11-15
+  block: learn
+  format: learn
+  lane: both
+  
+  Optional note (what exactly, and why):
+
 ## Folded in
 
 - #7 More like: Text.js: React apps that render inside the browser console (2026-11-09)
