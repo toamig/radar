@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #9 More like: An auto-battler where you program your party with rules (2026-11-16)
+  direction: more
+  issue: 2026-11-16
+  block: gambit-battler
+  format: spark
+  lane: gamedev
+  
+  Optional note (what exactly, and why):
+
 ## Folded in
 
 - #8 More like: What is an incremental game? (2026-11-16)
