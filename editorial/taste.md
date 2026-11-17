@@ -105,6 +105,10 @@ and agents left to themselves that start inventing games or rules. Treat interac
 generative worlds as a lead-worthy game dev story when there is a real demo or paper, and
 look for one AI-plays-or-makes-games experiment in Sparks most days.
 
+Games where playing means programming also rate high: an auto-battler where you write your party's
+rules, automation and factory games, logic and code puzzles. The hook is a system the player
+configures and then watches run; say what the rule language looks like and what designers could borrow.
+
 ## What earns a place
 
 - It changes how this reader works this week: a release, a setting, a technique,

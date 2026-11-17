@@ -8,6 +8,9 @@ entries under "Folded in".
 
 ## New
 
+
+## Folded in
+
 - #9 More like: An auto-battler where you program your party with rules (2026-11-16)
   direction: more
   issue: 2026-11-16
@@ -16,8 +19,7 @@ entries under "Folded in".
   lane: gamedev
   
   Optional note (what exactly, and why):
-
-## Folded in
+  Lesson (2026-11-17): games where you program or automate the play (rule-based party AI, factory and logic games) are a liked spark kind. Added to taste.md.
 
 - #8 More like: What is an incremental game? (2026-11-16)
   direction: more
