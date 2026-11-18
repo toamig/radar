@@ -1,0 +1,1053 @@
+{
+  "date": "2026-11-18",
+  "number": 36,
+  "title": "Proof before the commit",
+  "dek": "The Claude Code team explains how agents check their own work before a person looks. Plus where agents should run code, what new models cost per task, and what Unity plans to rebuild under every project.",
+  "theme": {
+    "paper": "blush",
+    "text": "federal-blue",
+    "inks": [
+      "teal",
+      "orange"
+    ],
+    "type": "poster",
+    "mood": "a Wednesday about evidence that work is really done"
+  },
+  "tldr": [
+    {
+      "text": "Claude writes and reviews about 90% of Claude Code's own code. The team credits **verification loops**: a skill that runs the app, review rules a change cannot edit, and a stamp on every commit.",
+      "lane": "ai"
+    },
+    {
+      "text": "A study of 27,280 agent runs found the model drives 92.8% of cost differences and the harness only 2.3%, while 64.5% of the spend went on runs that failed.",
+      "lane": "ai"
+    },
+    {
+      "text": "OpenAI's GPT-6.2 Astra costs $8 in and $40 out per million tokens, the same as Fable 5.2. One test drawing cost 2.41 cents to 88.71 cents depending on model and effort.",
+      "lane": "ai"
+    },
+    {
+      "text": "Unity says every GameObject will also be an Entity in Unity 7, and showed baking-free lighting and neural texture compression that cut one scene's texture memory by nearly 30%.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "A GDC survey puts generative AI use at 70% in mobile-only studios against 40% overall, while 55% of respondents say it is hurting the industry.",
+      "lane": "gamedev"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "cc-verification",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "How the Claude Code team checks work nobody reads line by line",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The Claude Code team says Claude writes and reviews about 90% of their code. The checks that make it safe: the agent runs the app, a reviewer follows rules the change cannot touch, and a person steps in after three failed tries.",
+      "background": "A coding agent can produce more changes in a day than a person can read. The open question for every team using agents is how to know the work is right without reading all of it.",
+      "takeaway": "Stop trying to read every diff. Decide what done looks like, give the agent a fast way to prove it, and keep the rules that judge a change out of that change's reach.",
+      "body": [
+        "In a post by Addy Osmani, the Claude Code team says verification loops are what let them run many agents at once instead of one or two they check by hand. Verification means running the change the way a person would: a browser extension for web apps, a simulator for mobile, computer use for desktop, or the service locally for backend work.",
+        "They codify how to start and drive the app in a skill named `verify`, kept in the repository next to the code, and Claude uses it before committing. If a check still fails after three rounds of fixing, Claude stops and asks a person. A 39-item reliability checklist links each item to a trigger readable from a diff, so Claude runs only the 3 to 10 items a change touches.",
+        "Two rules keep the system honest. The review rules file is read from the base branch, never from the pull request, so a change cannot rewrite its own judge. Every commit is stamped with how it was verified, including **none**, and a commit gate that blocks unverified commits is first run in observe mode, which only logs what it would have blocked."
+      ],
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "Run",
+            "note": "The verify skill starts the app and drives a real user flow"
+          },
+          {
+            "label": "Test",
+            "note": "Tests, build and linter pass before a pull request opens"
+          },
+          {
+            "label": "Review",
+            "note": "One reviewer, rules read from the base branch",
+            "key": true
+          },
+          {
+            "label": "Stamp",
+            "note": "Each commit records how it was checked, even none"
+          },
+          {
+            "label": "Human",
+            "note": "Called in after three failed rounds"
+          }
+        ],
+        "links": [
+          "then",
+          "then",
+          "then",
+          "if stuck"
+        ],
+        "caption": "The loop as the post describes it. The key step is the reviewer whose rules live where the change cannot edit them."
+      },
+      "stat": {
+        "value": "90%",
+        "label": "of the team's code is written and reviewed by Claude, the post says"
+      },
+      "terms": [
+        {
+          "term": "verification loops",
+          "def": "Automatic checks an agent runs on its own work, fixing and rerunning until they pass or it gives up."
+        },
+        {
+          "term": "base branch",
+          "def": "The main line of code a pull request will be merged into, which the pull request itself does not change."
+        },
+        {
+          "term": "observe mode",
+          "def": "Running a new rule so it only records what it would have blocked, to catch false alarms before it blocks anyone."
+        },
+        {
+          "term": "skill",
+          "def": "A folder of instructions and scripts that Claude Code loads when a task needs it."
+        }
+      ],
+      "deep": [
+        "The post ranks test types for agent work: end-to-end tests first because they are hard to fool, then property tests (fast-check for TypeScript, Hypothesis for Python, proptest for Rust) that generate thousands of inputs against a rule that must always hold, then differential tests that run old and new code on the same inputs.",
+        "The commit gate has three modes: off, observe and enforce. In enforce mode a commit message can explain why it was not verified, and after two blocks in one session the next commit is let through so the agent does not get stuck.",
+        "Flaky tests get a hard rule: Claude may not skip them, add sleeps or retry until they pass. If the root cause cannot be found, the test is deleted and the reason written down. A pattern becomes a review rule only if it appeared in at least two pull requests and can be spotted from a diff.",
+        "Internal testing found that a separate grader checking output against a rubric raised task success by up to 10 points over a plain prompting loop, with the largest gains on the hardest problems (team-reported)."
+      ],
+      "why": "Agents now write faster than anyone can read. The bottleneck has moved to proof, and this is a working recipe for it from a team that ships with agents every day.",
+      "forYou": "Add a verify skill to the plugin repo that launches a headless editor test map, and to each web game that drives one flow in a browser; then run a commit gate in observe mode for a week before enforcing it.",
+      "sources": [
+        {
+          "label": "Claude Code team: How we think about verification",
+          "url": "https://claude.dev/blog/how-the-claude-code-team-thinks-about-verification"
+        }
+      ]
+    },
+    {
+      "id": "e2e-evidence",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A failing end-to-end test tells the agent which step broke",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A unit test that times out gives an agent nothing to go on. An end-to-end test that clicks through the app gives it a trace, a screenshot and the exact step that failed, so it can fix the right thing.",
+      "plain": "Test the whole feature the way a user would, and the failure report becomes instructions the agent can act on.",
+      "body": [
+        "The Claude Code team's first choice, if a project can afford only one kind of test, is the end-to-end test: register, add an item to the cart, check out, see the confirmation page. Unit tests are faster and less flaky, but the post warns they can pass while the feature is broken. An end-to-end run either works or it does not.",
+        "The figure from the post shows why this matters for agents. The unit test says only that it timed out after 30 seconds. The end-to-end test shows that checkout failed because the payment form never loaded, with a screenshot of the disabled button."
+      ],
+      "points": [
+        "Give the agent hands and eyes: a browser protocol, a simulator or an API harness.",
+        "Keep tests fast and stable; flaky tests teach an agent to rerun instead of fix.",
+        "Use a feature map of what the app should do as the grading checklist."
+      ],
+      "image": {
+        "src": "img/2026-11-18/cc-verify.webp",
+        "alt": "Two panels. Left: a unit test output reading only FAIL and Error: Timeout after 30s. Right: an end-to-end test trace with register and add to cart ticked, checkout failed, and a screenshot showing the payment form failed to load.",
+        "credit": "Claude Code team",
+        "creditUrl": "https://claude.dev/blog/how-the-claude-code-team-thinks-about-verification",
+        "fit": "contain"
+      },
+      "terms": [
+        {
+          "term": "end-to-end test",
+          "def": "A test that drives the whole running app like a user, from the first screen to the result."
+        },
+        {
+          "term": "unit test",
+          "def": "A small test that checks one function or class on its own, without the rest of the app."
+        },
+        {
+          "term": "flaky",
+          "def": "Sometimes passes and sometimes fails with no change to the code."
+        }
+      ],
+      "why": "The quality of an agent's fix depends on the quality of the failure it reads. Tests that show the broken step turn a guessing loop into a repair loop.",
+      "forYou": "For the browser games, a Playwright run that plays the first minute and screenshots each step is the end-to-end test to start with.",
+      "sources": [
+        {
+          "label": "Claude Code team: How we think about verification",
+          "url": "https://claude.dev/blog/how-the-claude-code-team-thinks-about-verification"
+        }
+      ]
+    },
+    {
+      "id": "check-tools",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "What shipped this week for checking agent setups",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Claude Code can now list the broken parts of your agent setup in one command, and GitHub added evals for Copilot skills and a code review that picks how hard to look.",
+      "intro": "Four changes from the release notes that help catch a broken agent setup before it costs a day.",
+      "items": [
+        {
+          "title": "Claude Code: /status finds silent breakage",
+          "text": "Version 2.1.327 makes /status list broken agent, skill and command files, ignored permission settings, an unavailable sandbox and hooks whose matcher never matches.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.327"
+        },
+        {
+          "title": "Claude Code: secrets off the command line",
+          "text": "`claude mcp add-json <name> -` reads a server's JSON from standard input, so tokens stay out of shell history. Project-scope adds no longer wipe other keys in .mcp.json.",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.327"
+        },
+        {
+          "title": "GitHub: evals for skills, agents and MCP tools",
+          "text": "Copilot Evals, in public preview, runs a realistic task against a skill or custom agent, checks the result and the process, and compares runs before and after a change.",
+          "url": "https://github.blog/changelog/2026-11-17-github-copilot-evals-is-now-in-public-preview"
+        },
+        {
+          "title": "GitHub: review effort that adapts",
+          "text": "Copilot code review can pick a light, balanced or maximum review per pull request by risk, never above your set ceiling, and now flags exposed secrets.",
+          "url": "https://github.blog/changelog/2026-11-17-copilot-code-review-adaptive-effort-secret-detection-and-more"
+        }
+      ],
+      "terms": [
+        {
+          "term": "evals",
+          "def": "Repeatable tests that score how well an AI system does a set task."
+        },
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools and data sources into an AI agent."
+        },
+        {
+          "term": "hooks",
+          "def": "Scripts that Claude Code runs automatically at set moments, such as before a tool call."
+        }
+      ],
+      "deep": [
+        "Claude Code 2.1.327 also fixes Grep paging that repeated or skipped results, refuses WebFetch URLs over 2,000 characters before asking permission, and retries remote MCP servers in the background for about a day after an outage.",
+        "Copilot Evals runs on Vally, a local eval tool. It installs as a VS Code extension, a Copilot CLI plugin, or from the github/evals marketplace in the Copilot app. A new Repository insights page tracks how many Copilot review comments were addressed."
+      ],
+      "why": "An agent setup fails quietly: a hook that never fires or a skill that no longer loads looks like nothing at all. These tools make that failure visible.",
+      "forYou": "Run /status in the plugin repo and each SaaS repo after updating; dead hook matchers are the likeliest find.",
+      "sources": [
+        {
+          "label": "Claude Code 2.1.327 release notes",
+          "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.327"
+        },
+        {
+          "label": "GitHub Changelog: Copilot Evals",
+          "url": "https://github.blog/changelog/2026-11-17-github-copilot-evals-is-now-in-public-preview"
+        },
+        {
+          "label": "GitHub Changelog: Copilot code review",
+          "url": "https://github.blog/changelog/2026-11-17-copilot-code-review-adaptive-effort-secret-detection-and-more"
+        }
+      ]
+    },
+    {
+      "id": "external-sandbox",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Keep the agent on your machine, and its code somewhere else",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Simon Willison and Prime Radiant published sandboxes that run only the code an agent executes in a small throwaway Linux, with a proxy that decides which sites it may reach and adds passwords the agent never sees.",
+      "intro": "In this external sandbox pattern, the agent keeps running normally, but every command it wants to execute goes to a local server that runs it inside an isolated machine. Pi, Claude Code and Codex can each be pointed at the same API.",
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Agent",
+          "note": "Runs on your machine as usual"
+        },
+        {
+          "label": "API",
+          "note": "One localhost interface for every sandbox"
+        },
+        {
+          "label": "Box",
+          "note": "Alpine Linux in WebAssembly, a container or QEMU",
+          "key": true
+        },
+        {
+          "label": "Proxy",
+          "note": "Allow-list of hosts, adds credentials"
+        },
+        {
+          "label": "Web",
+          "note": "Only the hosts the policy allows"
+        }
+      ],
+      "links": [
+        "sends code",
+        "runs it in",
+        "calls out via",
+        "reaches"
+      ],
+      "caption": "Three servers share the API: one runs Alpine in the browser-grade v86 emulator, one in Apple Containers, one in Microsoft's Quicksand. The proxy policy can be edited live.",
+      "terms": [
+        {
+          "term": "sandbox",
+          "def": "An isolated environment where code can run without touching the rest of the computer."
+        },
+        {
+          "term": "proxy",
+          "def": "A middleman that every network request passes through, so it can block or change them."
+        },
+        {
+          "term": "prompt injection",
+          "def": "Text hidden in a page or file that tries to make an AI follow the attacker's instructions."
+        }
+      ],
+      "deep": [
+        "The repositories are external-sandbox-v86 (Node.js), external-sandbox-container (Python, Apple Containers) and external-sandbox-quicksand (Python, QEMU and Alpine packaged as one library), all under the prime-radiant-inc GitHub organisation.",
+        "A related tool published the same day, lend, approaches the same problem from the other side: an agent in a virtual machine asks the laptop to run a command such as gh, the laptop checks a default-deny policy and asks for Touch ID, and the token never leaves the laptop."
+      ],
+      "why": "Willison's stated goal is to make it safer to try local models, so a mistake or a prompt injection cannot damage the host. The pattern works for any agent you do not fully trust.",
+      "forYou": "Worth trying before letting an unattended routine run untrusted build scripts from asset packs or third-party repos.",
+      "sources": [
+        {
+          "label": "Simon Willison: External sandboxes for coding agents",
+          "url": "https://simonwillison.net/2026/Nov/17/external-sandboxes-for-coding-agents"
+        },
+        {
+          "label": "Antonio: Running agents with lend",
+          "url": "https://blog.antonio.cx/running-agents-with-lend"
+        }
+      ]
+    },
+    {
+      "id": "shopify-remote",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Shopify moved its app agents off laptops",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Three or four agents building mobile apps were enough to max out a laptop, so Shopify gave each agent session its own remote Mac or Linux machine with simulators.",
+      "stats": [
+        {
+          "value": "61%",
+          "label": "of merged pull requests now come from its agent system, up from 6%"
+        },
+        {
+          "value": "3 or 4",
+          "label": "parallel agent workflows filled a laptop"
+        }
+      ],
+      "body": [
+        "Agents build the app, drive iOS simulators and Android emulators, take screenshots and open pull requests, including overnight bug-fix runs. InfoQ does not say over what period the share grew."
+      ],
+      "terms": [
+        {
+          "term": "simulators",
+          "def": "Programs that imitate a phone on a computer so apps can be run and tested without the device."
+        }
+      ],
+      "why": "Parallel agents need machines that stay on when the lid closes. Mobile builds, which need macOS for iOS, are where laptops run out first.",
+      "forYou": "The Flutter apps hit the same wall; a remote Mac session per agent is the setup to price before running agents in parallel on iOS builds.",
+      "sources": [
+        {
+          "label": "InfoQ: How Shopify orchestrates AI-powered mobile development",
+          "url": "https://www.infoq.com/news/2026/11/shopify-remote-ai-dev"
+        }
+      ]
+    },
+    {
+      "id": "gpt-62",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "GPT-6.2: one drawing costs 2 cents or 89",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "OpenAI released two new models, Astra and the cheaper Sol. In Simon Willison's quick test, the same drawing cost 37 times more on Astra at maximum effort than on Sol at high effort.",
+      "intro": "Cost of one test drawing (Willison's pelican on a bicycle) by model and effort level. Astra lists at $8 in and $40 out per million tokens, 20% below GPT-6 Astra and the same as Fable 5.2; Sol stays at $2 and $10.",
+      "unit": "¢",
+      "series": [
+        {
+          "label": "Sol, high",
+          "value": 2.41
+        },
+        {
+          "label": "Sol, xhigh",
+          "value": 6.74
+        },
+        {
+          "label": "Sol, max",
+          "value": 13.69
+        },
+        {
+          "label": "Astra, high",
+          "value": 11.55
+        },
+        {
+          "label": "Astra, xhigh",
+          "value": 17.7
+        },
+        {
+          "label": "Astra, max",
+          "value": 88.71,
+          "highlight": true
+        }
+      ],
+      "note": "One prompt each, from Willison's post; a cost sample, not a quality ranking. On Artificial Analysis's index, reported by The Decoder, Fable 5.2 scores 65, Astra 62 and Sol 57.",
+      "terms": [
+        {
+          "term": "effort level",
+          "def": "A setting that tells a model how long to think before answering; more effort costs more tokens."
+        },
+        {
+          "term": "tokens",
+          "def": "The small chunks of text a model reads and writes, which is how usage is billed."
+        }
+      ],
+      "deep": [
+        "Both are in the API as gpt-6.2-astra and gpt-6.2-sol, in Codex and ChatGPT, and generally available in GitHub Copilot on paid plans. Astra's cached input falls to $0.40 per million tokens from $1, which Willison calls good news for long agent sessions.",
+        "OpenAI's own numbers (vendor-reported) put Astra 5.2 points above GPT-6 Astra on Agents' Last Exam at under a third of the cost. Willison notes the reception is mixed and Astra trails Fable 5.2 on several benchmarks."
+      ],
+      "why": "Effort level now moves cost more than model choice does in some tasks. Pick the effort per job, not once per project.",
+      "forYou": "Sol at high effort is a cheap candidate for routine subagent work such as lint fixes; compare it on one real task before switching anything.",
+      "sources": [
+        {
+          "label": "Simon Willison: GPT-6.2 Astra and Sol",
+          "url": "https://simonwillison.net/2026/Nov/17/gpt62-astra-and-sol"
+        },
+        {
+          "label": "The Decoder: GPT-6.2 launch and benchmarks",
+          "url": "https://the-decoder.com/openai-launches-gpt-6-2-astra-and-sol-with-lower-api-prices-and-some-benchmark-gains/"
+        },
+        {
+          "label": "GitHub Changelog: GPT-6.2 in Copilot",
+          "url": "https://github.blog/changelog/2026-11-17-openais-gpt-6-2-astra-and-gpt-6-2-sol-now-available"
+        }
+      ]
+    },
+    {
+      "id": "harness-cost",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "The model sets the bill, and failures eat most of it",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A test of 22 agent harnesses on five open models found the model explains almost all cost differences, and nearly two thirds of the money went on runs that failed.",
+      "stats": [
+        {
+          "value": "92.8%",
+          "label": "of cost differences came from the model"
+        },
+        {
+          "value": "2.3%",
+          "label": "came from the harness around it"
+        },
+        {
+          "value": "64.5%",
+          "label": "of spend went on runs that did not pass"
+        }
+      ],
+      "body": [
+        "Runta ran 27,280 agent runs on 62 terminal tasks. With the model fixed, the priciest harness still cost 1.8 to 5 times the cheapest per task, and the number of steps was the only factor tested that tracked cost per pass. Open models on one provider only; closed models come later.",
+        "Pi, Codex CLI and ZCode tied for the top pass rate at 61.9%, each with a 95% interval of about 10 points either way. The best-value harness changed with the model: the median harness moved 11 of 22 places in cost rank, and only the GLM-5.3 result held up under resampling."
+      ],
+      "terms": [
+        {
+          "term": "harness",
+          "def": "The program around a model that gives it tools, runs its commands and decides when it is done, such as Claude Code or Codex CLI."
+        }
+      ],
+      "deep": [],
+      "why": "To cut agent spend, change the model or stop failing runs early; switching harness is the smaller lever.",
+      "sources": [
+        {
+          "label": "Runta: FrontierHarness Eval v1.1",
+          "url": "https://runta.com/blog/introducing-frontierharness-eval-v1-1"
+        }
+      ]
+    },
+    {
+      "id": "unity-7",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Unity 7 turns every object into an entity",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "At Unite Tokyo, Unity said existing projects will get faster in Unity 7 because every object also becomes an entity for its data-oriented engine core, and it showed lighting with no baking.",
+      "intro": "The engine changes from the keynote recap; Unity gives no release date for Unity 7.",
+      "items": [
+        {
+          "title": "ECS for All",
+          "text": "Every GameObject is also an Entity. In a 5,000-spaceship demo the GameObject version slowed while the ECS one held its frame rate.",
+          "url": "https://unity.com/blog/unite-tokyo-2026-keynote-recap"
+        },
+        {
+          "title": "Surface Cache GI",
+          "text": "Dynamic global illumination for URP with no lightmaps; the Atrio sample ran at full resolution and 60 fps (Unity's figures).",
+          "url": "https://unity.com/blog/unite-tokyo-2026-keynote-recap"
+        },
+        {
+          "title": "Neural Texture Compression",
+          "text": "Cut Atrio's texture memory by nearly 30%. Experimental in Unity 6.7 LTS, full release planned for Unity 7.",
+          "url": "https://unity.com/blog/unite-tokyo-2026-keynote-recap"
+        },
+        {
+          "title": "Graphics Kernel",
+          "text": "A new backend on DirectX 12, Vulkan and Metal; more than 62% higher GPU performance in Atrio with ray tracing on, Unity says.",
+          "url": "https://unity.com/blog/unite-tokyo-2026-keynote-recap"
+        }
+      ],
+      "terms": [
+        {
+          "term": "ECS",
+          "def": "Entity Component System: an engine design that stores game data in tight arrays and runs logic over them in bulk."
+        },
+        {
+          "term": "global illumination",
+          "def": "Lighting that includes light bouncing off surfaces, not only direct light from lamps and the sun."
+        },
+        {
+          "term": "URP",
+          "def": "Universal Render Pipeline: Unity's lighter rendering path for mobile, web and mid-range hardware."
+        }
+      ],
+      "deep": [
+        "Unity also announced official agent plug-ins for Claude, Codex, Google Antigravity and Grok with skills its team reviewed, an Asset Library plug-in that searches the Asset Store from the editor or CLI and converts Built-in pipeline assets to URP, and a Pipeline API in beta with general availability planned for 2027."
+      ],
+      "why": "If the ECS move lands as described, Unity projects gain data-oriented speed without a rewrite, which raises the bar for every engine's handling of large object counts.",
+      "forYou": "Neural texture compression and bake-free GI are the two features to compare against Unreal's own roadmap when pitching plugins across engines.",
+      "sources": [
+        {
+          "label": "Unity: Unite Tokyo 2026 keynote recap",
+          "url": "https://unity.com/blog/unite-tokyo-2026-keynote-recap"
+        }
+      ]
+    },
+    {
+      "id": "gdc-genai",
+      "format": "chart",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Mobile studios use generative AI the most",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "A GDC survey of more than 2,600 game workers found 40% use generative AI at work, rising to 70% in mobile-only studios, though most think it is hurting the industry.",
+      "intro": "Share of respondents who use generative AI at work, by type of studio or game, from GDC's State of the Game Industry report as reported by PocketGamer.biz.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Mobile-only",
+          "value": 70,
+          "highlight": true
+        },
+        {
+          "label": "Free-to-play",
+          "value": 58
+        },
+        {
+          "label": "All respondents",
+          "value": 40
+        },
+        {
+          "label": "Premium",
+          "value": 32
+        },
+        {
+          "label": "Older indies",
+          "value": 29
+        }
+      ],
+      "note": "Mobile-only is an upper figure (up to 70%). Overall use rose from 36% last year. 55% say generative AI is hurting the industry, 35% see a mixed impact, 8% a positive one. 63% of respondents are in the US.",
+      "terms": [
+        {
+          "term": "generative AI",
+          "def": "AI that makes new text, images, code or sound from a prompt."
+        }
+      ],
+      "why": "Use and opinion are pulling apart: the business models under the most cost pressure adopt fastest, whatever the mood.",
+      "forYou": "Premium buyers sit at 32% use and skeptical; keep AI disclosure on store pages plain and specific.",
+      "sources": [
+        {
+          "label": "PocketGamer.biz: 70% of mobile studio workers use generative AI",
+          "url": "https://www.pocketgamer.biz/gdc-report-70-of-mobile-studio-workers-use-generative-ai/"
+        }
+      ]
+    },
+    {
+      "id": "beamng-ps5",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "BeamNG kept every spring when it brought its cars to PS5",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "BeamNG.drive's soft-body cars crumple because each one is a live simulation of weights and springs. The studio refused to simplify that for PS5, so memory, not speed, set how many cars fit on screen.",
+      "plain": "When the simulation is the game, cut memory and CPU elsewhere and let the budget decide how many simulated things you can show.",
+      "body": [
+        "Each vehicle is a skeleton of masses joined by springs, and the visible car follows it. Impacts are computed during play, so parts bend, break or fall off, and the same structure drives handling: a passenger's weight changes how the car drives.",
+        "The team treated identical physics to PC as non-negotiable and added split-screen at the same time. Most of the optimizations also help Windows, Linux, Steam Deck and Arm."
+      ],
+      "points": [
+        "Memory footprint caps the number of vehicles as much as CPU speed does.",
+        "Physics is one of the game's largest CPU costs.",
+        "PS5 and PS5 Pro got separate quality presets to hold frame rate.",
+        "A large change set brought many bugs that took long to fix."
+      ],
+      "terms": [
+        {
+          "term": "soft-body",
+          "def": "Physics where objects can bend and deform, rather than staying rigid."
+        },
+        {
+          "term": "split-screen",
+          "def": "Two players on one screen, each with their own view, which doubles much of the work."
+        }
+      ],
+      "why": "Ports usually cut the expensive system first. Protecting it and budgeting memory around it is a reusable rule for any simulation-heavy game.",
+      "forYou": "The same rule applies to physics-heavy gameplay plugins: publish a per-instance memory cost so buyers know how many fit.",
+      "sources": [
+        {
+          "label": "80 Level: How BeamNG.drive brought soft-body physics to PS5",
+          "url": "https://80.lv/articles/how-beamng-drive-brought-its-soft-body-physics-to-ps5"
+        }
+      ]
+    },
+    {
+      "id": "godot-fog",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "Cheap ground fog that parts when you walk through it",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "An indie developer released a free Godot project with low-lying fog that follows the player and swirls aside when bodies move through it, without the cost of real volumetric fog.",
+      "name": "Godot cheap ground fog",
+      "what": "A mesh and shader that fake ground fog in the style of an Ocarina of Time remake.",
+      "body": [
+        "A circular patch of fog follows the player, sits on the terrain and is pushed around like a fluid when bodies pass through it. The author, AtSaturn, built it to be light, and the download is the full project with a debug scene."
+      ],
+      "facts": [
+        {
+          "k": "Engine",
+          "v": "Godot 4.8 beta 3"
+        },
+        {
+          "k": "Renderer",
+          "v": "Forward+"
+        },
+        {
+          "k": "Physics",
+          "v": "Jolt"
+        },
+        {
+          "k": "Price",
+          "v": "Free on itch.io"
+        }
+      ],
+      "tryIt": "https://oddpotatodev.itch.io/godot-cheap-ground-fog",
+      "terms": [
+        {
+          "term": "volumetric fog",
+          "def": "Fog computed through the 3D volume of a scene, which looks rich but costs a lot of GPU time."
+        },
+        {
+          "term": "shader",
+          "def": "A small program that runs on the graphics card to decide how surfaces look."
+        }
+      ],
+      "why": "Faking an effect where the player looks is often better than simulating it everywhere, especially on web and mobile.",
+      "forYou": "The follow-the-player patch is easy to port to a three.js ShaderMaterial for the browser games.",
+      "sources": [
+        {
+          "label": "80 Level: Free ground fog in Godot",
+          "url": "https://80.lv/articles/free-ocarina-of-time-remake-style-ground-fog-in-godot"
+        },
+        {
+          "label": "itch.io: Godot cheap ground fog",
+          "url": "https://oddpotatodev.itch.io/godot-cheap-ground-fog"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Proof the work is done",
+      "note": "How one agent-heavy team checks its work, and the tools that shipped to help.",
+      "ids": [
+        "e2e-evidence",
+        "check-tools"
+      ]
+    },
+    {
+      "title": "Where agents run, and the bill",
+      "note": "Sandboxes, remote machines, a new model's prices and what drives agent cost.",
+      "ids": [
+        "external-sandbox",
+        "shopify-remote",
+        "gpt-62",
+        "harness-cost"
+      ]
+    },
+    {
+      "title": "Engines and studios",
+      "note": "Unity's next core, who uses AI, a physics port and a cheap fog trick.",
+      "ids": [
+        "unity-7",
+        "gdc-genai",
+        "beamng-ps5",
+        "godot-fog"
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is an Entity Component System?",
+    "answer": "A way to build a game where things are just ID numbers, their data lives in plain components, and systems run logic over every thing that has the right components at once.",
+    "analogy": "A spreadsheet: each row is a thing in the game, each column is a kind of data such as position or health, and a system is a formula applied down whole columns at a time.",
+    "body": [
+      "In the classic object approach, each game object carries its own data and its own code, and the engine visits objects one by one. In ECS, an entity has no code at all. A component is pure data, like Position or Health. A system is the logic, such as move everything that has Position and Velocity, and it runs over all matching entities in one pass.",
+      "Because components of the same kind sit side by side in memory, the processor can stream through them quickly, which is why ECS shines with thousands of units. It also keeps code testable: systems are plain functions over data. Unity's plan to make every GameObject an Entity in Unity 7 aims to bring that speed to existing projects without a rewrite."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Entity",
+          "note": "Just an ID, such as ship 4182"
+        },
+        {
+          "label": "Components",
+          "note": "Plain data: Position, Velocity, Health"
+        },
+        {
+          "label": "System",
+          "note": "Logic run over every match at once",
+          "key": true
+        }
+      ],
+      "links": [
+        "has",
+        "read by"
+      ],
+      "caption": "Data and logic are kept apart: systems ask for every entity with certain components and update them in bulk."
+    },
+    "terms": [
+      {
+        "term": "component",
+        "def": "A small piece of plain data attached to an entity, with no code of its own."
+      },
+      {
+        "term": "system",
+        "def": "A function that runs every frame over all entities that have a given set of components."
+      }
+    ],
+    "seenIn": [
+      "unity-7"
+    ],
+    "sources": [
+      {
+        "label": "Unity: Unite Tokyo 2026 keynote recap",
+        "url": "https://unity.com/blog/unite-tokyo-2026-keynote-recap"
+      },
+      {
+        "label": "Three Dots Labs: Making games in Go with ECS",
+        "url": "https://threedots.tech/post/making-games-in-go-ecs"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "both",
+    "title": "Give your agent a verify skill that plays one real user flow",
+    "gist": "Write down, as a skill, how to start your app or game and drive one flow end to end, so the agent proves a change works before it commits.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "Claude Code, a web app or browser game that runs locally, and a way for the agent to drive it (a browser automation tool or the Claude browser extension).",
+    "steps": [
+      {
+        "title": "Pick one flow",
+        "text": "Choose the flow that matters most: sign up and check out, or start a game and finish the first level. Write what done looks like in two or three plain sentences."
+      },
+      {
+        "title": "Write the skill",
+        "text": "Create .claude/skills/verify/ in the repository with instructions to start the app, drive that flow step by step, and report each step with a screenshot of any failure."
+      },
+      {
+        "title": "Stress-test it",
+        "text": "Ask Claude to run the skill several times and fix anything slow or flaky in it. The Claude Code team calls this skill the smoke test harness and wants it rock solid."
+      },
+      {
+        "title": "Make it the rule, then test it",
+        "text": "Tell the agent to run verify before every commit and to stop and ask you if checks still fail after three rounds. Then plant a small bug in the flow and ask for an unrelated change."
+      }
+    ],
+    "check": "The planted bug makes verify fail with the name of the step that broke and a screenshot, and the agent fixes it or stops and asks instead of committing.",
+    "terms": [
+      {
+        "term": "smoke test",
+        "def": "A quick check that the main path of an app still works at all."
+      }
+    ],
+    "from": "cc-verification",
+    "forYou": "Start with the three.js game repo: one Playwright flow from title screen to first win, then copy the pattern to the SaaS sign-up flow.",
+    "sources": [
+      {
+        "label": "Claude Code team: How we think about verification",
+        "url": "https://claude.dev/blog/how-the-claude-code-team-thinks-about-verification"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "GitHub published the Agent Host Protocol, which lets one agent session move between VS Code, the Copilot app and a phone, with client libraries in six languages.",
+      "lane": "ai",
+      "url": "https://github.blog/engineering/engineering-principles/building-the-agent-host-protocol-for-sessions-that-continue-across-devices",
+      "source": "GitHub"
+    },
+    {
+      "text": "lend lets an agent in a virtual machine run gh and similar commands on your laptop after a Touch ID prompt, so tokens never reach the VM. Early, macOS only for biometrics.",
+      "lane": "ai",
+      "url": "https://blog.antonio.cx/running-agents-with-lend",
+      "source": "Antonio"
+    },
+    {
+      "text": "Vercel's open-source agent framework eve reached 1.0, with durable runs that resume from the last completed step and chat channels from Slack to iMessage.",
+      "lane": "ai",
+      "url": "https://vercel.com/blog/eve-is-now-generally-available",
+      "source": "Vercel"
+    },
+    {
+      "text": "The Claude API added linked billing in beta: your app's customers can pay for their Claude usage through their own organisation, with their own spend cap.",
+      "lane": "ai",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "source": "Anthropic"
+    },
+    {
+      "text": "Microsoft released MAI Code 2 and Code 2 Flash for coding; its cost comparisons use a 50% launch discount and are vendor-reported. Both are in GitHub Copilot.",
+      "lane": "ai",
+      "url": "https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash",
+      "source": "Microsoft AI"
+    },
+    {
+      "text": "Martin Fowler's site explains deterministic simulation testing: fake clocks, disks and networks that advance on tick(), so a failing distributed run replays exactly.",
+      "lane": "ai",
+      "url": "https://martinfowler.com/articles/deterministic-simulation-testing.html",
+      "source": "Martin Fowler"
+    },
+    {
+      "text": "Solid 2.0 is out after 23 release candidates, with async in the reactive core and diagnostics with stable codes written for agents to read.",
+      "lane": "ai",
+      "url": "https://www.solidjs.com/blog/solid-2-0-the-long-hold",
+      "source": "SolidJS"
+    },
+    {
+      "text": "Datasette Lite was rebuilt to run the full Python server in the browser with a service worker and Pyodide, with over 100 SQLite versions to pick from.",
+      "lane": "ai",
+      "url": "https://simonwillison.net/2026/Nov/17/datasette-lite",
+      "source": "Simon Willison"
+    },
+    {
+      "text": "Codex 0.170.0 adds realtime voice calls in the terminal and fixes MCP sign-in races and sandbox rules lost by child threads.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.170.0",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "Godot 4.8 beta 3 brought 74 fixes from 51 contributors with only a handful of release blockers left; agent maker Manus became a Platinum sponsor of the Godot Foundation.",
+      "lane": "gamedev",
+      "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-3/",
+      "source": "Godot"
+    },
+    {
+      "text": "Fab's free assets until December 1 include a companion drone system with AI and multiplayer, a gameplay plugin rather than art.",
+      "lane": "gamedev",
+      "url": "https://gamefromscratch.com/november-free-gamedev-assets-round-up-2",
+      "source": "GameFromScratch"
+    },
+    {
+      "text": "A Three Dots Labs tutorial builds a Go game with ECS and shows a Destroyed tag for deferred removal and queries built once, not every frame.",
+      "lane": "gamedev",
+      "url": "https://threedots.tech/post/making-games-in-go-ecs",
+      "source": "Three Dots Labs"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "scopecreep",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "ScopeCreep: an incremental, a bullet hell and a tower defense at once",
+      "where": "Steam, Bluesky",
+      "signal": "96 Steam reviews, 92% positive, in its first two days after the November 16 launch; the launch post drew 101 likes and 37 reposts on Bluesky",
+      "hook": "A flame craves souls: you fight spirits, collect essences and pour them into a huge upgrade tree, so the idle game's tree is the spine and the shooting is the short session.",
+      "borrow": "Stack genres around one upgrade tree and keep the combat simple. The developers built an audience with a demo and posts months before launch.",
+      "forYou": "A sprawling upgrade tree with short runs is a loop that fits a browser game well; note how the tree screen shows locked and owned nodes at a glance.",
+      "url": "https://store.steampowered.com/app/3595710/ScopeCreep/",
+      "image": {
+        "src": "img/2026-11-18/scopecreep.webp",
+        "alt": "A dark upgrade tree of glowing pixel-art icons branching from a central flame, with resource counters at top left and a tooltip reading Closer is Better.",
+        "credit": "Foolbox Studio, Pretty Soon",
+        "creditUrl": "https://store.steampowered.com/app/3595710/ScopeCreep/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "cartridge-repair",
+      "lane": "gamedev",
+      "kind": "concept",
+      "title": "Games about restoring old game cartridges",
+      "where": "Steam, itch.io",
+      "signal": "Cozy Game Restoration has 373 Steam reviews since its November 4 launch; the jam game Broken, Repair! is featured on itch.io with 4.3 of 5 from 63 ratings",
+      "hook": "You are the repairer, not the hero: peel stickers, wipe grime and swap broken parts on worn cartridges. Cozy Game Restoration dirties each one procedurally and has no timer or fail state.",
+      "borrow": "A real object plus a tactile verb (peel, wipe, solder) is a complete core loop, and procedural dirt over a fixed set of models gives variety cheaply. The jam version proved the loop in 72 hours.",
+      "url": "https://store.steampowered.com/app/3581230",
+      "image": {
+        "src": "img/2026-11-18/cozy-restoration.webp",
+        "alt": "A dirty golden game cartridge on a wooden desk with tweezers peeling its label, a tool bar on the left and a progress meter reading 4%.",
+        "credit": "Cozy Game Restoration, Steam",
+        "creditUrl": "https://store.steampowered.com/app/3581230",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "ghost-rovers",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "Ghost Rovers: call the machines left on the Moon",
+      "where": "DEV",
+      "signal": "66 reactions and 22 comments on DEV since November 15, marked as a community gem; a NASA Space Apps entry built in one day",
+      "hook": "At a 1969-style mission console you call 12 machines left on the Moon and Mars. Only the Apollo 11 laser mirror answers, with a real 2.5-second round trip.",
+      "borrow": "Split agents by role: one builds in small blocks after you approve its plan, another checks each block in a real browser at three screen sizes and against NASA's records. That checker caught a wrong fact.",
+      "forYou": "The plan-wait-verify split maps to a builder subagent plus a verifier subagent with a browser for game jam builds.",
+      "url": "https://dev.to/earlgreyhot1701d/ghost-rovers-i-called-12-machines-nasa-left-behind-one-picked-up-2575",
+      "image": {
+        "src": "img/2026-11-18/ghost-rovers.webp",
+        "alt": "A green-on-black mission control screen with the Moon in the centre, a list of landed machines by year on the left and a ghost log on the right.",
+        "credit": "earlgreyhot1701d on DEV",
+        "creditUrl": "https://dev.to/earlgreyhot1701d/ghost-rovers-i-called-12-machines-nasa-left-behind-one-picked-up-2575",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "termination-lag",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Termination Lag: Coding Agents Solve Early but Stop Late",
+      "headline": "Coding agents often have the right fix early, then spend a third to over half the run re-checking it",
+      "authors": "Musa Cim, Burak Topcu, Mahmut Taylan Kandemir (Pennsylvania State University)",
+      "where": "arXiv preprint (2611.14960)",
+      "date": "2026-11-11",
+      "problem": "Agents keep working after the correct patch exists, but nobody had measured how many steps that wastes or what the agent does with them.",
+      "idea": "Record and test every distinct patch an agent produces during a run, across five models, two agent frameworks and three SWE-bench sets, and measure the steps between the first correct patch and the end of the run.",
+      "result": "The first edit was already correct in 38 to 82% of solved runs. For Qwen3-Coder on SWE-bench Verified the median lag was 16 steps, 35% of the run. Most extra steps are re-verification. In 1 to 8% of runs the agent undid its correct fix and ended wrong.",
+      "useIt": "Log how many steps your agents take after their first passing test, and try a step budget after it. Expect a few failures to be self-inflicted late edits.",
+      "maturity": "idea",
+      "forYou": "Add a counter to unattended routines for steps after the first green test; it shows where tokens go after the work is done.",
+      "links": [
+        {
+          "label": "arXiv: 2611.14960",
+          "url": "https://arxiv.org/abs/2611.14960"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-18/termination-lag.webp",
+        "alt": "Line chart of tasks solved by step for Qwen3-Coder on SWE-bench Verified: first correct patch rises well before agent self-termination, with a shaded gap labelled work after the fix, 16 steps, 35% wasted.",
+        "credit": "Cim, Topcu, Kandemir, CC BY 4.0",
+        "creditUrl": "https://arxiv.org/html/2611.14960",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "swe-cowork",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "SWE-CoWork: Benchmarking Coding Agents as Digital Employees in Organizations",
+      "headline": "Agents that can code still finish under 8% of team-style tasks, and 31% of what they call done fails its tests",
+      "authors": "Xinping Lei, Minghao Liu, Ruijie Zhu et al. (TokenWave AI)",
+      "where": "arXiv preprint (2611.20218)",
+      "date": "2026-11-15",
+      "problem": "Coding benchmarks hand the agent a complete issue. Real work means finding requirements scattered across colleagues, settling conflicts and checking the delivery.",
+      "idea": "101 assignments across 101 real repositories in 11 languages. The agent joins a simulated company of 26 colleagues and must gather the requirements before building; private tests grade the result.",
+      "result": "Claude Opus 5.5 passed 63.84% of target tests but completed only 6.93% of assignments in full; GPT-6 Astra 62.91% and 7.92%. Giving the full spec up front raised tests passed by about 16 points but not full completion. 31% of requirements agents reported done failed.",
+      "useIt": "Do not trust an agent's done report on multi-part work. Keep a per-requirement checklist that tests or a separate reviewer verify.",
+      "maturity": "code",
+      "forYou": "Client-style SaaS tasks with several asks are exactly where a per-requirement checklist subagent would pay off.",
+      "links": [
+        {
+          "label": "arXiv: 2611.20218",
+          "url": "https://arxiv.org/abs/2611.20218"
+        },
+        {
+          "label": "Code: swe-cowork-bench",
+          "url": "https://github.com/TokenWave-AI/swe-cowork-bench"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-18/swe-cowork.webp",
+        "alt": "Two scatter plots of tests passed by model: against the share of requirements gathered from colleagues (strong correlation, 0.94) and against median tool calls (no correlation, 0.08).",
+        "credit": "Lei, Liu, Zhu et al., arXiv",
+        "creditUrl": "https://arxiv.org/html/2611.20218",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "spillway",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "SPILLWAY: Separating Target Admission from Sanitization to Defend Tool-Using Agents against Prompt Injection",
+      "headline": "Block prompt injection by checking where an action goes in code, not by asking a model",
+      "authors": "Woosang Lim, Yeseul Chang, Jaewoo Lee et al. (SAINT Machines, KAIST, Chung-Ang University)",
+      "where": "arXiv preprint (2611.07222)",
+      "date": "2026-11-16",
+      "problem": "Many defenses against prompt injection put a language model in charge of approving actions, so the defense itself can be talked into a bad call.",
+      "idea": "Two boundaries with no model in the decision. Outgoing actions are allowed only if their target, such as a recipient or account, matches an identity field returned by a trusted tool. Incoming text is stripped of instruction-like content before the model reads it.",
+      "result": "On the AgentDojo benchmark across three models, attack success fell to 0.000 from 0.305 undefended, below six other defenses, while benign task success held at 0.539 against 0.540. Results assume tools return typed identity fields.",
+      "useIt": "In tools you build for agents, return typed IDs and enforce in code that an action's target must have appeared in a trusted tool result.",
+      "maturity": "code",
+      "forYou": "Payment and email actions in the SaaS products are the place to enforce target checks in code before any agent touches them.",
+      "links": [
+        {
+          "label": "arXiv: 2611.07222",
+          "url": "https://arxiv.org/abs/2611.07222"
+        },
+        {
+          "label": "Code: spillway",
+          "url": "https://github.com/saintmachines/spillway"
+        },
+        {
+          "label": "Project page",
+          "url": "https://saintmachines.github.io/spillway/"
+        }
+      ]
+    }
+  ],
+  "note": "Reddit, X and TikTok gave the sparks desk nothing it could verify, and ACM and Wiley pages refused the lab desk, so all three lab entries are arXiv preprints. OpenAI's own launch page refused fetches; GPT-6.2 figures come from Simon Willison, The Decoder and GitHub."
+}
