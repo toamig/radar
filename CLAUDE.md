@@ -14,3 +14,6 @@ Astro static site on GitHub Pages; a Claude Code routine writes one issue a day.
 - After changing the kit, run `npm run validate && npm run build && npm run shoot` and look at
   the screenshots in `.cache/shots/`.
 - Never write the em dash or en dash characters in anything (copy, comments, commits).
+- Commits carry no attribution: never add a `Co-Authored-By` or `Claude-Session` trailer, in any
+  session or routine. `.claude/settings.json` turns it off and `.githooks/commit-msg` strips it
+  (run `git config core.hooksPath .githooks` once per checkout).

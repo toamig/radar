@@ -1,0 +1,3 @@
+#!/bin/sh
+# Radar commits carry no attribution trailers: strip Co-Authored-By and Claude-Session lines.
+sed -i -e '/^Co-Authored-By:/Id' -e '/^Claude-Session:/Id' "$1"

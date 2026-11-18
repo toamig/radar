@@ -7,5 +7,6 @@ dist/
 *.log
 .DS_Store
 Thumbs.db
-.claude/
+.claude/*
+!.claude/settings.json
 public/og/
