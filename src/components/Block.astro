@@ -43,6 +43,7 @@ const folded = block.level === 'practitioner' && !ownTitle;
   id={block.id}
   class:list={['block', `b-${block.size}`, `f-${block.format}`, `k-${block.kind}`, { hero: block.format === 'hero' }]}
   data-ink={block.ink}
+  data-lane={block.lane}
   data-imp={block.importance}
   data-texture={block.texture}
   data-variant={b.variant}

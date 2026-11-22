@@ -16,23 +16,26 @@ const { date, number, sub } = Astro.props;
     <span class="mast-date">{formatDate(date)}</span>
     <span class="mast-sub">{sub ?? 'Game dev, software and AI'}</span>
   </div>
-  <button type="button" class="theme-toggle" aria-label="Switch to light theme" aria-pressed="false">
+  <button type="button" class="theme-toggle" aria-label="Switch theme">
     <svg class="ico-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z" /></svg>
     <svg class="ico-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" /><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" /></svg>
   </button>
 </header>
 <script>
-  // Dark is the default; the choice is remembered in this browser.
+  // The page follows the system theme until the reader picks one here.
   const btn = document.querySelector<HTMLButtonElement>('.theme-toggle');
   const root = document.documentElement;
+  const system = matchMedia('(prefers-color-scheme: dark)');
+  const current = () => root.getAttribute('data-theme') ?? (system.matches ? 'dark' : 'light');
   const sync = () => {
-    const light = root.getAttribute('data-theme') === 'light';
-    btn?.setAttribute('aria-pressed', String(light));
-    btn?.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+    const dark = current() === 'dark';
+    root.classList.toggle('is-dark', dark);
+    btn?.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
   };
   sync();
+  system.addEventListener('change', sync);
   btn?.addEventListener('click', () => {
-    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    const next = current() === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
     try { localStorage.setItem('radar-theme', next); } catch {}
     sync();

@@ -15,7 +15,7 @@ const KIND = { game: 'Game', concept: 'Concept', devlog: 'Devlog', technique: 'T
     </header>
     <ul class="spark-list">
       {sparks.map((s, i) => (
-        <li id={s.id} class="spark" data-ink={i % 2 ? 'b' : 'a'}>
+        <li id={s.id} class="spark" data-ink={i % 2 ? 'b' : 'a'} data-lane={s.lane}>
           {s.image && <Media image={s.image} ink={i % 2 ? 'b' : 'a'} class="spark-img" />}
           <p class="spark-meta"><Lane lane={s.lane} label={false} /><span class="kind">{KIND[s.kind]}</span><span>{s.where}</span></p>
           <h3 class="spark-title display"><a href={s.url} rel="noopener" target="_blank">{s.title}</a></h3>

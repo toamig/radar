@@ -7,7 +7,7 @@ interface Props { tryThis: any; refs: { id: string; title: string }[]; date: str
 const { tryThis: t, refs, date } = Astro.props;
 const from = t.from ? refs.find((r) => r.id === t.from) : undefined;
 ---
-<section id="try" class="trythis jump" aria-labelledby="try-h" data-terms={t.terms.length ? JSON.stringify(t.terms) : undefined}>
+<section id="try" data-lane={t.lane} class="trythis jump" aria-labelledby="try-h" data-terms={t.terms.length ? JSON.stringify(t.terms) : undefined}>
   <header class="try-band">
     <p class="try-kicker">Try this today</p>
     <p class="try-meta">

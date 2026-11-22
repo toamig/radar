@@ -33,8 +33,9 @@ const typeVars = `--display-font:${t.type.display};--display-weight:${t.type.dis
   --display-case:${t.type.caseUpper ? 'uppercase' : 'none'};
   --display-scale:${t.type.scale};`;
 // Values come from the catalog tables, never from issue text.
-const css = `:root{${vars(t.night)}${typeVars}color-scheme:dark}
-:root[data-theme='light']{${vars(t.day)}color-scheme:light}`;
+const css = `:root{${vars(t.day)}${typeVars}color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme='light']){${vars(t.night)}color-scheme:dark}}
+:root[data-theme='dark']{${vars(t.night)}color-scheme:dark}`;
 const canonical = new URL(`${BASE}${path}`, Astro.site).href;
 // The tab icon is the TOA mark in this issue's two inks, so it changes with the palette.
 const favicon = `data:image/svg+xml,${encodeURIComponent(toaSvg(t.day.inkB, t.day.inkA, { square: true }))}`;
@@ -65,16 +66,15 @@ const ogImageUrl = ogImage ? new URL(`${BASE}${ogImage}`, Astro.site).href : und
     <meta name="twitter:title" content={shareTitle} />
     <meta name="twitter:description" content={description} />
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
-    <meta name="theme-color" content={t.night.paper} />
+    <meta name="theme-color" content={t.day.paper} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={t.night.paper} media="(prefers-color-scheme: dark)" />
     <link rel="icon" href={favicon} type="image/svg+xml" />
     <link rel="alternate icon" href={`${BASE}favicon.svg`} type="image/svg+xml" />
     <style set:html={css}></style>
     <script is:inline>
       document.documentElement.classList.add('js');
-      // Dark is the default look; the masthead toggle stores a light choice.
-      var theme = 'dark';
-      try { if (localStorage.getItem('radar-theme') === 'light') theme = 'light'; } catch (e) {}
-      document.documentElement.setAttribute('data-theme', theme);
+      // The page follows the system theme; the masthead toggle stores an override.
+      try { var th = localStorage.getItem('radar-theme'); if (th === 'light' || th === 'dark') document.documentElement.setAttribute('data-theme', th); } catch (e) {}
       try {
         var q = new URLSearchParams(location.search);
         if (q.has('tune')) localStorage.setItem('radar-tune', q.get('tune') === '0' ? '0' : '1');

@@ -99,21 +99,24 @@ export function resolveTheme(theme) {
   const night = { paper: paper.night, text: nightText(paper.hex) };
   // Accents must read on the raised panels too, which sit lighter than the page.
   const panel = mix(night.paper, night.text, 0.2);
+  // Day: the stock tint at half strength, and body text pulled toward a neutral near-black.
+  const dayPaper = mix(paper.hex, '#FFFFFF', 0.55);
+  const dayText = mix(text.hex, '#12141A', 0.6);
   return {
     ids: t,
     names: { paper: paper.name, text: text.name, a: a.name, b: b.name, type: type.name },
     type,
     day: {
-      paper: paper.hex,
-      text: text.hex,
-      muted: mix(text.hex, paper.hex, 0.22),
-      rule: mix(text.hex, paper.hex, 0.78),
+      paper: dayPaper,
+      text: dayText,
+      muted: mix(dayText, dayPaper, 0.3),
+      rule: mix(dayText, dayPaper, 0.85),
       inkA: a.hex,
       inkB: b.hex,
-      displayA: sink(a.hex, paper.hex, 4.5),
-      displayB: sink(b.hex, paper.hex, 4.5),
-      tintA: mix(a.hex, paper.hex, 0.8),
-      tintB: mix(b.hex, paper.hex, 0.8),
+      displayA: sink(a.hex, dayPaper, 4.5),
+      displayB: sink(b.hex, dayPaper, 4.5),
+      tintA: mix(a.hex, dayPaper, 0.84),
+      tintB: mix(b.hex, dayPaper, 0.84),
     },
     night: {
       paper: night.paper,

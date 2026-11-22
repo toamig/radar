@@ -25,7 +25,7 @@ const KIND = { paper: 'Paper', preprint: 'Preprint', thesis: 'Thesis', report: '
       {papers.map((p, i) => {
         const level = STAGES.findIndex((s) => s.id === p.maturity);
         return (
-          <article id={p.id} class:list={['paper', { lead: i === 0 && papers.length !== 2 }]} data-ink={i % 2 ? 'b' : 'a'}>
+          <article id={p.id} class:list={['paper', { lead: i === 0 && papers.length !== 2 }]} data-ink={i % 2 ? 'b' : 'a'} data-lane={p.lane}>
             <p class="paper-meta"><Lane lane={p.lane} label={false} /><span class="kind">{KIND[p.kind]}</span><span class="where">{p.where}</span><time datetime={p.date}>{formatDate(p.date, { day: 'numeric', month: 'short', year: 'numeric' })}</time></p>
             <h3 class="paper-headline display"><Inline text={p.headline} /></h3>
             <p class="paper-title"><cite>{p.title}</cite><span>{p.authors}</span></p>
