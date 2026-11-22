@@ -1,0 +1,1035 @@
+{
+  "date": "2026-11-22",
+  "number": 40,
+  "title": "Trust what the checker accepts",
+  "dek": "A 17-million-line proof of the Riemann Hypothesis, found with Claude, was accepted because machines checked it. Plus a merge gate that rejects agents' overclaims, safe retries for tool calls, and an agent that plays your Unreal game.",
+  "theme": {
+    "paper": "blush",
+    "text": "burgundy",
+    "inks": [
+      "blue",
+      "orange"
+    ],
+    "type": "poster",
+    "mood": "a Sunday about trusting the check, not the author"
+  },
+  "tldr": [
+    {
+      "text": "A proof of the **Riemann Hypothesis**, written in Lean with help from Claude, runs to about 17 million lines. No one has read it; Lean's kernel and independent checkers accepted it.",
+      "lane": "ai"
+    },
+    {
+      "text": "A developer's merge gate uses plain code, not a model, to reject agent pull requests whose new tests do not fail before the fix.",
+      "lane": "ai"
+    },
+    {
+      "text": "A timeout is not a failure: in a fault-injection study, simple retries repeated a real action in 117 of 200 crashes; a ledger plus reconciliation cut that to zero.",
+      "lane": "ai"
+    },
+    {
+      "text": "ProbeKit lets Claude Code, Cursor or Codex play an Unreal game to check its own work, and Epic says one editor setting cut an MCP call from 46 seconds to about one.",
+      "lane": "gamedev"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Checked by something else",
+      "note": "Work no one reviews line by line, accepted only because an independent check passed.",
+      "ids": [
+        "pr-gate",
+        "muru-quote"
+      ]
+    },
+    {
+      "title": "When a tool call may have happened",
+      "note": "Agents retry in many layers. What it takes to never do a real action twice.",
+      "ids": [
+        "retry-loop",
+        "retry-study",
+        "agent-tools"
+      ]
+    },
+    {
+      "title": "Unreal, with an agent at the controls",
+      "note": "Letting an agent play the game, and keeping the editor fast while it drives.",
+      "ids": [
+        "probekit",
+        "cpp26",
+        "mcp-tips"
+      ]
+    },
+    {
+      "title": "Tools to try this week",
+      "note": "A free rig-and-animate tool, and a laptop-sized coding model with honest numbers.",
+      "ids": [
+        "mesh2motion",
+        "inkling-quant"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "riemann-lean",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Nobody can read a 17-million-line proof. Machines checked it anyway",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "A mathematician working with Claude released a computer-checked proof of the Riemann Hypothesis, one of math's most famous open problems, and the Lean community certified it within a day without anyone reading it all.",
+      "background": "The Riemann Hypothesis, posed in 1859, is a claim about the hidden pattern behind prime numbers and one of the Millennium Prize problems.",
+      "takeaway": "The trust came from the checkers, not from anyone reading the proof. The same split, where the agent writes and something independent checks, is what makes agent-written code safe to merge.",
+      "body": [
+        "On November 20, Levent Alpöge, a mathematician who works at Anthropic, released a proof of the Riemann Hypothesis written in Lean, a language where software checks every step of a proof. He told TechCrunch that Claude helped him find the pieces of the argument. The library runs to about 17 million lines and depends only on Mathlib, Lean's shared library of mathematics.",
+        "A day later the Lean and Mathlib communities certified it. Dozens of people compiled it and got the same export file. Lean's own kernel and several independent checkers, some written in other languages, accepted the proof, and two comparison tools confirmed the theorem is Mathlib's existing statement of the hypothesis, not a look-alike. The checks ran on an inert export, so no code hidden in the sources could interfere.",
+        "What nobody has yet is an explanation people can follow. Scott Aaronson, who wrote \"The proof is correct\" after the verification, notes that no AI result with a Lean certificate has been retracted, while several without one have. He also warns that a determined AI could one day exploit a weakness in a checker."
+      ],
+      "stat": {
+        "value": "17M",
+        "label": "lines of Lean in the proof, accepted by machine checkers"
+      },
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "Claude",
+            "note": "A mathematician works with Claude to find the argument"
+          },
+          {
+            "label": "Lean",
+            "note": "About 17 million lines, depending only on Mathlib"
+          },
+          {
+            "label": "Export",
+            "note": "An inert copy, out of reach of code in the sources"
+          },
+          {
+            "label": "Checkers",
+            "note": "Lean's kernel plus independent checkers in other languages",
+            "key": true
+          },
+          {
+            "label": "Match",
+            "note": "Tools confirm it proves Mathlib's own statement"
+          }
+        ],
+        "links": [
+          "write",
+          "export",
+          "check",
+          "compare"
+        ],
+        "caption": "How the proof earned trust without a human reading it. The last step matters as much as the checking: a proof of the wrong statement would also pass."
+      },
+      "why": "It is the largest public case yet of work too big for any person to review, accepted because independent tools checked both the proof and the claim it makes. Reviewing agent-written code is the same problem at a smaller scale.",
+      "forYou": "Both checks map onto plugin work: tests the agent cannot edit (the kernel), and a check that each test asserts the feature you asked for (the statement match). ProbeKit-style play tests, below, are the cheap Unreal version.",
+      "terms": [
+        {
+          "term": "Lean",
+          "def": "A programming language and proof assistant: software that accepts a mathematical proof only if every step checks out."
+        },
+        {
+          "term": "Mathlib",
+          "def": "Lean's large shared library of mathematics, written and reviewed by its community."
+        },
+        {
+          "term": "kernel",
+          "def": "The small core of a proof assistant that does the final step-by-step check; the rest of the system is trusted only through it."
+        },
+        {
+          "term": "inert export",
+          "def": "A plain data copy of the finished proof that cannot run any code, so checkers read only the proof itself."
+        }
+      ],
+      "deep": [
+        "The statement match used the tools `comparator` and `con-leche --compare` on a file that imports only Mathlib. The checkers named are Lean's kernel, `con-leche` and `con-ron` (both come with a formal proof, relative to set theory, that they cannot accept a false proof), plus third-party checkers. Aaronson counts 17.4 million lines; Alpöge also claims the Generalized Riemann Hypothesis.",
+        "Separately, Stanford postdoc Alessandro Masullo posted a human-written draft proof of the Generalized Riemann Hypothesis, which TechCrunch says took 12 years. It is not written in Lean and has not been checked."
+      ],
+      "sources": [
+        {
+          "label": "Lean community: the Riemann Hypothesis is verified",
+          "url": "https://leanprover-community.github.io/blog/posts/riemann-hypothesis"
+        },
+        {
+          "label": "Scott Aaronson: Shtetl-Optimized",
+          "url": "https://scottaaronson.blog/?p=10344"
+        },
+        {
+          "label": "TechCrunch: AI and a human both claim the Riemann Hypothesis",
+          "url": "https://techcrunch.com/2026/11/20/ai-claimed-a-solution-to-the-167-year-old-riemann-hypothesis-and-a-human-did-too"
+        }
+      ]
+    },
+    {
+      "id": "pr-gate",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "A five-check gate that rejects agent pull requests that overclaim",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A developer built a merge gate where plain code, not another AI model, decides whether an agent's pull request really did what it says. Any failed check rejects it.",
+      "layout": "flow",
+      "intro": "Sarvar Nadaf's gate runs these checks in order on every agent commit. A hidden test suite the agent never sees then confirms the bug is really gone.",
+      "nodes": [
+        {
+          "label": "Tests",
+          "note": "Was an existing test edited, deleted or weakened?"
+        },
+        {
+          "label": "API",
+          "note": "Is any public function the project had now missing?"
+        },
+        {
+          "label": "Regress",
+          "note": "Does a test that passed before now fail?"
+        },
+        {
+          "label": "Proof",
+          "note": "Does each new test fail on the old code and pass on the new?",
+          "key": true
+        },
+        {
+          "label": "Claims",
+          "note": "Did the agent claim more fixes than it proved?"
+        }
+      ],
+      "links": [
+        "pass",
+        "pass",
+        "pass",
+        "pass"
+      ],
+      "caption": "The fourth check is the core: a new test only counts as proof if it fails before the fix.",
+      "why": "In his small trial, the agent's first try claimed a fix and proved none; with the gate's feedback, the same pull request passed. Run once per bug, the agent got verified fixes for four of eight planted bugs, and the gate rejected the rest.",
+      "forYou": "The red-then-green check is cheap to add to plugin CI: run the agent's new tests against the base commit first and fail the build if they already pass.",
+      "terms": [
+        {
+          "term": "pull request",
+          "def": "A proposed change to a codebase that has to pass checks and review before it is merged."
+        },
+        {
+          "term": "regress",
+          "def": "To break something that used to work."
+        },
+        {
+          "term": "hidden test suite",
+          "def": "Tests kept out of the agent's view, so it cannot write code that only satisfies them."
+        }
+      ],
+      "deep": [
+        "The agent is Amazon Nova Pro running as a Kiro job. With gate feedback and the best of three candidates per round, issue 6 converged in 9 of 12 runs and issue 4 in only 2 of 8; picking the best of three helped more than extra rounds. The author stresses that the samples are small and the bugs simple by design. Repository: simplynadaf/ai-fix-verifier, MIT licence."
+      ],
+      "sources": [
+        {
+          "label": "Sarvar Nadaf: a gate that rejects the PRs that lie",
+          "url": "https://dev.to/aws-builders/ai-agents-open-17-million-pull-requests-a-month-i-built-a-gate-that-rejects-the-ones-that-lie-46n7"
+        },
+        {
+          "label": "ai-fix-verifier on GitHub",
+          "url": "https://github.com/simplynadaf/ai-fix-verifier"
+        }
+      ]
+    },
+    {
+      "id": "muru-quote",
+      "format": "quote",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "An expert's log of building a server with AI",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The creator of a widely used Python web server is building a new one with AI writing most of the code, and has written up nearly every day of it.",
+      "quote": "Deciding what isn't good enough yet is still down to me.",
+      "speaker": "Graham Dumpleton",
+      "role": "creator of mod_wsgi, building Muru",
+      "context": "Muru is a Rust server for Python web apps. Dumpleton published 18 posts on it between November 4 and 21, and Simon Willison pointed to the series as a rare, detailed record of an expert steering AI-written systems code.",
+      "why": "The judgment that decides what ships stays with the person who knows the domain; the posts show what that judgment looks like day to day.",
+      "sources": [
+        {
+          "label": "Simon Willison: Muru",
+          "url": "https://simonwillison.net/2026/Nov/21/muru"
+        },
+        {
+          "label": "Graham Dumpleton: AI as a lifestyle choice",
+          "url": "https://grahamdumpleton.me/posts/2026/11/ai-as-a-lifestyle-choice/"
+        }
+      ]
+    },
+    {
+      "id": "retry-loop",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A timeout is not a failure: retry agent tool calls safely",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "When a payment call times out, the charge may already have gone through, and an agent that retries can bill the customer twice. A much-discussed post lays out how to prevent it.",
+      "layout": "flow",
+      "intro": "Rudratosh Shastri's design for any tool that changes something outside the agent, such as a payment or an email.",
+      "nodes": [
+        {
+          "label": "Record",
+          "note": "Save one operation ID and fingerprint before acting"
+        },
+        {
+          "label": "Send",
+          "note": "Call the provider with a stable idempotency key"
+        },
+        {
+          "label": "Unknown",
+          "note": "A timeout is marked unknown, never failed",
+          "key": true
+        },
+        {
+          "label": "Reconcile",
+          "note": "Ask the provider what really happened first"
+        }
+      ],
+      "links": [
+        "call",
+        "timeout",
+        "look up"
+      ],
+      "caption": "Retry only after reconciling. The model makes a new call ID on every retry; the operation ID must stay the same.",
+      "why": "Agents stack retries in many layers at once (the model, the framework, the HTTP client, the queue), so one lost response can turn into several real actions.",
+      "forYou": "Any agent-triggered write in the SaaS products, payments and emails first, should carry an operation ID stored in Postgres with a unique constraint before the call goes out.",
+      "terms": [
+        {
+          "term": "idempotency key",
+          "def": "A unique ID sent with a request so the receiver can recognise a repeat and do the work only once."
+        },
+        {
+          "term": "fingerprint",
+          "def": "A hash of the request's important details, used to catch the same key reused for a different request."
+        },
+        {
+          "term": "Reconcile",
+          "def": "Check the real state on the other side and record it, instead of guessing."
+        }
+      ],
+      "deep": [
+        "The post keeps a tool-call ID (one model invocation) apart from a business operation ID (one intent). Operation states: PENDING, IN_PROGRESS, SUCCEEDED, UNKNOWN, RECONCILING, RETRYABLE, FAILED_FINAL. It adds a transactional outbox for queue writes, and tool responses that say `retry_allowed: false` when retrying is unsafe. It is a design write-up with no measured results."
+      ],
+      "sources": [
+        {
+          "label": "Rudratosh Shastri: the first one had already succeeded",
+          "url": "https://dev.to/rudratosh/your-ai-agent-retried-the-tool-call-the-first-one-had-already-succeeded-3pke"
+        }
+      ]
+    },
+    {
+      "id": "retry-study",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Crash tests: simple retries repeated the action in 117 of 200 cases",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A researcher crashed an agent's tool runtime on purpose thousands of times and counted how often a real action happened twice.",
+      "stats": [
+        {
+          "value": "117",
+          "label": "of 200 crashes repeated the action with simpler retries"
+        },
+        {
+          "value": "0",
+          "label": "of 200 with a ledger, idempotency and reconciliation"
+        }
+      ],
+      "body": [
+        "Song Xu's study ran 7,513 trials per platform across ten kinds of fault. The full design cost about six sevenths of its throughput, and without reconciliation all 100 crashes after the action stayed ambiguous."
+      ],
+      "why": "Stopping duplicates and knowing what happened are two separate jobs, and both cost speed.",
+      "terms": [
+        {
+          "term": "ledger",
+          "def": "An append-only record of every action the agent intends and completes."
+        }
+      ],
+      "sources": [
+        {
+          "label": "arXiv: Idempotency is not recovery",
+          "url": "https://arxiv.org/abs/2611.23353"
+        }
+      ]
+    },
+    {
+      "id": "agent-tools",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Cloudflare and Vercel shipped four things an agent can use",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "This week's releases from two cloud platforms let an agent run a browser in one request, find the right command by describing a task, and wait for a person without paying for idle time.",
+      "intro": "Released November 19 and 20.",
+      "items": [
+        {
+          "title": "A browser script in one request",
+          "text": "Cloudflare Browser Run's new `/script` endpoint runs a Playwright, Puppeteer or raw CDP function against a browser and returns the result, with no Worker to deploy. Sessions stay open until you close them.",
+          "url": "https://developers.cloudflare.com/changelog/post/2026-11-20-script-endpoint/"
+        },
+        {
+          "title": "Ask the CLI which command to use",
+          "text": "`vercel help search` turns a plain description such as \"roll back production\" into the matching command. The CLI ships a skill telling agents to start there instead of guessing flags.",
+          "url": "https://vercel.com/changelog/agents-can-now-find-vercel-cli-commands-by-describing-the-task"
+        },
+        {
+          "title": "Tools that wait for a person",
+          "text": "Cloudflare's Agents SDK 0.34 lets a tool park until a signal or a deadline, holding no compute meanwhile, so an approval step costs nothing while it waits.",
+          "url": "https://developers.cloudflare.com/changelog/post/2026-11-20-pi-harness-pi-1-6/"
+        },
+        {
+          "title": "Old Worker versions now expire",
+          "text": "Cloudflare now deletes Worker versions and Pages deployments older than 30 days, except the 100 newest and the live one, so old preview links stop working.",
+          "url": "https://developers.cloudflare.com/changelog/post/2026-11-19-workers-pages-version-retention/"
+        }
+      ],
+      "why": "Platforms are starting to design for agents as callers: one-request tools, searchable commands, and waits that cost nothing.",
+      "forYou": "Browser Run `/script` is a quick smoke test for the browser games after each deploy, and a parked approval tool fits any agent action that spends money.",
+      "terms": [
+        {
+          "term": "CDP",
+          "def": "Chrome DevTools Protocol: the low-level way programs control a Chrome browser."
+        },
+        {
+          "term": "Worker",
+          "def": "A small program that runs on Cloudflare's servers close to users."
+        }
+      ],
+      "deep": [
+        "Pi 1.6 is a one-way upgrade: a conversation that has run on it cannot go back to 1.5. `claudeCode()` in the SDK now defaults to `claude-sonnet-5-5`. Browser Run returns session and page IDs in the `cf-browser-session-id` and `cf-browser-target-id` headers."
+      ],
+      "sources": [
+        {
+          "label": "Cloudflare: Browser Run script endpoint",
+          "url": "https://developers.cloudflare.com/changelog/post/2026-11-20-script-endpoint/"
+        },
+        {
+          "label": "Vercel: find CLI commands by describing the task",
+          "url": "https://vercel.com/changelog/agents-can-now-find-vercel-cli-commands-by-describing-the-task"
+        },
+        {
+          "label": "Cloudflare: Agents SDK with Pi 1.6",
+          "url": "https://developers.cloudflare.com/changelog/post/2026-11-20-pi-harness-pi-1-6/"
+        },
+        {
+          "label": "Cloudflare: version retention",
+          "url": "https://developers.cloudflare.com/changelog/post/2026-11-19-workers-pages-version-retention/"
+        }
+      ]
+    },
+    {
+      "id": "probekit",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "ProbeKit lets a coding agent play your Unreal game to check its work",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A new Unreal Engine plugin lets AI coding agents run the game, press real inputs and click real menus, then report whether a feature works, instead of just saying it is done.",
+      "name": "ProbeKit",
+      "what": "An Unreal editor plugin with a built-in MCP server for in-game tests an agent writes and runs.",
+      "body": [
+        "Its maker built it after an agent kept saying \"Done!\" on features that did not work. The agent writes small test scenarios, ProbeKit plays them in the editor with real input and UI clicks, and the agent gets PASS, FAIL with the step that broke, or BLOCKED, plus screenshots to fix from. It does not judge visuals or feel, and does not test multiplayer. These are the seller's claims; there are no independent results yet."
+      ],
+      "facts": [
+        {
+          "k": "Price",
+          "v": "$39.99 on Fab, with a free demo project"
+        },
+        {
+          "k": "Engine",
+          "v": "UE 5.7 and 5.8, Windows, editor only"
+        },
+        {
+          "k": "Agents",
+          "v": "Claude Code, Cursor, Codex or any MCP client"
+        },
+        {
+          "k": "Tests",
+          "v": "JSON files you can commit, plus 12 template examples"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-22/probekit.webp",
+        "alt": "Two Unreal screenshots of a pickup test: the item ahead, then picked up, with a PASS badge and four ok log lines below.",
+        "credit": "IvanSR on Fab",
+        "creditUrl": "https://www.fab.com/listings/5f0542a9-423e-4269-b847-7d12ee94b79a",
+        "fit": "contain"
+      },
+      "why": "It moves the check from \"the code compiles\" to \"the feature works in play\", which is where agents most often claim done too early.",
+      "forYou": "Write one ProbeKit scenario per plugin feature (pick up, equip, hit, interact) in the demo template, and let Claude Code loop until PASS before a Fab update ships.",
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way to plug tools into an AI agent."
+        },
+        {
+          "term": "editor only",
+          "def": "Runs inside the Unreal Editor while you develop, not in the shipped game."
+        }
+      ],
+      "deep": [
+        "Movement goes through Enhanced Input actions (no teleporting) and UI clicks through a Slate virtual user. The MCP server listens on 127.0.0.1 only; Python, command files and calls outside the play session stay off until you allow them. A PowerShell runner returns exit code 0 for PASS, 1 for FAIL and 2 for BLOCKED. The free demo caps scenarios at 8 steps with no click, drag or wheel input."
+      ],
+      "sources": [
+        {
+          "label": "Fab: ProbeKit",
+          "url": "https://www.fab.com/listings/5f0542a9-423e-4269-b847-7d12ee94b79a"
+        },
+        {
+          "label": "The maker's post on Bluesky",
+          "url": "https://bsky.app/profile/ivanblack911.bsky.social/post/3n2uknbn44e2p"
+        }
+      ]
+    },
+    {
+      "id": "cpp26",
+      "format": "timeline",
+      "lane": "both",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "C++26, done again",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The next C++ standard needed a second vote after several countries objected to its new contracts feature. The committee kept the feature and voted again.",
+      "intro": "Votes are the committee's own, from Herb Sutter's trip report.",
+      "events": [
+        {
+          "when": "Feb 2025",
+          "text": "Contracts join the draft, 100 votes to 14."
+        },
+        {
+          "when": "Mar 2026",
+          "text": "C++26 is finished, 114 to 12."
+        },
+        {
+          "when": "First ballot",
+          "text": "Five countries vote no, mostly over contracts."
+        },
+        {
+          "when": "Nov 2026",
+          "text": "Contracts stay, with a label to force a check on; 111 to 9."
+        },
+        {
+          "when": "Next",
+          "text": "A second ballot, then ISO publication."
+        }
+      ],
+      "why": "Contracts and reflection are the C++26 features engine code will reach for first; compilers can plan against the final text.",
+      "terms": [
+        {
+          "term": "contracts",
+          "def": "Checks written into a function's declaration: what must be true going in and coming out."
+        },
+        {
+          "term": "reflection",
+          "def": "Code that can inspect types and generate code at compile time."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Herb Sutter: C++26 is done (again)",
+          "url": "https://herbsutter.com/2026/11/21/c26-is-done-again-trip-report-november-2026-iso-c-standards-meeting-buzios-brazil"
+        }
+      ]
+    },
+    {
+      "id": "mcp-tips",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Epic's tips for agents in Unreal: one setting cut a call from 46 seconds to 1",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Epic shared what it learned building its course on AI agents in the Unreal editor. The biggest win was a setting most people never touch.",
+      "intro": "From Epic's Unreal MCP videos, published November 19. The timing is Epic's own test.",
+      "items": [
+        {
+          "title": "Stop background throttling",
+          "text": "The editor slows itself down when it is not the focused window, which is exactly when an agent is driving it. Turning that off took one MCP call from 46 seconds to about one in Epic's testing.",
+          "url": "https://www.youtube.com/watch?v=E-aygTcDK5g"
+        },
+        {
+          "title": "Show the agent fewer tools",
+          "text": "Tool Search gives the agent three discovery tools instead of hundreds, and you can enable only the toolsets a task needs.",
+          "url": "https://www.youtube.com/watch?v=ekLlS4Csu8w"
+        },
+        {
+          "title": "Plan first, and use C++ for complex logic",
+          "text": "Epic suggests planning before building, and C++ over Blueprints when the logic gets complex.",
+          "url": "https://www.youtube.com/watch?v=E-aygTcDK5g"
+        },
+        {
+          "title": "Keep improving the agent file",
+          "text": "Run a continuous improvement loop on your agent.md file, so what one session learns reaches the next.",
+          "url": "https://www.youtube.com/watch?v=E-aygTcDK5g"
+        }
+      ],
+      "why": "If an agent seems slow in the editor, the wait may be the editor idling in the background, not the model thinking.",
+      "forYou": "Check this before the next long Claude Code session on the plugins: if the editor sits behind the terminal, every call may be throttled.",
+      "terms": [
+        {
+          "term": "throttling",
+          "def": "Deliberately running slower, here to save power when a window is not in front."
+        },
+        {
+          "term": "toolsets",
+          "def": "Groups of related actions the editor exposes to an agent, switched on or off together."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Unreal Engine: 5 Unreal MCP tips",
+          "url": "https://www.youtube.com/watch?v=E-aygTcDK5g"
+        },
+        {
+          "label": "Unreal Engine: MCP toolsets explained",
+          "url": "https://www.youtube.com/watch?v=ekLlS4Csu8w"
+        }
+      ]
+    },
+    {
+      "id": "mesh2motion",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Mesh2Motion adds props, weight painting and animation remixes",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A free, open-source website that rigs a 3D character and gives it ready-made animations now lets you add weapons and fix the rig by hand.",
+      "name": "Mesh2Motion",
+      "what": "A free, open-source web tool that rigs a 3D model and exports it with animations.",
+      "body": [
+        "Update 14 adds props such as swords, guns and a shovel that export with the character, manual weight painting to fix bad skinning, and remixing animations into variants such as walking while holding a rifle."
+      ],
+      "facts": [
+        {
+          "k": "Price",
+          "v": "Free, in the browser"
+        },
+        {
+          "k": "New",
+          "v": "50+ animations across all rigs, plus tagging"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-22/mesh2motion.webp",
+        "alt": "The Mesh2Motion editor with a low-poly fox mid-run, a list of rigs on the left and an animation library on the right.",
+        "credit": "Mesh2Motion",
+        "creditUrl": "https://github.com/Mesh2Motion/mesh2motion-app",
+        "fit": "cover"
+      },
+      "why": "Rigging and a first set of animations are often what stops a prototype; this does both in a browser tab.",
+      "forYou": "A quick way to get animated placeholder monsters into the browser games, or test props against a combat plugin before buying assets.",
+      "terms": [
+        {
+          "term": "rigs",
+          "def": "Gives a 3D model a skeleton so it can be animated."
+        },
+        {
+          "term": "weight painting",
+          "def": "Choosing how strongly each bone moves each part of the mesh."
+        }
+      ],
+      "sources": [
+        {
+          "label": "GameFromScratch: Mesh2Motion update",
+          "url": "https://gamefromscratch.com/mesh2motion-adds-props-weight-painting-and-more"
+        },
+        {
+          "label": "Mesh2Motion on GitHub",
+          "url": "https://github.com/Mesh2Motion/mesh2motion-app"
+        }
+      ],
+      "deep": [
+        "Other fixes in update 14: direct import of Mixamo-compatible animations, exported animations now face the right way in Unity, better handling of branching skeletons, and faster loading with Brotli and Meshopt."
+      ]
+    },
+    {
+      "id": "inkling-quant",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "How far an open coding model shrinks before it slips",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A developer squeezed a new open coding model small enough for a laptop, and published exactly where its coding score starts to fall.",
+      "intro": "Share of 164 HumanEval coding problems solved by Inkling 2 Mini, compressed with LookAtMyQuant, by size of the model's text weights.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "18.9 GB original",
+          "value": 92.7
+        },
+        {
+          "label": "12.8 GB",
+          "value": 92.7
+        },
+        {
+          "label": "11.2 GB",
+          "value": 92.1
+        },
+        {
+          "label": "8.9 GB",
+          "value": 90.9
+        },
+        {
+          "label": "5.4 GB",
+          "value": 70.7,
+          "highlight": true
+        }
+      ],
+      "note": "The author's own numbers. The 5.4 GB build ran at about 75 tokens a second in about 6 GB of memory on an Apple M5 Max, and kept 88% on GSM8K math against the original's 96.5%.",
+      "why": "Compression is nearly free down to about half the size, then gets expensive fast. Test the build you will ship, not the headline size.",
+      "forYou": "The 8.9 GB build is the one to try for local, offline agent chores on a Mac.",
+      "terms": [
+        {
+          "term": "HumanEval",
+          "def": "A standard test of 164 small programming problems, scored by running each answer's tests."
+        },
+        {
+          "term": "text weights",
+          "def": "The stored numbers of the language part of a model, which decide its size on disk and in memory."
+        }
+      ],
+      "deep": [
+        "LookAtMyQuant measures how much each group of weights hurts the output when compressed, then assigns trellis codes per group to hit a size budget. The 5.4 GB build is 1.65 bits per weight. Thinking Machines released Inkling 2 Mini on November 20."
+      ],
+      "sources": [
+        {
+          "label": "LookAtMyQuant on GitHub",
+          "url": "https://github.com/ShinMegamiBoson/lookatmyquant"
+        },
+        {
+          "label": "Thinking Machines: Inkling 2 Mini",
+          "url": "https://thinkingmachines.ai/news/inkling-2-mini"
+        }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What does it mean for a computer to check a proof?",
+    "answer": "A proof assistant such as Lean accepts a proof only if every step follows from earlier ones by rules it knows. You can trust the result without reading every line yourself.",
+    "analogy": "Like an auditor who signs off only when every entry in the books balances: they need not know why the money moved, only that nothing is out of place.",
+    "body": [
+      "You write two things: the statement (what you claim) and the proof (the steps). A small core program, the kernel, checks each step against a fixed set of rules. If one step does not follow, the whole proof is rejected. Because the kernel is small, people can trust it, and independent checkers can repeat its work.",
+      "The catch is that a checker confirms the proof, not that the statement is the one you meant. That is why the Riemann check also compared the theorem with Mathlib's existing statement. Code has the same gap: a passing test proves only what the test asserts, which is why gates like today's demand a test that failed before the fix."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Statement",
+          "note": "What is claimed, written precisely"
+        },
+        {
+          "label": "Proof",
+          "note": "Steps written by a person or an AI"
+        },
+        {
+          "label": "Kernel",
+          "note": "A small program checks every step",
+          "key": true
+        },
+        {
+          "label": "Accepted",
+          "note": "Only if no step fails"
+        }
+      ],
+      "links": [
+        "prove",
+        "check",
+        "pass"
+      ],
+      "caption": "The kernel does not care who wrote the proof, only whether each step follows."
+    },
+    "terms": [
+      {
+        "term": "proof assistant",
+        "def": "Software that checks mathematical proofs step by step and helps write them."
+      },
+      {
+        "term": "kernel",
+        "def": "The small trusted core of a proof assistant that does the final check."
+      }
+    ],
+    "seenIn": [
+      "riemann-lean",
+      "pr-gate"
+    ],
+    "sources": [
+      {
+        "label": "Lean: the language and proof assistant",
+        "url": "https://lean-lang.org/"
+      },
+      {
+        "label": "Lean community: the Riemann Hypothesis is verified",
+        "url": "https://leanprover-community.github.io/blog/posts/riemann-hypothesis"
+      },
+      {
+        "label": "Mathlib and the Lean community",
+        "url": "https://leanprover-community.github.io/"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Time one Unreal MCP call, then turn off background throttling",
+    "gist": "Find out whether your agent spends its Unreal session waiting on an editor that slows itself down in the background.",
+    "time": "15 minutes",
+    "level": "practitioner",
+    "needs": "An Unreal Editor with Unreal MCP connected to a coding agent such as Claude Code.",
+    "steps": [
+      {
+        "title": "Time a slow call",
+        "text": "With the editor behind your terminal, ask the agent for something that takes a while, such as listing every actor in a large level. Note how long the tool call takes."
+      },
+      {
+        "title": "Turn off throttling",
+        "text": "In Editor Preferences, under General and then Performance, untick Use Less CPU when in Background."
+      },
+      {
+        "title": "Repeat the call",
+        "text": "Run the same request again with the editor still in the background, and compare the two times."
+      },
+      {
+        "title": "Trim the tools",
+        "text": "Enable only the MCP toolsets the task needs, or turn on Tool Search, and run it once more to see if the agent picks tools faster."
+      }
+    ],
+    "check": "The second call is much faster; Epic saw one call drop from 46 seconds to about one. If the times match, throttling was not your bottleneck.",
+    "terms": [
+      {
+        "term": "throttling",
+        "def": "Running slower on purpose, here to save power when a window is not in front."
+      }
+    ],
+    "from": "mcp-tips",
+    "forYou": "Do it in the plugin test project before the next long Claude Code session on combat or inventory.",
+    "sources": [
+      {
+        "label": "Unreal Engine: 5 Unreal MCP tips",
+        "url": "https://www.youtube.com/watch?v=E-aygTcDK5g"
+      },
+      {
+        "label": "Unreal Engine: MCP toolsets explained",
+        "url": "https://www.youtube.com/watch?v=ekLlS4Csu8w"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Vercel Functions accept request bodies up to 20 MiB in public beta, up from 4.5 MB, behind an opt-in environment variable. Edge functions stay capped.",
+      "lane": "ai",
+      "url": "https://vercel.com/changelog/vercel-functions-now-support-request-bodies-up-to-20mib",
+      "source": "Vercel"
+    },
+    {
+      "text": "Codex CLI 0.171 turns on its TUI workspace by default, with subagent transcripts, and adds `/rc` to pair a device and drive a local session remotely.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.171.0",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "A preprint has a 27B open model edit its own weights in a sandbox, gaining 6.6 points on held-out math. Only the largest of four sizes improved.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2611.21885",
+      "source": "arXiv"
+    },
+    {
+      "text": "miniPG packs Postgres into one binary you use like sqlite3, starting in about 800 ms. Its author says it is not for production.",
+      "lane": "ai",
+      "url": "https://progrium.xyz/articles/2026/single-binary-postgres",
+      "source": "progrium"
+    },
+    {
+      "text": "Zero C# compiles C# with no runtime or garbage collector; hello world is 10,752 bytes on Windows. No reflection or async, and a throw ends the program.",
+      "lane": "gamedev",
+      "url": "https://onurgumus.github.io/zero-csharp/index.html",
+      "source": "Onur Gumus"
+    },
+    {
+      "text": "Unite Tokyo's roadmap: Unity 7 moves from Mono to CoreCLR, ending domain reloads, and Built-in Render Pipeline users are asked to move to URP first.",
+      "lane": "gamedev",
+      "url": "https://discussions.unity.com/t/unite-tokyo-2026-watch-the-keynote-and-roadmap-live-on-november-17/1741819",
+      "source": "Unity"
+    },
+    {
+      "text": "The 3DCoat developer released CADQuader in beta: it turns STEP and IGES CAD files into quad meshes, free for 30 days.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/3dcoat-dev-launches-new-tool-to-convert-cad-models-into-polygon-meshes",
+      "source": "80 Level"
+    },
+    {
+      "text": "GitHub Desktop now supports several accounts on the same host, such as a personal and a work account on github.com.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-19-github-desktop-now-supports-multiple-accounts-per-host",
+      "source": "GitHub"
+    },
+    {
+      "text": "The Pragmatic Engineer on inference costs: judge models by cost per task, not per token, and keep a private eval set built from your own traffic.",
+      "lane": "ai",
+      "url": "https://newsletter.pragmaticengineer.com/p/inference-engineering-for-software-engineers",
+      "source": "Pragmatic Engineer"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "clawdos",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "ClawDOS: a coding agent on a 1981 IBM PC",
+      "where": "Hacker News",
+      "signal": "161 points and 51 comments on Hacker News on November 21.",
+      "hook": "An 8088 at 4.77 MHz with 640K of RAM writes, compiles and runs its own programs, talking to Claude through a 176 KB harness.",
+      "borrow": "A tiny client, a tunnel for the encryption the old machine cannot do, and a small tool set are enough to put an agent on very limited hardware, such as a console devkit.",
+      "url": "https://ricapar.net/ClawDOS/",
+      "forYou": "The thin-harness pattern fits an agent inside a game build or a tools console, where only a small client can run.",
+      "image": {
+        "src": "img/2026-11-22/clawdos.webp",
+        "alt": "A DOS screen where the agent reads a tools guide, writes PRIMES.C, compiles it with Turbo C and prints 25 primes below 100.",
+        "credit": "Ricapar",
+        "creditUrl": "https://ricapar.net/ClawDOS/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "nail-cracks",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "Nails that crack the wood they go into",
+      "where": "Bluesky",
+      "signal": "117 likes and 17 reposts on Bluesky within hours of posting on November 22.",
+      "hook": "A Godot level tool where you drag a nail and an X-shaped crack redraws itself on whatever surface it hits.",
+      "borrow": "Decals that follow the surface as you edit make set dressing fast; any prop that touches a surface (bolts, arrows, bullet holes) can work this way.",
+      "url": "https://bsky.app/profile/majormcdoom.bsky.social/post/3n2uivd7mes26",
+      "forYou": "A small editor utility like this is the kind of world-tools feature that sells on Fab.",
+      "image": {
+        "src": "img/2026-11-22/nail-cracks.webp",
+        "alt": "A Godot editor view of a nail being placed on a wooden plank, with its transform gizmo and a small crack at its base.",
+        "credit": "majormcdoom on Bluesky",
+        "creditUrl": "https://bsky.app/profile/majormcdoom.bsky.social/post/3n2uivd7mes26",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "winedroid",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "Winedroid: Android apps in a browser tab, no Android",
+      "where": "Hacker News",
+      "signal": "182 points and 52 comments on Hacker News on November 20.",
+      "hook": "It runs real Android apps by executing their bytecode and reimplementing the framework, inspired by Wine, and draws the UI with Skia.",
+      "borrow": "Reimplement the platform's API instead of emulating the whole machine; the same idea lets a web demo of a mobile game skip an emulator.",
+      "url": "https://winedroid.soham.sh/demo",
+      "image": {
+        "src": "img/2026-11-22/winedroid.webp",
+        "alt": "A phone frame in the browser showing a launcher labelled not android, with Calculator, Meditation, Files, Weather and Currency apps.",
+        "credit": "Winedroid",
+        "creditUrl": "https://winedroid.soham.sh/demo",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "ahe-beta",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Agentic Harness Engineering Beta: Requirement-Centered Evolution of Agent Harnesses",
+      "headline": "A harness that learns from user complaints, not benchmark scores",
+      "authors": "Jiahang Lin, Jiahao Chen, Yiding Wang et al. (Fudan University and others)",
+      "where": "arXiv preprint (cs.SE)",
+      "date": "2026-11-18",
+      "problem": "Methods that improve a coding agent's harness chase benchmark scores. They miss what users actually need and overfit to the benchmark.",
+      "idea": "Simulated users work with the harness over several turns and file issues and ratings. A team of agents (triage, architect, product manager, developers) turns that feedback into general harness changes, and a change merges only if it resolves a verified requirement and passes review. No benchmark score is used while evolving.",
+      "result": "On 38 held-out tasks with GLM-5.3-Flash, pass@1 rose from 21.9% to 33.3% with 40.8% fewer tokens. In a blind test, real users preferred it in 31 of 48 pairs. Without re-evolving, it also lifted two other models. The task set is small and the models are cheap ones.",
+      "useIt": "Treat your agent's instruction files, hooks and skills as a harness: log each time you correct the agent, turn each correction into one general rule, and keep a rule only if it removes that correction on a rerun.",
+      "maturity": "code",
+      "forYou": "The morning routine and the plugin repos' CLAUDE.md files are harnesses; a correction log per repo is the cheap version of this loop.",
+      "links": [
+        {
+          "label": "arXiv: 2611.24924",
+          "url": "https://arxiv.org/abs/2611.24924"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2611.24924v1"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/Curry09/AHE-Beta"
+        }
+      ]
+    },
+    {
+      "id": "ats-splat",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "ATS: Anti-Aliased Triangle Splatting with Exact Per-Primitive Integrals",
+      "headline": "Triangle splats that stop shimmering when seen from far away",
+      "authors": "Brent Zoomers, Joni Vanherck, Leander Winters et al. (Hasselt University, Flanders Make)",
+      "where": "arXiv preprint (cs.CV)",
+      "date": "2026-11-17",
+      "problem": "Triangle splatting, a way to capture real scenes as many small soft triangles, samples each pixel at its center, so distant detail aliases. It also culls triangles smaller than a pixel, which deletes most of the scene at low resolution.",
+      "idea": "Compute exactly how much of each pixel a triangle covers, in closed form, instead of sampling one point, and replace the culling rule with a conservative test.",
+      "result": "On Mip-NeRF 360 at one eighth resolution after single-scale training: 29.26 dB against 24.83 for triangle splatting without culling, and flicker error 3.3 against 9.2 for 2x2 supersampling. It does not beat supersampling's 29.90 dB or the best Gaussian method.",
+      "useIt": "Triangles fit game raster pipelines better than Gaussians. If you plan captured scenery in a web or Unreal game, this is the fix for shimmer at distance and lower levels of detail to watch.",
+      "maturity": "prototype",
+      "links": [
+        {
+          "label": "arXiv: 2611.22512",
+          "url": "https://arxiv.org/abs/2611.22512"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2611.22512v1"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-22/ats-splat.webp",
+        "alt": "Crops of three scenes at full and one-eighth resolution, comparing point sampling, supersampling, ATS and three Gaussian methods with ground truth.",
+        "credit": "Zoomers et al., arXiv",
+        "creditUrl": "https://arxiv.org/abs/2611.22512",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "A quiet Sunday for tool releases: Claude Code, the Claude API, Cursor and Unreal shipped nothing new in the window. The sweep's arXiv, Reddit and itch.io feeds were rate limited, so the lab and sparks desks searched those directly."
+}

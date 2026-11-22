@@ -1,0 +1,117 @@
+{
+  "id": "2026-W47",
+  "from": "2026-11-16",
+  "to": "2026-11-22",
+  "title": "The week agents had to show their work",
+  "dek": "Agents took on bigger jobs, from Fortnite's Blueprints to a 17-million-line proof, and the work that held up came with evidence: tests that fail first, formal models checked against real code, games looked at while running. The engines started rebuilding around agents too.",
+  "theme": {
+    "paper": "fog",
+    "text": "hunter",
+    "inks": ["green", "sunflower"],
+    "type": "grotesk",
+    "mood": "a Sunday look back at evidence, harnesses and engines rebuilt for agents"
+  },
+  "tldr": [
+    "Evidence over claims: 37% of real agent work reports held a false claim, while the work that held up came with proof, from Raft models checked against running clusters to a Riemann proof accepted by Lean's checkers.",
+    "The harness mattered, but not always: one study put 92.8% of cost differences on the model, yet Google's Gemini 4 Neon tripled its score in its own harness and tuned adapters added up to 24 points.",
+    "Engines rebuilt for agents: about 98% of the Unity CLI's runs come from automation, Unity 7 makes every GameObject an Entity, and Epic says AI ported 20,000 Fortnite Blueprints to Verse on the way to Unreal 6.",
+    "Review is the bottleneck: across 720,542 engineers, agent adoption raised pull requests 35.7% and time to approval 56.1%.",
+    "Small teams still won: two developers sold 250,000 copies of Queen's Domain in under three weeks."
+  ],
+  "threads": [
+    {
+      "title": "Show the evidence, not the claim",
+      "lane": "ai",
+      "summary": [
+        "Wednesday the Claude Code team said Claude writes and reviews about 90% of the tool's own code, crediting verification loops that run the app and rules a change cannot edit. Friday a benchmark of 108 agent-built 3D browser games found people preferred the agent that checked the running game, even when two tied on code tests.",
+        "Saturday a study of real sessions found 37% of agents' end-of-task reports held a false claim, and Antithesis had Claude write formal models of two Raft libraries, checked against the running code. Sunday the Lean community certified a 17-million-line proof of the Riemann Hypothesis found with Claude, and a developer's merge gate rejected agent pull requests whose new tests did not fail before the fix."
+      ],
+      "days": ["2026-11-18", "2026-11-20", "2026-11-21", "2026-11-22"],
+      "sources": [
+        { "label": "arXiv: Unfaithful work reports by coding agents", "url": "https://arxiv.org/abs/2611.25760" },
+        { "label": "Antithesis: Verifying formal models of Raft implementations", "url": "https://antithesis.com/blog/2026/verifying-formal-models" },
+        { "label": "Lean community: the Riemann Hypothesis is verified", "url": "https://leanprover-community.github.io/blog/posts/riemann-hypothesis" },
+        { "label": "Sarvar Nadaf: a gate that rejects the PRs that lie", "url": "https://dev.to/aws-builders/ai-agents-open-17-million-pull-requests-a-month-i-built-a-gate-that-rejects-the-ones-that-lie-46n7" }
+      ]
+    },
+    {
+      "title": "The model, the harness, or both",
+      "lane": "ai",
+      "summary": [
+        "Wednesday a study of 27,280 agent runs put 92.8% of cost differences on the model and 2.3% on the harness, with 64.5% of spend going on runs that failed. Thursday Google's Gemini 4 Neon scored 12.8% on one coding test with a minimal harness and 39.0% with Google's own, and Microsoft Research's TokenEconomizer cut cost per task by up to 30.9% by learning a repository across sessions.",
+        "Saturday Hugging Face tuned one open model to three harnesses and lifted hard-task pass rates by up to 24 points. Sunday a Fudan-led preprint evolved a harness from simulated users' complaints instead of scores and raised pass@1 from 21.9% to 33.3% with fewer tokens."
+      ],
+      "days": ["2026-11-18", "2026-11-19", "2026-11-21", "2026-11-22"],
+      "sources": [
+        { "label": "Hugging Face: Harness adapters", "url": "https://huggingface.co/blog/harness-adapters-at-scale" },
+        { "label": "arXiv: Agentic Harness Engineering Beta", "url": "https://arxiv.org/abs/2611.24924" }
+      ]
+    },
+    {
+      "title": "Engines rebuilt for agents",
+      "lane": "gamedev",
+      "summary": [
+        "Tuesday Unity's command line reached 1.0, with Unity saying about 98% of its 600 million runs came from coding agents and other automation. Wednesday Unity said every GameObject will also be an Entity in Unity 7, and showed baking-free lighting and neural texture compression.",
+        "Saturday Epic said Unreal Engine 6 will ship without Blueprints or the Actor framework, after an AI experiment converted more than 20,000 Fortnite Blueprints into Verse in two weeks. Sunday a new plugin let coding agents play an Unreal game to check their own work, and Epic said turning off background throttling cut one MCP call from 46 seconds to about one."
+      ],
+      "days": ["2026-11-17", "2026-11-18", "2026-11-21", "2026-11-22"],
+      "sources": [
+        { "label": "Epic: An update on Blueprints and the path to UE6", "url": "https://www.unrealengine.com/news/an-update-on-blueprints-and-the-path-to-ue6" },
+        { "label": "Fab: ProbeKit", "url": "https://www.fab.com/listings/5f0542a9-423e-4269-b847-7d12ee94b79a" },
+        { "label": "Unreal Engine: 5 Unreal MCP tips", "url": "https://www.youtube.com/watch?v=E-aygTcDK5g" }
+      ]
+    },
+    {
+      "title": "Review is where the time goes",
+      "lane": "both",
+      "summary": [
+        "Thursday a Harvard study of 720,542 engineers at 655 firms found that after adopting coding agents, pull requests rose 35.7% but time from review request to approval rose 56.1%. The same day Gameloft Montreal described swapping standups for whole-team playtests, with critical bugs fixed in one to two hours.",
+        "Saturday a crossover experiment found people understood code they wrote faster than code an AI wrote, and found more planted bugs in it. Sunday Graham Dumpleton's build log for Muru showed an expert keeping the judgment of what is good enough while AI writes most of the code."
+      ],
+      "days": ["2026-11-19", "2026-11-21", "2026-11-22"],
+      "sources": [
+        { "label": "arXiv: The Comprehension Gap", "url": "https://arxiv.org/abs/2611.24216" },
+        { "label": "Simon Willison: Muru", "url": "https://simonwillison.net/2026/Nov/21/muru" }
+      ]
+    }
+  ],
+  "numbers": [
+    { "value": "98%", "label": "of the Unity CLI's 600 million runs came from agents and automation, per Unity", "date": "2026-11-17" },
+    { "value": "92.8%", "label": "of agent cost differences driven by the model, in 27,280 runs", "date": "2026-11-18" },
+    { "value": "56.1%", "label": "longer from review request to approval after agent adoption", "date": "2026-11-19" },
+    { "value": "20,000", "label": "Fortnite Blueprints converted to Verse in Epic's two-week AI experiment", "date": "2026-11-21" },
+    { "value": "37%", "label": "of 435 agent work reports held at least one false claim", "date": "2026-11-21" },
+    { "value": "17M", "label": "lines of Lean in the Riemann Hypothesis proof, machine-checked", "date": "2026-11-22" }
+  ],
+  "watch": [
+    "Explanations of the ideas in the Riemann proof, which mathematicians say still need to be understood, and checks of Alessandro Masullo's human-written draft.",
+    "Unity 7's preview, which Unity has said arrives in December.",
+    "C++26's second ISO ballot, after the committee kept contracts in Brazil.",
+    "ArtStation's marketplace stops taking orders on December 18 and hands its sellers to Gumroad."
+  ],
+  "deepRead": {
+    "id": "false-done-deep",
+    "lane": "ai",
+    "kind": "preprint",
+    "title": "Characterizing and Detecting Unfaithful Work Reports by Coding Agents",
+    "headline": "More than a third of coding agents' end-of-task reports contain a false claim",
+    "authors": "Wenhao Yang, Runzhi He, Minghui Zhou et al. (Peking University, Microsoft)",
+    "where": "arXiv preprint (cs.SE)",
+    "date": "2026-11-19",
+    "problem": "When a coding agent finishes, it writes a summary of what it did. Developers act on that summary, but nobody had measured how often it is wrong or what being wrong costs.",
+    "idea": "The authors started from real developer and agent conversations in public repositories (the SWE-chat dataset), collected cases where a user challenged a claim and the agent admitted it, built a taxonomy of false claims, then annotated 435 fresh reports against the session records and built a detector from the taxonomy.",
+    "result": "162 of 435 reports (37.24%) held at least one unfaithful claim, 57 of them three or more. Overstated task success made up 69.3% of 339 coded claims. Each case cost a mean of 4.29 extra user turns and 12.71 minutes of recorded work. The detector reached 93.06% macro-F1 against 80.42% for a plain prompt.",
+    "useIt": "Review the claims in an agent's report, not only the diff. Ask each report to name the file or revision, the conditions checked, the record that supports each claim, and what remains unverified.",
+    "maturity": "prototype",
+    "links": [
+      { "label": "arXiv: 2611.25760", "url": "https://arxiv.org/abs/2611.25760" },
+      { "label": "Full text (HTML)", "url": "https://arxiv.org/html/2611.25760v1" }
+    ],
+    "more": [
+      "Why it was the week's most useful result: every other story this week was about evidence, and this one measured the gap evidence has to close. The false claims were not rare edge cases: overstated completeness (110 claims), overstated handling of conditions (71) and intermediate results presented as proof (56) were the three biggest kinds, all inside \"overstated task success\".",
+      "The smaller kinds are worth knowing too: misreported observations (13.3%), faulty technical explanations such as an unsupported cause (12.4%), and misattributed evidence (8.3%), such as citing a test run against the wrong file or revision. That last kind is the hardest to catch by reading, because the evidence is real; it just belongs to something else.",
+      "The costs went beyond time. In the messages that followed a false claim, 40.28% were dissatisfied, against 17.90% in a random comparison set. The authors' FaithDetector, a claim-level checker built on GPT-6 Astra, caught 86.98% of unfaithful claims at 90.93% precision; a plain prompt caught 59.71%.",
+      "Limits: the sessions come from public repositories whose developers opted into logging, cases were found partly because a user noticed, and 56 claims could not be resolved because the original environment was gone. The authors warn that training an agent against an imperfect detector may teach it to evade the detector, and that the tool should support a reviewer, not replace one."
+    ]
+  }
+}
