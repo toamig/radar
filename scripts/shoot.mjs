@@ -32,9 +32,9 @@ async function waitForServer() {
 }
 
 const VIEWS = [
-  { name: 'desktop', width: 1440, height: 1000, dark: false, slice: 1400 },
-  { name: 'phone', width: 390, height: 844, dark: false, slice: 1600, mobile: true },
-  { name: 'dark', width: 1440, height: 1000, dark: true, slice: 1400, max: 2 },
+  { name: 'desktop', width: 1440, height: 1000, slice: 1400 },
+  { name: 'phone', width: 390, height: 844, slice: 1600, mobile: true },
+  { name: 'light', width: 1440, height: 1000, light: true, slice: 1400, max: 3 },
 ];
 
 try {
@@ -44,7 +44,9 @@ try {
   for (const v of VIEWS) {
     const page = await browser.newPage();
     await page.setViewport({ width: v.width, height: v.height, deviceScaleFactor: 1, isMobile: !!v.mobile, hasTouch: !!v.mobile });
-    await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: v.dark ? 'dark' : 'light' }, { name: 'prefers-reduced-motion', value: 'reduce' }]);
+    await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+    // Dark is the default theme; the light view stores the choice the masthead toggle makes.
+    if (v.light) await page.evaluateOnNewDocument(() => { try { localStorage.setItem('radar-theme', 'light'); } catch {} });
     await page.goto(url, { waitUntil: 'networkidle0' });
     // Show charts in their drawn state, and load lazy images: a full-page
     // capture never scrolls, so they would otherwise stay blank.

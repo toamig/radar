@@ -17,3 +17,7 @@ Astro static site on GitHub Pages; a Claude Code routine writes one issue a day.
 - Commits carry no attribution: never add a `Co-Authored-By` or `Claude-Session` trailer, in any
   session or routine. `.claude/settings.json` turns it off and `.githooks/commit-msg` strips it
   (run `git config core.hooksPath .githooks` once per checkout).
+- The look lives in `src/styles/future.css` (dark default, Geist and Geist Mono, glass panels, light theme behind the
+  masthead toggle). It is loaded last and re-skins the older stylesheets, so change the look there. Daily variety is
+  only the two accent inks; `src/kit/catalog.mjs` lifts or sinks each ink until it reads (4.5:1) on the panels.
+  Keep `scripts/og.mjs` share cards in the same look.

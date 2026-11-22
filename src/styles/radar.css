@@ -1,4 +1,5 @@
-/* Radar: a daily briefing printed like a risograph zine.
+/* Radar base styles. future.css, loaded last, owns the current look (dark, Geist, glass panels);
+ * this file is the structure underneath it. Originally a risograph zine.
  *
  * Colors come from the day's theme as custom properties set in Base.astro:
  * --paper --text --muted --rule --ink-a --ink-b --display-a --display-b
@@ -19,7 +20,6 @@
   --step-4: clamp(2.6rem, 6vw, 4.2rem);
   --step-5: clamp(3.2rem, 9.5vw, 7.6rem);
   --ease: cubic-bezier(.2, .7, .1, 1);
-  color-scheme: light;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -36,18 +36,6 @@ body {
   font-optical-sizing: auto;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
-}
-
-/* Paper grain: a faint noise so flat color reads as printed stock. */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 100;
-  opacity: .07;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .18em; }
@@ -440,23 +428,6 @@ p, li { text-wrap: pretty; }
 .watch { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 14px 36px; }
 .watch li { padding-left: 24px; position: relative; line-height: 1.45; }
 .watch li::before { content: ''; position: absolute; left: 0; top: .45em; width: 12px; height: 12px; border: 3px solid var(--ink-a); border-radius: 50%; }
-
-/* ------------------------------------------------------------ dark */
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) { color-scheme: dark; }
-  /* The art plate stays light in dark mode, so the poster title must not cut into it. */
-  :root:not([data-theme='light']) .hero[data-variant='poster'] .hero-title { margin-top: .25em; }
-  :root:not([data-theme='light']) body::before { mix-blend-mode: screen; opacity: .05; }
-  :root:not([data-theme='light']) .overprint::after,
-  :root:not([data-theme='light']) .swatch i { mix-blend-mode: screen; }
-  :root:not([data-theme='light']) .codebox { background: #000; color: #eee; }
-}
-:root[data-theme='dark'] { color-scheme: dark; }
-:root[data-theme='dark'] .hero[data-variant='poster'] .hero-title { margin-top: .25em; }
-:root[data-theme='dark'] body::before { mix-blend-mode: screen; opacity: .05; }
-:root[data-theme='dark'] .overprint::after, :root[data-theme='dark'] .swatch i { mix-blend-mode: screen; }
-:root[data-theme='dark'] .codebox { background: #000; color: #eee; }
 
 /* ------------------------------------------------------------ motion */
 

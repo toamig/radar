@@ -45,28 +45,16 @@ export const PAPERS = {
   'lilac': { name: 'Lilac', hex: '#ECE6F6', night: '#18151F' },
 };
 
-/** Display faces. Body text is always Literata: one familiar reading voice. */
+/**
+ * Display faces. One family, Geist, in four voices that differ in weight and
+ * tightness, so every day reads as the same product. Body text is Geist too.
+ */
+const GEIST = "'Geist Variable', ui-sans-serif, system-ui, 'Segoe UI', sans-serif";
 export const TYPE_SETS = {
-  poster: {
-    name: 'Big Shoulders',
-    display: "'Big Shoulders Display Variable', 'Arial Narrow', sans-serif",
-    displayWeight: 800, displayStretch: '100%', tracking: '-0.01em', caseUpper: true, scale: 1,
-  },
-  wide: {
-    name: 'Anybody Expanded',
-    display: "'Anybody Variable', 'Arial Black', sans-serif",
-    displayWeight: 760, displayStretch: '135%', tracking: '-0.03em', caseUpper: false, scale: 0.72,
-  },
-  grotesk: {
-    name: 'Bricolage Grotesque',
-    display: "'Bricolage Grotesque Variable', 'Helvetica Neue', sans-serif",
-    displayWeight: 700, displayStretch: '100%', tracking: '-0.035em', caseUpper: false, scale: 0.9,
-  },
-  condensed: {
-    name: 'Anybody Condensed',
-    display: "'Anybody Variable', 'Arial Narrow', sans-serif",
-    displayWeight: 820, displayStretch: '62%', tracking: '-0.01em', caseUpper: true, scale: 1,
-  },
+  poster: { name: 'Geist Bold', display: GEIST, displayWeight: 700, displayStretch: '100%', tracking: '-0.045em', caseUpper: false, scale: 1 },
+  wide: { name: 'Geist Semibold', display: GEIST, displayWeight: 600, displayStretch: '100%', tracking: '-0.035em', caseUpper: false, scale: 1 },
+  grotesk: { name: 'Geist Medium Bold', display: GEIST, displayWeight: 650, displayStretch: '100%', tracking: '-0.04em', caseUpper: false, scale: 1 },
+  condensed: { name: 'Geist Black', display: GEIST, displayWeight: 780, displayStretch: '100%', tracking: '-0.05em', caseUpper: false, scale: 1 },
 };
 
 export const SAFE_THEME = { paper: 'bright-white', text: 'black', inks: ['blue', 'fluoro-pink'], type: 'grotesk' };
@@ -108,7 +96,9 @@ export function resolveTheme(theme) {
 
   const pick = (ink, bg, fallback, min = 3) => (contrast(ink.hex, bg) >= min ? ink.hex : fallback);
   // Night: paper becomes the dark stock, text becomes the day paper.
-  const night = { paper: paper.night, text: paper.hex };
+  const night = { paper: paper.night, text: nightText(paper.hex) };
+  // Accents must read on the raised panels too, which sit lighter than the page.
+  const panel = mix(night.paper, night.text, 0.2);
   return {
     ids: t,
     names: { paper: paper.name, text: text.name, a: a.name, b: b.name, type: type.name },
@@ -116,30 +106,45 @@ export function resolveTheme(theme) {
     day: {
       paper: paper.hex,
       text: text.hex,
-      muted: mix(text.hex, paper.hex, 0.32),
+      muted: mix(text.hex, paper.hex, 0.22),
       rule: mix(text.hex, paper.hex, 0.78),
       inkA: a.hex,
       inkB: b.hex,
-      displayA: pick(a, paper.hex, text.hex),
-      displayB: pick(b, paper.hex, text.hex),
+      displayA: sink(a.hex, paper.hex, 4.5),
+      displayB: sink(b.hex, paper.hex, 4.5),
       tintA: mix(a.hex, paper.hex, 0.8),
       tintB: mix(b.hex, paper.hex, 0.8),
     },
     night: {
       paper: night.paper,
       text: night.text,
-      muted: mix(night.text, night.paper, 0.35),
+      muted: mix(night.text, night.paper, 0.26),
       rule: mix(night.text, night.paper, 0.8),
       inkA: a.hex,
       inkB: b.hex,
-      displayA: pick(a, night.paper, night.text, 4.5),
-      displayB: pick(b, night.paper, night.text, 4.5),
+      displayA: lift(a.hex, panel, 4.5),
+      displayB: lift(b.hex, panel, 4.5),
       tintA: mix(a.hex, night.paper, 0.78),
       tintB: mix(b.hex, night.paper, 0.78),
     },
     plate: paper.hex,
   };
 }
+
+/** Raise an ink toward white until it reads on a dark ground: the accent keeps its hue. */
+export function lift(hex, bg, min = 4.5) {
+  let out = hex;
+  for (let t = 0; t <= 1.0001 && contrast(out, bg) < min; t += 0.04) out = mix(hex, '#FFFFFF', t);
+  return out;
+}
+/** Lower an ink toward black until it reads on a light ground. */
+export function sink(hex, bg, min = 4.5) {
+  let out = hex;
+  for (let t = 0; t <= 1.0001 && contrast(out, bg) < min; t += 0.04) out = mix(hex, '#000000', t);
+  return out;
+}
+/** Text on the dark ground: the paper's own tint, nearly white. */
+export const nightText = (paperHex) => mix(paperHex, '#FFFFFF', 0.55);
 
 /** Black or white, whichever reads better on an ink. */
 export const onInk = (hex) => (contrast(hex, '#000000') >= contrast(hex, '#FFFFFF') ? '#000000' : '#FFFFFF');
@@ -152,7 +157,7 @@ export function auditCatalog() {
       const c = contrast(t.hex, p.hex);
       if (c < 7) problems.push(`text ink ${tid} on paper ${pid} is ${c.toFixed(2)}:1, below 7:1`);
     }
-    const nc = contrast(p.hex, p.night);
+    const nc = contrast(nightText(p.hex), p.night);
     if (nc < 7) problems.push(`night text on ${pid} is ${nc.toFixed(2)}:1, below 7:1`);
   }
   return problems;

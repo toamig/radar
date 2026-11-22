@@ -1,15 +1,12 @@
 ---
-import '@fontsource-variable/literata/opsz.css';
-import '@fontsource-variable/literata/opsz-italic.css';
-import '@fontsource-variable/jetbrains-mono';
-import '@fontsource-variable/big-shoulders-display';
-import '@fontsource-variable/anybody/wdth.css';
-import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
 import '../styles/radar.css';
 import '../styles/kit-extras.css';
 import '../styles/sparks.css';
 import '../styles/nav.css';
 import '../styles/readability.css';
+import '../styles/future.css';
 import { resolveTheme, onInk } from '../kit/catalog.mjs';
 import { BASE } from '../kit/data';
 import { toaSvg } from '../kit/toa-mark.mjs';
@@ -33,12 +30,11 @@ const vars = (s: typeof t.day) => `
   --tint-a:${s.tintA};--tint-b:${s.tintB};--on-a:${onInk(s.inkA)};--on-b:${onInk(s.inkB)};`;
 const typeVars = `--display-font:${t.type.display};--display-weight:${t.type.displayWeight};
   --display-stretch:${t.type.displayStretch};--display-tracking:${t.type.tracking};
-  --display-case:${t.type.caseUpper ? 'uppercase' : 'none'};--plate:${t.plate};
+  --display-case:${t.type.caseUpper ? 'uppercase' : 'none'};
   --display-scale:${t.type.scale};`;
 // Values come from the catalog tables, never from issue text.
-const css = `:root{${vars(t.day)}${typeVars}}
-@media (prefers-color-scheme: dark){:root:not([data-theme='light']){${vars(t.night)}}}
-:root[data-theme='dark']{${vars(t.night)}}`;
+const css = `:root{${vars(t.night)}${typeVars}color-scheme:dark}
+:root[data-theme='light']{${vars(t.day)}color-scheme:light}`;
 const canonical = new URL(`${BASE}${path}`, Astro.site).href;
 // The tab icon is the TOA mark in this issue's two inks, so it changes with the palette.
 const favicon = `data:image/svg+xml,${encodeURIComponent(toaSvg(t.day.inkB, t.day.inkA, { square: true }))}`;
@@ -69,12 +65,16 @@ const ogImageUrl = ogImage ? new URL(`${BASE}${ogImage}`, Astro.site).href : und
     <meta name="twitter:title" content={shareTitle} />
     <meta name="twitter:description" content={description} />
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
-    <meta name="theme-color" content={t.day.paper} />
+    <meta name="theme-color" content={t.night.paper} />
     <link rel="icon" href={favicon} type="image/svg+xml" />
     <link rel="alternate icon" href={`${BASE}favicon.svg`} type="image/svg+xml" />
     <style set:html={css}></style>
     <script is:inline>
       document.documentElement.classList.add('js');
+      // Dark is the default look; the masthead toggle stores a light choice.
+      var theme = 'dark';
+      try { if (localStorage.getItem('radar-theme') === 'light') theme = 'light'; } catch (e) {}
+      document.documentElement.setAttribute('data-theme', theme);
       try {
         var q = new URLSearchParams(location.search);
         if (q.has('tune')) localStorage.setItem('radar-tune', q.get('tune') === '0' ? '0' : '1');

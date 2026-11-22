@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Share cards: one 1200x630 JPEG per kept issue and week, printed in that day's
-// inks and headline face, for link previews (WhatsApp, Slack, X, LinkedIn...).
+// Share cards: one 1200x630 JPEG per kept issue and week, in that day's
+// accent colors, for link previews (WhatsApp, Slack, X, LinkedIn...).
 // Runs before every build; output goes to public/og/ (not committed).
 import { readFileSync, readdirSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -16,19 +16,12 @@ const KEEP_DAYS = 7, KEEP_WEEKS = 4;
 
 const font = (pkg, file) => readFileSync(join(root, 'node_modules', '@fontsource', pkg, 'files', file));
 const fonts = [
-  { name: 'Big Shoulders', data: font('big-shoulders-display', 'big-shoulders-display-latin-800-normal.woff'), weight: 800, style: 'normal' },
-  { name: 'Anybody', data: font('anybody', 'anybody-latin-800-normal.woff'), weight: 800, style: 'normal' },
-  { name: 'Bricolage', data: font('bricolage-grotesque', 'bricolage-grotesque-latin-700-normal.woff'), weight: 700, style: 'normal' },
-  { name: 'Literata', data: font('literata', 'literata-latin-400-normal.woff'), weight: 400, style: 'normal' },
-  { name: 'Literata', data: font('literata', 'literata-latin-600-normal.woff'), weight: 600, style: 'normal' },
+  { name: 'Geist', data: font('geist', 'geist-latin-400-normal.woff'), weight: 400, style: 'normal' },
+  { name: 'Geist', data: font('geist', 'geist-latin-600-normal.woff'), weight: 600, style: 'normal' },
+  { name: 'Geist', data: font('geist', 'geist-latin-700-normal.woff'), weight: 700, style: 'normal' },
 ];
-// The static cuts closest to each type set's display face.
-const DISPLAY = {
-  poster: { family: 'Big Shoulders', upper: true, size: 1.25, tracking: 0 },
-  condensed: { family: 'Big Shoulders', upper: true, size: 1.25, tracking: 0 },
-  wide: { family: 'Anybody', upper: false, size: 0.9, tracking: -1 },
-  grotesk: { family: 'Bricolage', upper: false, size: 1, tracking: -2 },
-};
+// One family now: every type set prints in Geist Bold.
+const DISPLAY = { family: 'Geist', upper: false, size: 1, tracking: -2 };
 
 const toaMark = (t, oa) => `data:image/svg+xml;base64,${Buffer.from(toaSvg(t, oa)).toString('base64')}`;
 
@@ -45,35 +38,38 @@ async function imageData(rel) {
 
 function card({ theme, number, date, title, line, points = [], image }) {
   const t = resolveTheme(theme);
-  const c = t.day;
-  const d = DISPLAY[t.ids.type] ?? DISPLAY.grotesk;
+  const c = t.night;
+  const d = DISPLAY;
   const textW = image ? W - 520 : W;
   // Shorter headlines print bigger; long ones step down so they fit in four lines.
   const len = title.length;
-  const base = len <= 28 ? 84 : len <= 44 ? 72 : len <= 60 ? 62 : 54;
-  const size = Math.round(base * d.size * (image ? 0.92 : 1));
-  const word = (color, dx, dy) => h('div', { position: 'absolute', left: dx, top: dy, fontFamily: d.family, fontSize: 64, lineHeight: 1, color, textTransform: d.upper ? 'uppercase' : 'none', letterSpacing: d.tracking }, 'Radar');
-  return h('div', { width: W, height: H, backgroundColor: c.paper, color: c.text, fontFamily: 'Literata' },
+  const base = len <= 28 ? 78 : len <= 44 ? 68 : len <= 60 ? 58 : 50;
+  const size = Math.round(base * (image ? 0.92 : 1));
+  const rule = `1px solid ${c.muted}55`;
+  return h('div', {
+    width: W, height: H, color: c.text, fontFamily: 'Geist', backgroundColor: c.paper,
+    backgroundImage: `radial-gradient(circle at 8% -10%, ${c.inkA}55, ${c.inkA}00 55%), radial-gradient(circle at 96% 0%, ${c.inkB}44, ${c.inkB}00 50%)`,
+  },
     h('div', { width: textW, height: H, flexDirection: 'column', padding: '44px 56px 40px 56px' },
-      h('div', { justifyContent: 'space-between', alignItems: 'flex-end', paddingBottom: 18, borderBottom: `6px solid ${c.text}` },
-        h('div', { alignItems: 'flex-end', gap: 12 },
-          { type: 'img', props: { src: toaMark(c.inkB, c.displayA), style: { width: 84, height: 48, marginBottom: 6 } } },
-          h('div', { position: 'relative', width: 230, height: 64 }, word(c.inkB, 5, 4), word(c.displayA, 0, 0))),
-        h('div', { flexDirection: 'column', alignItems: 'flex-end', fontSize: 22, lineHeight: 1.25 },
-          h('div', { fontWeight: 600 }, number),
-          h('div', { color: c.muted }, date))),
-      h('div', { flexDirection: 'column', paddingTop: image ? 44 : 34 },
-        h('div', { fontFamily: d.family, fontSize: size, lineHeight: 1.02, letterSpacing: d.tracking, textTransform: d.upper ? 'uppercase' : 'none', color: c.text }, title),
-        image && line ? h('div', { marginTop: 22, fontSize: 27, lineHeight: 1.35, color: c.text, maxHeight: 110, overflow: 'hidden' }, line) : null,
-        !image && points.length ? h('div', { flexDirection: 'column', marginTop: 26, gap: 10 },
-          points.slice(0, 3).map((pt, i) => h('div', { alignItems: 'flex-start', gap: 14, fontSize: 24, lineHeight: 1.3, color: c.text },
-            h('div', { width: 14, height: 14, marginTop: 9, flexShrink: 0, backgroundColor: i % 2 ? c.inkB : c.inkA }),
+      h('div', { justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20, borderBottom: rule },
+        h('div', { alignItems: 'center', gap: 14 },
+          { type: 'img', props: { src: toaMark(c.inkB, c.displayA), style: { width: 70, height: 40 } } },
+          h('div', { fontFamily: 'Geist', fontWeight: 700, fontSize: 52, lineHeight: 1, letterSpacing: -2, color: c.text }, 'Radar')),
+        h('div', { alignItems: 'center', gap: 14, fontSize: 22, color: c.muted },
+          h('div', { fontWeight: 600, color: c.displayA, border: `1px solid ${c.displayA}`, borderRadius: 99, padding: '4px 14px' }, number),
+          h('div', {}, date))),
+      h('div', { flexDirection: 'column', paddingTop: image ? 44 : 38 },
+        h('div', { fontFamily: 'Geist', fontWeight: 700, fontSize: size, lineHeight: 1.04, letterSpacing: d.tracking, color: c.text }, title),
+        image && line ? h('div', { marginTop: 24, fontSize: 26, lineHeight: 1.4, color: c.muted, maxHeight: 110, overflow: 'hidden' }, line) : null,
+        !image && points.length ? h('div', { flexDirection: 'column', marginTop: 28, gap: 12 },
+          points.slice(0, 2).map((pt, i) => h('div', { alignItems: 'flex-start', gap: 14, fontSize: 24, lineHeight: 1.3, color: c.muted },
+            h('div', { width: 10, height: 10, marginTop: 10, flexShrink: 0, borderRadius: 99, backgroundColor: i % 2 ? c.displayB : c.displayA }),
             h('div', { maxWidth: 1000 }, pt)))) : null),
       h('div', { position: 'absolute', left: 56, right: image ? 576 : 56, bottom: 36, alignItems: 'center', gap: 16, fontSize: 21, color: c.muted },
         h('div', { fontWeight: 600, color: c.text, whiteSpace: 'nowrap' }, 'by Toamig'),
         image ? null : h('div', { whiteSpace: 'nowrap' }, 'a daily briefing on game dev, software and AI'),
-        h('div', { marginLeft: image ? 0 : 'auto', fontWeight: 600, color: c.text, whiteSpace: 'nowrap' }, 'toamig.com/radar'))),
-    image ? h('div', { width: 520, height: H, borderLeft: `8px solid ${c.inkA}` }, { type: 'img', props: { src: image, width: 512, height: H, style: { objectFit: 'cover' } } }) : null);
+        h('div', { marginLeft: image ? 0 : 'auto', fontWeight: 600, color: c.displayA, whiteSpace: 'nowrap' }, 'toamig.com/radar'))),
+    image ? h('div', { width: 520, height: H, borderLeft: rule }, { type: 'img', props: { src: image, width: 512, height: H, style: { objectFit: 'cover' } } }) : null);
 }
 
 async function render(node, out) {
