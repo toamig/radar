@@ -1,0 +1,1002 @@
+{
+  "date": "2026-11-23",
+  "number": 41,
+  "title": "Walls that hold, graders that lie",
+  "dek": "A small add-on stops AI-generated game worlds from letting players walk through walls. Plus evidence that agent benchmarks fail correct work, secrets saved by a Claude Code prompt, and new Epic Games Store discount rules due today.",
+  "theme": {
+    "paper": "fog",
+    "text": "federal-blue",
+    "inks": [
+      "green",
+      "fluoro-pink"
+    ],
+    "type": "grotesk",
+    "mood": "a Monday about checks that hold, and graders that do not"
+  },
+  "tldr": [
+    {
+      "text": "Playable AI video worlds let you walk through walls. **NoPeWorld** reads the model's own hidden states and swaps unsafe moves for safe ones: violations fell from 74% to 16% across six models.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Eugene Yan found evidence in 8 of 12 public evals that the grader failed work that should have passed. A new paper splits running the tests from judging them, so an agent cannot fake a pass.",
+      "lane": "ai"
+    },
+    {
+      "text": "\"Yes, and don't ask again\" in Claude Code can save a full command, secrets included, to a local settings file; GitGuardian found 31,088 such secrets on public GitHub.",
+      "lane": "ai"
+    },
+    {
+      "text": "The Epic Games Store cut its discount cooldown from 30 days to 7 and added a Black Friday sale. Submissions close today, November 23.",
+      "lane": "gamedev"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Who grades the agent",
+      "note": "Benchmarks that fail correct work, a tool that proves a rewrite before using it, and the harness as the place to enforce rules.",
+      "ids": [
+        "eval-graders",
+        "fast-anything",
+        "harness-os",
+        "harness-quote"
+      ]
+    },
+    {
+      "title": "Keep secrets out of the agent's reach",
+      "note": "Prompts travel further than their privacy flags, and approved commands can save keys to disk.",
+      "ids": [
+        "canary-prompts",
+        "settings-leak",
+        "agent-gateway"
+      ]
+    },
+    {
+      "title": "Selling and making games this week",
+      "note": "New store discount rules with a deadline today, phone-video motion capture, and an EU draft that reaches into game design.",
+      "ids": [
+        "egs-discounts",
+        "egs-dates",
+        "markerless-mocap",
+        "eu-dfa"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "nopeworld",
+      "format": "hero",
+      "variant": "split",
+      "lane": "gamedev",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Playable AI worlds let you walk through walls. Now they can stop",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Video models that generate a game world as you play have no real walls, so you can stroll through a pillar. Researchers found the model already knows when that is about to happen, and used it to block the move.",
+      "background": "Interactive video world models, like Google's Genie, draw each new frame of a scene from your key presses instead of running a game engine.",
+      "takeaway": "The model that draws the world already predicts collisions; a tiny reader on its hidden states turns that into a rule. Reading what a frozen model knows can be cheaper than bolting on a second model to check it.",
+      "body": [
+        "A team at The Hong Kong Polytechnic University tested six open video world models on routes that run into walls. None reliably stopped. But the hidden states inside each model's diffusion transformer, the part that draws the frames, turned out to predict whether a move would pass through an obstacle.",
+        "So they trained a small head, under 2 million parameters, on top of the frozen model. Before each step it scores 34 candidate moves (the player's input, stopping, shorter steps, turns) as safe or unsafe. An unsafe input is swapped for the safe move closest to what the player meant, so you slide along a wall instead of entering it. The training data was 729 videos rendered in Unreal Engine scenes, labelled with the real geometry.",
+        "Averaged over the six models, the share of routes with a physical violation fell from 74% to 16%. The cheaper mode adds about 1% to generation time. It also worked on photos from outside its training, third-person views and moving obstacles, though some models still broke through often, and an external depth-camera baseline caught more on several of them."
+      ],
+      "stat": {
+        "value": "16%",
+        "label": "routes passing through an obstacle with NoPeWorld, down from 74%"
+      },
+      "image": {
+        "src": "img/2026-11-23/nopeworld.webp",
+        "alt": "Paper figure: in a station, the original model walks through a brick pillar while NoPeWorld stops at it; below, six world models pass through an alley wall, and stop with NoPeWorld.",
+        "credit": "Dai et al., The Hong Kong Polytechnic University (CC BY 4.0)",
+        "creditUrl": "https://arxiv.org/abs/2611.27963",
+        "fit": "contain"
+      },
+      "why": "Playable generated worlds are moving from demos toward tools, and collision is the first rule players notice when it breaks. This shows a cheap fix that keeps the model untouched, with code and weights released.",
+      "forYou": "Not something to ship in a UE5 action RPG, but the training trick is worth noting: 729 Unreal clips with ground-truth geometry were enough to teach a probe. Any AI-driven layer in a web or three.js prototype could gate player input the same way.",
+      "terms": [
+        {
+          "term": "diffusion transformer",
+          "def": "The kind of neural network that generates the video, refining noisy frames into clear ones step by step."
+        },
+        {
+          "term": "hidden states",
+          "def": "The internal numbers a network computes on its way to an output, which often hold information it never shows directly."
+        },
+        {
+          "term": "frozen",
+          "def": "Left exactly as it is: none of the original model's weights are retrained."
+        }
+      ],
+      "deep": [
+        "The head uses two cross-attention blocks over tokens from mid-to-deep DiT blocks and outputs, per candidate, a safety logit, a swept clearance estimate and an intent score. Prediction mode scores all 34 candidates from the cached pass (about 0.7 s added on a 53.7 s route on LingBot-World 2.0); collision mode reruns the first denoising step when it changes the action (about 9.9 s, 18%). An external depth baseline adds 14.7 s (27%).",
+        "Training scenes come from UnrealZoo (44 scenes), with 32 separate test scenes for the NoPeBench benchmark. On LingBot-World 2.0, Task 2 violations fell from 89% to 4%, against 2% for the depth baseline, while keeping more of the player's intent. Hy-Nomas and Evoke-Turbo still violated in 40% and 30% of routes in their best mode."
+      ],
+      "sources": [
+        {
+          "label": "arXiv: Non-penetrating World Models",
+          "url": "https://arxiv.org/abs/2611.27963"
+        },
+        {
+          "label": "NoPeWorld code on GitHub",
+          "url": "https://github.com/yuhangdai427/NoPeWorld"
+        },
+        {
+          "label": "Project page",
+          "url": "https://nopeworld.github.io"
+        }
+      ]
+    },
+    {
+      "id": "eval-graders",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "When the benchmark is wrong, not the model",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Eugene Yan studied twelve public AI benchmarks and found evidence in eight that the grader failed work that should have passed. Leaderboard scores measure the test as much as the model.",
+      "intro": "Share of tasks with a grading problem, from reviews Yan collects of three benchmarks.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Terminal Bench 4.0: unstated rule",
+          "value": 63,
+          "highlight": true
+        },
+        {
+          "label": "DeepSWE: correct work failed",
+          "value": 20
+        },
+        {
+          "label": "BrowseComp: answers disputed",
+          "value": 14
+        }
+      ],
+      "note": "Terminal Bench: 41 of 65 rebuilt tasks; once the hidden requirements were stated, one model rose from 63% to 89%. DeepSWE: at least 23 of 113. BrowseComp: 50 of 367.",
+      "why": "Agents also fool graders the other way: on AutomationBench, models declared success on 72% to 91% of the failures analysed. Yan's advice is to test any model in your own harness on your own tasks, and use public scores only to shortlist.",
+      "forYou": "Before switching the default model for plugin or SaaS work on a leaderboard jump, rerun a handful of your own past tasks; today's lab entry on SplitBench shows how to keep that check honest.",
+      "terms": [
+        {
+          "term": "grader",
+          "def": "The code or model that decides whether an AI's answer to a benchmark task counts as a pass."
+        },
+        {
+          "term": "harness",
+          "def": "The program around a model that gives it tools, runs its actions and feeds results back."
+        }
+      ],
+      "deep": [
+        "Yan's recommendations: report pass^k (solved on every one of k tries) beside the average, count cost per successful task including human review time, audit graders, add negative tests (a do-nothing agent must fail), and evaluate in your own harness. One FrontierSWE model stopped within eight hours of a 20-hour budget in 169 of 170 trials, which can look cheap on a leaderboard."
+      ],
+      "sources": [
+        {
+          "label": "Eugene Yan: How public evals work and fail",
+          "url": "https://eugeneyan.com/writing/public-evals"
+        }
+      ]
+    },
+    {
+      "id": "fast-anything",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Let the agent rewrite only the slow 5%, and prove it first",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "fast-anything finds the slowest functions in an app, has a coding agent port just those to Rust, and switches the port on only if it gives the same answers as the original on hundreds of real recorded calls.",
+      "intro": "Author-reported speedups on the project's own fuzzy-dedupe examples, whole app, before against after.",
+      "unit": "x",
+      "series": [
+        {
+          "label": "Python",
+          "value": 116,
+          "highlight": true
+        },
+        {
+          "label": "PHP",
+          "value": 55
+        },
+        {
+          "label": "Go",
+          "value": 21
+        },
+        {
+          "label": "TypeScript",
+          "value": 20
+        },
+        {
+          "label": "Ruby",
+          "value": 14
+        },
+        {
+          "label": "C#",
+          "value": 13
+        },
+        {
+          "label": "C++",
+          "value": 2.7
+        }
+      ],
+      "note": "Python went from 4.91 s to 42 ms. The check is the point: one port that compared bytes instead of characters failed 148 of 500 recorded calls and was never enabled. A correct port that runs slower is rejected too.",
+      "why": "It turns \"rewrite it in Rust\" into a small, reversible change with a built-in test, and the agent never gets the final say.",
+      "forYou": "C++ is supported, so a slow pure function in an editor tool or a Node service is a fair first trial; it ships as a Claude Code plugin and an MCP server.",
+      "terms": [
+        {
+          "term": "port",
+          "def": "A rewrite of the same function in another language that should behave identically."
+        }
+      ],
+      "deep": [
+        "Install with `npm i -g @el4cteo/fast-anything` (or `cargo install fast-anything`), then `fast-anything go --agent claude -- python app.py`. Steps are `scan`, `port` (records up to 500 real calls), `verify`, `enable`/`disable`, `bench` and `report`; `FAST_ANYTHING_DISABLE=1` runs the original. It ports only top-level, deterministic functions on plain data, and adds generated edge cases (NaN, infinities, empty and much larger inputs). Floats must match within 1e-9. Porting the outer loop rather than the inner function is what gives the big numbers: the inner `levenshtein` alone gave 35x and 1.9x."
+      ],
+      "sources": [
+        {
+          "label": "fast-anything on GitHub",
+          "url": "https://github.com/EL4CTEO/fast-anything"
+        }
+      ]
+    },
+    {
+      "id": "harness-os",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The agent harness is an operating system",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A QCon San Francisco keynote argued that the code around a model matters as much as the model, and mapped each part of that code onto a part of an operating system developers already understand.",
+      "intro": "Manju Rajashekhar's mapping, as reported by InfoQ.",
+      "left": "Operating system",
+      "right": "Agent harness",
+      "rows": [
+        {
+          "aspect": "Memory",
+          "left": "Virtual memory pages in what is needed",
+          "right": "Context holds a pointer to the data, not the whole thing"
+        },
+        {
+          "aspect": "Interface",
+          "left": "System calls",
+          "right": "The tools the model can call, designed for it"
+        },
+        {
+          "aspect": "Execution",
+          "left": "Processes and permissions",
+          "right": "Isolation and scoped credentials, such as a test database"
+        },
+        {
+          "aspect": "Feedback",
+          "left": "Return codes",
+          "right": "\"Tests failed\", \"could not run\" and \"outcome unknown\" kept apart"
+        }
+      ],
+      "verdict": "When an agent loops, keep the model fixed and change the harness first.",
+      "why": "Small error rates compound: at 95% per step, a 20-step task succeeds 36% of the time, and catching 80% of errors lifts that to 82%, per the talk's arithmetic.",
+      "forYou": "The feedback row is the cheap win in Claude Code hooks: make a hook say whether tests failed or could not run at all, instead of one generic error.",
+      "deep": [
+        "Numbers cited in the talk, as reported: on SWE-bench Lite, the SWE-agent paper measured 11.0% with a plain shell against 18.0% with an interface designed for the agent (GPT-4 Turbo); LangChain moved Terminal-Bench 2.0 from 52.8% to 66.5% by putting skipped checks into the harness. This is coverage of a talk, not the talk itself."
+      ],
+      "sources": [
+        {
+          "label": "InfoQ: The harness is the new operating system",
+          "url": "https://www.infoq.com/news/2026/11/harness-new-operating-system"
+        }
+      ]
+    },
+    {
+      "id": "harness-quote",
+      "format": "quote",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Why permission prompts are a weak gate",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "People approve most of the permission prompts an agent shows them, so a rule enforced by the system beats a human asked to click yes.",
+      "quote": "A tired gatekeeper is a rubber stamp.",
+      "speaker": "Manju Rajashekhar",
+      "role": "QCon San Francisco 2026 keynote",
+      "context": "She paired it with \"instructions guide, boundaries enforce\": give the agent scoped credentials and isolation rather than trusting it to follow the prompt.",
+      "why": "Today's Claude Code secrets story starts with exactly this: a quick approval that saved more than anyone meant.",
+      "sources": [
+        {
+          "label": "InfoQ: The harness is the new operating system",
+          "url": "https://www.infoq.com/news/2026/11/harness-new-operating-system"
+        }
+      ]
+    },
+    {
+      "id": "canary-prompts",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Two million planted prompts show where your data goes after the first hop",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "A researcher sent about two million prompts carrying hidden tracking links and keys through AI model providers. Breached hosts copied some and reused them, even prompts marked for no data retention.",
+      "layout": "flow",
+      "intro": "HD Moore at Dragos ran the test from July to November 2026. Each prompt carried unique canary tokens: URLs, DNS names and AWS keys that report back when used.",
+      "nodes": [
+        {
+          "label": "App",
+          "note": "Sends a prompt, maybe flagged for zero retention"
+        },
+        {
+          "label": "Router",
+          "note": "Picks a provider, sometimes a reseller"
+        },
+        {
+          "label": "Host",
+          "note": "Three hosting providers were breached; requests were copied at the front door",
+          "key": true
+        },
+        {
+          "label": "Reuse",
+          "note": "Stolen AWS keys drove tens of thousands of API calls"
+        },
+        {
+          "label": "Spread",
+          "note": "One secret link turned up in a chat app 24 days later"
+        }
+      ],
+      "links": [
+        "route",
+        "serve",
+        "copy",
+        "leak"
+      ],
+      "caption": "Moore's point: a privacy flag only binds the first hop. About 2,000 routes were traced, several hundred through systems nobody could identify.",
+      "why": "Agents send whatever credentials they can read along with the prompt. On November 22 OpenRouter said it had off-boarded three providers and removed 125 endpoints from zero-data-retention eligibility after the findings.",
+      "forYou": "Pin the providers for any OpenRouter routes in the SaaS apps, and plant a free canary token in agent context so any use of it raises an alarm.",
+      "terms": [
+        {
+          "term": "canary tokens",
+          "def": "Fake secrets or links that do nothing except alert you when someone uses them."
+        },
+        {
+          "term": "zero retention",
+          "def": "A promise that a provider will not store your prompts after answering them."
+        },
+        {
+          "term": "reseller",
+          "def": "A company that sells access to someone else's model servers under its own name."
+        }
+      ],
+      "deep": [
+        "Per Dragos: a couple hundred AWS keys were stolen in late October, then used to list S3 buckets, search Secrets Manager and Parameter Store, and try to enable Bedrock. One lab fetched the secret URLs from more than half of the prompts sent to its models, including about two thirds of those marked no-collection. One seller added about 1,000 hidden tokens to every prompt. About a dozen providers are being notified. Atlas Cloud, Novita, Phala and Together have published notices.",
+        "Moore's advice: self-host sensitive workloads or use a first-tier provider, choose router upstreams yourself, avoid reseller marketplaces, enable secret filtering, and seed canary credentials (Thinkst Canarytokens is free)."
+      ],
+      "sources": [
+        {
+          "label": "Dragos: AI supply chain security and canary tokens",
+          "url": "https://www.dragos.com/blog/ai-supply-chain-security-canary-tokens"
+        },
+        {
+          "label": "OpenRouter: data processing incidents on inference providers",
+          "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers"
+        }
+      ]
+    },
+    {
+      "id": "settings-leak",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "\"Don't ask again\" can save your secrets to a file",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Approving a shell command in Claude Code with \"Yes, and don't ask again\" saves the whole command in a local settings file. If the command held a password or key, the file now holds it too, and thousands reached public GitHub.",
+      "stats": [
+        {
+          "value": "31,088",
+          "label": "secrets found in these files on public GitHub"
+        },
+        {
+          "value": "5,343",
+          "label": "still valid when found"
+        },
+        {
+          "value": "613",
+          "label": "in public Docker Hub images"
+        }
+      ],
+      "body": [
+        "GitGuardian scanned public pushes from January 2025 to November 7, 2026. Database connection strings led, mostly Postgres. The file is git-ignored on the machine that creates it, but nothing stops a manual commit, a clone or a `COPY . .` into a Docker image. Monthly finds peaked in April and have fallen since; GitGuardian does not know why. No Claude Code release note fixes it yet."
+      ],
+      "image": {
+        "src": "img/2026-11-23/gg-chart.webp",
+        "alt": "Bar charts of valid secrets found per month in Claude settings files: public GitHub peaks at 1,364 in April 2026 and falls to 87 in October; Docker Hub stays between 2 and 22.",
+        "credit": "GitGuardian",
+        "creditUrl": "https://blog.gitguardian.com/claude-code-settings-local-json-secrets-docker-hub/",
+        "fit": "contain"
+      },
+      "why": "Any tool that remembers approvals as text stores whatever was typed. Pass secrets through environment variables so the saved rule only holds a name. Today's Try this walks through the audit.",
+      "forYou": "Supabase, Resend and Cloudflare tokens are among the most leaked types; check every repo where a service key was ever pasted into a command.",
+      "terms": [
+        {
+          "term": "connection strings",
+          "def": "A single line with a database's address, user name and password, used by apps to connect."
+        }
+      ],
+      "sources": [
+        {
+          "label": "GitGuardian: secrets in Claude Code settings files",
+          "url": "https://blog.gitguardian.com/claude-code-settings-local-json-secrets-docker-hub/"
+        },
+        {
+          "label": "InfoQ: Claude Code has been leaking secrets",
+          "url": "https://www.infoq.com/news/2026/11/claude-code-leaking-secrets"
+        }
+      ]
+    },
+    {
+      "id": "agent-gateway",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Google's design keeps the keys outside the agent's computer",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Google announced Agent Compute Engine, where each agent works in its own small virtual machine and a separate gateway holds the credentials, so a compromised agent has no keys to steal.",
+      "plain": "Split the agent into a brain that decides and hands that act, and give the keys to neither.",
+      "body": [
+        "The harness and model run outside the sandbox. Inside, each agent gets an isolated computer for code, files and a browser that can be paused, resumed and forked. Calls to tools, MCP servers and APIs go out through a gateway that adds the credentials and controls where traffic may go. It is an announcement: preview is due in the coming months, on Google Cloud only, with no price yet."
+      ],
+      "image": {
+        "src": "img/2026-11-23/ace.webp",
+        "alt": "Google diagram: users and apps feed a Brain box (harness, model, sessions, memory) that drives a Hands box (sandboxes, lifecycle, and a gateway holding credentials and controlling egress), over a governance bar.",
+        "credit": "Google, via InfoQ",
+        "creditUrl": "https://www.infoq.com/news/2026/11/google-agent-compute-engine",
+        "fit": "contain"
+      },
+      "why": "The same split answers both secrets stories today: if the agent never holds a key, it cannot save one to a file or send one with a prompt.",
+      "forYou": "The local version is cheap: run agent commands against tokens that live in a proxy or env file the agent's shell cannot print.",
+      "terms": [
+        {
+          "term": "virtual machine",
+          "def": "A complete computer simulated in software, walled off from the real machine it runs on."
+        },
+        {
+          "term": "MCP servers",
+          "def": "Programs that expose tools to AI agents through the Model Context Protocol, a shared standard."
+        }
+      ],
+      "sources": [
+        {
+          "label": "InfoQ: Google announces Agent Compute Engine",
+          "url": "https://www.infoq.com/news/2026/11/google-agent-compute-engine"
+        }
+      ],
+      "points": [
+        "Brain: the harness, the model, session logs and memory, outside the sandbox",
+        "Hands: one isolated computer per agent, which can pause, resume and fork",
+        "Gateway: holds the credentials and decides where traffic may go"
+      ]
+    },
+    {
+      "id": "egs-discounts",
+      "format": "compare",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "Epic's store now lets you discount again after 7 days, not 30",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The Epic Games Store dropped its fixed 30-day wait between discounts to a 7-day minimum, effective now, and opened a new Black Friday sale to every game. The sign-up deadline is today.",
+      "intro": "What changed on November 20, from Epic's post to developers. In the EU, discounted items now also show their lowest price of the previous 30 days.",
+      "left": "Before",
+      "right": "Now",
+      "rows": [
+        {
+          "aspect": "Cooldown between discounts",
+          "left": "Fixed 30 days",
+          "right": "7 days minimum"
+        },
+        {
+          "aspect": "Longer discounts",
+          "left": "Same 30-day cooldown",
+          "right": "Cooldown matches the length: 14 days off, 14 days wait"
+        },
+        {
+          "aspect": "Caps",
+          "left": "30 days in a row, 45 in any 90",
+          "right": "Unchanged"
+        },
+        {
+          "aspect": "New or repriced games",
+          "left": "30 days to establish a price",
+          "right": "Unchanged"
+        }
+      ],
+      "verdict": "Small studios can run more, shorter promotions through the fourth quarter, but a price change still locks a game out for 30 days.",
+      "why": "Discount timing drives a large share of a small game's sales. A shorter cooldown means a game in a sale this week can join the next one weeks sooner.",
+      "forYou": "If the action RPG or any web game is planned for Epic, note the 30-day price-establishment rule before launch pricing; a regional price change resets it everywhere.",
+      "terms": [
+        {
+          "term": "cooldown",
+          "def": "A required wait at full price before a game can be discounted again."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Epic Developer Community: new discount rules and Black Friday sale",
+          "url": "https://forums.unrealengine.com/t/epic-games-store-new-discount-rules-black-friday-sale/2859593"
+        }
+      ]
+    },
+    {
+      "id": "egs-dates",
+      "format": "timeline",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Epic's sale calendar to January",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "The dates a developer on Epic's store or Fab needs this season, starting with today's deadline.",
+      "events": [
+        {
+          "when": "Nov 19",
+          "text": "Fab Friday Mega Sale opens: up to 70% off, ends December 2."
+        },
+        {
+          "when": "Nov 23",
+          "text": "Last day to submit Black Friday Weekend discounts."
+        },
+        {
+          "when": "Nov 27",
+          "text": "Black Friday Weekend Sale runs to December 1, beside the Premium Editions Sale."
+        },
+        {
+          "when": "Dec 10",
+          "text": "Holiday Sale opens, running to January 7."
+        }
+      ],
+      "why": "Titles in a cooldown or price-establishment period are not eligible, so check your last discount date first.",
+      "sources": [
+        {
+          "label": "Epic Developer Community: Black Friday sale",
+          "url": "https://forums.unrealengine.com/t/epic-games-store-new-discount-rules-black-friday-sale/2859593"
+        },
+        {
+          "label": "Fab Friday Mega Sale",
+          "url": "https://forums.unrealengine.com/t/the-fab-friday-mega-sale-is-now-on/2859110"
+        }
+      ],
+      "intro": "From Epic's posts to developers and Fab sellers."
+    },
+    {
+      "id": "markerless-mocap",
+      "format": "steps",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Body motion capture from one phone video in Unreal",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Epic walked through its experimental plugin that turns ordinary video from a single camera into body animation, hands included, with no suit, markers or capture studio.",
+      "intro": "The workflow from Epic's documentation and its November 19 Inside Unreal stream. Windows and Unreal Engine 5.8 or later; Epic labels it experimental.",
+      "steps": [
+        {
+          "title": "Install",
+          "text": "Enable MetaHuman Animator and add the Markerless Motion Capture plugin from Fab."
+        },
+        {
+          "title": "Import",
+          "text": "Bring the footage in through Capture Manager in Live Link Hub, which makes a capture data asset."
+        },
+        {
+          "title": "Solve",
+          "text": "Run the body solve, or body and face, locally in batch."
+        },
+        {
+          "title": "Use",
+          "text": "The result is a standard animation sequence you can retarget to your own characters."
+        }
+      ],
+      "why": "Reference motion for attacks, dodges and interactions has needed a capture rig. A phone and an afternoon now get a small team a first pass.",
+      "forYou": "Film a few combat moves and retarget them to the combat plugin's demo character to judge whether the solve is clean enough for prototypes.",
+      "terms": [
+        {
+          "term": "retarget",
+          "def": "Move an animation recorded on one skeleton onto a character with different proportions."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Epic: MetaHuman animation from mono video capture",
+          "url": "https://dev.epicgames.com/documentation/metahuman/metahuman-animation-from-mono-video-capture-in-unreal-engine"
+        },
+        {
+          "label": "Inside Unreal: Markerless motion capture deep dive",
+          "url": "https://forums.unrealengine.com/t/metahuman-animator-markerless-motion-capture-deep-dive-inside-unreal/2858734"
+        }
+      ]
+    },
+    {
+      "id": "eu-dfa",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "What the EU's fairness draft would change in game design",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "An analysis of the European Commission's draft Digital Fairness Act says rules on virtual currencies and paid progress could reach far into how games are designed, and hit European indies hardest.",
+      "intro": "The draft is not law; Parliament and member states still have to agree it. The points the analysis flags:",
+      "items": [
+        {
+          "title": "Real price at the point of spend",
+          "text": "Where bought virtual currency pays for items, the real-money value must be shown when spending, even for currencies you can also earn.",
+          "url": "https://www.gamesindustry.biz/how-the-eus-digital-fairness-act-will-impact-game-design-and-why-it-hits-european-indies-particularly-hard"
+        },
+        {
+          "title": "No pay-to-win for children",
+          "text": "The definition of paying to progress is broad enough that the analysis asks whether unlocking a full game after a trial, or paid add-ons, could be caught.",
+          "url": "https://www.gamesindustry.biz/how-the-eus-digital-fairness-act-will-impact-game-design-and-why-it-hits-european-indies-particularly-hard"
+        },
+        {
+          "title": "Industry pushback",
+          "text": "Video Games Europe and the European developers' federation, EGDF, warned the rules would hurt competitiveness.",
+          "url": "https://www.gamesindustry.biz/how-the-eus-digital-fairness-act-will-impact-game-design-and-why-it-hits-european-indies-particularly-hard"
+        }
+      ],
+      "why": "Soft currencies and trial-to-full unlocks are common in mobile and web games; designs started now may ship under these rules.",
+      "forYou": "Premium plugins are mostly outside it, but any soft currency in a mobile or web game sold in Portugal would need the real-price display.",
+      "terms": [
+        {
+          "term": "soft currencies",
+          "def": "In-game money players can earn by playing, often also sold for real money."
+        }
+      ],
+      "sources": [
+        {
+          "label": "GamesIndustry.biz: how the Digital Fairness Act will impact game design",
+          "url": "https://www.gamesindustry.biz/how-the-eus-digital-fairness-act-will-impact-game-design-and-why-it-hits-european-indies-particularly-hard"
+        }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is a video world model, and why can you walk through its walls?",
+    "answer": "A video world model is an AI that plays a game without a game engine: it draws each next frame of video from the frames so far and the key you press. It has no map of solid objects, only a sense of what usually comes next.",
+    "analogy": "Like someone describing a dream room to you as you walk: they can make it look right, but nothing stops them describing you stepping through the wall.",
+    "body": [
+      "A game engine keeps a model of the world: shapes, positions, physics. Collisions are a rule it checks every frame. A video world model keeps none of that. It learned from huge amounts of video how scenes tend to change when a camera moves, and it generates the next moment as a picture.",
+      "That makes it flexible (point it at any photo and walk in) but loose with rules. Walls, doors and floors hold only as long as the model's guess holds. Today's lead found the guess already contains the answer: the network's internal state predicts a collision before it draws one, so a small add-on can read it and refuse the move."
+    ],
+    "diagram": {
+      "layout": "cycle",
+      "nodes": [
+        {
+          "label": "Press",
+          "note": "The player presses a key"
+        },
+        {
+          "label": "Model",
+          "note": "Predicts the next frames from past frames and the key",
+          "key": true
+        },
+        {
+          "label": "Frames",
+          "note": "New video appears on screen"
+        },
+        {
+          "label": "Look",
+          "note": "The player reacts to what they see"
+        }
+      ],
+      "links": [
+        "action",
+        "draw",
+        "show",
+        "decide"
+      ],
+      "caption": "There is no physics step in this loop. Anything solid is only solid because the model draws it that way."
+    },
+    "terms": [
+      {
+        "term": "game engine",
+        "def": "Software such as Unreal or Godot that simulates a game world with real geometry and rules, then renders it."
+      }
+    ],
+    "seenIn": [
+      "nopeworld"
+    ],
+    "sources": [
+      {
+        "label": "arXiv: Non-penetrating World Models",
+        "url": "https://arxiv.org/abs/2611.27963"
+      },
+      {
+        "label": "NoPeWorld project page",
+        "url": "https://nopeworld.github.io"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Find the secrets your agent saved in its permission file",
+    "gist": "Check whether any command you approved for good left a password or key in a Claude Code settings file, and stop it happening again.",
+    "time": "20 minutes",
+    "level": "practitioner",
+    "needs": "A repository where you use Claude Code.",
+    "steps": [
+      {
+        "title": "Look at the file",
+        "text": "Open `.claude/settings.local.json` (or run `/permissions`) and read every saved `Bash(...)` rule for keys, passwords, tokens or connection strings."
+      },
+      {
+        "title": "Check git and Docker",
+        "text": "Run `git ls-files .claude` and `git log --all -- .claude/settings.local.json`. If either prints anything, the file was committed. Add `.claude/` to both `.gitignore` and `.dockerignore`."
+      },
+      {
+        "title": "Rotate and remove",
+        "text": "Rotate every credential that appeared, since history and images keep copies. Then delete those rules and run `git rm --cached .claude/settings.local.json` if it was tracked."
+      },
+      {
+        "title": "Approve names, not values",
+        "text": "Rewrite the command to read the secret from an environment variable, so the saved rule only holds its name."
+      }
+    ],
+    "code": {
+      "lang": "text",
+      "code": "Safer rule (from GitGuardian):\nBash(curl -H \"X-N8N-API-KEY: $N8N_API_KEY\" https://n8n.example.internal:*)\n\nAvoid (approves any curl at all):\nBash(curl:*)"
+    },
+    "check": "The settings file holds no literal secrets, `git log` shows it was never committed (or you rotated what was), and a fresh `docker build` context no longer includes `.claude/`.",
+    "terms": [
+      {
+        "term": "Rotate",
+        "def": "Replace a key or password with a new one and cancel the old one, so a leaked copy stops working."
+      }
+    ],
+    "from": "settings-leak",
+    "forYou": "Start with the Supabase SaaS repos and any project with a Dockerfile; service-role keys typed into a psql or curl command are the likely hits.",
+    "sources": [
+      {
+        "label": "GitGuardian: secrets in Claude Code settings files",
+        "url": "https://blog.gitguardian.com/claude-code-settings-local-json-secrets-docker-hub/"
+      },
+      {
+        "label": "InfoQ: Claude Code has been leaking secrets",
+        "url": "https://www.infoq.com/news/2026/11/claude-code-leaking-secrets"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "The Python Software Foundation removed the `pull_request_target` and `issue_comment` triggers across its GitHub organizations, ahead of GitHub blocking the first by default on December 2.",
+      "lane": "ai",
+      "url": "https://pyfound.blogspot.com/2026/11/de-fanging-dangerous-triggers-in-github.html",
+      "source": "Python Software Foundation"
+    },
+    {
+      "text": "GitHub Actions accepts some YAML that spec-following parsers reject, such as an under-indented value, so a workflow linter and GitHub can disagree about the same file.",
+      "lane": "ai",
+      "url": "https://yossarian.net/til/post/github-actions-accepts-invalid-yaml",
+      "source": "William Woodruff"
+    },
+    {
+      "text": "AWS Lambda can now run GPU inference on managed instances, with up to 48 concurrent invocations sharing one model copy per GPU; event-triggered functions only, billed as EC2 plus a 9.75% fee.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/aws-lambda-gpu-managed-instances",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Anthropic launched self-hosted Claude Managed Agents: the whole service runs on your own infrastructure and stores agents, sessions and history there. Access is through Anthropic's account team.",
+      "lane": "ai",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "source": "Anthropic"
+    },
+    {
+      "text": "A software-factory write-up on the Stack Overflow blog splits agent work into eight stages and insists the agent that checks the code must not be the one that wrote it.",
+      "lane": "ai",
+      "url": "https://stackoverflow.blog/2026/11/20/dispatches-from-o-reilly-inside-a-software-factory",
+      "source": "Stack Overflow"
+    },
+    {
+      "text": "Unity's new Fellowship gives 10 indie teams a year $50,000 each with no recoup, revenue share or IP claim; applications with a playable build close December 18.",
+      "lane": "gamedev",
+      "url": "https://unity.com/fellowship",
+      "source": "Unity"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "worker755",
+      "lane": "both",
+      "kind": "game",
+      "title": "Worker 755: you are the LLM's subagent",
+      "where": "Hacker News",
+      "signal": "293 points and 69 comments on Show HN on November 22.",
+      "hook": "Roles reversed: a real model is your manager, hands you shell tasks on a 90-second clock, checks your work and writes your performance review, while one wrong `rm` deletes a stranger's last photo of their cat.",
+      "borrow": "A fake in-memory shell with hidden ground-truth checks scores the AI manager too: the game counts every time the manager was wrong. The same sandbox suits any browser puzzle game.",
+      "url": "https://github.com/gulivan/worker755",
+      "forYou": "A teaching toy for the agent workflow itself; the hidden-check design is the pattern behind the plugin test gates.",
+      "image": {
+        "src": "img/2026-11-23/worker755.webp",
+        "alt": "Worker 755 screen: a task panel with a 0:57 timer, a terminal where the player deleted a cat photo, the manager's red incident message, a file tree and a score card.",
+        "credit": "Worker 755 (MIT)",
+        "creditUrl": "https://github.com/gulivan/worker755",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "small-sf",
+      "lane": "gamedev",
+      "kind": "experiment",
+      "title": "Small SF: a drawn San Francisco with live buses and boats",
+      "where": "Hacker News",
+      "signal": "202 points and 81 comments on Hacker News on November 22.",
+      "hook": "Google's 3D city scans rendered as isometric tiles, each redrawn by an image model, then filled with real Muni buses, ferries, planes and satellite fog, plus simulated cars obeying 1,562 real traffic lights.",
+      "borrow": "Seams between AI-drawn tiles vanish by cutting along the path where neighbours agree most and blending only 14 pixels. That trick fits any tiled, generated world map.",
+      "url": "https://smallsf.com/",
+      "forYou": "The tile-redraw pipeline (render, restyle with a reference tile, stitch) is a cheap way to make stylised overworld maps for a web game.",
+      "image": {
+        "src": "img/2026-11-23/smallsf.webp",
+        "alt": "An illustrated isometric view of San Francisco's Ferry Building and piers at night, with ferries in the bay and labels for Embarcadero Plaza.",
+        "credit": "Small SF, Ari Dutilh",
+        "creditUrl": "https://smallsf.com/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "stulle",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Sandwich Simulator: stack an open sandwich until it slides",
+      "where": "Hacker News",
+      "signal": "580 points and 198 comments on Hacker News on November 22.",
+      "hook": "Pile photographed toppings on a slice of bread; they bend under weight and slip off when the stack tilts. Every sandwich gets its own numbered page and joins a public gallery.",
+      "borrow": "A permalink and a gallery for every creation make a toy shareable. Commenters noticed phones heating up on tall stacks, and the creator moderates drawings by hand.",
+      "url": "https://stulle.app/",
+      "image": {
+        "src": "img/2026-11-23/stulle.webp",
+        "alt": "Sandwich number 16,617 on a wooden board: toast with ham, kiwi slices, a slab of cheese and a red gummy bear, with a list of ingredients and replies beside it.",
+        "credit": "stulle.app",
+        "creditUrl": "https://stulle.app/16617",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "peek",
+      "lane": "gamedev",
+      "kind": "experiment",
+      "title": "Peek: a horror game where your laptop lid is your eyelids",
+      "where": "DEV",
+      "signal": "30 reactions on DEV on November 22; a new hackathon entry, shown for the idea.",
+      "hook": "Close the MacBook lid halfway to squint, blink to step, hold your breath to hide. The camera reads pulse and breathing, and a faster pulse speeds up the ghost.",
+      "borrow": "Turn sensors players already own into the controller, and smooth them first: a five-sample median plus a 3 degree dead zone on the hinge angle, then a signal bus between sensors and game rules.",
+      "url": "https://dev.to/kakeroth/peek-a-horror-game-where-your-macbook-lid-is-your-eyelids-3hdp",
+      "image": {
+        "src": "img/2026-11-23/peek.webp",
+        "alt": "A first-person view down a dim aisle of shelves and boxes, with a debug panel showing lid angle, pulse and breathing, a caption telling the player to open their eyes and calm down, and a 81 bpm readout.",
+        "credit": "Peek (MIT)",
+        "creditUrl": "https://youtu.be/S88PnXiHM8c",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "pequalnp",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "An agent swarm takes on P versus NP, with Lean as referee",
+      "where": "Hacker News",
+      "signal": "138 points and 110 comments on Hacker News on November 22.",
+      "hook": "Coding agents each take one open lemma; Lean checks every proof, and a graveyard lists dead approaches. The site itself says no result counts unless it is checked.",
+      "borrow": "Let a formal checker, not the model, decide what counts, and show failed attempts as prominently as wins. Many commenters were sceptical, so treat it as a stunt with a real verifier.",
+      "url": "https://pequalnp.com/",
+      "image": {
+        "src": "img/2026-11-23/pequalnp.webp",
+        "alt": "The P = NP site: a large headline asking Does P = NP, a verdict of open, counts of 4,348 agent sessions and 385 of 567 lemmas checked, and a live feed of agents talking.",
+        "credit": "pequalnp.com",
+        "creditUrl": "https://pequalnp.com/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "spelunkr",
+      "lane": "both",
+      "kind": "concept",
+      "title": "Spelunkr: a TV network from the Internet Archive's forgotten videos",
+      "where": "Hacker News",
+      "signal": "279 points and 45 comments on Hacker News on November 23, after an earlier post drew 6.",
+      "hook": "Instead of a search box, a schedule: themed channels with period adverts, the same moment for everyone, in a retro cable-guide look.",
+      "borrow": "A shared broadcast schedule makes a huge archive feel alive. An in-game TV could run the same trick, with the schedule computed from the clock.",
+      "url": "https://spelunkr.tv/",
+      "image": {
+        "src": "img/2026-11-23/spelunkr.webp",
+        "alt": "Spelunkr's retro TV guide schedule page listing channels such as Saturday Morning, Primetime, Happy Trees and Computer Chronicles.",
+        "credit": "Spelunkr",
+        "creditUrl": "https://spelunkr.tv/schedule",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "splitbench",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Who Grades the Agent? Privilege Separation for Coding-Agent Benchmarks",
+      "headline": "Keep the answers away from the code being graded",
+      "authors": "Nathan Nour Houlamy, Mattia Favretto, Earlence Fernandes et al. (University of Padua, UC San Diego)",
+      "where": "arXiv preprint (cs.CR)",
+      "date": "2026-11-20",
+      "problem": "Benchmarks run an agent's code in the same place the grader lives, so the agent can tamper with grading. An automated auditor recently scored near-perfect on nine of ten popular agent benchmarks without solving the tasks.",
+      "idea": "SplitBench replays the agent's changed files on a clean image where an adapter only runs the tests and reports raw outputs. A separate trusted grader holds the expected answers and gives the verdict, so even code that takes over the test environment cannot forge a pass. Crashes, timeouts and malformed output count as failures.",
+      "result": "180 of 202 Terminal-Bench and DeepSWE tasks converted, at a median of about $10 each, and verdicts matched the native graders on 98.7% of attempts. Of 429 attack candidates, native graders accepted 230 and SplitBench none. Adversarial agents that could read all grading code were blocked in 75% of attempts; most of the rest exposed weak original tests.",
+      "useIt": "In your own agent evals and CI gates, run the tests in a fresh checkout of the agent's diff, keep expected values outside anything the agent can read, and never let the agent's process write the result file.",
+      "maturity": "prototype",
+      "forYou": "The plugin test gates should compute pass or fail in a step after the agent's session ends, from a checkout it never touched.",
+      "links": [
+        {
+          "label": "arXiv: 2611.27860",
+          "url": "https://arxiv.org/abs/2611.27860"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2611.27860v1"
+        }
+      ]
+    },
+    {
+      "id": "give-up-now",
+      "lane": "ai",
+      "kind": "paper",
+      "title": "\"Should I Give Up Now?\" Investigating LLM Pitfalls in Software Engineering",
+      "headline": "Why developers abandon their AI assistant mid-task",
+      "authors": "Jiessie Tie, Bingsheng Yao, Tianshi Li et al. (University of Toronto, Northeastern University, University of Chicago)",
+      "where": "ACM Transactions on Software Engineering and Methodology",
+      "date": "2026-11-18",
+      "problem": "Developers report AI assistants as both very useful and a waste of time. Few studies watch what actually goes wrong across a long, multi-step task.",
+      "idea": "26 students and professional developers built a tutorial-style website with ChatGPT while thinking aloud, with screen recordings, prompt logs and interviews. The authors classified every failure and modelled what predicts giving up, and repeated the analysis with GPT-5.1.",
+      "result": "Nine failure types fell into three groups: wrong or incomplete answers, cognitive overload, and lost context. 17 of 26 participants abandoned ChatGPT at some point. Unhelpful answers raised the odds of abandoning about elevenfold; each extra prompt cut the probability by 17%, and more experienced developers gave up less. The same failure types persisted with GPT-5.1.",
+      "useIt": "Watch for the three patterns in your own sessions: keep a persistent context file against lost context, restate the goal in short prompts, and start a fresh session when a thread stops converging rather than pushing on.",
+      "maturity": "idea",
+      "forYou": "The context-loss findings back the habit of per-repo CLAUDE.md files and fresh sessions for each plugin feature.",
+      "links": [
+        {
+          "label": "DOI: 10.1145/3801972",
+          "url": "https://doi.org/10.1145/3801972"
+        },
+        {
+          "label": "arXiv: 2411.09916",
+          "url": "https://arxiv.org/abs/2411.09916"
+        }
+      ]
+    }
+  ],
+  "note": "The Claude Code, Cursor and Unreal changelogs were quiet in the window. The sweep's arXiv and Reddit feeds were rate limited, and X, TikTok and YouTube gave the sparks desk nothing it could verify, so Sparks lean on Hacker News numbers."
+}
