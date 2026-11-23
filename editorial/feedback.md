@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #10 More like: What is a video world model, and why can you walk through its walls? (2026-11-23)
+  direction: more
+  issue: 2026-11-23
+  block: learn
+  format: learn
+  lane: both
+  
+  Optional note (what exactly, and why):
+
 
 ## Folded in
 
