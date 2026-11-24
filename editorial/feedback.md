@@ -8,6 +8,9 @@ entries under "Folded in".
 
 ## New
 
+
+## Folded in
+
 - #10 More like: What is a video world model, and why can you walk through its walls? (2026-11-23)
   direction: more
   issue: 2026-11-23
@@ -16,9 +19,7 @@ entries under "Folded in".
   lane: both
   
   Optional note (what exactly, and why):
-
-
-## Folded in
+  Lesson (2026-11-24): a technical Learn one thing that explains the lead's frontier idea, including its failure mode, is liked. Added to taste.md.
 
 - #9 More like: An auto-battler where you program your party with rules (2026-11-16)
   direction: more

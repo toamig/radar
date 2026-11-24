@@ -1,0 +1,980 @@
+{
+  "date": "2026-11-24",
+  "number": 42,
+  "title": "Agents in the pull request, a policy at the gate",
+  "dek": "Anthropic's Claude Ship lets agents review, fix and, under a policy file you write, approve pull requests. Plus Netflix's recipe for working with coding agents, Claude Code's new Code Mode, and a VR game that pauses by shooting a target.",
+  "theme": {
+    "paper": "mint",
+    "text": "black",
+    "inks": [
+      "purple",
+      "sunflower"
+    ],
+    "type": "condensed",
+    "mood": "a Tuesday about who gets to say yes to a change"
+  },
+  "tldr": [
+    {
+      "text": "**Claude Ship** puts three agents on a GitHub pull request: one reviews, one fixes failing checks, one applies a policy file that says when a passing review can replace a human approval.",
+      "lane": "ai"
+    },
+    {
+      "text": "Netflix wrote 45 decision records for people and agents, and let a review agent post only verified blockers. Developer satisfaction went from minus 3 to plus 25 in three quarters.",
+      "lane": "ai"
+    },
+    {
+      "text": "Claude Code's experimental **Code Mode** lets the model write one JavaScript script that runs many tool calls, so it reads fewer raw results. Hooks need a new matcher to see inside those scripts.",
+      "lane": "ai"
+    },
+    {
+      "text": "Owlchemy's Hyper Visor runs every world, the pause menu included, as its own physics scene with its own clock: you pause the game by shooting a target.",
+      "lane": "gamedev"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Agents in the pull request",
+      "note": "A policy file that decides when an agent's review counts, a local command that babysits your PR, and how Netflix taught its agents the house rules.",
+      "ids": [
+        "ship-policy",
+        "ship-local",
+        "netflix-adrs"
+      ]
+    },
+    {
+      "title": "Fewer round trips, honest scores",
+      "note": "Scripts instead of single tool calls, a coding model squeezed to a tenth of its size, and how to check an eval before you trust it.",
+      "ids": [
+        "code-mode",
+        "nariq",
+        "eval-checks"
+      ]
+    },
+    {
+      "title": "Making and selling games",
+      "note": "Separate physics worlds with separate clocks, the tools a two-person co-op game needed, and what mobile store numbers now miss.",
+      "ids": [
+        "hyper-visor",
+        "hv-iteration",
+        "haunted-paws",
+        "mobile-spend"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "claude-ship",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Three agents on every pull request, and a file that says when they can approve",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Anthropic launched Claude Ship: AI agents that review a code change, fix what breaks, and approve it when a rule you wrote allows. The rule file, not the agent, decides how many humans must still sign off.",
+      "background": "A pull request is a proposed code change on GitHub that teammates review and approve before it is merged into the main code.",
+      "takeaway": "The new part is not an agent that reviews code; it is a policy file that trades human approvals for a passing machine review, path by path. Start it in observe mode, and keep auto-merge away from any rule that needs no human.",
+      "body": [
+        "Claude Ship has three parts. **Code Review**, now generally available, leaves comments ranked by severity. **PR Steward**, in beta, works through failing checks, merge conflicts and review comments, pushes fixes, and says after each push what it changed and how to undo it; it is designed never to approve or merge. **Claude Approvals**, also in beta, is a GitHub check that reads a policy file, `.claude/approvals.yml`, and decides how many people must approve each path.",
+        "The docs are frank about the risks. A policy that needs no human approval, combined with GitHub auto-merge or a merge queue, can merge a change with nobody acting. Edits to the policy itself and to the `.claude/` folder count as protected and need a person. Observe mode reports what the policy would decide without enforcing it, though it is still billed.",
+        "It is for Team and Enterprise plans on GitHub only, billed on tokens through usage credits rather than plan usage, and PR Steward has no spending limit until you set one. Solo developers get a local version: the `/ship` command in Claude Code."
+      ],
+      "image": {
+        "src": "img/2026-11-24/claude-ship.webp",
+        "alt": "Anthropic's diagram: a pull request opened or updated goes to Code Review (finds problems), then PR Steward (pushes fixes, which can start another review), then Claude Approvals (applies your policy), then Merge under your branch rules.",
+        "credit": "Anthropic, Claude Code docs",
+        "creditUrl": "https://code.claude.com/docs/en/claude-ship",
+        "fit": "contain"
+      },
+      "why": "Review is where agent-written code piles up. A policy that says which paths a machine review may clear, and which always need two people, is a pattern any team can copy, with or without this product.",
+      "forYou": "Claude Ship itself needs a Team or Enterprise plan; the `/ship` command is the part to try on plugin and SaaS branches now. Writing down which paths need a human (build scripts, payments, the Fab release folder) is worth doing either way.",
+      "terms": [
+        {
+          "term": "merge conflicts",
+          "def": "When two changes edit the same lines and git cannot combine them without a person choosing."
+        },
+        {
+          "term": "GitHub check",
+          "def": "A pass or fail result attached to a pull request, which branch rules can require before merging."
+        },
+        {
+          "term": "auto-merge",
+          "def": "A GitHub setting that merges a pull request by itself as soon as every required check and approval is in."
+        },
+        {
+          "term": "merge queue",
+          "def": "A GitHub feature that lines up approved pull requests and merges them one at a time after a final test run."
+        }
+      ],
+      "deep": [
+        "Approval verdicts per rule are `comments`, `approves` or `blocks`, with a number of human `seats`; the strictest verdict across matching rules wins (blocks, then comments, then approves). Rules can carry an `override` with an `if` condition such as `claude/code_review = pass`. With no `mode` line the policy enforces. Rerun a decision by commenting `@claude approvals rerun`; `@claude stop` halts work on a PR.",
+        "Once a policy file is on the default branch, automatic Code Review stops unless a rule names `claude/code_review` (for example as `advisory`). An admin turns the product on under Organization settings, Claude Ship. It is not available with zero data retention, a HIPAA configuration or customer-managed keys. Eligible Enterprise organisations can claim at least $10,000 in promotional credits until January 15, 2027."
+      ],
+      "sources": [
+        {
+          "label": "Claude Code docs: Claude Ship",
+          "url": "https://code.claude.com/docs/en/claude-ship"
+        },
+        {
+          "label": "Anthropic: Introducing Claude Ship",
+          "url": "https://claude.com/resources/articles/introducing-claude-ship"
+        },
+        {
+          "label": "Docs: approvals policy",
+          "url": "https://code.claude.com/docs/en/approvals-policy"
+        },
+        {
+          "label": "TechCrunch",
+          "url": "https://techcrunch.com/2026/11/23/anthropic-launches-claude-ship-letting-ai-agents-review-fix-and-approve-code-changes/"
+        }
+      ]
+    },
+    {
+      "id": "ship-policy",
+      "format": "code",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "One passing review can stand in for a second person",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "This is the example policy from Anthropic's docs: normally two people must approve, but when the AI review passes, one person is enough. Changes to the review rules themselves always need two.",
+      "intro": "From the approvals policy docs, in observe mode, so it only reports what it would decide.",
+      "lang": "yaml",
+      "code": "# .claude/approvals.yml\nversion: 1\nmode: observe\nrules:\n  - purpose: \"A change takes two people. When Claude's\n      review passes, one is enough and Claude approves.\"\n    paths: [\"**\"]\n    verdict: { claude: comments, seats: 2 }\n    override:\n      - if: \"claude/code_review = pass\"\n        verdict: { claude: approves, seats: 1 }\n  - purpose: \"A change to the review rules takes two people.\"\n    paths: [\"**/.claude/**\"]\n    nested: inherit\n    verdict: { claude: comments, seats: 2 }",
+      "explain": [
+        "`seats` is how many humans must approve. `claude: approves` lets Claude post an approving review that fills one seat.",
+        "The second rule guards the policy itself, so an agent cannot loosen its own rules.",
+        "Switch `mode` to `enforce` (or delete the line) only after a few weeks of comparing its decisions with yours."
+      ],
+      "why": "Writing approval rules per path makes the trade explicit: which code a machine review may clear, and which always needs people.",
+      "forYou": "Even without Claude Ship, the two-rule shape is a good template for a CODEOWNERS-style note in the plugin repos: game logic by default, build and release scripts always human.",
+      "terms": [
+        {
+          "term": "observe mode",
+          "def": "The policy runs and reports what it would decide, but does not block or approve anything."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Docs: approvals policy",
+          "url": "https://code.claude.com/docs/en/approvals-policy"
+        },
+        {
+          "label": "Docs: setting up approvals",
+          "url": "https://code.claude.com/docs/en/approvals-setup"
+        }
+      ]
+    },
+    {
+      "id": "ship-local",
+      "format": "spotlight",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "/ship: the local version, on any GitHub repo you own",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A new Claude Code command opens a pull request for your branch, reviews it, then keeps watching: it pushes fixes when checks fail or comments arrive, but never merges or approves.",
+      "name": "/ship",
+      "what": "Open, review and tend a pull request from your terminal; counts as normal Claude Code usage.",
+      "body": [
+        "`/ship` opens a pull request if there is none, runs a code review, then starts a watch that handles failing checks, conflicts and comments for up to seven days. `/steward` skips the review on a pull request you already opened. Be careful: it can commit every uncommitted file and goes ahead after a few seconds without a prompt, so clean your working tree first."
+      ],
+      "facts": [
+        {
+          "k": "Needs",
+          "v": "Claude Code 2.1.330+, gh 2.63+, git 2.38+"
+        },
+        {
+          "k": "Never",
+          "v": "merges, approves or force-pushes"
+        },
+        {
+          "k": "Stop",
+          "v": "`/ship stop`, Esc, or switch branch"
+        }
+      ],
+      "tryIt": "/ship medium",
+      "why": "It brings the fix-the-failing-check loop to solo developers who do not have a team plan.",
+      "forYou": "Try it on a small SaaS branch first, after `git status` is clean; the plugin repos with slow Unreal CI are where the watch could save the most waiting.",
+      "terms": [
+        {
+          "term": "force-push",
+          "def": "Overwriting the history of a branch on the server, which can erase other people's commits."
+        }
+      ],
+      "deep": [
+        "Effort levels: `/ship low|medium|high|xhigh|max` (default high). Other arguments: a PR number or URL, `+botname`, `stop` and `terms`. There is no watch on native Windows or in bypassPermissions mode; auto mode is suggested for unattended runs. Repo-specific instructions go in `.claude/skills/steward/SKILL.md`."
+      ],
+      "sources": [
+        {
+          "label": "Docs: the /ship command",
+          "url": "https://code.claude.com/docs/en/ship-command"
+        }
+      ]
+    },
+    {
+      "id": "netflix-adrs",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "How Netflix taught its coding agents the house rules",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Netflix's first agent task took four tries and engineers rated their tools at minus 3. A year of changes later: 32% more pull requests, no top-severity incidents this year on a core service, and a satisfaction score of plus 25.",
+      "intro": "Mark Khuzam of Netflix's Commerce team at QCon San Francisco, as reported by InfoQ. All results are company-reported.",
+      "steps": [
+        {
+          "title": "Write the decisions down",
+          "text": "45 architecture decision records, each with context, the decision, the pattern, the anti-pattern and notes on AI use, copied into nearly every repo."
+        },
+        {
+          "title": "Point agents at them",
+          "text": "An `AGENTS.md` file works like robots.txt: a short map to the decision records and over 300 other docs."
+        },
+        {
+          "title": "Review with evidence only",
+          "text": "The first review agent left 23 comments on one pull request. Now it posts only verified blockers, each with evidence, a fix and the rule broken."
+        },
+        {
+          "title": "Fix on request, never merge",
+          "text": "A \"revise\" label makes an agent read the review and push a fix to the same pull request. Builds, tests and canaries stay deterministic, and nothing auto-merges."
+        }
+      ],
+      "why": "The cheapest way to make agents follow your conventions is to write them down once, with the wrong way next to the right way, where both people and agents read them.",
+      "forYou": "The anti-pattern section is the piece to steal for the plugin repos' CLAUDE.md: one line each for \"do not tick in Blueprints\", \"no hard references across modules\" and so on.",
+      "terms": [
+        {
+          "term": "architecture decision records",
+          "def": "Short documents that record one design decision, why it was made and what was rejected."
+        },
+        {
+          "term": "canaries",
+          "def": "Releasing a change to a small slice of users or servers first, to catch problems before everyone gets it."
+        }
+      ],
+      "deep": [
+        "Each domain also has a GraphRAG index pinned to commits, served as a single MCP tool to Claude Code, Cursor, Codex, a Slack bot and the CI review step; every answer cites a file and line. The developer score is a net promoter score for the internal framework, measured over three quarters."
+      ],
+      "sources": [
+        {
+          "label": "InfoQ: Netflix retrofits its SDLC for AI coding agents",
+          "url": "https://www.infoq.com/news/2026/11/netflix-sdlc-ai-coding-agents"
+        }
+      ]
+    },
+    {
+      "id": "code-mode",
+      "format": "code",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Claude Code can now write one script instead of ten tool calls",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "In the new experimental Code Mode, Claude writes a short JavaScript program that searches, edits and runs tests in one go, and only the result comes back. One tester saw 37% fewer tokens on a large task.",
+      "intro": "The example from Anthropic's docs: find a file, change a setting, run its tests, return a small summary.",
+      "lang": "javascript",
+      "code": "const files =\n  await $`rg -l \"function retryPolicy\" src`.text();\nconst target = files.trim().split(\"\\n\")[0];\nawait edit(target, \"maxAttempts: 3\", \"maxAttempts: 5\");\n({ edited: target,\n   tests: $`npm test -- retryPolicy`.nothrow() });",
+      "explain": [
+        "Turn it on with `CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 claude`. A project's settings cannot enable it, so a cloned repo cannot switch it on for you.",
+        "Each call inside the script still goes through your permission rules and PreToolUse hooks. But a hook may now receive combined commands such as `cd app && git push`, so check every part."
+      ],
+      "why": "Fewer round trips means less raw output in the model's context. The catch is review: in auto mode the safety check sees the whole script before it runs, not the values it computes.",
+      "forYou": "The hooks that guard git pushes in the plugin repos should be checked against compound commands before turning this on; a PreToolUse hook on the `REPL` tool can read the script.",
+      "terms": [
+        {
+          "term": "tool calls",
+          "def": "Requests an AI model makes to run something outside itself, such as reading a file or a shell command."
+        },
+        {
+          "term": "PreToolUse hooks",
+          "def": "Scripts Claude Code runs before a tool call, which can inspect it and block it."
+        }
+      ],
+      "deep": [
+        "Requires 2.1.323 or later, the native build in an interactive terminal, and Opus 5.5, Sonnet 5.5, Haiku 5.5 or Fable 5.2; 2.1.331 added Bedrock, Google Cloud, Foundry and Claude Platform on AWS. Not in `-p`, the Agent SDK, the VS Code panel or Desktop. A script stops after 10 minutes if waited on; in auto mode it can run in the background for up to 2 hours. Add `{\"permissions\":{\"ask\":[\"REPL\"]}}` to approve each script.",
+        "Numbers: Anthropic published none. InfoQ cites one tester's eight runs: context 20% to 25% smaller, 37% fewer tokens and 19% lower cost on a larger task, no faster, and a tiny task cost more."
+      ],
+      "sources": [
+        {
+          "label": "Claude Code docs: Code Mode",
+          "url": "https://code.claude.com/docs/en/code-mode"
+        },
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/11/claude-code-mode"
+        }
+      ]
+    },
+    {
+      "id": "nariq",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A 54 GB open coding model in a 10 GB file, scores intact",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Nari Labs shrank the open Qwen3.8 27B model to about a fifth of its size by storing each weight in 3 bits, and its own tests show coding-agent scores holding level. At 2 bits, they drop.",
+      "intro": "DeepSWE v1.1 score by file size, from Nari Labs' own runs (vendor-reported).",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Full size, 53.8 GB",
+          "value": 39.8
+        },
+        {
+          "label": "3-bit, 10.1 GB",
+          "value": 41.0,
+          "highlight": true
+        },
+        {
+          "label": "2.5-bit, 8.4 GB",
+          "value": 41.9
+        },
+        {
+          "label": "2-bit, 6.8 GB",
+          "value": 28.6
+        }
+      ],
+      "note": "Terminal-Bench 2.1: 62.6 full, 63.8 at 3-bit, 52.4 at 2-bit. Needs Nari's own llama.cpp fork and an NVIDIA GPU on Linux; stock llama.cpp, Ollama and LM Studio cannot load it.",
+      "why": "A coding model that fits a 24 GB graphics card with about 135,000 tokens of context makes a local agent for private code more practical, if the vendor's numbers hold up.",
+      "forYou": "Worth a test on a rented GPU before any hardware decision; GeForce cards are untested and Apple Silicon reports about 3.8 tokens a second.",
+      "terms": [
+        {
+          "term": "3 bits",
+          "def": "Storing each of the model's numbers in 3 binary digits instead of 16, trading a little precision for a much smaller file."
+        },
+        {
+          "term": "llama.cpp",
+          "def": "A popular open program for running language models on your own computer."
+        }
+      ],
+      "deep": [
+        "The method is trellis-coded post-training quantization building on QTIP, calibrated on real coding-agent traces. AIME 25+26: 97.7 full, 98.3 at 3-bit, 86.0 at 2-bit. Tested on RTX PRO 6000, H100, L4 and A10 with driver 570 or later."
+      ],
+      "sources": [
+        {
+          "label": "Hugging Face: Qwen3.8-27B NariQ",
+          "url": "https://huggingface.co/nari-labs/Qwen3.8-27B-NariQ-GGUF"
+        }
+      ]
+    },
+    {
+      "id": "eval-checks",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Before you trust an agent eval, try to cheat it",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Hugging Face built a small agent test from scratch and found that a shortcut answer passed every task until they fixed the grader. Their guide shows three quick checks that catch this.",
+      "intro": "From Hugging Face's guide to building an agentic evaluation, built on a curve-fitting task with eight variants.",
+      "steps": [
+        {
+          "title": "Run the answer key",
+          "text": "A reference solution must pass every task. If it does not, the task or grader is broken."
+        },
+        {
+          "title": "Run an agent that does nothing",
+          "text": "It must fail every task. If it passes, the grader is checking the wrong thing."
+        },
+        {
+          "title": "Run a shortcut",
+          "text": "Here, returning the right ratio without fitting passed all 8 tasks until per-peak checks were added."
+        },
+        {
+          "title": "Count both ways",
+          "text": "Over three tries, the model solved 7 of 8 tasks at least once but only 1 of 8 every time. Read the traces: 11 of 24 runs declared done without writing the output file."
+        }
+      ],
+      "why": "An eval that rewards a shortcut tells you nothing about the model. These checks take minutes and the guide's six-model run cost under $5.",
+      "forYou": "The plugin test gates and any routine that scores agent output deserve the do-nothing and shortcut runs; today's Try this is close to it.",
+      "terms": [
+        {
+          "term": "grader",
+          "def": "The code that decides whether an agent's attempt at a task passed or failed."
+        },
+        {
+          "term": "traces",
+          "def": "The full record of what an agent did in a run: each message, tool call and result."
+        }
+      ],
+      "deep": [
+        "The guide uses the Harbor format: `harbor run -p datasets/my-evals -a oracle -e hf-sandbox`, then `-a nop`, then `-k 3 -a terminus-2 -m <model>`. Mean pass rate was 0.46 with a task-clustered standard error of about 0.11. Three models passed 24 of 24, so the set could not rank them. It also cites a Terminal-Bench audit where harness changes alone moved accuracy by up to 29.9 points."
+      ],
+      "sources": [
+        {
+          "label": "Hugging Face: How to build and maintain an agentic evaluation",
+          "url": "https://huggingface.co/blog/agentic-evals"
+        }
+      ]
+    },
+    {
+      "id": "hyper-visor",
+      "format": "concept",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "A game where every world, even the pause menu, has its own physics and clock",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Owlchemy Labs built its augmented-reality shooter Hyper Visor so that each level, menu and mini-world runs its own physics simulation on its own clock. Pausing means shooting the pause target, not stopping time.",
+      "plain": "Instead of one world with a global clock, run several small worlds side by side and tick each one only when you want it to move.",
+      "body": [
+        "In Unity, each world lives in its own physics scene. Objects are spawned through their world rather than the usual `Instantiate()`, and a coordinator calls `PhysicsScene.Simulate()` on each world with that world's clock. The player's energy beam ray-casts into every active world, so menus and gameplay share one way of aiming: every target, buttons included, is a physics object.",
+        "Pausing is just another world. Destroying the pause target there stops the gameplay world's clock and spawns targets for resume, retry and quit. The global `Time.timeScale` is used only when the glasses lose focus."
+      ],
+      "image": {
+        "src": "img/2026-11-24/hypervisor.webp",
+        "alt": "Unity editor: a purple menu world floats in the scene with a beam aimed at its buttons; the hierarchy lists a separate Settings_Module physics scene, and a script debugger shows level lines like spawn MasterVolumeSlider and wait 0.15.",
+        "credit": "Owlchemy Labs, Unity blog",
+        "creditUrl": "https://unity.com/blog/hyper-visor-xreal-aura-physics-scenes",
+        "fit": "cover"
+      },
+      "why": "Separate clocks make slow motion in one area, a live menu over a frozen level, or a mini-game inside a game simple, and they keep menus and play under one input model.",
+      "forYou": "Unreal has no Unity-style physics scenes, but per-actor time dilation and sub-level streaming get part of the way; a world-clock component could be a small plugin idea.",
+      "terms": [
+        {
+          "term": "physics scene",
+          "def": "A separate physics simulation in Unity, with its own objects, that only advances when code tells it to."
+        },
+        {
+          "term": "rigid bodies",
+          "def": "Objects the physics engine moves and collides as solid shapes."
+        },
+        {
+          "term": "stencil mask",
+          "def": "A per-pixel tag the graphics card uses to decide which parts of the screen each world may draw on."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Unity blog: the tech behind Hyper Visor",
+          "url": "https://unity.com/blog/hyper-visor-xreal-aura-physics-scenes"
+        }
+      ],
+      "deep": [
+        "Numbers from the post: about 100 rigid bodies per scene, no static geometry; app time steady around 7 ms on the XREAL AURA glasses; each world drawn through its own stencil mask. The team developed on Unity 6.2 and shipped on 6.5, testing mostly on a Meta Quest 3."
+      ]
+    },
+    {
+      "id": "hv-iteration",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Levels as text, reloaded with one key",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Recompiling and restarting Unity took up to 40 seconds per change, so the team wrote its levels in a small text script that reloads in under a second.",
+      "stats": [
+        {
+          "value": "40 s",
+          "label": "to recompile, reload and press Play before"
+        },
+        {
+          "value": "<1 s",
+          "label": "to reload a level from its text script"
+        }
+      ],
+      "body": [
+        "Lines read like `spawn Virus point:VirusSpawnPoints count:3 interval:0.5`, then `wait 1`. Pressing R reloads the level and keeps the current round.",
+        "Levels are prefabs edited while the game runs, and the level-script system is about 3,000 lines of code: a small language is a real project, but a cheap one next to the time it saves."
+      ],
+      "why": "A tiny level language turns a 40-second loop into a one-second one, for designers and for agents editing levels alike.",
+      "sources": [
+        {
+          "label": "Unity blog: the tech behind Hyper Visor",
+          "url": "https://unity.com/blog/hyper-visor-xreal-aura-physics-scenes"
+        }
+      ]
+    },
+    {
+      "id": "haunted-paws",
+      "format": "list",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The tools a small co-op game built for itself",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The makers of Haunted Paws, a two-player game where puppies rescue their owner from a haunted mansion, describe the in-house tools that kept a small team moving.",
+      "intro": "From LazyFlock's interview with 80 Level. Built in Unity 6 with Wwise and Steam networking.",
+      "items": [
+        {
+          "title": "Logic mode",
+          "text": "Designers wire puzzles with logic gates in the scene view, no code."
+        },
+        {
+          "title": "Playtest reports to Discord",
+          "text": "An in-house feedback tool posts each tester's report straight to the team's Discord."
+        },
+        {
+          "title": "Test bots for sync",
+          "text": "Bots caught multiplayer drift early, such as timed platforms falling out of step."
+        },
+        {
+          "title": "One-click builds",
+          "text": "A build manager, a camera rig system and a cutscene toolkit cover the jobs they repeated most."
+        }
+      ],
+      "why": "Their stated lessons are plain: plan multiplayer from day one, and build a tool for anything you do more than a few times.",
+      "forYou": "The logic-gate puzzle mode is the kind of designer tool that sells well as an engine plugin.",
+      "terms": [
+        {
+          "term": "Wwise",
+          "def": "Widely used audio middleware for games."
+        },
+        {
+          "term": "drift",
+          "def": "When two players' copies of the game slowly disagree about where things are."
+        }
+      ],
+      "deep": [
+        "Networking is host-authoritative with prediction on the guest's side: the host's game is the truth and the guest guesses ahead, then corrects. The hardest parts were timed platforms and cutscene alignment."
+      ],
+      "sources": [
+        {
+          "label": "80 Level: Haunted Paws",
+          "url": "https://80.lv/articles/play-as-puppies-rescue-your-owner-from-haunted-mansion-in-this-co-op-game"
+        }
+      ]
+    },
+    {
+      "id": "mobile-spend",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Mobile game spending hit its low of the year, and stores see less of it",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "US players spent less on mobile games in app stores on November 19 than on any other day this year, according to AppMagic estimates. A huge console launch that day is only part of the story.",
+      "stats": [
+        {
+          "value": "$28.4m",
+          "label": "US mobile game spend on November 19, the year's low"
+        },
+        {
+          "value": "-15%",
+          "label": "global spend over seven days, year on year"
+        },
+        {
+          "value": "-2.3%",
+          "label": "global spend, January to October"
+        }
+      ],
+      "body": [
+        "China's App Store hit a low on November 10 with no such launch. PocketGamer.biz notes that big publishers now push players to buy on their own web stores, which app store estimates do not count."
+      ],
+      "why": "Store revenue trackers increasingly miss what players spend on the web, so a falling chart is not the same as falling demand.",
+      "forYou": "For the Flutter and web games, a web checkout is now the normal path for big publishers, not an edge case.",
+      "terms": [
+        {
+          "term": "AppMagic",
+          "def": "A company that estimates app downloads and revenue from public store data."
+        }
+      ],
+      "sources": [
+        {
+          "label": "PocketGamer.biz (AppMagic data)",
+          "url": "https://www.pocketgamer.biz/us-mobile-game-spending-plummets-to-lowest-of-the-year-on-gta-6-launch-day/"
+        }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What does pausing a game actually do?",
+    "answer": "Pausing stops the game's clock, not the program. The game keeps running and drawing frames; the code that moves the world simply gets told that no time has passed.",
+    "analogy": "Like a referee stopping the match clock: the players are still on the pitch, but nothing they do counts until the clock restarts.",
+    "body": [
+      "Games move things by time. Every frame, each object asks how much time passed and moves that far; physics advances in fixed steps. In Unity, setting `Time.timeScale` to 0 makes that time zero, so frame-rate-independent code freezes and `FixedUpdate`, where physics steps, stops being called. Menus that must still animate read unscaled time instead.",
+      "That one global switch is why pause menus are fiddly: everything stops, including things you wanted to keep moving. Today's Hyper Visor story goes the other way. Each world has its own clock, so pausing stops only the gameplay world while the pause menu, itself a small physics world, keeps running."
+    ],
+    "diagram": {
+      "layout": "hub",
+      "nodes": [
+        {
+          "label": "Clock",
+          "note": "Says how much time passed this frame",
+          "key": true
+        },
+        {
+          "label": "Movement",
+          "note": "Moves objects by speed times elapsed time"
+        },
+        {
+          "label": "Physics",
+          "note": "Steps the simulation in fixed slices"
+        },
+        {
+          "label": "Timers",
+          "note": "Wait for a number of game seconds"
+        },
+        {
+          "label": "Menu",
+          "note": "Reads real time, so it keeps moving"
+        }
+      ],
+      "caption": "Set the clock to zero and everything that reads it freezes. Anything that must keep moving reads real time instead."
+    },
+    "terms": [
+      {
+        "term": "frame-rate-independent",
+        "def": "Code that moves things by elapsed time rather than by frame, so it runs the same at 30 or 120 frames a second."
+      },
+      {
+        "term": "FixedUpdate",
+        "def": "The Unity function that runs at a fixed rate, where physics code goes."
+      }
+    ],
+    "seenIn": [
+      "hyper-visor",
+      "hv-iteration"
+    ],
+    "sources": [
+      {
+        "label": "Unity docs: Time.timeScale",
+        "url": "https://docs.unity.com/en-us/engine/current/script-reference/unityengine/time/timescale"
+      },
+      {
+        "label": "Unity blog: the tech behind Hyper Visor",
+        "url": "https://unity.com/blog/hyper-visor-xreal-aura-physics-scenes"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "gamedev",
+    "title": "Start an AI character's line before the player talks to them",
+    "gist": "Hide the wait for AI-generated dialogue by starting it when the player walks up, not when they press talk, the trick a SNES hacker used to make a slow model feel instant.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A prototype with at least one character whose lines already come from a language model.",
+    "steps": [
+      {
+        "title": "Add an approach trigger",
+        "text": "Give one character a trigger area a few steps wide around them."
+      },
+      {
+        "title": "Start early",
+        "text": "When the player enters it, send a compact snapshot (who this is, where, recent events) to your server or proxy, which holds the API key, and start generating."
+      },
+      {
+        "title": "Cache, then throw away",
+        "text": "Store the reply for that character. Discard it if the state changes before the player talks."
+      },
+      {
+        "title": "Measure",
+        "text": "Log the time from the talk button to the first line on screen, with and without the early start."
+      }
+    ],
+    "check": "Most conversations show their first line at once. In the source, time to the first word was about 0.8 s for Haiku and 2.2 s for Opus, and starting on approach hid most of the Opus wait.",
+    "terms": [
+      {
+        "term": "proxy",
+        "def": "A small server between the game and the AI service, so the secret API key never ships inside the game."
+      }
+    ],
+    "from": "snes-llm",
+    "forYou": "The web and three.js prototypes are the quickest place to try it; the same trigger-then-cache shape fits a UE5 interaction component later.",
+    "sources": [
+      {
+        "label": "Danny Boland: Super Network Adapter",
+        "url": "https://boland.dev/snet/"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Anthropic deprecated Claude Opus 4.5; it retires from the Claude API on January 22, 2027. Code pinned to `claude-opus-4-5` has about eight weeks to move.",
+      "lane": "ai",
+      "url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "source": "Claude release notes"
+    },
+    {
+      "text": "Claude Code 2.1.331: on or after November 30, plugin marketplaces in managed settings will auto-update by default. Set `\"autoUpdate\": false` on an entry to opt out.",
+      "lane": "ai",
+      "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "source": "Claude Code changelog"
+    },
+    {
+      "text": "Also in 2.1.331: `claude doctor` now checks whether the API can be reached, and MCP calls that could hang for up to 30 minutes on malformed replies are fixed.",
+      "lane": "ai",
+      "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "source": "Claude Code changelog"
+    },
+    {
+      "text": "Codex 0.172.0: `codex exec resume` now restores saved sandbox permissions and working folders, and stdio MCP servers start on first use for faster launches.",
+      "lane": "ai",
+      "url": "https://github.com/openai/codex/releases",
+      "source": "OpenAI Codex"
+    },
+    {
+      "text": "GitHub issues get built-in statuses and board views in public preview; assigning an agent to an issue moves it to In progress automatically.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-23-issue-statuses-and-repository-boards-are-in-public-preview",
+      "source": "GitHub changelog"
+    },
+    {
+      "text": "Vercel's AI Gateway adds audited zero data retention: third-party auditors test providers, and canary prompts check between audits. First reports are due by December 8.",
+      "lane": "ai",
+      "url": "https://vercel.com/blog/introducing-audited-zdr-on-ai-gateway",
+      "source": "Vercel"
+    },
+    {
+      "text": "Cloudflare writes a timestamp into a DNS record and has every data center check it is fresh within 90 seconds, a cheap end-to-end test for any pipeline.",
+      "lane": "ai",
+      "url": "https://blog.cloudflare.com/probing-dns-at-cloudflare",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "Agoda's modular API framework, with architecture rules enforced as tests in CI, cut median code review time from 3.02 to 1.08 hours against its legacy code.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/agoda-modular-monolith-framework",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Supabase opened a knowledge base of migration guides and troubleshooting articles, with a Markdown version of every page for coding agents.",
+      "lane": "ai",
+      "url": "https://supabase.com/blog/introducing-supabase-knowledge-base",
+      "source": "Supabase"
+    },
+    {
+      "text": "The Ladybird browser, which writes its own HTML, CSS and JavaScript engines, reached alpha on macOS and Linux, with WebDriver support for automated tests.",
+      "lane": "ai",
+      "url": "https://ladybird.org/posts/alpha",
+      "source": "Ladybird"
+    },
+    {
+      "text": "Z.ai's GLM-5.4 is its first looped transformer, reusing a group of layers several times per step; weights are closed and it is reachable only through Z.ai's coding plan.",
+      "lane": "ai",
+      "url": "https://simonwillison.net/2026/Nov/23/glm-54/",
+      "source": "Simon Willison"
+    },
+    {
+      "text": "O3DE 26.10 moves its editor to Qt 6, removes PhysX 4, adds an optional per-scene deterministic physics mode and lays groundwork for a WebAssembly target.",
+      "lane": "gamedev",
+      "url": "https://gamefromscratch.com/o3de-26-10-released",
+      "source": "GameFromScratch"
+    },
+    {
+      "text": "Nicalis removed AI-generated music from The Binding of Isaac: Repentance+ after players found Suno metadata in 14 audio files; the game's creator said he had not known.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/nicalis-removed-ai-music-from-the-binding-of-isaac-repentance-after-users-noticed-it",
+      "source": "80 Level"
+    },
+    {
+      "text": "Ubisoft turned Motherbrain, the team behind its generative-AI shooter Teammates, into a subsidiary working on NPCs with memory and AI game masters.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/ubisoft-established-a-new-studio-focusing-on-ai-driven-games",
+      "source": "80 Level"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "snes-llm",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "A SNES that talks to a language model through its controller port",
+      "where": "Hacker News",
+      "signal": "79 points and 17 comments on Hacker News on November 23.",
+      "hook": "A small board in the controller port gives a 1991 console Wi-Fi: a patched A Link to the Past sends game state out, and villagers answer with lines a model wrote about what you just did.",
+      "borrow": "Start generating when the player approaches and cache it: Opus took about 2.2 s to its first word, and starting early hid most of it. The author's judge scored lines that fit the context at 66% for Haiku, 90% Sonnet, 98% Opus.",
+      "url": "https://boland.dev/snet/",
+      "forYou": "The approach-then-cache pattern is today's Try this; the proxy that holds the key is the right shape for any shipped game.",
+      "image": {
+        "src": "img/2026-11-24/snes.webp",
+        "alt": "A Link to the Past screenshot: in Kakariko village a woman tells Link, in the game's own text box, that he is the one who stole the princess and has been bashing chickens.",
+        "credit": "Danny Boland",
+        "creditUrl": "https://boland.dev/snet/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "village-drive",
+      "lane": "both",
+      "kind": "game",
+      "title": "Drive around a real English village, rebuilt from open data in a week",
+      "where": "Show HN",
+      "signal": "112 points and 78 comments on Show HN on November 20.",
+      "hook": "UK government lidar for the ground, OpenStreetMap for roads, open datasets for roof colours, and photos handed to agents for the landmarks. The author says they acted as product manager and did not read the code.",
+      "borrow": "Free map data gets a real place roughly right; spend hand-detail only on the landmarks people know. Commenters flagged long loads and slow integrated graphics.",
+      "url": "https://cherwellvalleymotorclub.app",
+      "forYou": "The lidar plus OpenStreetMap stack is a cheap way to block out a real-world level for a web racer.",
+      "image": {
+        "src": "img/2026-11-24/village.webp",
+        "alt": "A green Triumph TR7 drives through Deddington's market place, past brick houses and a stone church tower, with a minimap and two dials.",
+        "credit": "Cherwell Valley Motor Club",
+        "creditUrl": "https://cherwellvalleymotorclub.app",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "slotbound",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Slotbound: an auto-battler where a slot machine summons your army",
+      "where": "Steam",
+      "signal": "Up 28 places to #95 in Steam's most played, peak 25,607 players, twelve days after release.",
+      "hook": "Each spin of a 3 by 3 slot grid summons units; absorbing units grows the army, and items and cores bend the odds.",
+      "borrow": "A slot grid makes the shop of an auto-battler a probability knob players can tune, which is clearer than a hidden drop table.",
+      "url": "https://store.steampowered.com/app/4459590",
+      "image": {
+        "src": "img/2026-11-24/slotbound.webp",
+        "alt": "Slotbound screenshot: a 3 by 3 slot machine of bows, spears, horses and armour on the left; a pixel-art army fights goblins in a meadow on the right.",
+        "credit": "Optima Arch, Steam",
+        "creditUrl": "https://store.steampowered.com/app/4459590",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "nospeaker",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "A MacBook trackpad that talks, with no speaker",
+      "where": "Hacker News",
+      "signal": "304 points and 171 comments on Hacker News on November 23.",
+      "hook": "It drives the trackpad's haptic motor up to 4,000 times a second, playing the two strongest voice resonances as tones, so a muted Mac still speaks.",
+      "borrow": "Any actuator is an audio channel. Pulling out just the main voice frequencies is a cheap way to get speech-like sound from controller rumble. Commenters raised motor wear and the curl-to-shell install.",
+      "url": "https://github.com/os6/nospeaker"
+    },
+    {
+      "id": "verilog-sudoku",
+      "lane": "both",
+      "kind": "technique",
+      "title": "A Sudoku solver written as a chip",
+      "where": "lobste.rs",
+      "signal": "12 points on lobste.rs on November 23.",
+      "hook": "In Verilog, 81 copies of the cell logic run in parallel every clock cycle, and a three-state machine replaces recursion. A hard puzzle takes 7,639 cycles in simulation.",
+      "borrow": "Rewriting a puzzle solver for hardware forces you to see which parts are parallel, a good lens for GPU and compute-shader work.",
+      "url": "https://blog.veitheller.de/Simple_Sudoku_Solvers_SIII%2C_EIII%3A_Verilog.html"
+    },
+    {
+      "id": "outpost-racer",
+      "lane": "both",
+      "kind": "devlog",
+      "title": "Outpost Racer: a PS1-style browser racer made in four days with Codex",
+      "where": "Show HN",
+      "signal": "48 points and 38 comments on Show HN on November 21.",
+      "hook": "three.js and the Rapier physics engine, no game engine, a level editor for hand-made tracks, and rival AI that was also generated.",
+      "borrow": "Read the comments as a checklist: the generated rivals were too weak, the interface resolution clashed with the pixel art, and mobile loading was slow.",
+      "url": "https://outpostracer.com"
+    }
+  ],
+  "lab": [
+    {
+      "id": "autopilot",
+      "lane": "both",
+      "kind": "preprint",
+      "title": "AutoPILOT: A Visual Agent Harness for Real-Time Gameplay",
+      "headline": "Let the agent write a small bot, and it can play games that do not wait",
+      "authors": "Mark Zhao, Pengcheng Wang, Rui Yang et al. (UIUC, Georgia Tech, Northwestern)",
+      "where": "arXiv preprint (cs.AI)",
+      "date": "2026-11-20",
+      "problem": "Vision-language agents play well when the game pauses for them, and badly when it keeps running: by the time the model answers, the moment has passed.",
+      "idea": "Each model call can send one action, a fixed sequence of actions, or a short Python controller that watches the screen about every 0.4 s and acts with no further model calls. Control returns to the model on events such as a scene change.",
+      "result": "On AFK-Bench, 120 browser games new in the paper, real-time success was 68.6% against 38.3% for the VISTA harness with the same model and budget. On GameWorld in real time it kept 80.0% where VISTA fell to 42.9%, using about half the tokens per episode. Authors' own numbers.",
+      "useIt": "When an agent playtests a real-time game, let it write throwaway bots for dodging or aiming and hand control back on events, rather than one model call per click.",
+      "maturity": "prototype",
+      "links": [
+        {
+          "label": "arXiv: 2611.28202",
+          "url": "https://arxiv.org/abs/2611.28202"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2611.28202v1"
+        }
+      ],
+      "forYou": "Agent playtesting of the action RPG's combat needs exactly this split: the model plans, a scripted controller reacts.",
+      "image": {
+        "src": "img/2026-11-24/autopilot.webp",
+        "alt": "Paper figure: an existing harness sends one action per model call and loses the ship while thinking; AutoPILOT can send an action, a macro or a Python controller; a timeline of the first 90 seconds and results bars beside it.",
+        "credit": "Zhao et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2611.28202",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "context-claims",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Does the Agent's Map Match the Territory? Architectural Claims in AI Agent Context Files and Their Fit with the Code",
+      "headline": "The file paths in agent instruction files are mostly right; the import rules often are not",
+      "authors": "Bachan Ghimire and Daniela Damian (University of Victoria)",
+      "where": "arXiv preprint (cs.SE)",
+      "date": "2026-11-23",
+      "problem": "Coding agents treat CLAUDE.md and AGENTS.md files as true, but nobody had checked how well those files match the code they describe.",
+      "idea": "Extract every path claim and dependency rule from thousands of context files with a language model, review them by hand, and test each against its repository.",
+      "result": "3,602 files from 3,346 projects held 41,090 path claims and 184 dependency rules. About 2.2% of paths were real errors, less than READMEs (3.5%). But 33 of the 184 rules (18%) were already broken in the code when written.",
+      "useIt": "Check your context file with a script: test that every path exists and every \"must not import\" rule holds today, and write rules as the target plus known exceptions.",
+      "maturity": "idea",
+      "links": [
+        {
+          "label": "arXiv: 2611.29916",
+          "url": "https://arxiv.org/abs/2611.29916"
+        },
+        {
+          "label": "Full text (HTML)",
+          "url": "https://arxiv.org/html/2611.29916v1"
+        }
+      ],
+      "forYou": "The module boundary rules in the plugin CLAUDE.md files are the claims to test first."
+    },
+    {
+      "id": "fixed-or-deleted",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Fixed or Deleted? External Feedback Lets Cheaper AI Coding Agents Repair Rule Violations",
+      "headline": "Tell an agent exactly which rule it broke, and watch that it does not just delete the file",
+      "authors": "Laura Wynter (Singapore Management University, CodeAssure Labs)",
+      "where": "arXiv preprint (cs.SE)",
+      "date": "2026-11-22",
+      "problem": "Many defects break project rules the code does not show on its own, such as layering or required tests, and agents fix them badly.",
+      "idea": "An external checker reports each violation's location and a repair goal, and a deletion check flags runs where the new file was removed or emptied.",
+      "result": "31 planted defects in 25 pull requests: repair rose from 46% to 90% for a medium model with the checker, at $0.17 a run against $0.91 for the largest alone. The largest model alone deleted the feature in 44 of 125 runs. The checker is the author's own product.",
+      "useIt": "Make hooks and CI print the rule broken, where, and the goal; add a check that fails when an agent deletes a file the task just added.",
+      "maturity": "code",
+      "links": [
+        {
+          "label": "arXiv: 2611.29162",
+          "url": "https://arxiv.org/abs/2611.29162"
+        },
+        {
+          "label": "Code and data",
+          "url": "https://github.com/CodeAssureLabs/external-feedback-coding-agents"
+        }
+      ],
+      "forYou": "A delete-guard hook is a ten-line addition to the existing PreToolUse hooks."
+    }
+  ],
+  "note": "The sweep could not read GamesIndustry.biz, Reddit, The Verge or Ars Technica (HTTP 403). Z.ai's GLM-5.4 page came back empty, so that line rests on Simon Willison's post. The sparks image of the village game is a headless screenshot of the live page."
+}

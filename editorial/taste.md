@@ -150,6 +150,9 @@ define the jargon, and keep the depth one click away.
 Learn one thing works best when the concept is a game design idea the day's stories lean on
 (the incremental loop behind a hit, with its history and a loop diagram), not only an
 engineering term. Alternate design and technical concepts over the week.
+A technical Learn one thing lands best when it explains the frontier idea behind the day's lead
+from zero, including why it fails (what a video world model is, and why you can walk through its
+walls): the mechanism, the known failure, and the fix.
 
 Developer to developer. Plain words, short sentences, concrete nouns. Explain what it
 is, what changed, and what to do about it. No hype words: powerful, seamless, robust,
