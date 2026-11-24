@@ -1,8 +1,8 @@
 name: Sweep
 
 # The free first pass, half an hour before the morning run: read every source,
-# write inbox/<date>.json, and (when the ANTHROPIC_API_KEY secret is set) let
-# Claude Haiku 5.5 score the candidates. The morning routine starts from this file.
+# write inbox/<date>.json. No AI and no API key: the morning routine starts from this
+# file and triages it itself with a Sonnet helper on the Claude plan.
 on:
   schedule:
     # 04:37 UTC: 05:37 in Lisbon in summer time, 04:37 in winter.
@@ -35,9 +35,6 @@ jobs:
         env:
           # Lets the GitHub rising searches use the authenticated rate limit.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: node scripts/triage.mjs --date "$TODAY"
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       - name: Commit the inbox
         run: |
           git config user.name "radar-sweep"

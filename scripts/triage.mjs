@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// RETIRED from the daily workflow: the morning routine now triages with a Sonnet helper on the
+// Claude plan, so no API key is needed. Kept as an optional manual tool.
 // Second pass, optional: Claude Haiku 5.5 reads every candidate in today's
 // inbox against editorial/taste.md and scores it. Costs a few cents a day on
 // the API. Without ANTHROPIC_API_KEY it does nothing, and the morning run
