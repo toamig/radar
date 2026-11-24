@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #11 More like: Slotbound: an auto-battler where a slot machine summons your army (2026-11-24)
+  direction: more
+  issue: 2026-11-24
+  block: slotbound
+  format: spark
+  lane: gamedev
+  
+  Optional note (what exactly, and why):
+
 
 ## Folded in
 
