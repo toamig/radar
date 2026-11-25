@@ -1,0 +1,679 @@
+{
+  "date": "2026-11-25",
+  "number": 43,
+  "title": "Unreal in the browser, minus Safari",
+  "dek": "Unreal 5.9's second preview packages Blueprint-only games for the web, as 64-bit WebAssembly that Safari cannot run yet. Plus how OpenAI rebuilt Git for its agents, skills served by MCP servers, and a fix for iPhone's 60 fps cap.",
+  "theme": {
+    "paper": "sky",
+    "text": "hunter",
+    "inks": ["blue", "yellow"],
+    "type": "wide",
+    "mood": "a Wednesday about who your build can actually reach"
+  },
+  "tldr": [
+    {
+      "text": "**Unreal 5.9 Preview 2** packages Blueprint-only projects for the web, but only as 64-bit WebAssembly, which no Safari version runs yet, on Mac or iPhone.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "OpenAI rebuilt its Git server for coding-agent traffic: median push latency fell about 5x, and it serves nearly a petabyte a day, 99% from cache.",
+      "lane": "ai"
+    },
+    {
+      "text": "Claude Code 2.1.332 lets MCP servers ship **skills** next to their tools, with permission rules to ask or block them.",
+      "lane": "ai"
+    },
+    {
+      "text": "A web developer pushed iPhone Safari past its 60 fps cap with an off-screen canvas and an invisible scroller: 118 fps while dragging.",
+      "lane": "gamedev"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Games on the web and the GPU",
+      "note": "A drop-in ambient occlusion technique with its code, what web shops now earn mobile games, and how to get 120 fps out of an iPhone browser.",
+      "ids": ["cortao", "web-stores", "ios-120"]
+    },
+    {
+      "title": "Agents at scale",
+      "note": "Git rebuilt for agent traffic, one API that runs agents across 15,000 repositories, and a 21,000-line feature shipped with skills.",
+      "ids": ["pando", "ifood", "pocock"]
+    },
+    {
+      "title": "New in your tools",
+      "note": "Two Claude Code releases, skills that come from MCP servers, and a 6 GB local model that got much better at agent work.",
+      "ids": ["claude-code", "mcp-skills", "bonsai"]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "ue59-web",
+      "format": "hero",
+      "variant": "split",
+      "lane": "gamedev",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Unreal 5.9 puts Blueprint games in the browser, minus Safari",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "The second preview of Unreal Engine 5.9 can package games made only with Blueprints for the web. Those builds are now 64-bit WebAssembly only, which Chrome and Firefox run and Safari, on Mac or iPhone, does not yet.",
+      "background": "Blueprints are Unreal's visual scripting, the node graphs many teams use to build gameplay without writing C++.",
+      "body": [
+        "Preview 2 of Unreal Engine 5.9 removes a catch from the first preview: a project no longer needs a C++ class to target the web. Epic's notes say **a content-only project now packages and runs** with the engine's standard game executable. Web builds can also be installed as a progressive web app, return visits no longer download the game again, and each device downloads only the shader data for its quality tier.",
+        "The change most coverage skipped: the web platform now **builds only 64-bit WebAssembly (wasm64)**, which lets the game use more than 2 GB of memory. Chrome and Edge have run 64-bit WebAssembly since version 133 and Firefox since 134, but caniuse lists no Safari version that supports it, on Mac or iOS. iPhone browsers run on Safari's engine, so an iPhone player cannot start these builds today.",
+        "The same preview turns Unreal's agent tooling on by default. The AllToolsets plugin now ships enabled, so a coding agent connected over MCP gets every editor toolset without setup, and a new Toolset Registry decides which toolsets agents may use. Scripts can now edit Blueprints, StateTrees, chooser tables and Dataflow graphs.",
+        "It is a preview, not a release, and Epic's notes give no date for the final 5.9."
+      ],
+      "diagram": {
+        "layout": "layers",
+        "nodes": [
+          { "label": "Blueprint-only project", "note": "No C++ class needed since Preview 2" },
+          { "label": "64-bit web build", "note": "The only web output: memory over 2 GB, installable as an app" },
+          { "label": "Chrome, Edge, Firefox", "note": "Run 64-bit WebAssembly since versions 133 and 134" },
+          { "label": "Safari and iPhone", "note": "No 64-bit WebAssembly yet, so the game does not start", "key": true }
+        ],
+        "caption": "What a Blueprint-only Unreal game needs to reach a player's browser in 5.9 Preview 2, and where it stops today."
+      },
+      "stat": { "value": "75.6%", "label": "of browsers in use run 64-bit WebAssembly, per caniuse" },
+      "why": "Unreal's web target is now open to teams that never touch C++, but 64-bit WebAssembly leaves out Safari and every iPhone, often a large share of web players. Check where your players are before choosing Unreal for a browser game.",
+      "forYou": "Browser games built on three.js still reach iPhones; an Unreal web build would not today, so keep web titles on web tech for now. For the plugins, AllToolsets on by default means buyers' agents can drive the editor out of the box: test each plugin's editor actions over MCP in 5.9 Preview 2.",
+      "terms": [
+        { "term": "WebAssembly", "def": "A compact program format that browsers run at close to native speed, used to bring C++ engines to the web." },
+        { "term": "wasm64", "def": "The 64-bit version of WebAssembly, which can address more than 4 GB of memory but runs in fewer browsers." },
+        { "term": "progressive web app", "def": "A website that can be installed like an app, with its own icon and offline files." },
+        { "term": "MCP", "def": "Model Context Protocol, the standard way AI agents connect to outside tools such as an editor." },
+        { "term": "toolset", "def": "A group of editor actions, such as spawning actors or editing materials, that an agent is allowed to call." }
+      ],
+      "deep": [
+        "More web changes in Preview 2, per Epic's notes and Wccftech's summary: phones load the ASTC texture set first, the frame rate is capped at the display's refresh rate by default, and mobile tiers use TAA instead of FXAA. Building for the web still needs Emscripten's SDK.",
+        "Agent side: Editor Preferences set the MCP server's port, its allowed origins and the highest protocol version it accepts. An MCP Client toolset manages a list of external MCP servers, a Knowledge Base lets the assistant and agents query knowledge built from the live engine state, and the Fab toolset adds seller search and more filters.",
+        "Browser support for WebAssembly Memory64 on caniuse today: Chrome 133+, Edge 133+, Firefox 134+, Chrome for Android 157, Samsung Internet 29. Safari and Safari on iOS: not supported through the 27.x versions listed. Global usage covered: 75.57%."
+      ],
+      "sources": [
+        { "label": "Epic: Unreal Engine 5.9 release notes", "url": "https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-9-release-notes?lang=en-US" },
+        { "label": "Wccftech: 5.9 Preview 2", "url": "https://wccftech.com/unreal-engine-5-9-preview-2-brings-browser-based-gaming-to-blueprint-only-projects-enables-ai-workflows-by-default-and-improves-rendering/" },
+        { "label": "caniuse: WebAssembly Memory64", "url": "https://caniuse.com/wf-wasm-memory64" }
+      ]
+    },
+    {
+      "id": "cortao",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "half",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Ambient occlusion from EVE: Frontier, open source and drop-in",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "A rendering engineer released CORTAO, a way to shade the dark creases where objects meet. His own benchmarks show the same quality as a common method in under half the GPU time, and the code is free to use.",
+      "name": "CORTAO",
+      "what": "Screen-space ambient occlusion that ray traces simple circles instead of slicing the screen.",
+      "body": [
+        "Daniel Isheden built it over two years as a personal project, and it shipped in EVE: Frontier; the studio also published its own engine integration. It reads the depth and normal buffers an engine already has and runs as three compute passes, so it slots in where SSAO already lives. The speed claims are the author's own."
+      ],
+      "facts": [
+        { "k": "Claim", "v": "GTAO quality in under half the GPU time" },
+        { "k": "APIs", "v": "DX11, DX12, Vulkan, OpenGL 4.3+" },
+        { "k": "Licence", "v": "MIT, version 1.0.3" }
+      ],
+      "image": {
+        "src": "img/2026-11-25/cortao.webp",
+        "alt": "Author's chart at 4K on an AMD RX 7900 XT: error against GPU time. GTAO's curve starts high and falls slowly; CORTAO's stays low from 0.27 ms, reaching GTAO's best error in about half the time.",
+        "credit": "Daniel Isheden, CORTAO repository",
+        "creditUrl": "https://github.com/theagentd/CORTAO",
+        "fit": "contain"
+      },
+      "why": "Custom and web renderers rarely get state-of-the-art AO for free; this is readable reference code with a permissive licence and a clear integration contract.",
+      "forYou": "Worth a look for the three.js and WebGPU games, where AO is usually a cheap SSAO pass. Unreal already ships its own AO, so the gain there is unproven.",
+      "terms": [
+        { "term": "ambient occlusion", "def": "Darkening where surfaces block indirect light, such as corners and contact points, so objects look grounded." },
+        { "term": "GTAO", "def": "Ground Truth Ambient Occlusion, a widely used screen-space method that many engines ship." },
+        { "term": "compute passes", "def": "GPU programs that run over the screen's pixels outside the normal drawing pipeline." }
+      ],
+      "deep": [
+        "Inputs: a depth buffer, a view-space normal buffer, an occluder lookup table and an optional bent normal table. Outputs: occlusion and an optional bent normal. HLSL needs Shader Model 6.7 unless you use the documented DX11 workaround; a 16-bit linear depth buffer is not enough. The optional filter pass expects you to supply your own temporal filter."
+      ],
+      "sources": [
+        { "label": "CORTAO on GitHub", "url": "https://github.com/theagentd/CORTAO" },
+        { "label": "Fenris Creations' integration", "url": "https://github.com/carbonengine/CORTAO" },
+        { "label": "Game Developer", "url": "https://www.gamedeveloper.com/programming/devs-can-now-utilize-high-end-ambient-occlusion-technique-seen-in-eve-frontier" }
+      ]
+    },
+    {
+      "id": "web-stores",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Web shops are now big enough for Sensor Tower to estimate",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Sensor Tower, which estimates app store revenue, now also estimates what mobile games earn through their own web shops, where players pay outside Apple's and Google's stores.",
+      "stats": [
+        { "value": "~30%", "label": "of revenue off the app stores for top 100 casino games, H1 2026" },
+        { "value": "~1/3", "label": "of Monopoly GO's revenue from its web store" },
+        { "value": "56%", "label": "of Supercell's web store visits that come direct, not via social" }
+      ],
+      "body": [
+        "The new Web Store Revenue product launched on November 24 with IAP Insights, which tracks offers back to January 2023, and an ad revenue estimate. The figures above are Sensor Tower's own estimates, from a talk in August; app store totals have left this money out until now.",
+        "Other counts point the same way: PocketGamer.biz's own tracking finds some public companies earning around 40% or more off the stores, and Appcharge puts the direct-to-consumer market at $17 billion or more."
+      ],
+      "why": "Once trackers count web shop sales, direct selling stops being invisible: expect it in genre benchmarks and in what publishers ask about.",
+      "forYou": "Relevant to the mobile and web games' monetisation plan: a web shop is now a measured, normal channel, not an edge case.",
+      "terms": [
+        { "term": "web shops", "def": "A game's own store on a website, where players pay without the app store taking its cut." }
+      ],
+      "sources": [
+        { "label": "PocketGamer.biz: the launch", "url": "https://www.pocketgamer.biz/sensor-tower-introduces-web-store-revenue-estimates/" },
+        { "label": "PocketGamer.biz: the August talk", "url": "https://www.pocketgamer.biz/sensor-tower-reveals-the-hidden-impact-of-d2c-revenue-in-mobile-games/" }
+      ]
+    },
+    {
+      "id": "ios-120",
+      "format": "steps",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "How one developer got 120 fps out of iPhone Safari",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "iPhone Safari holds web pages to 60 frames a second even on 120 Hz screens. A developer found a way past it by drawing from a background thread and reading touches from an invisible scrolling box: 118 fps while dragging.",
+      "intro": "From Rida's write-up of November 20. It leans on WebKit behaviour Apple could change, and the author says he would not rebuild a whole app around it.",
+      "steps": [
+        { "title": "See the cap", "text": "WebKit runs requestAnimationFrame at 60 Hz on 120 Hz iPhones, and touch and pointer events on ordinary pages arrive at the same rate." },
+        { "title": "Draw off the main thread", "text": "Call transferControlToOffscreen on the canvas and render from a worker. Per the post, WebKit does not wait for the page's next rendering pass when an OffscreenCanvas pushes a frame." },
+        { "title": "Read input from a scroller", "text": "Lay an invisible scrollable element over the play area and read its scroll position on a timer locked to the display, instead of waiting for pointer events." },
+        { "title": "Measure", "text": "Filmed at 240 fps on an iPhone 18 Pro, the scroller averaged 118 fps over three seconds of dragging; pointer events held 60. In Low Power Mode it reached 60 where pointer events usually give 30." }
+      ],
+      "why": "Web games on iPhones feel sluggish partly because of this cap; this shows where it lives and how to test around it, with the caveat that it is a WebKit quirk, not a standard.",
+      "forYou": "Try it on the browser games' touch controls on a ProMotion iPhone before trusting it; keep a pointer-event fallback.",
+      "terms": [
+        { "term": "requestAnimationFrame", "def": "The browser call a page uses to draw its next frame in step with the screen." },
+        { "term": "OffscreenCanvas", "def": "A drawing surface that a background worker thread can render to, separate from the page." },
+        { "term": "worker", "def": "A background thread in the browser that runs code without blocking the page." }
+      ],
+      "deep": [
+        "Details from the post: a MessageChannel loop throttled with setTimeout and phase-locked to vsync by requestAnimationFrame timestamps reads the scroll position; an empty requestAnimationFrame loop makes Safari flush positions; scaling the scroll surface by the device pixel ratio gives sub-point precision; a tiny background smooth-scroll keeps ProMotion at 120 Hz. Controllers without momentum can use a passive touchmove listener, which already fires at 120 Hz."
+      ],
+      "sources": [
+        { "label": "Rida: Bypassing iOS Safari's 60 FPS limit", "url": "https://rida.dev/blog/bypassing-ios-safari-60-fps-limit" },
+        { "label": "Hacker News discussion", "url": "https://news.ycombinator.com/item?id=50637890" }
+      ]
+    },
+    {
+      "id": "pando",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Coding agents broke OpenAI's Git server, so it built a new one",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Agents push far more branches than people, and OpenAI's Git hosting buckled under them. It wrote a new Git backend, Pando, that keeps every Git client working while pushes got about five times faster.",
+      "background": "Git is the version control system nearly all code lives in; a push sends your changes to the shared server, a fetch pulls everyone else's.",
+      "layout": "flow",
+      "intro": "OpenAI's own account, published November 2 and written up by InfoQ this week. Reliability had at times fallen below 90% as Codex multiplied branches, pushes and fetches.",
+      "nodes": [
+        { "label": "Push", "note": "Agents push many small branches; the median pack is under 20 KiB" },
+        { "label": "Validate", "note": "Checked while streaming into blob storage, never unpacked" },
+        { "label": "Commit", "note": "One metadata transaction moves the branch pointer", "key": true },
+        { "label": "Compact", "note": "Background workers merge packs into levels L0 to L4" },
+        { "label": "Fetch", "note": "Clients get links to cached packs; over 99% are cache hits" }
+      ],
+      "links": ["streams", "records", "merges", "serves"],
+      "caption": "Pando's write and read paths. It gives up repository-wide consistency so pushes to different branches never wait on each other. OpenAI-reported numbers.",
+      "why": "It is the first detailed account of agent volume breaking the version control layer itself, not only CI. Many branches, many fetches per push and huge ref lists are coming to smaller teams too.",
+      "forYou": "Not a problem at studio scale yet, but the cheap levers apply now: delete merged agent branches, and keep agent clones shallow and trunk-only.",
+      "terms": [
+        { "term": "blob storage", "def": "Cloud storage for large files, such as Amazon S3, read and written whole." },
+        { "term": "ref", "def": "A named pointer in Git, such as a branch, that says which commit it is at." },
+        { "term": "packfile", "def": "Git's compressed bundle of commits and files, sent on every push and fetch." }
+      ],
+      "deep": [
+        "Numbers from OpenAI: median push latency down nearly 5x; nearly a petabyte of Git data served per day; a peak of over 57 TB of packs in one hour, over 99% from local disk cache; clones saturate 10 Gbps links on ordinary cloud VMs. With millions of branches, the ref list alone can exceed 100 MiB, so Pando advertises only trunk.",
+        "Built in Rust in 10 weeks from kick-off to production: one engineer designed the core, agents wrote much of it, and it was checked with a conformance suite, deterministic simulation testing, and Lean and TLA+ models. OpenAI sent fixes upstream to Git: packfile-uri resume and cleanup, parallel pack download and indexing, and \"explicit haves\" so --force-with-lease works against trunk."
+      ],
+      "sources": [
+        { "label": "OpenAI: Scaling Git at OpenAI", "url": "https://openai.com/index/scaling-git-at-openai/" },
+        { "label": "InfoQ", "url": "https://www.infoq.com/news/2026/11/openai-git-pando" }
+      ]
+    },
+    {
+      "id": "ifood",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Agents across 15,000 repositories, about 4 cents a run",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "iFood built one service that runs coding agents on any of its repositories. Ordinary code does the setup and the merge request; the agent only does the task in between.",
+      "stats": [
+        { "value": "15,000+", "label": "repositories" },
+        { "value": "$0.04", "label": "average model cost per run" },
+        { "value": "2x+", "label": "vulnerabilities fixed by its security team" }
+      ],
+      "body": [
+        "Over 25,000 runs so far; a required output schema marks each one as success or failure. OpenAI-published customer story."
+      ],
+      "why": "Deterministic steps around a small agent core, with a checked result shape, is a pattern any team can copy for fleet-wide chores such as dependency fixes.",
+      "forYou": "The same shape fits a routine that bumps dependencies across the SaaS repos: script the clone and MR, let the agent do only the edit.",
+      "terms": [
+        { "term": "merge request", "def": "GitLab's name for a pull request: a proposed change waiting for review." }
+      ],
+      "sources": [
+        { "label": "OpenAI: iFood customer story", "url": "https://openai.com/business/customer-stories/ifood" }
+      ]
+    },
+    {
+      "id": "pocock",
+      "format": "steps",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A 21,000-line feature, then a retro on the agent's mistakes",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "TypeScript teacher Matt Pocock built a large feature with his public set of agent skills, reviewed the process instead of every line, then traced his review comments back to what had misled the agent.",
+      "intro": "From his write-up and video of last week (over 300,000 views on his channel).",
+      "steps": [
+        { "title": "Grill", "text": "The agent interviewed him about the why and built a shared vocabulary: a glossary of about 560 lines." },
+        { "title": "Prototype, spec, run", "text": "A subagent built three variants and he picked one. Its spec of about 47 user stories went to the agent, which implemented it on its own." },
+        { "title": "Retro", "text": "Over 30 transcripts and 12 review comments: the comments shared one cause, existing docs and code that taught the opposite. Fixes went into lint rules, docs and the skills." }
+      ],
+      "why": "Review comments on agent code are usually symptoms of something the repository teaches. Fixing the source, not the line, stops the same comment next time.",
+      "forYou": "Today's Try this. The same retro fits the plugin repos, where old patterns on main are what agents copy.",
+      "terms": [
+        { "term": "stacked diffs", "def": "A large change split into a chain of small reviews, each building on the one before." },
+        { "term": "feature flag", "def": "A switch that keeps new code turned off in production until you enable it." },
+        { "term": "compacting", "def": "Summarising an agent's conversation so far to free up its context window." }
+      ],
+      "deep": [
+        "After compacting the context, the agent ran unattended; the result was split into stacked diffs behind a feature flag. Only one part needed a mandatory human review: the one-way database change, an additive migration. He calls about 260,000 tokens of context the point where the agent gets worse, and notes that running at 750,000 tokens is very expensive because earlier tokens are billed again. Code comments were 18% of the new lines against a 12% repo average; the audit removed 22."
+      ],
+      "sources": [
+        { "label": "AI Hero: the write-up", "url": "https://www.aihero.dev/watch-me-ship-a-21-000-line-feature-with-mattpocock-skills~ez95n" },
+        { "label": "The video", "url": "https://www.youtube.com/watch?v=jVBlkOF8sHk" },
+        { "label": "mattpocock/skills", "url": "https://github.com/mattpocock/skills" }
+      ]
+    },
+    {
+      "id": "claude-code",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Claude Code 2.1.331 and 2.1.332: skills from servers, reads that give up",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Two Claude Code updates in two days: MCP servers can now hand Claude ready-made skills, a new hook can block a skill's shell commands, and a few long-standing hangs are gone.",
+      "intro": "The changes most users will notice, from the changelog.",
+      "items": [
+        { "title": "Skills from MCP servers (beta)", "text": "A server can now ship skills next to its tools. They show as server:skill in the / menu and in /skills.", "url": "https://code.claude.com/docs/en/mcp" },
+        { "title": "A hook for skill shell commands", "text": "The new PreSkillShellCommand hook event can refuse the inline shell commands a skill or command runs as it loads. Older versions show a dialog at start if a settings file names it, so update everywhere first.", "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.332" },
+        { "title": "Stuck reads now fail", "text": "Reading a named pipe nothing writes to, such as a .env from a locked secrets manager, used to hang. It now fails after 20 seconds.", "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.332" },
+        { "title": "Line ranges in @ mentions", "text": "Writing @file#10-12 now attaches only those lines instead of the whole file (2.1.331).", "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.331" }
+      ],
+      "why": "Skills served by MCP turn a server into a way to distribute workflows, not just tools, which is also a new thing to trust.",
+      "forYou": "MCP skills do not run in claude -p, the Agent SDK, GitHub Actions or cloud sessions, so routines will not see them yet; interactive sessions will.",
+      "terms": [
+        { "term": "skills", "def": "Packaged instructions and files that teach Claude Code how to do one kind of task, loaded when needed." },
+        { "term": "hook", "def": "A script Claude Code runs at a set moment, such as before a tool call, which can allow or block it." },
+        { "term": "named pipe", "def": "A file-like channel between programs; reading it waits until another program writes." }
+      ],
+      "deep": [
+        "Also in 2.1.331: Code Mode now works in terminal sessions on Amazon Bedrock, Google Cloud's Agent Platform, Microsoft Foundry and Claude Platform on AWS; claude doctor gains an API connectivity check; plugin manifests can list optionalDependencies. In 2.1.332: fixes for freezes when a hook prints without end or blocks with a very large log, when a permission rule with several wildcards meets a long command, and for CLAUDE.md being sent twice after moving into a worktree."
+      ],
+      "sources": [
+        { "label": "Claude Code changelog", "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+        { "label": "Release 2.1.332", "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.332" }
+      ]
+    },
+    {
+      "id": "mcp-skills",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Decide which server skills Claude may load",
+      "kind": "action",
+      "level": "everyone",
+      "gist": "Skills from an MCP server can tell Claude to run code, and the server can change them at any time. Two documented settings let you be asked first and keep skills from running shell commands.",
+      "intro": "A settings file combining two rules from the docs, for a server named docs.",
+      "lang": "json",
+      "code": "{\n  \"permissions\": {\n    \"ask\": [\"Skill(mcp__docs__*)\"]\n  },\n  \"disableSkillShellExecution\": true\n}",
+      "explain": [
+        "The ask rule prompts each time Claude loads one of that server's skills. A deny rule with the same pattern blocks them, typed commands included.",
+        "disableSkillShellExecution replaces a skill's inline ! commands with a notice instead of running them. Bundled and managed skills are not affected.",
+        "Without a rule, auto mode lets a classifier decide without reading the skill; in Manual mode, Allow this version lasts until the server changes the skill."
+      ],
+      "why": "A skill is instructions plus code from someone else's server. Ask-first rules make that trust explicit instead of automatic.",
+      "terms": [
+        { "term": "auto mode", "def": "A Claude Code permission mode where a classifier approves or blocks actions instead of asking you." }
+      ],
+      "sources": [
+        { "label": "Docs: skills from MCP servers", "url": "https://code.claude.com/docs/en/mcp" },
+        { "label": "Docs: skills", "url": "https://code.claude.com/docs/en/skills" }
+      ]
+    },
+    {
+      "id": "bonsai",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Same 5.9 GB model, much better at agent work",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "PrismML's Ternary Bonsai 2.5 is a 27-billion-parameter coding model squeezed into 5.9 GB, small enough for a gaming GPU. The new version scores far higher on agent tasks at the same size.",
+      "intro": "Points gained by Bonsai 2.5 over Bonsai 2, both 27B and 5.9 GB. Vendor-reported scores.",
+      "unit": "points",
+      "series": [
+        { "label": "AppWorld", "value": 39.3, "highlight": true },
+        { "label": "DeepSWE", "value": 27 },
+        { "label": "SWE-bench Verified", "value": 14.8, "highlight": true },
+        { "label": "Terminal-Bench 2.1", "value": 7.3 },
+        { "label": "tau3-Bench", "value": 4.8 },
+        { "label": "BigCodeBench", "value": 3.1 },
+        { "label": "LiveCodeBench v6", "value": -0.8 }
+      ],
+      "note": "SWE-bench Verified went from 60.8 to 75.6, AppWorld from 51.2 to 90.5. Open weights under Apache 2.0; runs in llama.cpp and MLX, about 204 tokens a second on an RTX 4090.",
+      "why": "A model that fits on one consumer GPU is starting to post agent-loop scores, which matters for offline, private or cost-capped agent work. No independent run yet.",
+      "forYou": "Worth a local trial as a cheap subagent for mechanical edits on the 4090-class machine; check it against your own tasks, not the vendor table.",
+      "terms": [
+        { "term": "27-billion-parameter", "def": "The model's size in learned numbers; more usually means more capable and more memory." },
+        { "term": "agent tasks", "def": "Benchmarks where the model works in a loop with tools, such as fixing a real bug in a repository." }
+      ],
+      "deep": [
+        "Bonsai 2.5 is based on Qwen3.8 27B and stores weights as ternary values (minus one, zero or one) to fit in 5.9 GB. PrismML reports 291 tokens a second on an H100 and 204 on an RTX 4090 with multi-token prediction, and about 3,000 tokens a second of prompt processing."
+      ],
+      "sources": [
+        { "label": "PrismML: Bonsai 2.5 27B", "url": "https://prismml.com/news/bonsai-2-5-27b" }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "Why does 64-bit WebAssembly matter, and why is it slower?",
+    "answer": "WebAssembly code addresses its memory with numbers. With 32-bit numbers it can reach at most 4 GB; 64-bit numbers lift that limit, but browsers lose a free safety trick and must check every memory access instead.",
+    "analogy": "A 32-bit program is a tenant in a building with walls exactly 4 GB apart: any wrong turn hits a wall. A 64-bit program has no walls, so a guard has to check its pass at every door.",
+    "body": [
+      "WebAssembly gives a program one big block of memory and lets it read and write any address in it. Browsers must stop it from reaching outside. For 32-bit programs they reserve the full 4 GB range of possible addresses up front, with guard pages around it, so any stray address lands on a trap for free. With 64-bit addresses that reservation is impossible, so every load and store needs an explicit bounds check.",
+      "Mozilla's engineers measured the cost at about 10% to over 100% slower depending on the workload, and advise using 64-bit memory only when a program really needs more than 4 GB. Large engines can: Unreal's 5.9 web builds are now 64-bit only to give games more than 2 GB.",
+      "Support is the other catch. Chrome and Edge shipped it in version 133, Firefox in 134; Safari has not, so neither Macs running Safari nor iPhones can run these builds yet."
+    ],
+    "diagram": {
+      "layout": "layers",
+      "nodes": [
+        { "label": "Game memory", "note": "One block the program reads and writes by address" },
+        { "label": "32-bit: 4 GB limit", "note": "Browser reserves the whole range; guard pages catch strays for free" },
+        { "label": "64-bit: no limit", "note": "No range to reserve, so every load and store is checked", "key": true },
+        { "label": "Browser cap: 16 GB", "note": "The WebAssembly JavaScript API's limit per memory" }
+      ],
+      "caption": "Why bigger memory costs speed: the 32-bit trick of reserving every possible address does not scale to 64 bits."
+    },
+    "terms": [
+      { "term": "guard pages", "def": "Memory deliberately left unmapped, so touching it stops the program instead of corrupting data." },
+      { "term": "bounds check", "def": "A test before each memory access that the address is inside the program's own memory." }
+    ],
+    "seenIn": ["ue59-web"],
+    "sources": [
+      { "label": "SpiderMonkey: Is Memory64 actually worth using?", "url": "https://spidermonkey.dev/blog/2025/01/15/is-memory64-actually-worth-using.html" },
+      { "label": "caniuse: WebAssembly Memory64", "url": "https://caniuse.com/wf-wasm-memory64" },
+      { "label": "Epic: 5.9 release notes", "url": "https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-9-release-notes?lang=en-US" }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Trace your review comments on an agent's pull request back to their cause",
+    "gist": "Turn the comments you leave on agent-written code into lint rules and doc fixes, so the agent stops repeating the same mistakes.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A merged or open pull request written mostly by a coding agent, with your review comments on it.",
+    "steps": [
+      { "title": "Collect the comments", "text": "List every review comment you left on the agent's pull request, one line each." },
+      { "title": "Ask what taught it", "text": "For each one, search the repository for the pattern you objected to. In Pocock's retro, all 12 comments came from docs and existing code on main that taught the opposite." },
+      { "title": "Fix the source", "text": "Add a lint rule that fails only on new instances, correct the doc, or edit the skill or agent instructions that led there." },
+      { "title": "Check next time", "text": "On the agent's next similar pull request, count how many of the same comments you need to leave." }
+    ],
+    "check": "The new lint rule fails on a deliberately reintroduced example, and the agent's next pull request draws fewer repeats of the same comments.",
+    "terms": [
+      { "term": "lint rule", "def": "An automatic check that flags a code pattern before review, such as a banned function." }
+    ],
+    "from": "pocock",
+    "forYou": "Start with the last agent-built pull request on a Fab plugin, where old Blueprint-era patterns on main are likely teaching the agent.",
+    "sources": [
+      { "label": "AI Hero: the write-up", "url": "https://www.aihero.dev/watch-me-ship-a-21-000-line-feature-with-mattpocock-skills~ez95n" },
+      { "label": "mattpocock/skills", "url": "https://github.com/mattpocock/skills" }
+    ]
+  },
+  "ticker": [
+    { "text": "Godot 4.8 beta 5 is out, the last beta before the release candidate: 54 fixes from 32 contributors, regressions only.", "lane": "gamedev", "url": "https://godotengine.org/article/dev-snapshot-godot-4-8-beta-5", "source": "Godot" },
+    { "text": "Codex CLI 0.172.0 starts optional stdio MCP servers on first use and lets config.toml set an approval reviewer per tool.", "lane": "ai", "url": "https://github.com/openai/codex/releases/tag/rust-v0.172.0", "source": "Codex releases" },
+    { "text": "GitHub issues get seven statuses and board views in public preview, readable and settable by agents through the API and MCP server.", "lane": "ai", "url": "https://github.blog/changelog/2026-11-23-issue-statuses-and-repository-boards-are-in-public-preview", "source": "GitHub Changelog" },
+    { "text": "From December 1, commenting or reviewing on GitHub no longer resubscribes you to a thread you left; re-check mail rules that filter on reason.", "lane": "ai", "url": "https://github.blog/changelog/2026-11-24-more-predictable-notifications-on-github-com", "source": "GitHub Changelog" },
+    { "text": "GitHub's upload-code-coverage step now fails on anything that is not Cobertura XML, instead of silently showing no coverage.", "lane": "ai", "url": "https://github.blog/changelog/2026-11-23-code-coverage-uploads-now-flag-invalid-report-formats", "source": "GitHub Changelog" },
+    { "text": "Vercel moves Standard builds for existing Pro teams to usage billing: $0.014 per build minute.", "lane": "ai", "url": "https://vercel.com/changelog/standard-builds-for-existing-pro-teams-have-moved-to-usage-based-billing", "source": "Vercel" },
+    { "text": "Agents can now manage Vercel's AI Gateway through Vercel MCP: model aliases, routing rules and spend budgets.", "lane": "ai", "url": "https://vercel.com/changelog/agents-can-now-manage-ai-gateway-through-vercel-mcp", "source": "Vercel" },
+    { "text": "Simon Willison names three jumps in coding agents in a year, the latest models that playtest and rebalance a game for hours.", "lane": "ai", "url": "https://simonwillison.net/2026/Nov/24/llm-inflection-points", "source": "Simon Willison" },
+    { "text": "Modelling Clojure's integer code in Lean found 17 unreported bugs, including a reduce that never returns on vectors of 65,505 or more elements.", "lane": "ai", "url": "https://s.conao3.com/blog/2026/e4f733", "source": "conao3" },
+    { "text": "Antithesis now simulates torn writes, failed fsyncs and power loss; one combination left etcd's storage unable to open.", "lane": "ai", "url": "https://antithesis.com/blog/2026/nightmare-mode", "source": "Antithesis" },
+    { "text": "Armin Ronacher argues Rust's Mutex should stop poisoning after a panic, with outages it caused in real services.", "lane": "ai", "url": "https://lucumr.pocoo.org/2026/11/25/poisoning", "source": "Armin Ronacher" },
+    { "text": "OpenAI and Cisco open-source Shirudo, signed eBPF rules that shield a live Linux service before its patch lands.", "lane": "ai", "url": "https://openai.com/index/introducing-shirudo", "source": "OpenAI" },
+    { "text": "BOT VFX mixed AI and CG for 300 film shots in 17 weeks, and lists the limits: drift between frames, 4K flaws, low bit depth.", "lane": "gamedev", "url": "https://www.cgchannel.com/2026/11/discover-bot-vfxs-hybrid-ai-vfx-pipeline-for-young-washington", "source": "CG Channel" },
+    { "text": "Inky, an early tool for painting ink, chalk and watercolor strokes directly on 3D objects inside Unreal 5, shows a demo.", "lane": "gamedev", "url": "https://80.lv/articles/this-tool-brings-2d-painting-workflows-into-unreal-engine-5", "source": "80 Level" }
+  ],
+  "sparks": [
+    {
+      "id": "kradlebench",
+      "lane": "both",
+      "kind": "experiment",
+      "title": "KradleBench: AI models against a Minecraft pro, in worlds that do not wait",
+      "where": "Hacker News, kradle.ai",
+      "signal": "Show HN on November 23; on Kradle's own leaderboard GPT-6.2 Astra scores 78.3 to human SethBling's 77.2.",
+      "hook": "Models read the world as structured data and write code to move, while the world keeps running as they think; they are scored on teamwork, trade, fights, logic and building.",
+      "borrow": "Observe as data, act by writing code, and show cost and time per run beside the score: a sound shape for a game playtesting bot. Scores are the makers' own.",
+      "url": "https://www.kradle.ai",
+      "forYou": "The observe-then-write-code loop matches Coding4Games in today's lab; both point at bots as code for the action RPG's playtests.",
+      "image": {
+        "src": "img/2026-11-25/kradle.webp",
+        "alt": "A blocky Godzilla built in Minecraft by GPT-6.2 Astra in the benchmark's creativity task, standing on a floating island of grass.",
+        "credit": "Kradle",
+        "creditUrl": "https://www.kradle.ai",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "godot-swarm",
+      "lane": "gamedev",
+      "kind": "technique",
+      "title": "800 enemies at 60 fps in Godot, in four rules",
+      "where": "Mastodon",
+      "signal": "A short post on mastodon.gamedev.place on November 22 (small: 6 favourites); the 800 figure is the developer's own.",
+      "hook": "No physics queries for most searches, a spatial grid rebuilt once per frame, auras as a shader with state passed per instance, and path tables instead of sampling a curve per enemy.",
+      "borrow": "All four carry over to any engine: one grid query instead of hundreds of overlaps, GPU-side state for effects, and precomputed paths. Avoid get_nodes_in_group() in hot code; it sorts.",
+      "url": "https://mastodon.gamedev.place/@vectorfall/117660607923586993",
+      "forYou": "The grid and material-parameter rules map straight onto swarm combat in Unreal plugins.",
+      "image": {
+        "src": "img/2026-11-25/godot-swarm.webp",
+        "alt": "A tower defense game on a circuit board map: a long loop of enemies crawls along the track while towers fire beams into it; a shop panel on the right.",
+        "credit": "@vectorfall on Mastodon",
+        "creditUrl": "https://mastodon.gamedev.place/@vectorfall/117660607923586993",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "super-rope",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Super Rope adds chains and a working crane, every demo playable in the browser",
+      "where": "Bluesky, itch.io",
+      "signal": "133 likes and 15 reposts on Bluesky for the November 22 update; the price rose from $9.90 to $14.90 with it.",
+      "hook": "A one-person paid Godot addon: ropes that swing, drape, wrap and whip, now chains and a crane that reels in and grabs objects.",
+      "borrow": "Make every feature a demo buyers can play in the browser before paying, and raise the price as the feature list grows.",
+      "url": "https://alfredbaudisch.itch.io/super-rope-godot",
+      "forYou": "Browser-playable demos per feature would suit Fab plugin pages better than a video reel.",
+      "image": {
+        "src": "img/2026-11-25/super-rope.webp",
+        "alt": "Three Godot demo scenes: a rope wrapped around posts, a rope tied between a capsule and a box, and a yellow crane lifting a box on a cable.",
+        "credit": "Alfred Baudisch",
+        "creditUrl": "https://bsky.app/profile/alfredbaudisch.com/post/3n2wo5xipkk2v",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "dead-keys",
+      "lane": "both",
+      "kind": "game",
+      "title": "Dead Keys: a falling-words typing game that drills the keys you miss",
+      "where": "DEV",
+      "signal": "76 reactions and 43 comments on DEV since November 21.",
+      "hook": "Words fall and you type them before they land; a keyboard heat map colours each key by miss rate, and one button builds a drill from your weakest keys.",
+      "borrow": "Use the player's own mistakes as the progression system. The author reports 19 specs, about 950 tests and about 35 hours with an agent.",
+      "url": "https://dead-keys.vercel.app",
+      "image": {
+        "src": "img/2026-11-25/dead-keys.webp",
+        "alt": "Dead Keys' title screen in green terminal style: words such as lantern, velvet and orbit hang in boxes around a panel reading press any key to start.",
+        "credit": "Dead Keys, via DEV",
+        "creditUrl": "https://dev.to/earlgreyhot1701d/dead-keys-i-brought-back-the-typing-games-kiro-did-the-heavy-lifting-5gc2",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "gh-terminal",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "A GitHub contribution graph rebuilt as a trading terminal, in one SVG",
+      "where": "DEV",
+      "signal": "78 reactions and 29 comments on DEV since November 22.",
+      "hook": "Candlesticks, volume and a drawdown figure computed from your daily commits, shipped as one animated SVG on a profile page.",
+      "borrow": "The trick is the medium: pure SVG with no script and no external files survives GitHub's image proxy, and SMIL does the animation. The same works for a live stats card on a README or store page.",
+      "url": "https://dev.to/necoz/i-turned-my-github-contribution-graph-into-a-bloomberg-style-trading-terminal-31eh",
+      "image": {
+        "src": "img/2026-11-25/gh-terminal.webp",
+        "alt": "A dark trading-terminal dashboard for a GitHub user: a candlestick chart of daily contributions, a volume bar chart, an analytics panel and an activity heat map.",
+        "credit": "necoz, via DEV",
+        "creditUrl": "https://dev.to/necoz/i-turned-my-github-contribution-graph-into-a-bloomberg-style-trading-terminal-31eh",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "pengpt",
+      "lane": "ai",
+      "kind": "experiment",
+      "title": "PenGPT: a 6-million-parameter model that writes in your handwriting",
+      "where": "Hacker News",
+      "signal": "142 points on Hacker News this week for a post from November 12.",
+      "hook": "Two tiny transformers, one for handwriting and one for sketches, trained in about 8 and 35 minutes; they continue a writer's hand from a few words.",
+      "borrow": "Small enough to imagine in a browser game: hand-lettered notes or doodles in a player's own style. The author's summary of what mattered: 80% data, 15% speed, 5% architecture.",
+      "url": "https://greydanus.github.io/2026/11/12/pengpt/",
+      "image": {
+        "src": "img/2026-11-25/pengpt.webp",
+        "alt": "PenGPT samples: 'Written by PenGPT' in 21 different handwriting styles on the left, and line drawings on the right, from a cat and a house to a snail on wheels.",
+        "credit": "Sam Greydanus",
+        "creditUrl": "https://greydanus.github.io/2026/11/12/pengpt/",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "coding4games",
+      "lane": "both",
+      "kind": "preprint",
+      "title": "Coding4Games: Can Modern Coding Agents Play Modern Video Games?",
+      "headline": "Agents that write a game-playing bot beat agents that play live",
+      "authors": "Shifang Zhao, Haoyu Wang, Yuyang Yin et al.",
+      "where": "arXiv preprint (cs.AI)",
+      "date": "2026-11-24",
+      "problem": "Game benchmarks usually ask a model to act every frame. That is expensive, and in real-time games the world moves on while the model thinks.",
+      "idea": "Let a coding agent (Claude Code, Codex, Gemini CLI) build a standalone program in a sandbox against a gym-like MCP game interface, within token and game-tick budgets. Then freeze the program and score it with no model calls on 15 commercial games, from a racing game to a tower defense.",
+      "result": "The best program per game beats the strongest live screen-reading agent on 13 of 15 games and ties one. Average normalized score: GPT-6 Astra in Codex 52.6, Claude Opus 5.5 in Claude Code 44.0, screen-reading agents about 26.6, humans 97.2. Humans still win on 10 games. Authors' numbers.",
+      "useIt": "Treat playtest bots as code an agent writes and refines against your game's input API, then runs for free. A small step-and-observe server for your game is enough to start.",
+      "maturity": "prototype",
+      "forYou": "Pairs with yesterday's AutoPILOT: expose the action RPG through a step/observe MCP server and let Claude Code write the combat bot.",
+      "links": [
+        { "label": "arXiv: 2611.31974", "url": "https://arxiv.org/abs/2611.31974" },
+        { "label": "Project page", "url": "https://coding4game.github.io/" }
+      ],
+      "image": {
+        "src": "img/2026-11-25/coding4games-fw.webp",
+        "alt": "Paper figure: a prompt with API functions such as game_observe and game_step, a sandbox where Codex, Claude Code or Gemini CLI write a program, a game server, and a test that scores the frozen program.",
+        "credit": "Zhao et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2611.31974",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "below-stopwatch",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "Below the Stopwatch: Checking the Performance Claims of Coding Agents in the Kernel",
+      "headline": "Only 41% of agent speed-up pull requests are faster for the stated reason",
+      "authors": "Yuvraj Sehgal, Sneh Patel, Naser Ezzati-Jivan et al. (Brock University, University of Ottawa)",
+      "where": "arXiv preprint (cs.SE)",
+      "date": "2026-11-23",
+      "problem": "Agents open many pull requests claiming a speed-up, such as caching a result or reading a file once. A stopwatch can show faster, not faster for the claimed reason.",
+      "idea": "Extract the claimed mechanism, map it to the kernel signal that must move if it is true (fewer read calls, less lock waiting), have a blind agent that never sees the claim write a workload, then measure base, head and an A/A control with hardware counters and traces.",
+      "result": "Of 82 agent performance pull requests analysed, 32 were faster, 28 unchanged and 22 slower. The claimed mechanism held in 34 (41.5%). 57% offered only reasoning or no evidence; 21 made some resource worse. The A/A control gave no false signals in 1,796 tests.",
+      "useIt": "When an agent claims a performance win, ask for a before-and-after workload plus one counter tied to the claimed reason, written by a reviewer that has not read the claim.",
+      "maturity": "code",
+      "links": [
+        { "label": "arXiv: 2611.31460", "url": "https://arxiv.org/abs/2611.31460" },
+        { "label": "Code and data (Zenodo)", "url": "https://doi.org/10.5281/zenodo.24413315" }
+      ],
+      "image": {
+        "src": "img/2026-11-25/below.webp",
+        "alt": "Pipeline figure: find performance pull requests, extract the claim, map it to a kernel signal, build a workload with an agent blind to the claim, measure base and head, then decide faster, mechanism held, hidden cost, output changed.",
+        "credit": "Sehgal et al. (arXiv)",
+        "creditUrl": "https://arxiv.org/abs/2611.31460",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "q-magic",
+      "lane": "gamedev",
+      "kind": "paper",
+      "title": "Q-MAGIC: Quad-only Mesh Autoregressive Generation via Singularity-Aware Circular Relative Offset Tokenization",
+      "headline": "A transformer that writes clean all-quad meshes from a point cloud",
+      "authors": "Yuming Zhao, Zezeng Li, Weimin Wang et al. (Dalian University of Technology, Ecole Centrale de Lyon)",
+      "where": "Computer Graphics Forum (Pacific Graphics 2026)",
+      "date": "2026-11-14",
+      "problem": "Mesh generators that write a model face by face work for triangles, but artists and riggers want all-quad topology, which is harder to decode into valid connectivity.",
+      "idea": "Write the mesh starting from its irregular vertices, where topology matters most, and encode positions as small offsets inside coarse blocks so sequences stay short. A small 8-layer transformer, conditioned on a point cloud.",
+      "result": "Better element quality than the best baseline (Scaled Jacobian 0.983 vs 0.976) and closer shape (Chamfer 0.068 vs 0.072), with sequences of 12,655 tokens against 43,106 for QuadGPT. Not best on manifoldness or singularity rate. Details from the arXiv version.",
+      "useIt": "Watch quad-native generators as a source of base meshes that subdivide and rig cleanly. No code or weights are linked yet, so track it rather than use it.",
+      "maturity": "idea",
+      "links": [
+        { "label": "Computer Graphics Forum", "url": "https://doi.org/10.1111/cgf.70615" },
+        { "label": "arXiv: 2610.19777", "url": "https://arxiv.org/abs/2610.19777" }
+      ],
+      "image": {
+        "src": "img/2026-11-25/qmagic.webp",
+        "alt": "Pipeline figure: a quad mesh tokenized from its singular vertices with circular relative offsets, fed to an autoregressive transformer conditioned on a point cloud, producing generated quad meshes.",
+        "credit": "Zhao et al. (CGF, arXiv version)",
+        "creditUrl": "https://arxiv.org/abs/2610.19777",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "Reddit feeds refused the sweep and X, TikTok and Threads gave the sparks desk nothing it could verify this week, so Sparks leans on Hacker News, DEV, Bluesky and Mastodon. OpenAI's Pando post dates from November 2; InfoQ's write-up brought it back this week."
+}
