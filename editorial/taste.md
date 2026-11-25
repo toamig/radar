@@ -108,6 +108,8 @@ look for one AI-plays-or-makes-games experiment in Sparks most days.
 Games where playing means programming also rate high: an auto-battler where you write your party's
 rules, automation and factory games, logic and code puzzles. The hook is a system the player
 configures and then watches run; say what the rule language looks like and what designers could borrow.
+A familiar mechanic rebuilt as the core of another genre also rates high (a slot machine that summons an
+auto-battler army): say which mechanic was borrowed, what it does to the loop, and why it reads at a glance.
 
 ## What earns a place
 

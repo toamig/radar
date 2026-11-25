@@ -8,6 +8,9 @@ entries under "Folded in".
 
 ## New
 
+
+## Folded in
+
 - #11 More like: Slotbound: an auto-battler where a slot machine summons your army (2026-11-24)
   direction: more
   issue: 2026-11-24
@@ -16,9 +19,7 @@ entries under "Folded in".
   lane: gamedev
   
   Optional note (what exactly, and why):
-
-
-## Folded in
+  Lesson (2026-11-25): a familiar mechanic remixed as another genre's core loop (slot machine as army summon) is a liked spark kind. Added to taste.md.
 
 - #10 More like: What is a video world model, and why can you walk through its walls? (2026-11-23)
   direction: more
