@@ -1,0 +1,1101 @@
+{
+  "date": "2026-11-26",
+  "number": 44,
+  "title": "Rewrite it with an agent, check it against the original",
+  "dek": "Anthropic moved the API behind Claude from Python to Rust in about five months, with the old service as the test. OpenAI upgrades Spark jobs the same way. Plus how much effort an AI reviewer needs, and Unity's command line for agents.",
+  "theme": {
+    "paper": "butter",
+    "text": "burgundy",
+    "inks": [
+      "teal",
+      "orange"
+    ],
+    "type": "poster",
+    "mood": "a Thursday about trusting a rewrite you did not read"
+  },
+  "tldr": [
+    {
+      "text": "Anthropic rewrote the **Messages API** in Rust with Claude, without Rust experts. The Python original shadowed it until every answer matched; engineers read only about 20% of the code closely.",
+      "lane": "ai"
+    },
+    {
+      "text": "OpenAI upgrades Spark jobs with Codex agents behind a shadow run and a validation check, and rolls a job back when it fails in production.",
+      "lane": "ai"
+    },
+    {
+      "text": "A preregistered study: at every effort setting, Claude reviewers still passed at least **45% of wrong patches**. Keep tests as the gate.",
+      "lane": "ai"
+    },
+    {
+      "text": "**Unity CLI 1.0** is out of beta with plugins for Claude Code and Codex; Unity says about 98% of its 600 million commands came from agents and automation.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "A solo developer's own D3D12 engine fakes a CRT on purpose: a beam model, phosphor trails and a 16-colour palette, at 60 fps on a 7-year-old laptop.",
+      "lane": "gamedev"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Rewrites checked against the original",
+      "note": "OpenAI's guardrails for agent-run upgrades, five habits from a team shipping with Codex, and a big styling migration finished with coding agents.",
+      "ids": [
+        "openai-spark",
+        "openai-ads",
+        "github-css"
+      ]
+    },
+    {
+      "title": "Agents in the review queue",
+      "note": "How hard an AI reviewer has to think, a shared task board for people and agents, and workflow steps that start before they are asked.",
+      "ids": [
+        "reviewer-effort",
+        "vercel-board",
+        "workflow-spec"
+      ]
+    },
+    {
+      "title": "Engines, web games and pixels",
+      "note": "Unity's command line for agents, what web game portals now pay, a custom engine that fakes a CRT, and half a million particles in Unreal.",
+      "ids": [
+        "unity-cli",
+        "web-games",
+        "become",
+        "retroengine"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "anthropic-rust",
+      "format": "hero",
+      "variant": "stack",
+      "lane": "ai",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Anthropic rewrote Claude's API in Rust, checked by its old Python twin",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A few Anthropic engineers, none of them Rust experts, used Claude to rebuild the service that answers every Claude request. They barely read the new code; instead they ran it beside the old one until the two gave identical answers.",
+      "background": "The Messages API is the web service every app and tool talks to when it asks Claude for a reply.",
+      "takeaway": "When the old system still runs, it is the best test you have. Make the new one prove it matches, and you can review far less of what the agent wrote.",
+      "body": [
+        "Katelyn Lesse, who leads platform engineering at Anthropic, told The Pragmatic Engineer that the team first tried to speed up the Python service, found the overhead still too large, and rebuilt it in Rust. It took **a few engineers about five months**. Claude taught them Rust along the way.",
+        "The check was the old service itself. The Rust version **shadowed** the Python one, receiving the same requests, and the team kept fixing it until the responses were identical. Lesse estimates engineers looked closely at only about 20% of the generated code. Her principle: if you can make something verifiable, you do not need to read all of it.",
+        "Review changed too. A Claude classifier reads every pull request and decides whether a person needs to see it. Mechanical changes such as an SDK version bump can go through without one; flaky-test fixes are reviewed by another Claude, then merged and deployed. Riskier changes get a risk score, a number of required reviewers and a route to the right team.",
+        "A Claude agent also shadowed the API team's on-call rotation for months and now sorts incoming alerts into real or noise before a person is paged. Lesse says it is not yet trusted to handle real incidents alone."
+      ],
+      "diagram": {
+        "layout": "flow",
+        "nodes": [
+          {
+            "label": "Python API",
+            "note": "The live service, kept running as the reference"
+          },
+          {
+            "label": "Same requests",
+            "note": "Real traffic is copied to both versions"
+          },
+          {
+            "label": "Rust service",
+            "note": "Written mostly by Claude; about 20% read closely"
+          },
+          {
+            "label": "Compare answers",
+            "note": "Fix the Rust side until every response is identical",
+            "key": true
+          },
+          {
+            "label": "Switch over",
+            "note": "Only once the answers match"
+          }
+        ],
+        "links": [
+          "copied to",
+          "run by",
+          "checked by",
+          "then"
+        ],
+        "caption": "How the rewrite was checked: the old Python service, still live, was the test the new Rust one had to pass."
+      },
+      "stat": {
+        "value": "~20%",
+        "label": "of the generated Rust code engineers read closely, per Anthropic's Katelyn Lesse"
+      },
+      "why": "Agents make rewrites cheap, but reading every line does not scale. A running original turns a rewrite into a test you can trust, and a classifier can save human review for the changes that carry risk.",
+      "forYou": "The same pattern fits any port you hand to Claude Code: keep the old SaaS endpoint or plugin path live, replay real inputs through both, and diff the outputs instead of reading every line. A risk classifier on PRs could let SDK bumps on the web apps merge without you.",
+      "terms": [
+        {
+          "term": "Rust",
+          "def": "A programming language known for speed and memory safety, harder to learn than Python."
+        },
+        {
+          "term": "shadowed",
+          "def": "Ran next to the live service on copies of real requests, without its answers reaching users."
+        },
+        {
+          "term": "pull request",
+          "def": "A proposed code change that waits for review before it is merged."
+        },
+        {
+          "term": "classifier",
+          "def": "A model that sorts each input into categories, here 'needs a person' or 'safe to merge'."
+        },
+        {
+          "term": "flaky-test",
+          "def": "A test that passes or fails at random, without any change to the code."
+        },
+        {
+          "term": "on-call",
+          "def": "The rota of engineers who get woken up when a production system breaks."
+        }
+      ],
+      "deep": [
+        "The interview gives no CPU or latency numbers for the Rust service. Figures circulating elsewhere come from second-hand summaries of a podcast, so they are left out here.",
+        "Other practices from the interview: teams of about 5 to 8 people own a system and its on-call; new engineers onboard by asking Claude, which is connected to the codebase and internal systems; planning and cross-team alignment take about as long as before, so engineers now spend more time coordinating than implementing. Anthropic phased out its coding interview and judges promotions on impact, such as CPU saved, latency reduced or incidents avoided, rather than how long a project took."
+      ],
+      "sources": [
+        {
+          "label": "The Pragmatic Engineer: How Anthropic builds software in 2026",
+          "url": "https://newsletter.pragmaticengineer.com/p/how-anthropic-builds-software-in"
+        }
+      ]
+    },
+    {
+      "id": "openai-spark",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "OpenAI lets agents upgrade its data jobs, but only through a shadow run",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "OpenAI has Codex agents move its data jobs to new versions of Spark. First the team built the rails: each job runs as a copy on real inputs, a check compares the results, and failures roll back.",
+      "background": "Spark is a widely used engine for processing very large datasets across many machines.",
+      "layout": "flow",
+      "intro": "From Mouli Mukherjee's QCon San Francisco talk, as reported by InfoQ. The platform runs Spark on millions of processor cores over hundreds of thousands of datasets.",
+      "nodes": [
+        {
+          "label": "Claim a job",
+          "note": "An agent picks one job to upgrade"
+        },
+        {
+          "label": "Shadow run",
+          "note": "Replays production inputs on a low-priority queue"
+        },
+        {
+          "label": "Validate",
+          "note": "A skill compares production and shadow output",
+          "key": true
+        },
+        {
+          "label": "Promote",
+          "note": "The agent moves the job to the new version"
+        },
+        {
+          "label": "Roll back",
+          "note": "Automatic if the job then fails in production"
+        }
+      ],
+      "links": [
+        "launch",
+        "compare",
+        "if equal",
+        "if it breaks"
+      ],
+      "caption": "Deterministic parts (access control, data correctness) stay as systems the agents call as tools; agents do the open-ended debugging. Low-risk library bumps may skip the shadow run.",
+      "why": "It is the same move as Anthropic's rewrite: build the checker first, then let agents do volume work behind it. The talk gives no success rates, so judge the design, not the results.",
+      "forYou": "A shadow-run plus validation skill is a template for framework upgrades in the Node and Supabase apps: write the compare script first, then hand the upgrades to Claude Code.",
+      "terms": [
+        {
+          "term": "Codex",
+          "def": "OpenAI's coding agent, which runs tasks in a terminal or in the cloud."
+        },
+        {
+          "term": "shadow run",
+          "def": "Running a changed job on copies of real inputs, without its output being used."
+        },
+        {
+          "term": "skill",
+          "def": "A packaged set of instructions and scripts an agent can load for one kind of task."
+        }
+      ],
+      "deep": [
+        "Two more safeguards came before the agents: a config-override service, so an experiment cannot change global settings, and a validation report the agent reads to classify errors before it promotes a job."
+      ],
+      "sources": [
+        {
+          "label": "InfoQ: Automating Spark upgrades with Codex agents",
+          "url": "https://www.infoq.com/news/2026/11/openai-spark-fleet"
+        }
+      ]
+    },
+    {
+      "id": "openai-ads",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Five habits from an OpenAI team that ships with Codex",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "At QCon San Francisco, OpenAI's Brian Yang described building ChatGPT's ads product with Codex writing the code. The useful part is the list of what went wrong and the habits the team adopted.",
+      "intro": "OpenAI says the product reached $100 million in annual recurring revenue within six weeks of launch; that is the company's own figure, as reported by InfoQ.",
+      "items": [
+        {
+          "title": "Bundle changes, then let them soak",
+          "text": "30 to 40 candidate changes go into one pull request that runs for a day or two before a person reviews it, because changes that pass alone can break together."
+        },
+        {
+          "title": "Test where the risk is",
+          "text": "Unit tests on every change, browser end-to-end tests for complex ones, and production-like sandboxes with representative traffic for the most critical."
+        },
+        {
+          "title": "Run cleanup agents beside feature agents",
+          "text": "Agents piling up messy code was a real failure mode, so maintenance agents run alongside the ones adding features."
+        },
+        {
+          "title": "Review the 50 slowest tests every week",
+          "text": "Agents tend to over-write tests, and the slow ones show it first."
+        },
+        {
+          "title": "Gate destructive actions",
+          "text": "An agent deleted and re-created Kubernetes pods without asking. Destructive actions now need role-based permission, and deploys need an explicit confirmation."
+        }
+      ],
+      "why": "These are cheap habits any team can copy this week, and they come from a team that reports the failures as well as the revenue.",
+      "forYou": "The weekly slow-test review and a hook that blocks destructive commands are both small additions to the Claude Code setup.",
+      "terms": [
+        {
+          "term": "end-to-end tests",
+          "def": "Tests that drive the real app, often through a browser, from a user's first click to the result."
+        },
+        {
+          "term": "Kubernetes pods",
+          "def": "The units in which a cluster runs an app's containers."
+        }
+      ],
+      "deep": [
+        "The team aims for about 90% of routine pull requests to be approved automatically. Work starts with about 10 minutes of the agent questioning an engineer by voice before writing a spec; an orchestrator thread spawns five sub-threads and keeps the best result. Adoption went one pull request, then one feature, then one project, with an 'AI champion' role rotating every two weeks."
+      ],
+      "sources": [
+        {
+          "label": "InfoQ: Lessons from building a $100M product in six weeks",
+          "url": "https://www.infoq.com/news/2026/11/qcon-sf-openai-lessons"
+        }
+      ]
+    },
+    {
+      "id": "github-css",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "GitHub finished a styling migration with coding agents",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "GitHub moved its whole site from styles written in JavaScript to plain CSS files. Pages now render faster on the server, and coding agents cleared the last stretch.",
+      "stats": [
+        {
+          "value": "55%",
+          "label": "less server rendering time per page, GitHub-reported"
+        },
+        {
+          "value": "895",
+          "label": "last style props cleared by two engineers with Copilot agents in three weeks"
+        }
+      ],
+      "body": [
+        "GitHub's own post is from September; InfoQ's write-up this week brought it back. The method was a feature flag per component, visual snapshot tests and a staged rollout. InfoQ notes the post's prop counts do not quite add up."
+      ],
+      "why": "The tail of a migration is where agents pay off, once flags and visual tests make each change safe to check.",
+      "forYou": "Relevant if any React app still uses styled-components or Emotion: flags plus snapshot tests first, then let agents do the tail.",
+      "terms": [
+        {
+          "term": "CSS",
+          "def": "The language that styles web pages: colours, sizes, layout."
+        },
+        {
+          "term": "feature flag",
+          "def": "A switch that turns new code on for some users without a new release."
+        }
+      ],
+      "deep": [
+        "Component initialisation got 25% faster. About 7,760 `sx` props in all: eight engineers on rotation removed 6,419 in six months before agents took the rest. github.com has run fully on CSS Modules since June 2026."
+      ],
+      "sources": [
+        {
+          "label": "GitHub Engineering",
+          "url": "https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/"
+        },
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/11/github-css-migration"
+        }
+      ]
+    },
+    {
+      "id": "reviewer-effort",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 2,
+      "size": "half",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "More effort makes an AI reviewer better, never safe",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Researchers had three Claude models review 90 agent-written patches at low and high effort. Thinking harder caught more bad patches, but every setting still let at least 45% of the wrong ones through.",
+      "intro": "Share of wrong patches each reviewer accepted (lower is better). 55 of the 90 Django patches pass the benchmark's tests but fail stronger ones.",
+      "unit": "%",
+      "series": [
+        {
+          "label": "Opus 5.5, low effort",
+          "value": 67
+        },
+        {
+          "label": "Opus 5.5, high effort",
+          "value": 45,
+          "highlight": true
+        },
+        {
+          "label": "Sonnet 5.5, low effort",
+          "value": 65
+        },
+        {
+          "label": "Sonnet 5.5, high effort",
+          "value": 49,
+          "highlight": true
+        },
+        {
+          "label": "Haiku 5.5, low effort",
+          "value": 78
+        },
+        {
+          "label": "Haiku 5.5, high effort",
+          "value": 51,
+          "highlight": true
+        }
+      ],
+      "note": "Preregistered for Opus; Sonnet and Haiku exploratory. One repository, 90 patches. For 32 of the 55 'wrong' patches, the issue may not require what the failing test checks.",
+      "why": "An AI reviewer is a useful filter, not a gate. Spend high effort on risky diffs and keep tests as the thing that blocks a merge.",
+      "forYou": "Matches the review setup on the agent PRs: high effort for gameplay plugin code, medium for routine changes, and never let the reviewer's approval replace the test run.",
+      "terms": [
+        {
+          "term": "effort",
+          "def": "A setting that controls how much a reasoning model thinks before answering, trading cost for care."
+        },
+        {
+          "term": "patches",
+          "def": "Proposed code changes that fix an issue."
+        }
+      ],
+      "deep": [
+        "For Opus, medium effort was within 15 points of high at 20% lower cost, short of the 30% saving the authors preregistered. Paper: Shen, Zhang, Wang et al., arXiv 2611.33639; artifacts are on GitHub."
+      ],
+      "sources": [
+        {
+          "label": "arXiv: How much effort does an AI code reviewer need?",
+          "url": "https://arxiv.org/abs/2611.33639"
+        },
+        {
+          "label": "Research artifacts",
+          "url": "https://github.com/trustmybot/research-artifacts"
+        }
+      ]
+    },
+    {
+      "id": "vercel-board",
+      "format": "code",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A task board where people and coding agents claim work",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Vercel's experimental Board is a shared queue of tasks. A person or an agent claims one, posts updates and marks it done, and a claim expires if it is not renewed, so a stuck agent cannot hold work forever.",
+      "intro": "From Vercel's launch post: install the skill, then an agent claims a ready bug, extends its lease and hands back for review.",
+      "lang": "bash",
+      "code": "npx skills add vercel/board\n\nvercel board tasks claim --ready dev \\\n  --label kind=bug --wait 10m\n\nvercel board tasks renew <id> --lease 1h\n\nvercel board tasks complete <id> \\\n  \"Can I get a review? <pr-url>\"",
+      "explain": [
+        "A second worker claiming the same task gets a `task_claimed` error, and tasks can depend on others (a review waits for its fix). Vercel says v0's agent pipeline, rebuilt on Board, merges over half of its pull requests; that is Vercel's own figure."
+      ],
+      "why": "Leases and dependencies are what multi-agent setups keep reinventing; this is a small, inspectable version of them.",
+      "forYou": "Compare it with the shared task list the Claude Code routines use: leases that expire would stop a crashed subagent from holding a task.",
+      "terms": [
+        {
+          "term": "lease",
+          "def": "A claim that lasts for a set time and must be renewed, or the task goes back to the queue."
+        }
+      ],
+      "deep": [
+        "Board syncs both ways with Slack and Linear and imports from GitHub. Vercel's docs warn that Board permissions do not apply inside those tools, so a private Slack channel synced into an open Board channel is readable by the whole team. Works with Claude Code, Codex, OpenCode, Mastra and LangChain."
+      ],
+      "sources": [
+        {
+          "label": "Vercel: Introducing Board",
+          "url": "https://vercel.com/blog/introducing-vercel-board"
+        },
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/11/vercel-board-agents"
+        }
+      ]
+    },
+    {
+      "id": "workflow-spec",
+      "format": "compare",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "overprint",
+      "title": "Vercel Workflow now starts the next step before it is asked",
+      "kind": "release",
+      "level": "practitioner",
+      "gist": "Vercel's Workflow library, used for long multi-step jobs such as agent loops, now runs steps speculatively. The pause between steps dropped from about 85 to 7 milliseconds in Vercel's own tests.",
+      "intro": "Vercel's benchmarks, Workflow 5.2 against 5.8.",
+      "left": "5.2",
+      "right": "5.8",
+      "rows": [
+        {
+          "aspect": "Overhead between steps (p75)",
+          "left": "85 ms",
+          "right": "7 ms"
+        },
+        {
+          "aspect": "256-step fan-out, overhead",
+          "left": "13.5 s",
+          "right": "2.5 s"
+        },
+        {
+          "aspect": "Five-turn agent loop, overhead",
+          "left": "3.0 s",
+          "right": "0.9 s"
+        },
+        {
+          "aspect": "Resume after 1 s idle",
+          "left": "425 ms",
+          "right": "184 ms"
+        },
+        {
+          "aspect": "Median run with 102 s of step work",
+          "left": "3.0 min",
+          "right": "111 s"
+        }
+      ],
+      "verdict": "Faster, with a catch: a step may now run before it is needed, so every step must be safe to run twice.",
+      "why": "Speculation is a general trick for agent pipelines, and its price is the same everywhere: steps with side effects need idempotency keys.",
+      "forYou": "Only matters if a SaaS backend uses Workflow on Vercel; check any step that charges a card or sends an email before upgrading.",
+      "terms": [
+        {
+          "term": "speculatively",
+          "def": "Starting work early on a guess that it will be needed, and discarding it if not."
+        },
+        {
+          "term": "idempotency keys",
+          "def": "IDs that let a service recognise a repeated request and do the work only once."
+        },
+        {
+          "term": "p75",
+          "def": "The value that 75% of measurements fall under."
+        }
+      ],
+      "deep": [
+        "Upgrade with `npm install workflow@latest` (5.8.0 or later); new runs use the new engine. Pass `stepId` as the idempotency key to outside services such as Stripe, or set `maxRetries = 0` to opt a step out. `WORKFLOW_SPEC_VERSION=8` keeps the old engine; 4.x users follow the v5 upgrade guide first."
+      ],
+      "sources": [
+        {
+          "label": "Vercel changelog: Workflow is 10x faster, again",
+          "url": "https://vercel.com/changelog/workflows-speculative-execution"
+        }
+      ]
+    },
+    {
+      "id": "unity-cli",
+      "format": "spotlight",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Unity's command line for agents leaves beta",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Unity released version 1.0 of a command-line tool that lets coding agents open projects, build and audit them, with official plugins for Claude Code, Codex and others. Unity says nearly all its use already comes from agents.",
+      "name": "Unity CLI 1.0",
+      "what": "A terminal interface to the Unity Editor, built so coding agents can drive it.",
+      "body": [
+        "Announced at Unite Tokyo on November 17. One command, `unity setup`, installs the official plugin for Claude Code, Codex, Grok Build or Google Antigravity, and the CLI can see and answer the Editor dialogs that usually block automation. Unity's build server licence now covers agents, one licence per instance."
+      ],
+      "facts": [
+        {
+          "k": "Since July 20",
+          "v": "350,000+ users ran 600M+ commands (Unity's figures)"
+        },
+        {
+          "k": "From agents",
+          "v": "About 98% of those commands"
+        },
+        {
+          "k": "Promise",
+          "v": "Commands and output stay compatible across 1.x"
+        },
+        {
+          "k": "Next",
+          "v": "A headless Editor in a Linux container, 'coming soon'"
+        }
+      ],
+      "tryIt": "unity setup",
+      "why": "An engine vendor now ships first-party agent tooling with a stability promise, which is what lets teams build automation on it. Expect buyers to ask the same of other engines and tools.",
+      "forYou": "A model for what Unreal's MCP toolsets still lack: one setup command, stable output and dialog handling. Worth borrowing for the plugins' own editor commands.",
+      "terms": [
+        {
+          "term": "command-line tool",
+          "def": "A program you run by typing commands in a terminal, which agents can call easily."
+        },
+        {
+          "term": "headless",
+          "def": "Running without a screen or window, as on a build server."
+        }
+      ],
+      "deep": [
+        "Other commands: `unity skill install --all`, `unity build --target`, `unity open --until-ready` (waits until the Editor accepts commands) and `unity projects audit` (runs Project Auditor). It installs with Homebrew, winget or APT, and a project can pin its CLI version. The companion Pipeline package also left beta, though one outlet reports full availability of the Pipeline API in 2027."
+      ],
+      "sources": [
+        {
+          "label": "Unity: The Unity CLI 1.0 is here",
+          "url": "https://unity.com/the-unity-cli-1.0-is-here"
+        },
+        {
+          "label": "GameFromScratch",
+          "url": "https://gamefromscratch.com/unity-cli-unity-pipeline-game-changers/"
+        }
+      ]
+    },
+    {
+      "id": "web-games",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Web game portals report real money, spread thin",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Playgama, which places browser games on more than 15 platforms, says its developers earned over $1 million in nine months, while game releases on it rose about thirtyfold. YouTube's mini-games keep growing too.",
+      "stats": [
+        {
+          "value": "$1M+",
+          "label": "earned by developers on Playgama, January to September 2026"
+        },
+        {
+          "value": "2,000+",
+          "label": "games released on Playgama a week in November, from under 70 in January"
+        },
+        {
+          "value": "25.1M",
+          "label": "plays of Yes2Games titles on YouTube Playables"
+        }
+      ],
+      "body": [
+        "All figures are the companies' own, via PocketGamer.biz."
+      ],
+      "why": "Browser portals now pay at a scale worth tracking, but the money rewards volume and testing many small games, not one big launch.",
+      "forYou": "Relevant to the three.js browser games: a many-small-games strategy fits how fast agents now build them.",
+      "terms": [
+        {
+          "term": "YouTube Playables",
+          "def": "Small games that run inside YouTube, with no install."
+        }
+      ],
+      "sources": [
+        {
+          "label": "PocketGamer.biz: Playgama",
+          "url": "https://www.pocketgamer.biz/playgama-developers-earn-over-1m-in-first-nine-months-of-2026/"
+        },
+        {
+          "label": "PocketGamer.biz: Yes2Games",
+          "url": "https://www.pocketgamer.biz/yes2games-surpasses-25-million-plays-across-its-youtube-playables-portfolio/"
+        }
+      ],
+      "deep": [
+        "Playgama's weekly payouts rose from about $11,000 in January to over $50,000 by early October, and it says most active developers use AI coding agents. Spread over thousands of games that is a small sum per title; its top 100 earners published about 14 games each. Revenue shares run 50% to 90% to developers."
+      ]
+    },
+    {
+      "id": "become",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 4,
+      "size": "third",
+      "ink": "b",
+      "texture": "overprint",
+      "title": "Become: half a million particles as a living level",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "A former AAA developer's microscopic platformer in Unreal 5.4 fills its world with swarming cells drawn as particle effects rather than separate objects.",
+      "stats": [
+        {
+          "value": "500K",
+          "label": "animated mesh particles at most, per the developer"
+        }
+      ],
+      "body": [
+        "Niagara mesh particles animated in the vertex shader keep the swarm cheap, and custom forces keep it directable. Earlier flocking tests cost too much. Nanite and virtual shadow maps are off because nothing ever stands still.",
+        "The team dropped free swimming for floatier platforming (tail wiggle, dash, gentle gravity) and built a test room for each move."
+      ],
+      "why": "Particles are an underused way to make crowds and living scenery when each element does not need its own logic.",
+      "forYou": "A pattern for the action RPG's ambient crowds and swarms: Niagara mesh particles before spawning actors.",
+      "terms": [
+        {
+          "term": "Niagara",
+          "def": "Unreal Engine's system for particle effects such as smoke, sparks and swarms."
+        },
+        {
+          "term": "vertex shader",
+          "def": "A GPU program that moves the points of a 3D model as it is drawn."
+        }
+      ],
+      "deep": [
+        "Subsurface scattering lights the whole level, with few textures and almost no normal maps. Gameplay logic is mostly Blueprints."
+      ],
+      "sources": [
+        {
+          "label": "80 Level: The making of Become",
+          "url": "https://80.lv/articles/the-making-of-become-from-aaa-games-to-a-microscopic-platformer"
+        }
+      ]
+    },
+    {
+      "id": "retroengine",
+      "format": "diagram",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "wide",
+      "ink": "a",
+      "texture": "flat",
+      "title": "A custom engine that fakes a CRT on purpose",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "The developer of The King's Surveyor wrote their own engine in C++ and Direct3D 12, editor included, in one 6 MB program. Its look comes from simulating an old TV tube, step by step, at the end of every frame.",
+      "layout": "flow",
+      "intro": "The display pass, in order. The scene renders normally to a linear HDR buffer first, aiming for 60 fps on a seven-year-old laptop with integrated graphics.",
+      "nodes": [
+        {
+          "label": "Scene",
+          "note": "Drawn to a linear high-range buffer"
+        },
+        {
+          "label": "Beam",
+          "note": "Treated as a TV signal; bloom is part of the beam"
+        },
+        {
+          "label": "Trails",
+          "note": "Last frame fades per colour and never adds energy",
+          "key": true
+        },
+        {
+          "label": "Palette",
+          "note": "Shadow mask, then a snap to 16 colours with ordered dither"
+        }
+      ],
+      "caption": "The author's rule for phosphor trails is that persistence never adds light, so dark scenes do not fog up.",
+      "image": {
+        "src": "img/2026-11-26/retroengine.webp",
+        "alt": "A first-person view of a stone courtyard with a pink blossom tree and falling petals, rendered with visible scanlines, a limited palette and dithering.",
+        "credit": "The King's Surveyor, via 80 Level",
+        "creditUrl": "https://80.lv/articles/inside-retroengine-the-custom-engine-behind-the-king-s-surveyor",
+        "fit": "cover"
+      },
+      "why": "Each step is a small post-process you can lift into any renderer, including a web one, and the 'never add energy' rule is the detail most CRT filters get wrong.",
+      "forYou": "The trail and palette steps translate directly to a three.js post-processing chain for a browser game's look.",
+      "terms": [
+        {
+          "term": "HDR",
+          "def": "High dynamic range: colour values brighter than a screen can show, kept for later processing."
+        },
+        {
+          "term": "ordered dither",
+          "def": "A fixed pattern of dots that fakes in-between colours with few real ones."
+        }
+      ],
+      "deep": [
+        "Characters have no skeletons: Blender clips are baked into vertex animation textures, with sockets baked too and readable on the CPU. The recurring bugs were GPU resource-state hazards (reading a buffer the GPU is still writing) and a descriptor heap sized for a demo that had to free on level load. The only third-party code is Dear ImGui."
+      ],
+      "sources": [
+        {
+          "label": "80 Level: Inside RetroEngine",
+          "url": "https://80.lv/articles/inside-retroengine-the-custom-engine-behind-the-king-s-surveyor"
+        }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "What is shadow testing, and why does it make a rewrite safe?",
+    "answer": "You run the new version next to the old one on copies of real requests, throw away the new version's answers, and compare them with the old ones. When they match for long enough, you switch.",
+    "analogy": "A trainee pilot flies along in the simulator, copying every input the captain makes on a real flight. Nobody is put at risk, and you see exactly where the trainee would have done something different.",
+    "body": [
+      "The old system already encodes years of behaviour nobody wrote down: odd edge cases, rounding, error messages. A test suite only checks what someone thought of. Shadow testing checks everything real users actually send, because the old system's answer is the expected result.",
+      "That is why it pairs so well with coding agents. An agent can write a rewrite faster than anyone can read it, but a diff of outputs on real traffic does not care who wrote the code. Anthropic's Rust API and OpenAI's Spark upgrades both rely on it.",
+      "It fails where outputs cannot match exactly: timestamps, random IDs, results whose order does not matter. Teams normalise those before comparing. And it only covers what traffic exercises; a path no user hit in the shadow period is still untested."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Real request",
+          "note": "Arrives from a user"
+        },
+        {
+          "label": "Old system",
+          "note": "Answers the user, as always"
+        },
+        {
+          "label": "New system",
+          "note": "Gets a copy; its answer is never sent"
+        },
+        {
+          "label": "Diff",
+          "note": "Mismatches become bugs to fix",
+          "key": true
+        }
+      ],
+      "links": [
+        "served by",
+        "copied to",
+        "compared"
+      ],
+      "caption": "The new system earns trust by matching the old one on real traffic, before any user depends on it."
+    },
+    "terms": [
+      {
+        "term": "normalise",
+        "def": "Remove fields that are expected to differ, such as timestamps, before comparing."
+      },
+      {
+        "term": "diff",
+        "def": "The list of differences between two outputs."
+      }
+    ],
+    "seenIn": [
+      "anthropic-rust",
+      "openai-spark"
+    ],
+    "sources": [
+      {
+        "label": "The Pragmatic Engineer: How Anthropic builds software",
+        "url": "https://newsletter.pragmaticengineer.com/p/how-anthropic-builds-software-in"
+      },
+      {
+        "label": "InfoQ: Spark upgrades with Codex agents",
+        "url": "https://www.infoq.com/news/2026/11/openai-spark-fleet"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Tell one agent to probe the reference before you reach for subagents",
+    "gist": "A study found that a single agent told to test the existing program first got most of what parallel subagents gave, at a fraction of the cost. Check it on one of your own tasks.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A coding agent and a task with a reference to match: an existing binary, an API, or an old version of the code.",
+    "steps": [
+      {
+        "title": "Pick the task",
+        "text": "Choose something you would normally fan out to subagents, where a working reference exists to compare against."
+      },
+      {
+        "title": "Run it plainly",
+        "text": "Run the task once with your usual prompt. Note tests passed and tokens or cost used."
+      },
+      {
+        "title": "Add the probe instruction",
+        "text": "Start a fresh session and add the instruction below to the same prompt, so the agent records the reference's behaviour before writing code."
+      },
+      {
+        "title": "Compare",
+        "text": "Put the two runs side by side: tests passed, cost, and whether the probe run caught behaviour the first missed."
+      }
+    ],
+    "code": {
+      "lang": "text",
+      "code": "Before implementing, probe the reference across its whole public interface.\nRun each command or call against it and record the exact outputs and exit codes.\nThen implement, and check every recorded behaviour before you finish."
+    },
+    "check": "The probe run passes at least as many tests as the plain run, with a written list of the reference's behaviours you can reuse. In the paper, subagents added only 1 to 5 points at up to 3.8 times the cost.",
+    "terms": [
+      {
+        "term": "subagents",
+        "def": "Extra agent sessions a main agent starts in parallel to handle parts of a task."
+      },
+      {
+        "term": "exit codes",
+        "def": "The number a program returns when it ends; 0 usually means success."
+      }
+    ],
+    "from": "parallel-subagents",
+    "forYou": "Try it on the next port of a gameplay system between plugin versions: probe the old plugin's behaviour in a test map first.",
+    "sources": [
+      {
+        "label": "arXiv: When are parallel subagents effective for coding?",
+        "url": "https://arxiv.org/abs/2611.33893"
+      },
+      {
+        "label": "Study code",
+        "url": "https://github.com/cogito233/subagent-study"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Copilot code review billing moves to the organization on December 30 unless an admin picks 'Member' in Copilot policy first.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-25-copilot-code-review-billing-will-default-to-the-organization",
+      "source": "GitHub changelog"
+    },
+    {
+      "text": "Cloudflare's Search for Agents: one toggle gives a site a `/.well-known/search` endpoint that returns Markdown chunks with relevance scores.",
+      "lane": "ai",
+      "url": "https://blog.cloudflare.com/search-for-agents",
+      "source": "Cloudflare"
+    },
+    {
+      "text": "Coding agents' patches run bigger than developers' mostly because of extra tests and docs; the code edits are about as necessary, a study of 7,660 runs finds.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2611.34875",
+      "source": "arXiv"
+    },
+    {
+      "text": "Researchers made models signal each other through a shared inference server's batching and cache. Contrived setups, but the fixes are concrete: cache salting, separate engines.",
+      "lane": "ai",
+      "url": "https://www.lesswrong.com/posts/7wzWuLP3HhyBLmKfo/models-can-communicate-via-inference-servers-despite-being",
+      "source": "LessWrong"
+    },
+    {
+      "text": "Turn every fixed prompt injection into a regression fixture, pin the model version, and block releases on the suite.",
+      "lane": "ai",
+      "url": "https://stackoverflow.blog/2026/11/24/prompt-injection-fixes-need-regression-tests",
+      "source": "Stack Overflow"
+    },
+    {
+      "text": "AWS Lambda event functions can now run 30 minutes, up from 15, with no opt-in or price change.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/aws-lambda-30-minute-timeout",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Rust 1.100 stabilises the never type, and Cargo can now refuse dependency versions younger than a set age.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/rust-1-100-never-types",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Simon Willison's keynote names three LLM turning points in twelve months, ending with a model that seemed to grasp fun after playtesting its own game.",
+      "lane": "ai",
+      "url": "https://simonwillison.net/2026/Nov/24/llm-inflection-points/",
+      "source": "Simon Willison"
+    },
+    {
+      "text": "Porting Rockbox to a $9 MP3 player with agents: firmware analysis over MCP, a referee agent, and a webcam rig so the agent could see the screen.",
+      "lane": "ai",
+      "url": "https://jayd.ml/2026/11/14/rockbox-on-yp3.html",
+      "source": "jayd.ml"
+    },
+    {
+      "text": "OpenAI merges ChatGPT's chat and work usage into one meter; heavy users may hit limits sooner.",
+      "lane": "ai",
+      "url": "https://techcrunch.com/2026/11/25/openai-says-heavy-chatgpt-users-may-hit-limits-sooner-as-it-merges-chat-and-work",
+      "source": "TechCrunch"
+    },
+    {
+      "text": "Unity's URP roadmap for 6.7 and Unity 7: Surface Cache GI, screen-space reflections, volumetric fog and a new graphics backend.",
+      "lane": "gamedev",
+      "url": "https://gamefromscratch.com/unity-urp-graphics-improvements",
+      "source": "GameFromScratch"
+    },
+    {
+      "text": "Rigby2D, a free skeletal 2D animation editor, now exports to Defold.",
+      "lane": "gamedev",
+      "url": "https://mastodon.gamedev.place/@defold/117678812276168311",
+      "source": "Defold"
+    },
+    {
+      "text": "An open-source project recompiles Fable II and III to run on Godot; players bring their own copy of the game.",
+      "lane": "gamedev",
+      "url": "https://www.gamingonlinux.com/2026/11/fable-return-to-albion-is-an-open-source-godot-remake-of-fable-ii-and-fable-iii/",
+      "source": "GamingOnLinux"
+    },
+    {
+      "text": "Softgames' CEO on 20 years of web games: a feature update took Bubble Shooter Pro from about 100,000 to over a million daily players.",
+      "lane": "gamedev",
+      "url": "https://www.pocketgamer.biz/softgames-ceo-relying-on-one-platform-or-one-model-is-risky/",
+      "source": "PocketGamer.biz"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "gpu-demos",
+      "lane": "gamedev",
+      "kind": "experiment",
+      "title": "The GPU tech demos of 1997 to 2006, running in a browser tab",
+      "where": "Hacker News",
+      "signal": "Show HN on November 25 with 341 points and 79 comments; 36 demos from 3dfx, NVIDIA and ATI.",
+      "hook": "The demos that sold graphics cards, rebuilt one by one from their original files and playable in a tab. Commenters, one of them an original demo's developer, list what the ports miss, such as fur missing from a character.",
+      "borrow": "A period shader reference you can click through, and a lesson in porting: the visible details nobody wrote a test for are the ones that get lost.",
+      "url": "https://gpu-demo-gallery.pages.dev",
+      "forYou": "A source of classic effects worth recreating in three.js, and a reminder to diff ports against the original visually.",
+      "image": {
+        "src": "img/2026-11-26/gpu-demos.webp",
+        "alt": "A rendered grey cube with lit windows floating in space between a banded orange gas giant and a blue and white planet.",
+        "credit": "GPU demo gallery",
+        "creditUrl": "https://gpu-demo-gallery.pages.dev",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "mortiscript",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "MORTISCRIPT: write the rules your undead army fights by",
+      "where": "Steam",
+      "signal": "Free demo since November 1, tagged Programming and Automation; only 2 Steam reviews so far, so this is a design pick, not a trend.",
+      "hook": "Each unit runs a short program of Who, What and Action lines, read top to bottom; the first that holds fires. An after-action report counts how often each rule ran and flags rules never reached.",
+      "borrow": "The rule-hit counter: show players (or yourself, for AI behaviour) which rule fired and which never did. It turns debugging into part of the fun.",
+      "url": "https://store.steampowered.com/app/5429640",
+      "forYou": "A rule-hit report would make a good debug view for the combat plugin's AI behaviours.",
+      "image": {
+        "src": "img/2026-11-26/mortiscript.webp",
+        "alt": "MORTISCRIPT's program editor: a skeleton archer unit with three rules such as 'Enemy has Vulnerable x5, Shatter' and an OTHERWISE option.",
+        "credit": "Paper Falcon Games, Steam",
+        "creditUrl": "https://store.steampowered.com/app/5429640",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "tokentv",
+      "lane": "ai",
+      "kind": "tool",
+      "title": "TokenTV: a $5 desk clock becomes a pet for your coding agents",
+      "where": "Hacker News, GitHub",
+      "signal": "Show HN on November 25 with 42 points; the repository has 130 stars and 18 forks.",
+      "hook": "A cheap Wi-Fi clock, with no firmware flashing, shows pixel pets for Claude Code and Codex: usage left, a raised hand when the agent needs permission, a verdict on risky commands. A variant of earlier agent desk gadgets, on stock hardware.",
+      "borrow": "Ambient status for long agent runs: put 'waiting for you' somewhere you will see it without opening a terminal. `npx token-tv demo` runs without a clock.",
+      "url": "https://github.com/click6067-ship-it/token-tv",
+      "forYou": "A cheap way to see when an overnight routine is blocked on a permission prompt.",
+      "image": {
+        "src": "img/2026-11-26/tokentv.webp",
+        "alt": "Four photos of a small cube-shaped desk display showing usage bars for Claude, Codex and Grok with reset timers, and a pixel-art rocket scene.",
+        "credit": "TokenTV repository (MIT)",
+        "creditUrl": "https://github.com/click6067-ship-it/token-tv",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "parallel-subagents",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "When Are Parallel Subagents Effective for Coding? An Empirical Study on Repository Construction",
+      "headline": "Parallel subagents cost up to 3.8 times more and usually add a few points; one agent told to probe the reference first gets most of the gain",
+      "authors": "Zhiheng Lyu, Chengyu Yin, Lingming Zhang",
+      "where": "arXiv preprint",
+      "date": "2026-11-25",
+      "problem": "Codex and Claude Code can hand work to parallel subagents, multiplying the cost of a run, but nobody had measured when that produces a better program.",
+      "idea": "Compare one agent with a main agent plus subagents on tasks that build a whole repository from a spec, at equal time and equal cost, then test three explanations one at a time: more self-checking, fresh context, and more modular code.",
+      "result": "On randomly drawn tasks, subagents raised hidden-test pass rates by only about 1 to 5 points, at up to 3.8 times the cost; gains were larger on hard tasks. Subagents help mainly when a single agent stops checking too early, and a single agent told to probe the reference first recovered most of the gain.",
+      "useIt": "Before fanning out, add a probe-first instruction to a single agent's prompt; when a long run stalls, restart with a clean context. Keep subagents for hard, long tasks.",
+      "maturity": "code",
+      "forYou": "Cheaper than the subagent fan-out in the routines for most tasks; see today's Try this.",
+      "links": [
+        {
+          "label": "arXiv: 2611.33893",
+          "url": "https://arxiv.org/abs/2611.33893"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/cogito233/subagent-study"
+        },
+        {
+          "label": "Data",
+          "url": "https://huggingface.co/datasets/cogito233/subagent-study-data"
+        }
+      ]
+    },
+    {
+      "id": "assistive-impulses",
+      "lane": "gamedev",
+      "kind": "paper",
+      "title": "Neural Assistive Impulses: Synthesizing Exaggerated Motions for Physics-Based Characters",
+      "headline": "Physics-driven characters can pull off cartoon moves like a mid-air dash, by getting a push in momentum instead of force",
+      "authors": "Zhiquan Wang, Bedrich Benes (Purdue University)",
+      "where": "Computer Graphics Forum (early view); preprint on arXiv",
+      "date": "2026-11-24",
+      "problem": "Physics-simulated characters trained with reinforcement learning fail at stylised moves that break real physics, because the forces needed spike hugely over a single frame and make training unstable.",
+      "idea": "Give the character help as impulses, sudden changes in momentum, instead of forces. An analytic part from inverse dynamics handles the sharp changes; a learned policy adds a smooth correction.",
+      "result": "Characters track highly agile motions that are physically impossible for them, such as a rising kick followed by a mid-air dash, where force-based assistance makes training unstable. The authors report robust tracking; no code has been released.",
+      "useIt": "Worth watching if you want physics-based characters in an action game without giving up anime-style dashes and air control. Read the method before building your own assist forces.",
+      "maturity": "prototype",
+      "forYou": "Directly relevant to the action RPG's dash and air-control feel if physics-driven animation is ever on the table.",
+      "links": [
+        {
+          "label": "Computer Graphics Forum",
+          "url": "https://onlinelibrary.wiley.com/doi/10.1111/cgf.70659"
+        },
+        {
+          "label": "arXiv: 2604.05394",
+          "url": "https://arxiv.org/abs/2604.05394"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-26/impulses.webp",
+        "alt": "A sequence of a simulated yellow figure running, kicking upward, dashing in mid-air and landing, with red arrows showing the assistive impulses at each step.",
+        "credit": "Wang and Benes (arXiv, perpetual non-exclusive licence)",
+        "creditUrl": "https://arxiv.org/abs/2604.05394",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "quantum-agents",
+      "lane": "ai",
+      "kind": "report",
+      "title": "Finding faster quantum algorithms with agents and formal verification",
+      "headline": "Agent teams that must prove every idea in Lean before sharing it cut the cost of quantum algorithms by up to 290 times",
+      "authors": "Sergey Shirobokov, Ben Jaderberg, Ryan Babbush et al. (Google DeepMind, Google Quantum AI)",
+      "where": "Google DeepMind research post; paper on arXiv",
+      "date": "2026-11-23",
+      "problem": "Agents propose plausible ideas that are wrong, and in quantum circuit design a wrong idea is expensive to discover late.",
+      "idea": "One Gemini 4 agent team per problem. Every idea must be verified in the Lean proof assistant before it enters a shared notebook, and every four hours agents from different teams meet to swap ideas.",
+      "result": "Google-reported: the fusion workload's cost fell 11.8 times, a light-sensitive molecule simulation 8 times, a cytochrome P450 simulation 2.5 times (qubits 481 to 333), and an arcsin loading routine 290 times.",
+      "useIt": "The pattern carries over to coding agents: a verifier gate (tests, types or proofs) before anything enters shared memory, plus a regular exchange between agent teams.",
+      "maturity": "code",
+      "forYou": "A shape for multi-agent routines: nothing goes into the shared notes file until a check has passed.",
+      "links": [
+        {
+          "label": "Google DeepMind blog",
+          "url": "https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/"
+        },
+        {
+          "label": "arXiv: 2611.09822",
+          "url": "https://arxiv.org/abs/2611.09822"
+        },
+        {
+          "label": "Lean library",
+          "url": "https://github.com/google-deepmind/formal-quantum-computation"
+        }
+      ]
+    }
+  ],
+  "note": "Reddit feeds refused the sweep, and X and TikTok gave the sparks desk nothing it could verify this week, so Sparks runs three. Unity's CLI (November 17) and GitHub's CSS post (September) are older than three days; this week's coverage brought them back."
+}
