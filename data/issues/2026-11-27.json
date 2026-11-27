@@ -1,0 +1,1079 @@
+{
+  "date": "2026-11-27",
+  "number": 45,
+  "title": "The asset store gets a new kind of shopper",
+  "dek": "Unity lets coding agents search, pick and import single assets from its store, as Unreal's Fab toolset already does in preview. Plus a six-layer plan to replace line-by-line review, and Google's rules for agents in Gmail.",
+  "theme": {
+    "paper": "lilac",
+    "text": "black",
+    "inks": [
+      "green",
+      "coral"
+    ],
+    "type": "grotesk",
+    "mood": "a Friday about who, or what, does the shopping and the reviewing"
+  },
+  "tldr": [
+    {
+      "text": "Unity's CLI now lets **Claude Code, Codex and other agents** find and import single assets from the Asset Store, one barrel instead of a 650 MB pack. Open beta.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "Unreal 5.9's Fab toolset does the same in preview, with seller search. Store listings are becoming something agents read.",
+      "lane": "gamedev"
+    },
+    {
+      "text": "At QCon SF, Aviator's CEO laid out six layers to replace line-by-line review; his team turned 11,000 review comments into 64 standing rules.",
+      "lane": "ai"
+    },
+    {
+      "text": "Google now requires AI agents that reach Gmail, Drive and other Workspace data to go through its own MCP servers, and the Gmail one cannot send mail.",
+      "lane": "ai"
+    },
+    {
+      "text": "A mobile shooter merged 100M+ accounts with Postgres logical replication in under 15 minutes of downtime, then had to retune matchmaking.",
+      "lane": "gamedev"
+    }
+  ],
+  "groups": [
+    {
+      "title": "Stores built for agents",
+      "note": "How the two biggest engines now let agents pick assets, and what a store listing has to show for it.",
+      "ids": [
+        "engine-stores",
+        "store-numbers"
+      ]
+    },
+    {
+      "title": "Review without reading every line",
+      "note": "A six-layer plan for teams whose agents write more code than people can read, and what should count as evidence.",
+      "ids": [
+        "kill-review",
+        "review-numbers",
+        "review-evidence"
+      ]
+    },
+    {
+      "title": "Agents meet the rules",
+      "note": "Google's terms for agents in Workspace, and a small model that learned when to talk to its teammates.",
+      "ids": [
+        "google-mcp",
+        "google-quota",
+        "swarm-talk"
+      ]
+    },
+    {
+      "title": "Postgres under a live game",
+      "note": "A 100-million-account merge done with built-in replication, and planner hints that can help or hurt.",
+      "ids": [
+        "wwh-merge",
+        "wwh-numbers",
+        "plan-advice"
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "id": "unity-agents",
+      "format": "hero",
+      "variant": "split",
+      "lane": "gamedev",
+      "importance": 1,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Coding agents can now shop Unity's Asset Store",
+      "kind": "release",
+      "level": "everyone",
+      "gist": "Unity opened its Asset Store to coding agents. You describe what you need, the agent searches, downloads only that one model and drops it in the scene, using your own account and the assets you already own.",
+      "background": "The Unity CLI is the command-line tool Unity released earlier this month so agents such as Claude Code and Codex can drive the editor.",
+      "takeaway": "The store is no longer only browsed by people. An agent picks a single asset by its description and its numbers, so what a listing says, and which parts can be pulled alone, now decides whether it gets used.",
+      "body": [
+        "Unity's post of November 23 says agents including **Claude Code, Codex, Grok Build and Google Antigravity** can find, select, download and import Asset Store content through the Unity CLI. A new **Asset Library plugin** breaks up the old package format so one prefab can be used on its own: Unity's example is a single wooden barrel instead of a 650 MB medieval props pack.",
+        "Before import, the store now shows triangle count and animation rigging, so an agent or a person can judge whether an asset is ready for production. It works for free assets and for assets you already own; the agent acts under your account and your plan.",
+        "The same CLI reaches more than 60 AI generators for sprites, 3D models and sound effects. Quotes are free, and every generated file records its model, its prompt and its cost, so placeholders can be traced and replaced later. Both features are in open beta. The post says nothing about changes for asset sellers."
+      ],
+      "image": {
+        "src": "img/2026-11-27/unity-store.webp",
+        "alt": "The Unity 6 editor with an Asset Library panel open over a sunny courtyard scene; a search for 'Plant' shows four potted plant models ready to drag into the scene.",
+        "credit": "Unity",
+        "creditUrl": "https://unity.com/blog/unity-asset-store-ai-generators-coding-agents",
+        "fit": "cover"
+      },
+      "stat": {
+        "value": "1 barrel",
+        "label": "instead of a 650 MB props pack: Unity's example of what an agent now downloads"
+      },
+      "why": "When agents choose assets, a store listing becomes data a program reads: clear names, mesh stats and parts that can be taken alone start to matter as much as the screenshots.",
+      "forYou": "Read your Fab listings as an agent would: is every plugin's purpose, engine version and dependency stated in plain words in the title and first lines? Unity's per-prefab import also hints buyers will want modules they can pull one at a time.",
+      "terms": [
+        {
+          "term": "Unity CLI",
+          "def": "A command-line tool that lets scripts and coding agents control the Unity editor without clicking through it."
+        },
+        {
+          "term": "prefab",
+          "def": "A saved, reusable game object in Unity, such as a barrel with its mesh, materials and settings."
+        },
+        {
+          "term": "open beta",
+          "def": "A test version anyone can use before it is declared finished."
+        },
+        {
+          "term": "rigging",
+          "def": "The skeleton set up inside a 3D model so it can be animated."
+        }
+      ],
+      "deep": [
+        "The Asset Library plugin works with the Unity CLI to split the traditional .unitypackage format, so only the files a chosen asset needs are downloaded, and import and file management are automatic. Unity's post also cites a 2 GB environment pack as the kind of download an agent can now skip when it only needs one pine tree.",
+        "One Unity login covers the store and all generation models. When an agent searches or asks for a quote, it acts under the user's entitlements and AI credits; generators are included in paid plans and draw on their credit allocation. Free assets through the CLI are open to anyone."
+      ],
+      "sources": [
+        {
+          "label": "Unity: Access Asset Store and AI generators using the Unity CLI",
+          "url": "https://unity.com/blog/unity-asset-store-ai-generators-coding-agents"
+        },
+        {
+          "label": "Unity docs: Asset Library plugin",
+          "url": "https://docs.unity.com/en-us/asset-store/asset-library/plugin-introduction"
+        },
+        {
+          "label": "GameFromScratch: Unity and Unreal change the way you access assets",
+          "url": "https://gamefromscratch.com/unity-unreal-change-the-way-you-access-assets"
+        }
+      ]
+    },
+    {
+      "id": "engine-stores",
+      "format": "compare",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "wide",
+      "ink": "b",
+      "texture": "halftone",
+      "title": "Unity and Unreal both hand the store to agents",
+      "kind": "trend",
+      "level": "everyone",
+      "gist": "Unreal's preview already lets agents search Fab and install assets; Unity now does the same with its store. Side by side, the two show where asset shopping is heading.",
+      "background": "Fab is Epic's marketplace for Unreal assets and plugins.",
+      "intro": "Both engines now expose their asset stores to coding agents, by different routes and at different stages.",
+      "left": "Unity",
+      "right": "Unreal",
+      "rows": [
+        {
+          "aspect": "Route",
+          "left": "Unity CLI plus the Asset Library plugin",
+          "right": "Fab toolset over the editor's MCP server"
+        },
+        {
+          "aspect": "What an agent can do",
+          "left": "Search, download and import a single prefab",
+          "right": "Search Fab, browse your library, install free or bought assets"
+        },
+        {
+          "aspect": "Finding sellers",
+          "left": "Not mentioned",
+          "right": "Seller search and more filters, added in Preview 2"
+        },
+        {
+          "aspect": "Generators",
+          "left": "60+ models for sprites, meshes and sound",
+          "right": "Not part of the toolset"
+        },
+        {
+          "aspect": "Status",
+          "left": "Open beta since November 23",
+          "right": "Experimental, in the 5.9 preview"
+        }
+      ],
+      "verdict": "Both stores now have a second audience. Listings that state what an asset is, what it needs and what it costs in triangles will be easier for an agent to choose.",
+      "why": "If you sell assets or tools, agents are becoming a discovery channel; if you buy them, you can ask for one part instead of a whole pack.",
+      "forYou": "Ask Claude Code, through the 5.9 Fab toolset, to find a combat or inventory plugin and see whether yours comes up and how it is described.",
+      "terms": [
+        {
+          "term": "MCP",
+          "def": "Model Context Protocol: a standard way for AI agents to call tools and read data from other programs."
+        }
+      ],
+      "deep": [
+        "Epic's 5.9 Preview 2 forum post (November 9) adds seller search and filters to the Fab toolset and removes the deprecated MCP Tool Library. Known issue UE-412135: new projects start with no level-editing tools for agents because the toolset plugins are off by default; enabling All Toolsets and reconnecting the agent fixes it. Epic says the feature was built mostly by agents with a shorter QA pass."
+      ],
+      "sources": [
+        {
+          "label": "Unity blog",
+          "url": "https://unity.com/blog/unity-asset-store-ai-generators-coding-agents"
+        },
+        {
+          "label": "Epic forums: Unreal Engine 5.9 Preview 2",
+          "url": "https://forums.unrealengine.com/t/2852840"
+        },
+        {
+          "label": "GameFromScratch",
+          "url": "https://gamefromscratch.com/unity-unreal-change-the-way-you-access-assets"
+        }
+      ]
+    },
+    {
+      "id": "store-numbers",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "What changes in the download",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Unity's own examples of what an agent no longer has to pull, and how many generators it can call.",
+      "stats": [
+        {
+          "value": "650 MB",
+          "label": "props pack skipped to fetch one barrel"
+        },
+        {
+          "value": "2 GB",
+          "label": "environment pack skipped for one pine tree"
+        },
+        {
+          "value": "60+",
+          "label": "AI generation models behind the same CLI"
+        }
+      ],
+      "body": [
+        "All three figures are Unity's, from its announcement. Each generated file records its model, prompt and cost."
+      ],
+      "why": "Smaller pulls make it cheap to try many assets; recorded prompts make generated placeholders easy to find and swap later.",
+      "sources": [
+        {
+          "label": "Unity blog",
+          "url": "https://unity.com/blog/unity-asset-store-ai-generators-coding-agents"
+        }
+      ]
+    },
+    {
+      "id": "kill-review",
+      "format": "diagram",
+      "lane": "ai",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "Six layers to replace reading every line of an agent's code",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Most teams already skim and approve agent code they have not really read, says a QCon speaker. His fix moves the checking earlier and later: agents argue before the change exists, and the change has to bring evidence that it works.",
+      "background": "Code review is the habit of a second developer reading every change before it is merged.",
+      "layout": "flow",
+      "intro": "From Ankit Jain's talk at QCon San Francisco, as reported by InfoQ. He runs Aviator, which sells review tooling, and told the audience to be suspicious of him.",
+      "nodes": [
+        {
+          "label": "Argue",
+          "note": "Agents debate the change before a pull request exists; only disagreements reach a person"
+        },
+        {
+          "label": "Capture",
+          "note": "Intent and acceptance criteria from the session are attached to the PR"
+        },
+        {
+          "label": "Codify",
+          "note": "Repeated review comments become rules with a scope, a check and an owner",
+          "key": true
+        },
+        {
+          "label": "Prove",
+          "note": "Screenshots, recorded requests and logs replace a green check"
+        },
+        {
+          "label": "Debate",
+          "note": "People argue about decisions, not diffs"
+        },
+        {
+          "label": "Own",
+          "note": "Teams own the rules, not the author and reviewer"
+        }
+      ],
+      "links": [
+        "then",
+        "then",
+        "then",
+        "then",
+        "then"
+      ],
+      "caption": "Jain's six layers. Security, authentication and billing code still get read line by line.",
+      "why": "When agents write more code than anyone can read, the useful question is which checks a change must pass, not who approved it. Jain's example: an 18-minute outage from an unindexed query led to asking which rule was missing.",
+      "forYou": "The Codify layer is the cheapest to start: your own repeated corrections to Claude Code can become hook or CLAUDE.md rules. See today's Try this.",
+      "terms": [
+        {
+          "term": "pull request",
+          "def": "A proposed code change that waits for review before it is merged."
+        },
+        {
+          "term": "PR",
+          "def": "Short for pull request."
+        },
+        {
+          "term": "acceptance criteria",
+          "def": "The conditions a change must meet to count as done, written before the work starts."
+        },
+        {
+          "term": "diffs",
+          "def": "The line-by-line differences a change makes to the code."
+        },
+        {
+          "term": "unindexed query",
+          "def": "A database lookup with no index to speed it up, so it scans whole tables and slows everything."
+        }
+      ],
+      "deep": [
+        "Prove exists because, in Jain's words as reported, the same agent that wrote the code likely wrote its unit tests. The evidence he lists: screenshots, DOM snapshots, recorded requests, latencies and database logs.",
+        "In March 2026 Jain proposed a five-layer trust model in an essay on Latent Space; he said the mechanics held up but the essay missed human judgment, which the Debate and Own layers add."
+      ],
+      "sources": [
+        {
+          "label": "InfoQ: QCon San Francisco 2026, How to Kill the Code Review",
+          "url": "https://www.infoq.com/news/2026/11/qcon-sf-26-kill-code-review"
+        }
+      ]
+    },
+    {
+      "id": "review-numbers",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Review was never mainly about bugs",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The figures Jain used to argue that review had already stopped working, and what codifying comments did for his own team.",
+      "stats": [
+        {
+          "value": "14%",
+          "label": "of review comments were about defects, though 44% of reviewers named that the goal"
+        },
+        {
+          "value": "640",
+          "label": "lines in today's median pull request; review quality drops past 400"
+        },
+        {
+          "value": "64",
+          "label": "standing rules mined from 11,000 of Aviator's own review comments"
+        }
+      ],
+      "body": [
+        "The 14% and 44% come from a 2013 Microsoft study; a Google study of more than nine million reviews found almost the same split. Jain's nine-person team now merges four times as many PRs as a year ago and says reverts fell about 40%, a vendor's own figure."
+      ],
+      "why": "If review mostly spreads knowledge, then skipping it costs understanding, not only bugs; the rules and evidence have to carry that instead.",
+      "terms": [
+        {
+          "term": "reverts",
+          "def": "Changes that had to be undone after they were merged."
+        }
+      ],
+      "sources": [
+        {
+          "label": "InfoQ",
+          "url": "https://www.infoq.com/news/2026/11/qcon-sf-26-kill-code-review"
+        }
+      ]
+    },
+    {
+      "id": "review-evidence",
+      "format": "list",
+      "lane": "ai",
+      "importance": 3,
+      "size": "half",
+      "ink": "b",
+      "texture": "flat",
+      "title": "What should count as evidence when an agent fixed it",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Agent sessions solve problems in private, so the fix survives but the lesson does not. Stack Overflow's blog lists what to keep.",
+      "intro": "Three of the post's recommendations that apply to any team.",
+      "items": [
+        {
+          "title": "Keep the investigation",
+          "text": "Save what was tried and what failed, the versions involved and a minimal reproduction, not only the final diff."
+        },
+        {
+          "title": "Separate proposed from run",
+          "text": "Use traces to show what the agent only suggested and what it actually executed."
+        },
+        {
+          "title": "Label confidence",
+          "text": "Mark a fix as a plausible idea, an observed workaround, an independently reproduced fix or an expert-accepted answer."
+        }
+      ],
+      "why": "An agent that edits both the code and its tests can make a check pass without fixing anything; recorded evidence is how you tell.",
+      "sources": [
+        {
+          "label": "Stack Overflow blog: When AI writes the code, what counts as evidence?",
+          "url": "https://stackoverflow.blog/2026/11/25/when-ai-writes-the-code-what-counts-as-evidence"
+        }
+      ]
+    },
+    {
+      "id": "google-mcp",
+      "format": "list",
+      "lane": "ai",
+      "importance": 2,
+      "size": "wide",
+      "ink": "a",
+      "texture": "halftone",
+      "title": "Google tells AI agents to reach Gmail and Drive only through its own MCP servers",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "Google's new terms say any tool that is, or is driven by, an AI agent must use a Google MCP server to touch Workspace data. Those servers leave out some of what agents most often do, like sending email.",
+      "background": "Google Workspace is the suite behind Gmail, Drive, Calendar and Docs; until now agents mostly reached it through the same APIs any app uses.",
+      "intro": "From the Workspace AI Tools Addendum (last modified November 24) and Tech Stackups' reading of the surrounding docs.",
+      "items": [
+        {
+          "title": "MCP is the required route",
+          "text": "The addendum says a Workspace access tool 'must use a Google MCP' when it is or is driven by an AI agent. Google made eight Workspace MCP servers generally available on November 24."
+        },
+        {
+          "title": "Gaps in the servers",
+          "text": "Per Tech Stackups, the Gmail server has no send, reply or forward tools, and the Drive server cannot move, rename, share or trash files."
+        },
+        {
+          "title": "Data rules",
+          "text": "No training or fine-tuning on Workspace data, nothing kept after the user disconnects the tool, and Google's technical information kept 30 days at most."
+        },
+        {
+          "title": "An 'agentic' sign-in flag",
+          "text": "Agents must declare themselves in the OAuth flow; Tech Stackups reports servers have rejected clients without it since November 11."
+        }
+      ],
+      "why": "Agents that triage mail or files for users now have a narrower, metered door into Google's data, and some tasks cannot be done through it at all.",
+      "forYou": "Any routine or SaaS feature that reads Gmail or Drive through the REST API with an agent behind it falls under this; check which calls you make before the quotas bite.",
+      "terms": [
+        {
+          "term": "OAuth",
+          "def": "The standard sign-in flow where a user lets an app act on their account without sharing a password."
+        },
+        {
+          "term": "REST calls",
+          "def": "Requests through the ordinary web interface programs use to read and change data on a service."
+        }
+      ],
+      "deep": [
+        "Tech Stackups reports the rule takes effect on February 1, 2027, when REST calls from agents drop to standard-tier quotas; Google's addendum itself states no date. It also reports that service accounts and Apps Script's built-in client cannot be marked as agentic."
+      ],
+      "sources": [
+        {
+          "label": "Google: Workspace AI Tools Addendum",
+          "url": "https://workspace.google.com/terms/ai-tools"
+        },
+        {
+          "label": "Tech Stackups: Google will make AI agents use its MCP servers",
+          "url": "https://techstackups.com/articles/google-workspace-ai-agents-mcp"
+        }
+      ]
+    },
+    {
+      "id": "google-quota",
+      "format": "stat",
+      "lane": "ai",
+      "importance": 3,
+      "size": "third",
+      "ink": "b",
+      "texture": "flat",
+      "title": "The free tier, in searches",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "How far the free quota stretches for an agent that searches mail, as reported by Tech Stackups.",
+      "stats": [
+        {
+          "value": "5,000",
+          "label": "free MCP requests per project, per product, per day"
+        },
+        {
+          "value": "10",
+          "label": "requests charged for one Gmail thread search"
+        },
+        {
+          "value": "~500",
+          "label": "Gmail searches a day before the cap"
+        }
+      ],
+      "body": [
+        "A paid tier starts billing on April 1, 2027, with no per-request prices published yet. These figures are from Tech Stackups, not checked against Google's quota pages."
+      ],
+      "why": "A mail-triage agent that searches often can hit the cap within a working day.",
+      "sources": [
+        {
+          "label": "Tech Stackups",
+          "url": "https://techstackups.com/articles/google-workspace-ai-agents-mcp"
+        }
+      ]
+    },
+    {
+      "id": "swarm-talk",
+      "format": "concept",
+      "lane": "ai",
+      "importance": 3,
+      "size": "full",
+      "ink": "a",
+      "texture": "flat",
+      "title": "Four small agents learned when to message each other, and used fewer tokens",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Hugging Face trained a tiny model to work as four teammates that can only solve a puzzle by talking. After training they succeeded far more often and spent fewer words doing it.",
+      "plain": "Instead of scripting how agents coordinate, reward the team only for solving the task cheaply and let the model learn when to send and read messages.",
+      "body": [
+        "Each of four agents, all running one shared Qwen3-0.6B model, holds a private number from 1 to 99; the team must submit the full sorted list. They have three tools: send a message, read messages, check notifications. The reward is success, scaled down for tokens used, with nothing for messaging itself.",
+        "Over 75 training updates, success rose from **6.6% to 82.3%**, and 26 of 32 held-out problems were solved. Tokens per team fell 37%, from about 12,800 to 8,000, while broadcasts rose from 2.4 to 5.7: the agents learned to talk more and ramble less. An untrained team given eight tries solved about 37.5%, at roughly 103,000 tokens per problem; the authors call that comparison an estimate."
+      ],
+      "points": [
+        "It is a toy task; the authors make no claim for coding agents.",
+        "A reproducible run takes about five hours on two H200 GPUs, roughly $50, with code in TRL."
+      ],
+      "image": {
+        "src": "img/2026-11-27/swarm-loop.webp",
+        "alt": "Diagram: one shared policy feeds four agents with private inputs; they exchange peer messages, any agent submits the sorted list, and a team reward that penalises tokens updates the shared policy.",
+        "credit": "Hugging Face (ben burtenshaw, Kashif Rasul)",
+        "creditUrl": "https://huggingface.co/blog/training-swarms",
+        "fit": "contain"
+      },
+      "why": "Multi-agent setups usually burn tokens on chatter; this is first-hand evidence that a cost-aware reward can teach useful communication, at least on a small problem.",
+      "terms": [
+        {
+          "term": "tokens",
+          "def": "The word pieces a language model reads and writes; usage and cost are counted in them."
+        },
+        {
+          "term": "held-out",
+          "def": "Test problems kept out of training, so success on them shows the skill carries over."
+        },
+        {
+          "term": "TRL",
+          "def": "Hugging Face's open library for training language models with reinforcement learning."
+        },
+        {
+          "term": "broadcasts",
+          "def": "Messages one agent sends to all the others at once."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Hugging Face: Swarms, flocks, gangs (Part 1)",
+          "url": "https://huggingface.co/blog/training-swarms"
+        }
+      ]
+    },
+    {
+      "id": "wwh-merge",
+      "format": "steps",
+      "lane": "gamedev",
+      "importance": 2,
+      "size": "full",
+      "ink": "b",
+      "texture": "flat",
+      "title": "How a shooter merged 100 million accounts with 15 minutes of downtime",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "World War Heroes ran separate iOS and Android servers. Its team joined them into one player pool using replication already built into Postgres, plus a small translator that renumbered every record on the way through.",
+      "background": "World War Heroes is a mobile online shooter; Mikhail Orlov of Last Level Games wrote this account for PocketGamer.biz.",
+      "intro": "The hard limits were 1 to 2 hours of downtime, a way to roll back, and QA on real production data before release.",
+      "steps": [
+        {
+          "title": "Replicate, do not script",
+          "text": "Postgres logical replication streamed each platform's data to the merged databases for weeks before launch, with millisecond lag. The first EU snapshot alone took over 20 hours."
+        },
+        {
+          "title": "Renumber in flight",
+          "text": "A small Go middleware sat in the stream and added a fixed offset to every ID and foreign key, one offset per source, so iOS and Android records could never collide. IDs stayed short numbers players can type."
+        },
+        {
+          "title": "Test on the real thing",
+          "text": "QA-only servers pointed at the merged data and ran the full test plan; staging runs on full production dumps found foreign keys the team had missed."
+        },
+        {
+          "title": "Switch and retune",
+          "text": "Cutover took under 15 minutes. The bigger pool filled matches with real players instead of bots, so match quality rose, kill ratios fell and players, used to winning, were less happy."
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-27/wwh2.webp",
+        "alt": "Diagram: iOS and Android publications feed four dbmerge middleware instances, for main and stats data, which write into merged main and stats databases.",
+        "credit": "Last Level Games via PocketGamer.biz",
+        "creditUrl": "https://www.pocketgamer.biz/how-world-war-heroes-merged-100m-player-accounts-and-reshaped-matchmaking/",
+        "fit": "contain"
+      },
+      "why": "The database's own replication did the hard parts (snapshots, change streams, crash recovery), and the custom code only renamed things. And an infrastructure merge can change how a game feels.",
+      "forYou": "The offset-ID pattern fits any future merge of two Supabase projects; and set permanent replication slots before you need them.",
+      "terms": [
+        {
+          "term": "logical replication",
+          "def": "A Postgres feature that streams every row change from one database to another, table by table."
+        },
+        {
+          "term": "middleware",
+          "def": "A program that sits between two systems and passes data along, here rewriting it on the way."
+        },
+        {
+          "term": "foreign key",
+          "def": "A column that points to a row in another table, such as a clan member's player ID."
+        },
+        {
+          "term": "QA",
+          "def": "Quality assurance: the people and process that test a release before players see it."
+        }
+      ],
+      "deep": [
+        "Scale: three regions, 11 databases per region per platform, about 50 tables per platform, Postgres 13, 4.8 TB on the largest EU server and over 9 TB in all. The middleware used jackc/pgx/v5/pgproto3, acting as a Postgres backend to the subscriber and a client to the publisher. iOS Facebook logins were renamed facebook-ios to keep a uniqueness rule.",
+        "On release night a Patroni failover promoted a replica and the replication slots did not survive, so main replication restarted from scratch overnight and stats data finished after players were back. The fix is to configure permanent slots in Patroni in advance. Mobile clients stored user IDs as 32-bit integers and needed an update for the larger values."
+      ],
+      "sources": [
+        {
+          "label": "PocketGamer.biz: How World War Heroes merged 100m+ player accounts",
+          "url": "https://www.pocketgamer.biz/how-world-war-heroes-merged-100m-player-accounts-and-reshaped-matchmaking/"
+        }
+      ]
+    },
+    {
+      "id": "wwh-numbers",
+      "format": "stat",
+      "lane": "gamedev",
+      "importance": 3,
+      "size": "third",
+      "ink": "a",
+      "texture": "flat",
+      "title": "The merge in numbers",
+      "kind": "news",
+      "level": "everyone",
+      "gist": "The size of the job and how the cutover went against plan.",
+      "stats": [
+        {
+          "value": "100M+",
+          "label": "player accounts merged"
+        },
+        {
+          "value": "9 TB+",
+          "label": "of Postgres data across regions"
+        },
+        {
+          "value": "<15 min",
+          "label": "actual downtime, against 1 to 2 hours planned"
+        }
+      ],
+      "body": [
+        "After more than a year in production, the author reports no migration-related issues."
+      ],
+      "why": "Rehearsing on real data is what let a nine-terabyte move fit in a short break.",
+      "sources": [
+        {
+          "label": "PocketGamer.biz",
+          "url": "https://www.pocketgamer.biz/how-world-war-heroes-merged-100m-player-accounts-and-reshaped-matchmaking/"
+        }
+      ]
+    },
+    {
+      "id": "plan-advice",
+      "format": "chart",
+      "lane": "ai",
+      "importance": 3,
+      "size": "wide",
+      "ink": "b",
+      "texture": "flat",
+      "title": "A Postgres planner hint made one query 150 times faster and another 7,000 times slower",
+      "kind": "lesson",
+      "level": "everyone",
+      "gist": "Postgres 19 lets you tell the planner how to run a query without rewriting it. ClickHouse measured big wins, and a big loss when the data changed under an old hint.",
+      "background": "pg_plan_advice is a Postgres 19 add-on that steers the query planner's choices, such as join order or scan type, for one session or transaction.",
+      "intro": "Query time in milliseconds on ClickHouse's managed Postgres (4 vCPU, 16 GB). The author calls the scenarios artificial.",
+      "unit": "ms",
+      "series": [
+        {
+          "label": "Sorted query, no hint",
+          "value": 1462
+        },
+        {
+          "label": "Same, with a scan hint",
+          "value": 9.7,
+          "highlight": true
+        },
+        {
+          "label": "Correlated join, no hint",
+          "value": 3837
+        },
+        {
+          "label": "Same, with a join-order hint",
+          "value": 20,
+          "highlight": true
+        },
+        {
+          "label": "Changed data, no hint",
+          "value": 0.05
+        },
+        {
+          "label": "Changed data, stale hint",
+          "value": 369
+        }
+      ],
+      "note": "A hint is followed when it is possible, whether or not it still helps; 'matched' in the output means used, not useful.",
+      "why": "A hint can rescue a bad plan in production without a code change, but it does not age well; re-test it whenever the data shifts.",
+      "forYou": "Worth knowing for when Supabase offers Postgres 19: SET LOCAL a hint inside one transaction rather than the whole session.",
+      "terms": [
+        {
+          "term": "query planner",
+          "def": "The part of a database that decides how to run a query: which index to use and in what order to join tables."
+        },
+        {
+          "term": "SET LOCAL",
+          "def": "A Postgres command that changes a setting only until the current transaction ends."
+        }
+      ],
+      "deep": [
+        "The source's pattern: LOAD 'pg_plan_advice'; then SET LOCAL pg_plan_advice.advice = 'JOIN_ORDER(a act)'; then EXPLAIN (ANALYZE, BUFFERS, PLAN_ADVICE) on the query. A companion module, pg_stash_advice, attaches advice to query IDs, but it is not WAL-logged, so failover to a replica needs care."
+      ],
+      "sources": [
+        {
+          "label": "ClickHouse: Hints and hazards, pg_plan_advice in PG19",
+          "url": "https://clickhouse.com/blog/pg-plan-advice-postgresql-19"
+        }
+      ]
+    }
+  ],
+  "learn": {
+    "question": "Why can better matchmaking make players less happy?",
+    "answer": "Matchmaking trades fair games against short waits. With few players online, games get filled with bots or uneven opponents that are easy to beat; with more real players, matches get fairer, and many players start winning less.",
+    "analogy": "A small-town tennis club pairs you with whoever is free, and you beat most of them. Join a city league with thousands of players and every opponent is your level: better tennis, fewer wins.",
+    "body": [
+      "A matchmaker takes players waiting in a queue and groups them, usually by a skill rating and by connection quality. The smaller the pool, the longer it takes to find close matches, so games either wait, widen the allowed skill gap, or fill empty seats with bots. Each of those choices shapes how often an ordinary player wins.",
+      "World War Heroes saw this directly. Merging its iOS and Android servers made one bigger pool, and rooms filled with real players far more often than before. Match quality went up and kill ratios went down, and player satisfaction dropped because players had grown used to winning. The settings had been tuned for the smaller pool and had to be revisited.",
+      "The lesson for designers: win rate is a feeling players get used to. Any change to the pool, such as a merge, a new region, a launch spike or a quiet season, changes who people meet, so the matchmaker's settings are game design, not only infrastructure."
+    ],
+    "diagram": {
+      "layout": "flow",
+      "nodes": [
+        {
+          "label": "Queue",
+          "note": "Players waiting to play"
+        },
+        {
+          "label": "Pool",
+          "note": "Who is online right now, by skill and region"
+        },
+        {
+          "label": "Rules",
+          "note": "How long to wait and how wide a skill gap to allow",
+          "key": true
+        },
+        {
+          "label": "Fill",
+          "note": "Real players if enough, otherwise bots"
+        },
+        {
+          "label": "Feel",
+          "note": "How often a typical player wins"
+        }
+      ],
+      "links": [
+        "form",
+        "searched by",
+        "decide",
+        "shapes"
+      ],
+      "caption": "The rules that suit a small pool make a large one feel harder, and the other way round."
+    },
+    "terms": [
+      {
+        "term": "skill rating",
+        "def": "A number the game keeps for each player that rises with wins and falls with losses, used to find fair opponents."
+      },
+      {
+        "term": "kill ratios",
+        "def": "Kills divided by deaths, the usual score of how a shooter player is doing."
+      }
+    ],
+    "seenIn": [
+      "wwh-merge"
+    ],
+    "sources": [
+      {
+        "label": "PocketGamer.biz: World War Heroes merge and matchmaking",
+        "url": "https://www.pocketgamer.biz/how-world-war-heroes-merged-100m-player-accounts-and-reshaped-matchmaking/"
+      }
+    ]
+  },
+  "tryThis": {
+    "lane": "ai",
+    "title": "Turn the review comments you keep repeating into written rules",
+    "gist": "Find the corrections you make to agent code again and again, and write them down as rules an agent or a check can apply before you see the change.",
+    "time": "45 minutes",
+    "level": "practitioner",
+    "needs": "A repository with a few months of pull request comments, or your notes on what you fix in agent output.",
+    "steps": [
+      {
+        "title": "Gather the comments",
+        "text": "Export the last 100 to 300 review comments from your pull requests, including ones you left on agent-written changes."
+      },
+      {
+        "title": "Find the repeats",
+        "text": "Ask an agent to group them by the underlying rule, not the wording, and rank the groups by how often they come up."
+      },
+      {
+        "title": "Write the top rules",
+        "text": "For the top five to ten, write each rule with its scope (which files), how to check it (a test, a lint, a grep or a hook) and who owns it."
+      },
+      {
+        "title": "Put them where agents look",
+        "text": "Add the rules to your agent's instructions file, and turn any that can be checked mechanically into a hook or lint so they run before review."
+      }
+    ],
+    "code": {
+      "lang": "text",
+      "code": "Group these review comments by the rule behind them, not their wording.\nFor each group: state the rule in one sentence, its scope (paths),\na way to check it automatically if one exists, and how many comments it covers.\nSort by count."
+    },
+    "check": "Over your next ten pull requests, the comments you had to repeat should drop. Jain's team turned 11,000 comments into 64 rules and reports reverts down about 40% (a vendor's own figure).",
+    "terms": [
+      {
+        "term": "lint",
+        "def": "An automatic check that flags code breaking a style or safety rule."
+      },
+      {
+        "term": "hook",
+        "def": "A script a tool runs automatically at a set moment, such as before a commit or a tool call."
+      }
+    ],
+    "from": "kill-review",
+    "forYou": "Start with the corrections you most often give Claude Code on the UE C++ plugins (naming, UPROPERTY specifiers, includes) and move them into hooks.",
+    "sources": [
+      {
+        "label": "InfoQ: How to Kill the Code Review",
+        "url": "https://www.infoq.com/news/2026/11/qcon-sf-26-kill-code-review"
+      }
+    ]
+  },
+  "ticker": [
+    {
+      "text": "Ludo.ai's tileset generator makes 16-tile terrain sets for top-down and isometric games and exports to Godot 4 and Tiled; it can be driven over MCP, a CLI or an API.",
+      "lane": "gamedev",
+      "url": "https://www.pocketgamer.biz/ludoai-launches-ai-powered-tileset-generator-for-2d-game-development/",
+      "source": "PocketGamer.biz"
+    },
+    {
+      "text": "Colossal Order's CEO says loudly requested features (multiplayer, a scenario editor) were used by few players; the studio no longer starts a game without a market study.",
+      "lane": "gamedev",
+      "url": "https://www.pocketgamer.biz/colossal-order-mariina-hallikainen-data-gut-feeling-game-for-everyone/",
+      "source": "PocketGamer.biz"
+    },
+    {
+      "text": "Moss & Glow's developer tunes 400 puzzle levels with headless bots that play each one many times and set its star thresholds.",
+      "lane": "gamedev",
+      "url": "https://dev.to/mossandglow/i-didnt-tune-400-puzzle-levels-by-hand-i-wrote-bots-to-play-them-for-me-3a5b",
+      "source": "DEV"
+    },
+    {
+      "text": "In C++, a '= default' constructor and an empty '{}' one are not the same: Lemire measured GCC 15 and 16 more than 4 times slower with '= default' on value-initialised structs.",
+      "lane": "gamedev",
+      "url": "https://lemire.me/blog/2026/11/02/default-and-braces-are-not-the-same-constructor",
+      "source": "Daniel Lemire"
+    },
+    {
+      "text": "HezFX, a Ziva-style muscle, fat and skin solver for Max, Maya, Blender and Houdini, now sells in three subscription tiers.",
+      "lane": "gamedev",
+      "url": "https://80.lv/articles/ziva-vfx-inspired-physics-based-muscle-simulation-tool-for-3ds-max-maya-blender-houdini",
+      "source": "80.lv"
+    },
+    {
+      "text": "Mock Service Worker 3.0 is ESM-only, needs Node 22 and TypeScript 5.9, and can now intercept raw TCP and TLS sockets in Node; it also catches browser preflight requests.",
+      "lane": "ai",
+      "url": "https://www.infoq.com/news/2026/11/mock-service-worker-v3",
+      "source": "InfoQ"
+    },
+    {
+      "text": "Node.js 27's first alpha marks node:sqlite stable and ships V8 15.6.",
+      "lane": "ai",
+      "url": "https://nodejs.org/en/blog/release/v27.0.0-alpha.0.2.0",
+      "source": "Node.js"
+    },
+    {
+      "text": "From December 1, commenting or reviewing on GitHub no longer resubscribes you to a thread you left; filters keyed on notification reasons may match more.",
+      "lane": "ai",
+      "url": "https://github.blog/changelog/2026-11-24-more-predictable-notifications-on-github-com",
+      "source": "GitHub Changelog"
+    },
+    {
+      "text": "Claude API linked billing (beta, Nov 17): an app's users can pay for inference from their own Claude organisation, chosen per request with a billing_policy field.",
+      "lane": "ai",
+      "url": "https://platform.claude.com/docs/en/release-notes/api",
+      "source": "Claude release notes"
+    },
+    {
+      "text": "A preprint reports that approving a coding agent's permission prompt can also carry a policy update that removes a deny rule; the authors tested 10 agent systems.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2611.32195",
+      "source": "arXiv"
+    },
+    {
+      "text": "ReproCue writes runnable crash proofs for AI-reported Linux kernel bugs: 49 of 100 reports reproduced, against 10 for the current agentic reproducer.",
+      "lane": "ai",
+      "url": "https://arxiv.org/abs/2611.34142",
+      "source": "arXiv"
+    },
+    {
+      "text": "tabc runs a Docker container in a Chromium tab on a Linux kernel compiled to WebAssembly; its author measures 0.87 s to run echo, and compute 11 to 36 times slower than runc.",
+      "lane": "ai",
+      "url": "https://fzakaria.com/2026/11/25/browser-tabs-as-a-container-runtime",
+      "source": "Farid Zakaria"
+    },
+    {
+      "text": "lip-dictation types Claude Code prompts by reading your lips from a webcam, locally, and tells the agent which words were guessed.",
+      "lane": "ai",
+      "url": "https://github.com/batanus/lip-dictation",
+      "source": "GitHub"
+    }
+  ],
+  "sparks": [
+    {
+      "id": "synth-patch-hero",
+      "lane": "gamedev",
+      "kind": "game",
+      "title": "Synth Patch Hero: match a sound by ear on a modular synth to pay the rent",
+      "where": "Hacker News",
+      "signal": "Show HN on November 24 with 135 points and 27 comments; 89 gigs in the browser.",
+      "hook": "Each gig plays a reference sound; you wire modules and turn knobs until a meter reads a 90% match, then come back and do it cheaper. Every gig teaches one piece of synthesis.",
+      "borrow": "A 'match the target' loop scored by closeness with a pass line, where the player learns a system by assembling it. It would fit shader, VFX or audio-graph tutorials. Commenters asked for finer knob input and a hard mode without graph hints.",
+      "url": "https://swarkentin.github.io/synth-patch-hero/",
+      "forYou": "The closeness-to-target score with a pass threshold is a neat onboarding pattern for teaching a plugin's settings in a demo map.",
+      "image": {
+        "src": "img/2026-11-27/synth-patch.webp",
+        "alt": "Synth Patch Hero's gig board: 'Rent's due. You have a modular synth and a phone that won't stop ringing', with lesson cards such as Dial Tone, Shape of Sound and Pixel Knight.",
+        "credit": "Synth Patch Hero (screenshot)",
+        "creditUrl": "https://swarkentin.github.io/synth-patch-hero/",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "sidebyside",
+      "lane": "both",
+      "kind": "tool",
+      "title": "Three real browsers in three Linux machines, inside one browser tab",
+      "where": "Hacker News, GitHub",
+      "signal": "Show HN on November 26 with 126 points; it runs on unkernel, a Linux kernel compiled to WebAssembly with about 2,000 GitHub stars.",
+      "hook": "Type a URL and Firefox, Chromium and Epiphany (WebKit) each boot in their own pane, with nothing installed. A mobile toggle switches all three to a phone-sized window.",
+      "borrow": "Check a web game in all three browser engines, WebKit included, from any desktop. It needs 8 GB of RAM and one to three minutes on first load.",
+      "url": "https://michidk.github.io/sidebyside/",
+      "forYou": "A quick WebKit check for the three.js games without a Mac or an iPhone at hand.",
+      "image": {
+        "src": "img/2026-11-27/sidebyside.webp",
+        "alt": "Three browser panes side by side, labelled Firefox Gecko, Chromium Blink and Epiphany WebKit, each showing the same example.com page with slightly different text rendering.",
+        "credit": "michidk/sidebyside",
+        "creditUrl": "https://github.com/michidk/sidebyside",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "button-sounds",
+      "lane": "gamedev",
+      "kind": "tool",
+      "title": "Button Sounds: 50+ recorded clicks with several takes each",
+      "where": "Hacker News",
+      "signal": "889 points and 134 comments on Hacker News on November 25.",
+      "hook": "Every sound has up to 16 separately recorded samples, picked at random on each click, with separate press and release takes and a random-pitch dial, so repeats never sound identical.",
+      "borrow": "Round-robin samples and a little pitch jitter are the cheap trick behind UI sound that feels physical. It ships as an npm package with optional React bindings.",
+      "url": "https://buttons.joshwcomeau.com/",
+      "forYou": "Free, recorded UI clicks for the web games and SaaS front ends; the press and release split is worth copying for menu feel in Unreal too.",
+      "image": {
+        "src": "img/2026-11-27/buttons.webp",
+        "alt": "The Button Sounds playground: a list of sounds such as hi75-soft and ps5-clicky, a big red 'Press me!' button, and grids of numbered press and release samples.",
+        "credit": "Josh W. Comeau, Button Sounds (screenshot)",
+        "creditUrl": "https://buttons.joshwcomeau.com/",
+        "fit": "cover"
+      }
+    }
+  ],
+  "lab": [
+    {
+      "id": "skill-lift",
+      "lane": "ai",
+      "kind": "preprint",
+      "title": "What Does Skill Lift Actually Measure? A Source-Code-Level Audit and Noise-Aware Reanalysis of SkillsBench",
+      "headline": "Agent skills do help, but part of a well-known benchmark's gain came from grader quirks, and its 'skills can hurt' result was noise",
+      "authors": "Haozhe Zhang, Zhen Long",
+      "where": "arXiv preprint",
+      "date": "2026-11-25",
+      "problem": "SkillsBench reports that human-written skills raise agent pass rates, but that some tasks get worse. Teams use results like this to decide which skills and instruction files to load.",
+      "idea": "Read the benchmark's own source code, then reanalyse its 7,554 public trials with permutation tests, false-discovery control, held-out runs and label-shuffled baselines.",
+      "result": "Lift is real, about 18.7 points, but three tasks whose graders demand things the prompt never states give +72 to +76 points, about 18% of the total. The no-skill baseline still loaded 48 built-in skills in 4 of 6 trials. No task was significantly hurt. A rule for when to load skills gained +2.9 offline but only +0.12 held out.",
+      "useIt": "When you test a skill or instruction file: confirm the baseline really has none loaded, state every grader requirement in the prompt, run more than three trials, and check any 'load only when' rule on held-out tasks and shuffled labels.",
+      "maturity": "code",
+      "forYou": "Apply the checklist before trusting any A/B of a new Claude Code skill in the routines; three runs is not enough to call a loss.",
+      "links": [
+        {
+          "label": "arXiv: 2611.33943",
+          "url": "https://arxiv.org/abs/2611.33943"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/rrrrr4788/skillsbench-lift-reanalysis"
+        }
+      ]
+    },
+    {
+      "id": "play2evolve",
+      "lane": "gamedev",
+      "kind": "preprint",
+      "title": "Playfulness as Feedback for Agentic Game Development",
+      "headline": "Agents that play their own game, judge it and redesign it make games people rate far higher than code that merely runs",
+      "authors": "Weijia Mao, Kevin Qinghong Lin, Zhen Fang et al. (Show Lab)",
+      "where": "arXiv preprint",
+      "date": "2026-11-24",
+      "problem": "Games written by coding agents usually run but are not fun, because nothing in the loop checks the play.",
+      "idea": "Three agents take turns: a Player plays the game, a Judge lists problems in function, visuals and gameplay, and a Designer fixes bugs, improves assets with a video model and sets new gameplay goals. The loop repeats over versions.",
+      "result": "On the authors' GameCraft benchmark the loop scores 60.05, against 50.81 at the start and 52.46 for a code-only baseline. People rated overall quality 3.67 out of 5, against 2.38 and 2.43. The appendix notes a judge can be fooled by a shell that passes checks without content.",
+      "useIt": "Add a play-and-critique pass to agent-built prototypes: one agent plays from recordings, another lists issues before the next edit. Keep a human spot check, since the judge can be gamed.",
+      "maturity": "prototype",
+      "forYou": "A pattern for the three.js prototypes: let a second agent play a build from a recording and list what is not fun before the next iteration.",
+      "links": [
+        {
+          "label": "arXiv: 2611.33457",
+          "url": "https://arxiv.org/abs/2611.33457"
+        },
+        {
+          "label": "Project repository",
+          "url": "https://github.com/showlab/Play2Evolve"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-27/play2evolve.webp",
+        "alt": "Figure: a Player, Judger and Designer loop improves a platformer from a plain V0 to a lush V2 with a waterfall; charts show the method's benchmark score rising over versions and higher human ratings.",
+        "credit": "Mao et al., arXiv 2611.33457",
+        "creditUrl": "https://arxiv.org/abs/2611.33457",
+        "fit": "contain"
+      }
+    },
+    {
+      "id": "copilot-edit",
+      "lane": "ai",
+      "kind": "report",
+      "title": "Building a Unified Inline Code Editing Model for GitHub Copilot",
+      "headline": "Copilot swapped three editing models for one that returns several edits at once, and cut its output tokens by more than half",
+      "authors": "Julia Gong, Benjamin Liggett, Shengjie Ma et al. (Microsoft CodeAI and VS Code teams)",
+      "where": "Industry report, arXiv",
+      "date": "2026-11-24",
+      "problem": "Completion, next-edit and far-away-edit suggestions came from three separate models stitched together by the editor, which was slow and inconsistent.",
+      "idea": "One model writes a sequence of anchored patches, so a single response can carry the edit at the cursor plus follow-up edits the editor caches. Multi-edit training data was made from single-edit data by replaying edit histories.",
+      "result": "In a production A/B test against the three-model setup: time to show a suggestion down 6.8% and output tokens down 58.9%, with no significant regression on guardrail metrics. All figures are Microsoft's own.",
+      "useIt": "If you build editor or agent tooling, let one response carry several anchored edits and cache the extras, and track how often patches fail to apply, not only accuracy.",
+      "maturity": "shipping",
+      "links": [
+        {
+          "label": "arXiv: 2611.33314",
+          "url": "https://arxiv.org/abs/2611.33314"
+        }
+      ],
+      "image": {
+        "src": "img/2026-11-27/copilot-edit.webp",
+        "alt": "A code editor showing a suggested edit as a diff: a validation line in red is replaced by a green line that also checks a message field.",
+        "credit": "Gong et al., Microsoft, arXiv 2611.33314",
+        "creditUrl": "https://arxiv.org/abs/2611.33314",
+        "fit": "contain"
+      }
+    }
+  ],
+  "note": "Reddit, X and TikTok were unreachable today, so Sparks lean on Hacker News. Wiley and ACM pages refused reads, so The lab could not use journal papers and is all arXiv."
+}
