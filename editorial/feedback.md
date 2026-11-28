@@ -8,6 +8,15 @@ entries under "Folded in".
 
 ## New
 
+- #12 More like: Button Sounds: 50+ recorded clicks with several takes each (2026-11-28)
+  direction: more
+  issue: 2026-11-27
+  block: button-sounds
+  format: spark
+  lane: gamedev
+  
+  Optional note (what exactly, and why):
+
 
 ## Folded in
 
