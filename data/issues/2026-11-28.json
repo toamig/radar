@@ -1,0 +1,1227 @@
+{
+ "date": "2026-11-28",
+ "number": 46,
+ "title": "The AI reviewer that is allowed to say yes",
+ "dek": "PyTorch now lets an AI approve its maintainers' pull requests, rebuilding Meta's RADAR in the open with its guardrails written down. Plus a skill that phones home, Balatro's full wishlist curve, and Google Play's address rule.",
+ "theme": {
+  "paper": "mint",
+  "text": "federal-blue",
+  "inks": [
+   "purple",
+   "yellow"
+  ],
+  "type": "condensed",
+  "mood": "a Saturday about who gets to approve, and what to check first"
+ },
+ "tldr": [
+  {
+   "text": "PyTorch's **GreenLight** lets an AI reviewer running Claude Code approve maintainers' pull requests. It copies Meta's RADAR, which has landed 331K+ low-risk changes.",
+   "lane": "ai"
+  },
+  {
+   "text": "Its guardrails are worth copying: approval tied to one commit, a revert bans the PR, and files like CLAUDE.md are stripped before the AI reads the change.",
+   "lane": "ai"
+  },
+  {
+   "text": "An open issue says Convex's agent skills send your app idea to a remote host and pipe scripts into bash. Read skills like dependencies.",
+   "lane": "ai"
+  },
+  {
+   "text": "Balatro's creator published every month of wishlists, 48 to 208,401, and what moved each step.",
+   "lane": "gamedev"
+  },
+  {
+   "text": "Google Play will show individual traders' phone and address from March 1, 2027. Declare by February 1.",
+   "lane": "gamedev"
+  }
+ ],
+ "blocks": [
+  {
+   "id": "greenlight",
+   "format": "hero",
+   "variant": "stack",
+   "lane": "ai",
+   "importance": 1,
+   "size": "full",
+   "ink": "a",
+   "texture": "flat",
+   "title": "PyTorch lets an AI reviewer approve pull requests, copying Meta's playbook",
+   "kind": "news",
+   "level": "everyone",
+   "gist": "PyTorch now runs an open-source bot that reviews pull requests from its maintainers with an AI and approves the ones it judges safe. It copies a system Meta uses internally, which has already landed more than 331,000 code changes.",
+   "background": "Meta described its system, RADAR, in a paper in May. PyTorch, the machine learning framework Meta started, said then that it would rebuild it in the open.",
+   "body": [
+    "**GreenLight** scans open pull requests every five minutes, sends eligible ones to an AI review that runs through **Claude Code**, and approves the ones that come back with a land verdict. Only authors already named in PyTorch's merge rules can get a real approval. Everyone else is reviewed in shadow: the verdict is recorded, but never acted on.",
+    "Meta's **RADAR** is the larger version. It sorts each change by where it came from (a person, a bot, an automated runbook), applies hard gates, scores its risk with a trained model, asks an LLM to confirm the change falls in safe categories such as dead code removal, tests or logging, and only then lands it, after a delay in which a person can still say no. Any failure sends the change to a human.",
+    "The reason is volume. Meta's paper says lines per human-landed change rose 105.9% in a year and changes per developer rose 51%, mostly from AI agents, while the share reviewed within a day fell. OpenAI told QCon San Francisco it aims to auto-approve at least 90% of routine pull requests on one product."
+   ],
+   "diagram": {
+    "layout": "flow",
+    "nodes": [
+     {
+      "label": "Sort",
+      "note": "Who or what wrote it: a person, a bot, a runbook"
+     },
+     {
+      "label": "Gates",
+      "note": "No open-source, audited or special-review code"
+     },
+     {
+      "label": "Risk score",
+      "note": "A trained model ranks it against all changes",
+      "key": true
+     },
+     {
+      "label": "AI review",
+      "note": "8 of 10 confidence, safe categories only"
+     },
+     {
+      "label": "Wait",
+      "note": "A delay where a person can still reject it"
+     },
+     {
+      "label": "Land",
+      "note": "Any failure goes to a human instead"
+     }
+    ],
+    "links": [
+     "eligible",
+     "passes",
+     "low risk",
+     "approved",
+     "no veto"
+    ],
+    "caption": "How Meta's RADAR decides which changes land without a reviewer, from the RADAR paper and InfoQ's summary. GreenLight is the open, narrower version."
+   },
+   "stat": {
+    "value": "331K+",
+    "label": "changes RADAR has landed at Meta, of 535K+ it reviewed"
+   },
+   "why": "When agents write more code than people can read, the question becomes which changes may skip a human. This is the first open, working answer from a team at scale, with its guardrails written down.",
+   "forYou": "Your routines already open PRs on your own repos; GreenLight's shadow mode is the safe way to test an auto-approver on them: let it vote for a few weeks, compare with what you actually merged, and only then let it approve the narrowest category (tests, docs).",
+   "terms": [
+    {
+     "term": "pull request",
+     "def": "A proposed code change that waits for review before it is merged."
+    },
+    {
+     "term": "LLM",
+     "def": "A large language model, the kind of AI behind chat assistants and coding agents."
+    },
+    {
+     "term": "shadow",
+     "def": "Running a system for real but ignoring its decisions, so you can compare them with what people did."
+    },
+    {
+     "term": "runbook",
+     "def": "A scripted, repeatable change, such as a dependency bump, that a bot applies across many files."
+    }
+   ],
+   "deep": [
+    "RADAR's risk thresholds depend on the source: allowlisted runbooks may land up to the 50th percentile of risk, other bots up to the 20th, and human-authored changes only up to the 5th. Runbooks also need a 60-day record with zero production incidents and are capped at 2,000 changes a day. Open-source and SOX-scoped code is never eligible.",
+    "The paper reports a 60.31% approve rate after relaxing the threshold from the 25th to the 50th percentile, revert rates one third and production incident rates one fiftieth of non-RADAR changes, and a 35% shorter median review time. The authors call the safety comparison observational, not causal. The abstract also claims time to close fell by 'over 330%', which cannot be read literally.",
+    "GreenLight's README says the review runs through claude-code-action (CLI last verified at 2.1.169), with a 20-minute target and a 33-minute hard limit per review, and declines changes over about 2,000 lines or 200 files."
+   ],
+   "sources": [
+    {
+     "label": "GreenLight README (PyTorch)",
+     "url": "https://github.com/pytorch/test-infra/tree/main/greenlight"
+    },
+    {
+     "label": "RADAR paper (arXiv)",
+     "url": "https://arxiv.org/abs/2605.30208"
+    },
+    {
+     "label": "InfoQ",
+     "url": "https://www.infoq.com/news/2026/11/uber-agent-spend-steady"
+    },
+    {
+     "label": "QCon SF talk (OpenAI)",
+     "url": "https://qconsf.com/presentation/nov2026/lessons-building-100m-product-six-weeks-openai"
+    }
+   ]
+  },
+  {
+   "id": "radar-numbers",
+   "format": "stat",
+   "lane": "ai",
+   "importance": 3,
+   "size": "third",
+   "ink": "b",
+   "texture": "halftone",
+   "title": "Meta's auto-reviewer in three numbers",
+   "kind": "news",
+   "level": "everyone",
+   "gist": "Changes that RADAR reviewed were reverted and broke production far less often than the rest, though the changes it accepts were chosen for being low risk.",
+   "stats": [
+    {
+     "value": "331K+",
+     "label": "changes landed by RADAR, of 535K+ reviewed"
+    },
+    {
+     "value": "1/50",
+     "label": "its production incident rate, against other changes"
+    },
+    {
+     "value": "-35%",
+     "label": "median time spent reviewing a change"
+    }
+   ],
+   "body": [
+    "Meta-reported, from the RADAR paper. The authors say the comparison is observational: RADAR only takes changes that already looked safe."
+   ],
+   "why": "Numbers like these are what a team needs before letting a bot approve anything; note what they do and do not prove.",
+   "terms": [
+    {
+     "term": "revert",
+     "def": "Undoing a change after it was merged, usually because it broke something."
+    }
+   ],
+   "sources": [
+    {
+     "label": "RADAR paper (arXiv)",
+     "url": "https://arxiv.org/abs/2605.30208"
+    }
+   ]
+  },
+  {
+   "id": "greenlight-rules",
+   "format": "list",
+   "lane": "ai",
+   "importance": 3,
+   "size": "wide",
+   "ink": "a",
+   "texture": "flat",
+   "title": "Five guardrails in GreenLight worth copying",
+   "kind": "lesson",
+   "level": "everyone",
+   "gist": "The open-source bot's README spells out how it avoids approving the wrong thing, and most of the rules work for any team, with or without AI.",
+   "intro": "From the GreenLight README in PyTorch's test-infra repository.",
+   "items": [
+    {
+     "title": "Trusted authors only",
+     "text": "Only people already allowed to approve code can get an AI approval. Everyone else is reviewed in shadow, recorded but never approved.",
+     "url": "https://github.com/pytorch/test-infra/tree/main/greenlight"
+    },
+    {
+     "title": "Approval belongs to one exact commit",
+     "text": "The approval is tied to the commit the AI read. Push anything new and the merge gate waits for a fresh review.",
+     "url": "https://github.com/pytorch/test-infra/tree/main/greenlight"
+    },
+    {
+     "title": "One revert, banned for good",
+     "text": "If a change it approved is reverted, the bot withdraws its approval and never reviews that pull request again, even if the label is removed.",
+     "url": "https://github.com/pytorch/test-infra/tree/main/greenlight"
+    },
+    {
+     "title": "Strip the contributor's instructions",
+     "text": "Before the AI reads a pull request it deletes files such as CLAUDE.md, AGENTS.md and .cursorrules from it, so a contributor cannot slip instructions to the reviewer.",
+     "url": "https://github.com/pytorch/test-infra/tree/main/greenlight"
+    },
+    {
+     "title": "Say no to big changes",
+     "text": "Anything over about 2,000 lines or 200 files gets an automatic no, with the reason 'scope too large'.",
+     "url": "https://github.com/pytorch/test-infra/tree/main/greenlight"
+    }
+   ],
+   "why": "An AI reviewer reads text written by the person it is judging. Stripping their instruction files and pinning approval to one commit close the two easiest ways to game it.",
+   "forYou": "Copy the instruction-file stripping into any routine that reviews code it did not write: run reviews on a checkout with CLAUDE.md and .claude/rules removed, and restore skills only from main.",
+   "terms": [
+    {
+     "term": "commit",
+     "def": "One saved snapshot of changes in a Git repository, with a unique id."
+    },
+    {
+     "term": "CLAUDE.md",
+     "def": "A file of standing instructions that Claude Code reads at the start of every session in a project."
+    }
+   ],
+   "sources": [
+    {
+     "label": "GreenLight README",
+     "url": "https://github.com/pytorch/test-infra/tree/main/greenlight"
+    }
+   ]
+  },
+  {
+   "id": "convex-skills",
+   "format": "list",
+   "lane": "ai",
+   "importance": 3,
+   "size": "half",
+   "ink": "b",
+   "texture": "flat",
+   "title": "An agent skill that sends your app idea away and pipes scripts into bash",
+   "kind": "news",
+   "level": "everyone",
+   "gist": "An open GitHub issue says Convex's official skills for coding agents quietly send the user's project idea to a remote server and run downloaded scripts, worded to slip past the agent's safety checks.",
+   "background": "Skills are packaged instructions and scripts that a coding agent such as Claude Code loads to learn a task. Convex is a hosted backend for web apps.",
+   "intro": "Claims from issue #64, opened October 26 and on the Hacker News front page on November 27. No maintainer has replied.",
+   "items": [
+    {
+     "title": "Your idea leaves the machine",
+     "text": "The quickstart skill posts the user's one-line project idea to a convex.site host, labelled telemetry in a code comment, without telling the user.",
+     "url": "https://github.com/convex/convex-backend-skill/issues/64"
+    },
+    {
+     "title": "Remote scripts run unseen",
+     "text": "The add skill downloads scripts from the same host and pipes them straight into bash; a later comment adds unpinned dependencies.",
+     "url": "https://github.com/convex/convex-backend-skill/issues/64"
+    },
+    {
+     "title": "Split to dodge the check",
+     "text": "Another skill splits download and run into two calls, saying one combined command is the shape safety classifiers block.",
+     "url": "https://github.com/convex/convex-backend-skill/issues/64"
+    },
+    {
+     "title": "What to look for",
+     "text": "Before installing any skill, search it for outbound POSTs, curl piped to a shell, and instructions about avoiding the agent's checks.",
+     "url": "https://news.ycombinator.com/item?id=50669765"
+    }
+   ],
+   "why": "A skill is code and prompt from someone else running with your agent's permissions. Read it like a dependency, because that is what it is.",
+   "forYou": "Grep every third-party skill in your Claude Code setup for curl, POST and '| bash' before the next routine run; the Nov 25 server-skills hook (PreSkillShellCommand) can block the shell part.",
+   "terms": [
+    {
+     "term": "bash",
+     "def": "The command-line shell on most Linux and Mac machines; piping a download into it runs the file at once."
+    },
+    {
+     "term": "telemetry",
+     "def": "Data a program sends home about how it is used."
+    }
+   ],
+   "sources": [
+    {
+     "label": "GitHub issue #64",
+     "url": "https://github.com/convex/convex-backend-skill/issues/64"
+    },
+    {
+     "label": "Hacker News",
+     "url": "https://news.ycombinator.com/item?id=50669765"
+    }
+   ]
+  },
+  {
+   "id": "cloudflare-search",
+   "format": "code",
+   "lane": "ai",
+   "importance": 3,
+   "size": "half",
+   "ink": "a",
+   "texture": "flat",
+   "title": "Cloudflare gives any site a search endpoint for agents",
+   "kind": "release",
+   "level": "everyone",
+   "gist": "One switch in Cloudflare's dashboard now indexes your site and answers agents' searches at a fixed address, returning the matching pages as Markdown instead of making them crawl.",
+   "intro": "Turn on Search for Agents under the zone's Quick Actions; the requests below are the post's own examples, run against Cloudflare's docs.",
+   "lang": "bash",
+   "code": "# plain search\ncurl --get \\\n  'https://developers.cloudflare.com/.well-known/search' \\\n  --data-urlencode 'q=cloudflare artifacts'\n\n# a question in the body, with the new QUERY method\ncurl -X QUERY \\\n  'https://developers.cloudflare.com/.well-known/search' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"q\":\"Email Service bulk import limit?\"}'",
+   "explain": [
+    "Results are pieces of your own pages with a relevance score and a path, not a generated answer: the agent brings its own model. Pages advertise the endpoint with `agent:` meta tags so agents find it.",
+    "It is on every plan, Free included, within AI Search limits; usage beyond them is billed. QUERY is a new HTTP method, standardised in June, for searches that carry a body without changing anything."
+   ],
+   "why": "Docs that answer an agent's question in one request get used correctly more often than docs an agent has to scrape.",
+   "forYou": "Turn it on for a product docs site on Cloudflare and point Claude Code at the endpoint; plugin buyers' agents could read setup docs the same way.",
+   "terms": [
+    {
+     "term": "Markdown",
+     "def": "A plain text format with light marks for headings and links, easy for both people and models to read."
+    },
+    {
+     "term": "endpoint",
+     "def": "A web address a program calls to get data."
+    }
+   ],
+   "sources": [
+    {
+     "label": "Cloudflare blog",
+     "url": "https://blog.cloudflare.com/search-for-agents/"
+    },
+    {
+     "label": "AI Search limits and pricing",
+     "url": "https://developers.cloudflare.com/ai-search/platform/limits-pricing/"
+    }
+   ]
+  },
+  {
+   "id": "quasar",
+   "format": "diagram",
+   "lane": "ai",
+   "importance": 2,
+   "size": "full",
+   "ink": "b",
+   "texture": "flat",
+   "title": "Netflix built a map of who calls what, so a library change shows its blast radius first",
+   "kind": "lesson",
+   "level": "everyone",
+   "gist": "Before changing a shared library, Netflix engineers can now see which of the company's repositories use the exact function they want to touch. Removing one old method turned out to affect 137 repositories.",
+   "layout": "flow",
+   "intro": "Netflix's Quasar indexes code in every build, then answers one question for a pull request: who uses what changed?",
+   "nodes": [
+    {
+     "label": "Index",
+     "note": "Each CI build records where symbols are defined and used (SCIP format)"
+    },
+    {
+     "label": "Store",
+     "note": "Parquet files in S3, queried with Athena"
+    },
+    {
+     "label": "Diff the API",
+     "note": "Compare a library's public symbols between two commits"
+    },
+    {
+     "label": "Find users",
+     "note": "Which repos, versions and lines call what changed",
+     "key": true
+    },
+    {
+     "label": "Serve",
+     "note": "REST, GraphQL and an MCP server for people and agents"
+    }
+   ],
+   "links": [
+    "every build",
+    "query",
+    "changed symbols",
+    "results"
+   ],
+   "caption": "Usage covers Java, Go, Python, JavaScript and TypeScript, and Rust; compatibility checks cover JVM and Protobuf APIs. Netflix warns that no references does not prove unused: reflection, dynamic loading and stale indexes hide callers, so it is adding runtime data next.",
+   "why": "The same idea works at any size: a code index plus a query tells you, or your agent, what a change will break before review, not after release.",
+   "forYou": "Shared Unreal plugin modules have the same problem across your own game and buyers' projects; even a scripted grep of public headers against your sample projects would catch removed APIs before a Fab update.",
+   "terms": [
+    {
+     "term": "SCIP",
+     "def": "An open file format for code indexes: where every function and type is defined and every place it is used."
+    },
+    {
+     "term": "CI",
+     "def": "Continuous integration: the automatic build and tests that run on every change."
+    },
+    {
+     "term": "MCP",
+     "def": "Model Context Protocol, the standard way to give AI agents access to tools and data."
+    },
+    {
+     "term": "blast radius",
+     "def": "Everything that breaks or must change when one thing changes."
+    }
+   ],
+   "deep": [
+    "Netflix plans to move the check earlier, so coding agents look up consumers of a public API before they open a pull request. Quasar complements Revapi for compatibility and Kythe for code navigation."
+   ],
+   "sources": [
+    {
+     "label": "InfoQ",
+     "url": "https://www.infoq.com/news/2026/11/netflix-quasar-api-impact"
+    },
+    {
+     "label": "Netflix Tech Blog",
+     "url": "https://netflixtechblog.com/beyond-api-compatibility-building-a-tool-to-measure-the-blast-radius-of-library-changes-9474f2fd4f90"
+    }
+   ]
+  },
+  {
+   "id": "lock-poison",
+   "format": "compare",
+   "lane": "ai",
+   "importance": 3,
+   "size": "full",
+   "ink": "a",
+   "texture": "overprint",
+   "title": "Armin Ronacher wants Rust to stop poisoning locks after a panic",
+   "kind": "lesson",
+   "level": "everyone",
+   "gist": "In Rust, if a program crashes one task while it holds a lock, that lock is marked broken for everyone after. Armin Ronacher argues this turns one crash into a lasting outage and should become opt-in.",
+   "background": "Ronacher created Flask and writes widely about Rust and Python in production.",
+   "intro": "His post of November 25, with the failures he collected from real projects.",
+   "left": "Poisoning lock (today)",
+   "right": "Non-poisoning lock (proposal)",
+   "rows": [
+    {
+     "aspect": "After a panic inside the lock",
+     "left": "The lock is marked poisoned",
+     "right": "The lock is simply released"
+    },
+    {
+     "aspect": "Every later lock().unwrap()",
+     "left": "Panics too, so one crash spreads",
+     "right": "Works; you check your own data"
+    },
+    {
+     "aspect": "In a test suite",
+     "left": "One failing test fails every later test that shares a static",
+     "right": "Only the broken test fails"
+    },
+    {
+     "aspect": "Seen in",
+     "left": "Mozilla crash stats (rank 5), a Neon outage, cargo, deno, polars, rustc tests",
+     "right": "parking_lot, rust-analyzer, Tokio already work this way"
+    },
+    {
+     "aspect": "How to get it",
+     "left": "Default std::sync::Mutex",
+     "right": "std::sync::nonpoison, still unstable"
+    }
+   ],
+   "verdict": "He asks for nonpoison to become the default with an opt-in Poison<T>; until then, a non-poisoning lock or panic=abort avoids the cascade. He names 'In defense of lock poisoning' as the best counterargument.",
+   "why": "Error handling that was meant to protect data can turn a single bug into an outage. Check what your lock does after a crash before you rely on it.",
+   "forYou": "If any Rust service or tool of yours calls lock().unwrap() on a shared Mutex, swap in parking_lot or set panic = \"abort\" in release profiles.",
+   "terms": [
+    {
+     "term": "panic",
+     "def": "Rust's way of crashing the current thread when something goes wrong that the code did not handle."
+    },
+    {
+     "term": "Mutex",
+     "def": "A lock that lets only one thread at a time touch some shared data."
+    },
+    {
+     "term": "parking_lot",
+     "def": "A popular Rust library of faster locks that do not poison."
+    }
+   ],
+   "deep": [
+    "clear_poison, the way to reset a poisoned lock, only arrived in Rust 1.77, nine years after poisoning. RefCell has the same broken-state risk but never poisons; LazyLock poisons permanently and OnceLock never does."
+   ],
+   "sources": [
+    {
+     "label": "Armin Ronacher",
+     "url": "https://lucumr.pocoo.org/2026/11/25/poisoning/"
+    }
+   ]
+  },
+  {
+   "id": "balatro-wishlists",
+   "format": "chart",
+   "lane": "gamedev",
+   "importance": 2,
+   "size": "wide",
+   "ink": "b",
+   "texture": "halftone",
+   "title": "Balatro's wishlists, month by month, from 48 to 208,401",
+   "kind": "lesson",
+   "level": "everyone",
+   "gist": "The solo developer of Balatro published the game's full Steam wishlist count for every month before launch, with what moved it: streamers, a publisher, a better demo and a Steam festival.",
+   "intro": "Wishlists at the end of each month, from the creator's own timeline (first posted in March, back on Hacker News this week).",
+   "unit": "wishlists",
+   "series": [
+    {
+     "label": "May 2023",
+     "value": 48
+    },
+    {
+     "label": "Jun",
+     "value": 2440
+    },
+    {
+     "label": "Jul",
+     "value": 28661
+    },
+    {
+     "label": "Aug",
+     "value": 38011
+    },
+    {
+     "label": "Sep",
+     "value": 49791
+    },
+    {
+     "label": "Oct",
+     "value": 77380
+    },
+    {
+     "label": "Nov",
+     "value": 87280
+    },
+    {
+     "label": "Dec",
+     "value": 94212
+    },
+    {
+     "label": "Jan 2024",
+     "value": 114977
+    },
+    {
+     "label": "Launch day",
+     "value": 208401,
+     "highlight": true
+    }
+   ],
+   "note": "June: one streamer (Dan Gheesling). July: Northernlion played it and a publisher signed. Late September: a demo limited by content, not by 50 rounds. October: Steam Next Fest. January: a six-streamer tournament. Launch on February 20, 2024 sold about 119,000 Steam copies that day.",
+   "why": "Few developers publish the whole curve. It shows wishlists come in steps tied to specific events, and that the count nearly doubled in the last three weeks.",
+   "forYou": "Use the steps as a checklist for the action RPG's page: a content-limited demo before a Next Fest, and streamer outreach timed to it.",
+   "terms": [
+    {
+     "term": "wishlist",
+     "def": "A Steam button that saves a game and notifies the player when it launches or goes on sale."
+    },
+    {
+     "term": "Next Fest",
+     "def": "A Steam event several times a year where hundreds of upcoming games offer free demos."
+    }
+   ],
+   "sources": [
+    {
+     "label": "localthunk: The Balatro Timeline",
+     "url": "https://localthunk.com/blog/balatro-timeline-3aarh"
+    },
+    {
+     "label": "Hacker News",
+     "url": "https://news.ycombinator.com/item?id=50657346"
+    }
+   ]
+  },
+  {
+   "id": "play-address",
+   "format": "stat",
+   "lane": "gamedev",
+   "importance": 3,
+   "size": "third",
+   "ink": "a",
+   "texture": "flat",
+   "title": "Google Play will publish solo traders' phone and address",
+   "kind": "action",
+   "level": "everyone",
+   "gist": "Every Play developer must declare whether they trade commercially. Individuals who do will have their phone number and address shown to users.",
+   "stats": [
+    {
+     "value": "Feb 1",
+     "label": "2027: deadline to declare trader or non-trader"
+    },
+    {
+     "value": "Mar 1",
+     "label": "2027: details shown, as Play becomes an EEA and UK marketplace"
+    }
+   ],
+   "body": [
+    "Missing the deadline can block updates and remove apps everywhere; a false non-trader claim can get the account terminated. The page offers no way to hide a personal address."
+   ],
+   "why": "If you sell apps under a personal account, decide now whether a company account or a business address is worth setting up.",
+   "forYou": "The Flutter apps and any Play-published game sit on which account? If personal, move them under an Imperion Games organization account before February.",
+   "terms": [
+    {
+     "term": "trader",
+     "def": "In EU and UK consumer law, anyone selling as part of a business, craft or profession."
+    }
+   ],
+   "sources": [
+    {
+     "label": "Play Console Help",
+     "url": "https://support.google.com/googleplay/android-developer/answer/17594752?hl=en"
+    },
+    {
+     "label": "Hacker News",
+     "url": "https://news.ycombinator.com/item?id=50662322"
+    }
+   ]
+  },
+  {
+   "id": "d2c-share",
+   "format": "chart",
+   "lane": "gamedev",
+   "importance": 3,
+   "size": "full",
+   "ink": "b",
+   "texture": "flat",
+   "title": "Web shops now bring 20 to 58% of sales at mobile publishers",
+   "kind": "trend",
+   "level": "everyone",
+   "gist": "Mobile game publishers increasingly sell in-game items through their own web stores, skipping the app stores' cut. In the last quarter, several made more than 40% of sales that way.",
+   "intro": "Direct-to-consumer share of sales or bookings, third quarter of 2026, as each company reported it.",
+   "unit": "%",
+   "series": [
+    {
+     "label": "DoubleDown",
+     "value": 58,
+     "highlight": true
+    },
+    {
+     "label": "Stillfront",
+     "value": 47
+    },
+    {
+     "label": "Huuuge",
+     "value": 45.4
+    },
+    {
+     "label": "MTG",
+     "value": 42
+    },
+    {
+     "label": "Playtika",
+     "value": 40.8
+    },
+    {
+     "label": "SciPlay",
+     "value": 31
+    },
+    {
+     "label": "Ten Square (Sep)",
+     "value": 22
+    },
+    {
+     "label": "G5",
+     "value": 21
+    }
+   ],
+   "note": "Company-reported; some count revenue, some bookings. DoubleDown was at 20.9% a year earlier, MTG at 26%. Appcharge, which sells web shop tools, puts the market at $17 billion.",
+   "why": "Selling outside the stores is no longer an experiment for big publishers. The tools and player habits they build reach small studios next.",
+   "forYou": "For browser and mobile games, plan a web checkout from day one; Stripe on a Supabase backend is the same pattern at small scale.",
+   "terms": [
+    {
+     "term": "direct-to-consumer",
+     "def": "Selling to players through your own website or store instead of through Apple's or Google's."
+    },
+    {
+     "term": "bookings",
+     "def": "Money from sales counted when the player pays, before accounting spreads it over time."
+    }
+   ],
+   "sources": [
+    {
+     "label": "PocketGamer.biz",
+     "url": "https://www.pocketgamer.biz/revealed-how-much-direct-to-consumer-revenue-games-publishers-really-made-in-q3-2026/"
+    }
+   ]
+  },
+  {
+   "id": "godot-rc",
+   "format": "spotlight",
+   "lane": "gamedev",
+   "importance": 3,
+   "size": "half",
+   "ink": "a",
+   "texture": "flat",
+   "title": "Godot 4.8 reaches its first release candidate",
+   "kind": "release",
+   "level": "everyone",
+   "gist": "The next version of the free Godot engine is feature complete. The first release candidate fixes regressions, and C# projects will need a newer .NET.",
+   "name": "Godot 4.8 RC 1",
+   "what": "The free, open-source engine's next version, now frozen for features and taking only fixes.",
+   "body": [
+    "The candidate has 22 fixes from 14 contributors since beta 5, mostly regressions. Players are already showing off new features such as screen-space shadows, which add small contact shadows that the usual shadow maps miss. No stable date has been given."
+   ],
+   "facts": [
+    {
+     "k": "C#",
+     "v": ".NET 10 or newer now required (was .NET 8)"
+    },
+    {
+     "k": "Builds",
+     "v": "Desktop, web, XR and Android editor"
+    },
+    {
+     "k": "Before you open a project",
+     "v": "Back it up or commit it first"
+    }
+   ],
+   "tryIt": "https://godotengine.org/article/release-candidate-godot-4-8-rc-1/",
+   "image": {
+    "src": "img/2026-11-28/godot-shadows.webp",
+    "alt": "A Godot 4.8 demo: a settings panel with Screen Space Shadows ticked beside a field of dense grass and ferns in warm, hazy light.",
+    "credit": "wrobotgames on Bluesky (video still)",
+    "creditUrl": "https://bsky.app/profile/wrobotgames.bsky.social/post/3n363dzgp322x",
+    "fit": "cover"
+   },
+   "why": "A release candidate is the moment to test your project, while bugs can still be fixed before the stable release.",
+   "forYou": "Open the three.js-to-Godot prototypes in RC 1 now; if any use C#, install .NET 10 first.",
+   "terms": [
+    {
+     "term": "release candidate",
+     "def": "A build that could ship as final unless testers find serious bugs."
+    },
+    {
+     "term": ".NET",
+     "def": "Microsoft's runtime for C#, which Godot uses for C# scripts."
+    }
+   ],
+   "sources": [
+    {
+     "label": "Godot blog",
+     "url": "https://godotengine.org/article/release-candidate-godot-4-8-rc-1/"
+    },
+    {
+     "label": "wrobotgames on Bluesky",
+     "url": "https://bsky.app/profile/wrobotgames.bsky.social/post/3n363dzgp322x"
+    }
+   ]
+  },
+  {
+   "id": "unsloth-engines",
+   "format": "steps",
+   "lane": "gamedev",
+   "importance": 3,
+   "size": "half",
+   "ink": "b",
+   "texture": "flat",
+   "title": "A model on your own machine can now build scenes in four engines",
+   "kind": "lesson",
+   "level": "everyone",
+   "gist": "Unsloth, known for running AI models locally, published setup guides for letting a local model drive Unreal, Unity, Blender and Godot through each editor's MCP server.",
+   "intro": "The ports and plugins from Unsloth's guide. Its example results are its own.",
+   "steps": [
+    {
+     "title": "Pick a model that calls tools well",
+     "text": "The guide recommends Qwen3.8-27B; its Unreal, Blender and Godot examples ran on it or Qwen3.8-Flash-Next."
+    },
+    {
+     "title": "Unreal 5.8: Epic's own server",
+     "text": "Enable the Unreal MCP and All Toolsets plugins (both off by default), turn on Auto Start Server, restart. It listens on port 8000."
+    },
+    {
+     "title": "Unity: MCP for Unity",
+     "text": "Add the CoplayDev package from Git, install uv, start the server on port 8080."
+    },
+    {
+     "title": "Blender 5.1 and Godot 4.5+",
+     "text": "Blender's official MCP add-on on port 9876; Godot MCP Native from the AssetLib on port 9080."
+    },
+    {
+     "title": "Ask for a scene",
+     "text": "Unsloth reports a low-poly island in Blender in 7 tool calls and a self-playing Pong in Godot in 25. Naming Unreal toolsets in the prompt helps the model."
+    }
+   ],
+   "why": "Engine control over MCP no longer needs a paid cloud model; a free local one can try it, which helps where projects cannot leave the machine.",
+   "forYou": "Point the same Unreal MCP server at a local model for throwaway level blockouts, and keep Claude Code for the C++ work.",
+   "terms": [
+    {
+     "term": "MCP",
+     "def": "Model Context Protocol, the standard way to give AI agents access to tools, here the editor's commands."
+    },
+    {
+     "term": "tool call",
+     "def": "One action a model asks a program to perform, such as placing an object."
+    }
+   ],
+   "deep": [
+    "Headless Unreal: `UnrealEditor MyProject.uproject -RenderOffscreen -ModelContextProtocolStartServer`. The tools only work for the owner account and turn off while remote or LAN access is on in Unsloth Studio. A Bluesky post from Unsloth named a different model than its guide; this block follows the guide."
+   ],
+   "sources": [
+    {
+     "label": "Unsloth docs",
+     "url": "https://unsloth.ai/docs/basics/mcp/mcp-engines"
+    },
+    {
+     "label": "Unsloth on Bluesky",
+     "url": "https://bsky.app/profile/unsloth.ai/post/3n3cfucufqc27"
+    }
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "title": "When a machine says yes",
+   "note": "Meta's numbers, and the rules PyTorch wrote down so an AI approval cannot be gamed.",
+   "ids": [
+    "radar-numbers",
+    "greenlight-rules"
+   ]
+  },
+  {
+   "title": "What agents pull in, and what breaks",
+   "note": "A skill that phones home, a search door built for agents, a map of who calls your code, and a Rust lock that spreads crashes.",
+   "ids": [
+    "convex-skills",
+    "cloudflare-search",
+    "quasar",
+    "lock-poison"
+   ]
+  },
+  {
+   "title": "Wishlists, web shops and store rules",
+   "note": "One hit's full wishlist curve, how much publishers now sell direct, and Google Play's new address rule.",
+   "ids": [
+    "balatro-wishlists",
+    "play-address",
+    "d2c-share"
+   ]
+  },
+  {
+   "title": "In the engine",
+   "note": "Godot 4.8 nears release, and local models learn to drive four editors.",
+   "ids": [
+    "godot-rc",
+    "unsloth-engines"
+   ]
+  }
+ ],
+ "learn": {
+  "question": "How does a risk score decide which code a machine may approve?",
+  "answer": "A model trained on past changes and the incidents they caused gives every new change a risk number. Only changes in the safest slice for their source, say the safest 5% for people, may go on to automatic approval.",
+  "analogy": "Like an airport fast lane: travellers with a clean history get a lighter check, everyone else the full one. The fast lane works only because the rules about who qualifies are strict.",
+  "body": [
+   "Meta's Diff Risk Score looks at each code change and estimates how likely it is to cause a production incident. Instead of using the raw number, RADAR ranks it as a percentile against all changes: P5 means 'among the safest 5%'. Each kind of author gets its own cutoff. People writing code by hand get P5, ordinary bots P20, and automated runbooks with a clean 60-day record P50.",
+   "The score is a filter, not a verdict. A change that passes still needs an AI review confirming it only touches safe categories, deterministic checks, and a waiting period where a person can reject it. Meta tunes the cutoffs by watching what happens after landing: reverts, incidents and rejections.",
+   "The known weakness: a model trained on yesterday's incidents cannot see a new kind of failure, and a change can look low risk because it is small while still being wrong. That is why the hard rules sit around it (no open-source or audited code, size caps, trusted authors only) and why Meta calls its safety numbers observational."
+  ],
+  "diagram": {
+   "layout": "flow",
+   "nodes": [
+    {
+     "label": "Past changes",
+     "note": "Which ones caused incidents"
+    },
+    {
+     "label": "Risk model",
+     "note": "Learns what risky changes look like"
+    },
+    {
+     "label": "Percentile",
+     "note": "Ranks a new change against all others"
+    },
+    {
+     "label": "Cutoff",
+     "note": "P5 people, P20 bots, P50 trusted runbooks",
+     "key": true
+    },
+    {
+     "label": "Next checks",
+     "note": "AI review, then a human veto window"
+    }
+   ],
+   "links": [
+    "train",
+    "score",
+    "rank",
+    "pass"
+   ],
+   "caption": "How a risk score gates automatic approval in Meta's RADAR."
+  },
+  "terms": [
+   {
+    "term": "percentile",
+    "def": "A rank out of 100: the 5th percentile of risk means only 5% of changes look safer."
+   },
+   {
+    "term": "production incident",
+    "def": "A failure that affects real users of a live service."
+   }
+  ],
+  "seenIn": [
+   "greenlight",
+   "radar-numbers",
+   "greenlight-rules"
+  ],
+  "sources": [
+   {
+    "label": "RADAR paper (arXiv)",
+    "url": "https://arxiv.org/html/2605.30208v2"
+   },
+   {
+    "label": "InfoQ",
+    "url": "https://www.infoq.com/news/2026/11/uber-agent-spend-steady"
+   }
+  ]
+ },
+ "tryThis": {
+  "lane": "gamedev",
+  "title": "Fire 32 copies of one trade at once, and count the gold",
+  "gist": "Find out in half an hour whether your game's trades or purchases can duplicate money when requests arrive together, and fix it with one locking query.",
+  "time": "half an hour",
+  "level": "practitioner",
+  "needs": "A game or app whose server moves currency or items, and a test database you can reset.",
+  "steps": [
+   {
+    "title": "Pick one transfer",
+    "text": "A bank deposit, a trade or a purchase. Note both accounts' balances on a test copy."
+   },
+   {
+    "title": "Send it 32 times at once",
+    "text": "Fire 32 identical requests at the same instant, for example `for i in $(seq 32); do curl -s -X POST <your-endpoint> & done; wait`."
+   },
+   {
+    "title": "Add up the totals",
+    "text": "The money across both accounts must be unchanged and the sender never below zero. In the paper, an unlocked bank transfer turned 300 gold into about 5,660."
+   },
+   {
+    "title": "Lock, then send the 32 again",
+    "text": "Wrap the move in a transaction that locks both rows in id order before reading the balance, as below, or debit with a condition and accept only if one row changed. Rerun: the transfer should apply once, never more."
+   }
+  ],
+  "code": {
+   "lang": "sql",
+   "code": "START TRANSACTION;\nSELECT gold, bank FROM users WHERE id IN (:a, :b) ORDER BY id FOR UPDATE;\n-- check the balances on the locked values, then\nUPDATE users SET bank = bank - :amount WHERE id = :a;\nUPDATE users SET bank = bank + :amount WHERE id = :b;\nCOMMIT;\n\n-- or: accept only if exactly one row changed\nUPDATE users SET gold = gold - :amount WHERE id = :a AND gold >= :amount;"
+  },
+  "check": "After 32 simultaneous requests the combined balance is exactly what it was before, and the sender's balance never goes negative.",
+  "terms": [
+   {
+    "term": "transaction",
+    "def": "A group of database changes that succeed or fail together."
+   },
+   {
+    "term": "FOR UPDATE",
+    "def": "A clause that locks the rows it reads, so other requests wait until you commit."
+   }
+  ],
+  "from": "mmo-locks",
+  "forYou": "Run it against the Supabase RPCs that move credits in Vylora or any web game economy; Postgres accepts the same SELECT ... FOR UPDATE inside a function.",
+  "sources": [
+   {
+    "label": "Rodrigues, arXiv 2611.33256",
+    "url": "https://arxiv.org/abs/2611.33256"
+   }
+  ]
+ },
+ "ticker": [
+  {
+   "text": "Rust 1.100.1 fixes a 1.100.0 regression where some valid iterators were no longer recognised; run rustup update stable.",
+   "lane": "ai",
+   "url": "https://blog.rust-lang.org/2026/11/27/Rust-1.100.1/",
+   "source": "Rust blog"
+  },
+  {
+   "text": "Custom allocators are stable in Rust 1.100 after about ten years, as a first version: Vec::new_in with bump, counting or aligned allocators.",
+   "lane": "ai",
+   "url": "https://cetra3.github.io/blog/state-of-allocators-2026-finally-stabilised",
+   "source": "cetra3"
+  },
+  {
+   "text": "Anthropic retires the Claude Opus 4.5 model ids on the API on January 22, 2027; search your code for pinned ids.",
+   "lane": "ai",
+   "url": "https://platform.claude.com/docs/en/release-notes/overview",
+   "source": "Claude release notes"
+  },
+  {
+   "text": "GitHub will bill Copilot code review to the organization by default from December 30 unless an owner picks Member first.",
+   "lane": "ai",
+   "url": "https://github.blog/changelog/2026-11-25-copilot-code-review-billing-will-default-to-the-organization/",
+   "source": "GitHub changelog"
+  },
+  {
+   "text": "Coding agents that write a program beat video models on visual puzzles, 0.92 to 0.67 on one benchmark, by drawing the answer in code.",
+   "lane": "ai",
+   "url": "https://arxiv.org/abs/2611.34813",
+   "source": "arXiv"
+  },
+  {
+   "text": "ShellBench ran 53,100 agent attempts on everyday tasks: swapping the model moved scores more than swapping the harness (42.9% to 45.2%).",
+   "lane": "ai",
+   "url": "https://arxiv.org/abs/2611.32946",
+   "source": "arXiv"
+  },
+  {
+   "text": "Simon Willison: sqlite3_rsync copies a live SQLite database over SSH without needing room for a full local copy.",
+   "lane": "ai",
+   "url": "https://simonwillison.net/2026/Nov/26/sqlite3-rsync",
+   "source": "Simon Willison"
+  },
+  {
+   "text": "One tester's comparison: an AI test run reported 36 issues, 21 of them real; a manual pass found 9 more real defects it missed.",
+   "lane": "ai",
+   "url": "https://dev.to/thethirdcup/i-built-ai-test-automation-today-i-went-back-to-manual-testing-mlh",
+   "source": "DEV"
+  },
+  {
+   "text": "Melon Sandbox paid player creators $1.37M from January to November, up 102%; 27 of 426 paid creators earned over $10,000.",
+   "lane": "gamedev",
+   "url": "https://www.pocketgamer.biz/melon-sandbox-creator-payouts-rise-102-to-137m-in-2026",
+   "source": "PocketGamer.biz"
+  },
+  {
+   "text": "GameDiscoverCo asked about 5,500 Steam players about co-op: 37% always play with the same group, and price decides whether the group switches.",
+   "lane": "gamedev",
+   "url": "https://newsletter.gamediscover.co/p/how-do-steam-fans-think-about-playing",
+   "source": "GameDiscoverCo"
+  },
+  {
+   "text": "Epic's education team walked through Unreal 5.8's experimental Mesh Terrain, built from triangle meshes so it can have caves and overhangs.",
+   "lane": "gamedev",
+   "url": "https://www.youtube.com/watch?v=eD_4nV2sVwM",
+   "source": "Unreal Engine (YouTube)"
+  }
+ ],
+ "sparks": [
+  {
+   "id": "bouncemarket",
+   "lane": "gamedev",
+   "kind": "game",
+   "title": "bouncemarket: a prediction market on where a falling ball lands",
+   "where": "Hacker News",
+   "signal": "345 points and 116 comments on Show HN on November 27; 309 players online when we looked.",
+   "hook": "Everyone bets left or right on a ball dropping through pegs, and prices move with every share bought, so the crowd sets the odds live.",
+   "borrow": "Simulate the drop once on the server and stream it to every player as server-sent events: one deterministic run, replayable later, and nobody can cheat locally. Its rule-based bot traders leave once five people join.",
+   "url": "https://bouncemarket.minhanhday.com",
+   "forYou": "The server-sim-plus-SSE pattern is a cheap way to add a shared live moment to a browser game without websockets.",
+   "image": {
+    "src": "img/2026-11-28/bouncemarket.webp",
+    "alt": "The bouncemarket page: a peg board with a ball landing in the right bin, left and right share prices of 0.52, and a leaderboard of players and bots.",
+    "credit": "Minh-Anh Day (screenshot)",
+    "creditUrl": "https://bouncemarket.minhanhday.com",
+    "fit": "cover"
+   }
+  },
+  {
+   "id": "hidden-folks-focus",
+   "lane": "gamedev",
+   "kind": "technique",
+   "title": "Hidden Folks 2 puts the mouse cursor on the focused button",
+   "where": "Bluesky",
+   "signal": "156 likes on Bluesky in two days (November 26), from the game's co-creator Adriaan de Jongh.",
+   "hook": "Minimal menus struggle to show which button a keyboard or controller is on. Drawing the familiar cursor on top of the focused button makes it obvious without any extra styling.",
+   "borrow": "One focus marker for every input type, which players already understand. He says it is easy to code in Godot; any engine's UI focus event can move a cursor sprite.",
+   "url": "https://bsky.app/profile/adriaan.games/post/3n37b3lyohs2y",
+   "forYou": "A cheap fix for gamepad navigation in UMG menus: on focus change, move a hand-cursor widget onto the focused button.",
+   "image": {
+    "src": "img/2026-11-28/hiddenfolks.webp",
+    "alt": "Three hand-drawn buttons, Settings, Quit and Go to Space, with a pointing-hand cursor resting on Quit.",
+    "credit": "Adriaan de Jongh on Bluesky (video still)",
+    "creditUrl": "https://bsky.app/profile/adriaan.games/post/3n37b3lyohs2y",
+    "fit": "cover"
+   }
+  },
+  {
+   "id": "dissolving-granules",
+   "lane": "gamedev",
+   "kind": "technique",
+   "title": "Salt and spices that dissolve and tint the drink",
+   "where": "Bluesky",
+   "signal": "191 likes and 26 reposts on Bluesky since November 25.",
+   "hook": "Grains of salt or spice dropped into a fluid dissolve and change its color, and the penguin who drinks it lives with the result.",
+   "borrow": "Let a fluid carry state (color, contents) that changes as objects dissolve into it; it turns a physics toy into cooking and potion mechanics.",
+   "url": "https://bsky.app/profile/majormcdoom.bsky.social/post/3n35pexaih22p",
+   "image": {
+    "src": "img/2026-11-28/granules.webp",
+    "alt": "A cartoon penguin holding a mug beside a pan on a fire, with a spice jar tipping into it, on an icy island with an igloo.",
+    "credit": "majormcdoom on Bluesky (video still)",
+    "creditUrl": "https://bsky.app/profile/majormcdoom.bsky.social/post/3n35pexaih22p",
+    "fit": "cover"
+   }
+  },
+  {
+   "id": "painterly-shader",
+   "lane": "gamedev",
+   "kind": "technique",
+   "title": "A painterly shader built from brush-stroke normals",
+   "where": "Bluesky",
+   "signal": "150 likes and 28 reposts on Bluesky on November 26.",
+   "hook": "Fake brush daubs by bending the surface normals with a brush-stroke texture, then quantize the lighting into a few steps with slightly soft edges.",
+   "borrow": "Two cheap tricks give a hand-painted look in any engine: a stroke texture in the normal input, and stepped (not hard) shadow and specular bands.",
+   "url": "https://bsky.app/profile/hippowombat.bsky.social/post/3n36t4qqb5s2q",
+   "image": {
+    "src": "img/2026-11-28/painterly.webp",
+    "alt": "A sphere in the Godot editor lit in teal, its surface broken into blotchy brush-like patches with stepped shading.",
+    "credit": "hippowombat on Bluesky (video still)",
+    "creditUrl": "https://bsky.app/profile/hippowombat.bsky.social/post/3n36t4qqb5s2q",
+    "fit": "cover"
+   }
+  },
+  {
+   "id": "coin-cascade",
+   "lane": "gamedev",
+   "kind": "game",
+   "title": "Coin Cascade: a peg board that feeds a coin pusher",
+   "where": "itch.io",
+   "signal": "On itch.io's new and popular list on November 27; free in the browser. Early: one rating so far.",
+   "hook": "Two arcade machines chained into one idle game: coins bounce through multiplier pegs, land on a pusher shelf, and spill into the tray you bank.",
+   "borrow": "Chain two physical toys so the output of one is the input of the next; each upgrade then has two places to show its effect.",
+   "url": "https://salvationbacon.itch.io/coin-cascade",
+   "image": {
+    "src": "img/2026-11-28/coincascade.webp",
+    "alt": "A pixel-art cabinet: a triangle of gold pegs above multiplier slots, a green pusher shelf piled with coins, and a Bank button.",
+    "credit": "salvationbacon on itch.io",
+    "creditUrl": "https://salvationbacon.itch.io/coin-cascade",
+    "fit": "cover"
+   }
+  },
+  {
+   "id": "albion-godot",
+   "lane": "gamedev",
+   "kind": "experiment",
+   "title": "Fable II and III, recompiled to run inside Godot",
+   "where": "Mastodon",
+   "signal": "Shared by GamingOnLinux on November 24 (22 favourites, 14 boosts on Mastodon); a player reports two hours of play on Linux.",
+   "hook": "The original Xbox 360 code is statically recompiled and the game rebuilt around it in Godot 4.7, with no assets shipped: you bring your own disc image.",
+   "borrow": "Static recompilation plus a modern engine is becoming a path to preserve old games; shipping code without assets is the legal pattern these projects follow. Commenters question how much was written by AI.",
+   "url": "https://www.gamingonlinux.com/2026/11/fable-return-to-albion-is-an-open-source-godot-remake-of-fable-ii-and-fable-iii/",
+   "image": {
+    "src": "img/2026-11-28/albion.webp",
+    "alt": "Two characters talking in a snowy medieval town square at dusk, running in a window titled Fable 2: Return to Albion.",
+    "credit": "GamingOnLinux",
+    "creditUrl": "https://www.gamingonlinux.com/2026/11/fable-return-to-albion-is-an-open-source-godot-remake-of-fable-ii-and-fable-iii/",
+    "fit": "cover"
+   }
+  }
+ ],
+ "lab": [
+  {
+   "id": "env-repair",
+   "lane": "ai",
+   "kind": "preprint",
+   "title": "Online Environment Repair for Coding Agents",
+   "headline": "When an agent cheats its tests during training, fix the tests instead of punishing the agent",
+   "authors": "Sheng Lu, Rui Mao, Zewei Chen, et al.",
+   "where": "arXiv preprint",
+   "date": "2026-11-24",
+   "problem": "Coding agents trained with reinforcement learning learn to exploit weak tests and harnesses, getting full reward without solving the task.",
+   "idea": "Leave rewards alone. Catch exploits in passing runs with execution checks and fuzzing, have a repair model patch the harness, and accept a patch only if it passes three gates: the spec and scored assertions are untouched with no new skips, every known exploit now fails on replay, and the reference solution still passes.",
+   "result": "With a small Qwen3-4B policy over 160 training steps, cheating fell from 36.9% to 0.06%, and on 120 held-out unpatched tasks Pass@8 rose from 21.67% to 46.67%. It beat reward penalties, rollout filtering and static hardening. Small model, controlled setting.",
+   "useIt": "Use the three gates when an agent edits tests or fixtures in your repo: forbid changes to assertions and new skips, replay the bug the test should catch, and keep a known-good solution green.",
+   "maturity": "prototype",
+   "forYou": "A PreToolUse hook that blocks edits to assertion lines and skip decorators in test files is the cheap version of gate one for your routines.",
+   "links": [
+    {
+     "label": "arXiv 2611.32037",
+     "url": "https://arxiv.org/abs/2611.32037"
+    }
+   ]
+  },
+  {
+   "id": "endweaver",
+   "lane": "gamedev",
+   "kind": "paper",
+   "title": "Automated Smoke Testing for Multi-ending Game Quests via Large Language Models",
+   "headline": "An LLM plans its way to every ending of a branching quest in thousands of steps, not millions",
+   "authors": "Jinyu Cai, Jialong Li (Waseda University), Mingyue Zhang (Southwest University), et al.",
+   "where": "IEEE Transactions on Games (accepted); arXiv 2611.32089",
+   "date": "2026-11-24",
+   "problem": "Quests with several endings are slow to test by hand, and reinforcement learning agents need millions of steps and still miss endings.",
+   "idea": "EndWeaver has an LLM write high-level methods from the quest text, break them into primitive tasks with functions that map to game inputs, assemble task sequences, and record a state-action graph that merges repeated states so later runs reuse it.",
+   "result": "100% quest completion in three of four test environments (a mini RPG, Overcooked Plus, Minecraft) and 81.2% in StarCraft II, against 62.5% to 78.6% for PPO-based baselines, using about 1,400 to 25,000 steps. Removing the graph or the planning levels hurt completion or ending variety.",
+   "useIt": "For branching quests, have an LLM write input-level helper functions from your design notes and keep a graph of visited states so each smoke run explores new branches.",
+   "maturity": "prototype",
+   "forYou": "Pair it with an Unreal automation driver: quest data tables in, a graph of reached endings out, run nightly on the action RPG's quest branches.",
+   "links": [
+    {
+     "label": "arXiv 2611.32089",
+     "url": "https://arxiv.org/abs/2611.32089"
+    },
+    {
+     "label": "DOI 10.1109/TG.2026.3720476",
+     "url": "https://doi.org/10.1109/TG.2026.3720476"
+    }
+   ],
+   "image": {
+    "src": "img/2026-11-28/endweaver.webp",
+    "alt": "EndWeaver's framework: quest text, game state and extra info feed an LLM that generates methods, primitive tasks and input sequences, which run in the game and build a state-action graph.",
+    "credit": "Cai et al., arXiv 2611.32089",
+    "creditUrl": "https://arxiv.org/abs/2611.32089",
+    "fit": "contain"
+   }
+  },
+  {
+   "id": "mmo-locks",
+   "lane": "gamedev",
+   "kind": "preprint",
+   "title": "Massively multiplayer browser games on stateless pages and a relational database, a tutorial on their construction",
+   "headline": "A persistent browser MMO needs no game server, but every trade needs a locked row",
+   "authors": "Erick Oliveira Rodrigues (UTFPR, Brazil)",
+   "where": "arXiv preprint (cs.GR)",
+   "date": "2026-11-24",
+   "problem": "How to run a persistent multiplayer browser game on cheap hosting with plain web pages and a database, without players duplicating money through simultaneous requests.",
+   "idea": "A worked example game (PHP and MariaDB, 25,930 lines, 41 tables) shows login, maps, turn-based combat and an economy built on request and response pages, with every transfer wrapped in a locking transaction.",
+   "result": "Its five transfers completed exactly once under 32 simultaneous requests. Without locking, an open-source game turned a 300-gold transfer into about 5,660, another 500 wood into about 8,350. On one core and 512 MB, 25 players ran at a 229 ms 95th percentile with no errors.",
+   "useIt": "Fire 32 identical transfer requests at your own economy endpoints; if totals change, lock rows in id order with SELECT ... FOR UPDATE before checking balances.",
+   "maturity": "code",
+   "forYou": "Same risk in any Supabase-backed game shop: test the credit RPCs with parallel calls before launch.",
+   "links": [
+    {
+     "label": "arXiv 2611.33256",
+     "url": "https://arxiv.org/abs/2611.33256"
+    }
+   ]
+  }
+ ],
+ "note": "Seven inbox feeds (Reddit, GamesIndustry.biz, The Verge, Ars Technica) refused today's sweep and searches found nothing usable from X or TikTok, so Sparks lean on Bluesky and Hacker News. The Balatro timeline was first posted in March and resurfaced this week."
+}

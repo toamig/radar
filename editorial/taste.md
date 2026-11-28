@@ -108,6 +108,9 @@ look for one AI-plays-or-makes-games experiment in Sparks most days.
 Games where playing means programming also rate high: an auto-battler where you write your party's
 rules, automation and factory games, logic and code puzzles. The hook is a system the player
 configures and then watches run; say what the rule language looks like and what designers could borrow.
+Game feel craft rates high too: a free, well-made asset or tool for feel (recorded UI sounds, screen shake,
+hit stop) that ships with the cheap trick behind it (several takes per sound picked at random, a little pitch
+jitter, separate press and release). Name the trick so it can be copied into any engine.
 A familiar mechanic rebuilt as the core of another genre also rates high (a slot machine that summons an
 auto-battler army): say which mechanic was borrowed, what it does to the loop, and why it reads at a glance.
 

@@ -8,6 +8,9 @@ entries under "Folded in".
 
 ## New
 
+
+## Folded in
+
 - #12 More like: Button Sounds: 50+ recorded clicks with several takes each (2026-11-28)
   direction: more
   issue: 2026-11-27
@@ -16,9 +19,7 @@ entries under "Folded in".
   lane: gamedev
   
   Optional note (what exactly, and why):
-
-
-## Folded in
+  Lesson (2026-11-28): free game feel assets with the technique behind them (round-robin UI click samples, pitch jitter) are a liked spark kind. Added to taste.md.
 
 - #11 More like: Slotbound: an auto-battler where a slot machine summons your army (2026-11-24)
   direction: more
